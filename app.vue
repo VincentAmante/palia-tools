@@ -1,13 +1,9 @@
 <script setup lang="ts">
-useHead({
+useServerSeoMeta({
+  ogTitle: 'Palia Garden Planner',
   title: 'Palia Garden Planner',
-  meta: [
-    {
-      hid: 'description',
-      name: 'description',
-      content: 'PGP',
-    },
-  ],
+  description: 'A fan-made tool for planning out your garden',
+  themeColor: '#e4d8b4',
 })
 </script>
 
