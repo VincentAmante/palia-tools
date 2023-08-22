@@ -42,7 +42,7 @@
       <div class="drawer-side">
         <label for="my-drawer-3" class="drawer-overlay" />
         <ul class="menu p-4 w-80 h-full bg-base-200 gap-2">
-          <li>
+          <!-- <li>
             <div class="flex">
               <img src="/logo.webp" class="max-w-[3rem]">
               <p class="text-lg font-bold">
@@ -50,7 +50,7 @@
               </p>
             </div>
             <div class="divider py-0 my-0" />
-          </li>
+          </li> -->
           <li class="text-lg font-bold normal-case">
             <NuxtLink to="/roadmap">
               Roadmap
