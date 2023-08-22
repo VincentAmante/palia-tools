@@ -204,6 +204,7 @@ function openNewLayoutModal() {
             <h1 class="text-lg font-bold opacity-80 w-full">
               Palia Garden Planner
             </h1>
+
           </a>
           <a class="w-full opacity-75 text-xs ">https://palia-garden-planner.vercel.app</a>
         </div>
