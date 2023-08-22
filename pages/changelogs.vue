@@ -18,6 +18,19 @@
           August 22, 2023
         </h2>
         <div class="collapse-content flex flex-col gap-6 text-sm md:text-base  leading-6">
+          <div class="flex flex-col gap-2">
+            <h3 class="font-bold">
+              Changes Summary
+            </h3>
+            <ul class="list-disc list-inside">
+              <li><span class="italic">New Pages:</span> Changelogs and Roadmap</li>
+              <li><span class="italic">Technical:</span> Moved website from Vue to Nuxt</li>
+              <li><span class="italic">UI:</span> Shifted sections of the website around</li>
+              <li><span class="italic">UI:</span> Made some elements smaller to fit better on mobile</li>
+              <li><span class="italic">UI:</span> Removed some unnecessary text (just a bit &lt;3)</li>
+            </ul>
+          </div>
+
           <div class="flex flex-col gap-1">
             <p>
               Today's update doesn't add much in terms of the planner itself,
