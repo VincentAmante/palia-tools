@@ -796,7 +796,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           </div>
         </div>
       </div>
-      <div v-show="activeTab == 'info'" class="flex flex-col gap-2 py-4 px-2">
+      <div v-show="activeTab === 'info'" class="flex flex-col gap-2 py-4 px-2">
         <div class="max-w-lg">
           <h5 class="font-bold">
             Note
@@ -806,19 +806,20 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
               This tool uses information on crops gathered
               from
               resources such as Arenvanya's
-              <a
+              <NuxtLink
                 href="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
-                target="_blank" class="flex items-center gap-1 text-info"
+                target="_blank"
+                class="flex items-center gap-1 text-info"
               >
                 <font-awesome-icon
                   :icon="['fas', 'arrow-up-right-from-square']"
                   class="text-xs"
                 />
                 Gardening Guide
-              </a>
+              </NuxtLink>
               and their
-              <a
-                href="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
+              <NuxtLink
+                to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
                 target="_blank" class="flex items-center gap-1 text-info"
               >
                 <font-awesome-icon
@@ -826,7 +827,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                   class="text-xs"
                 />
                 Math Spreadsheet
-              </a>
+              </NuxtLink>
               as well as a mix of observations and testings done by fellow Palians discussed on Discord
             </div>
             <p class="text-sm">

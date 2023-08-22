@@ -9,7 +9,7 @@ useHead({
 </script>
 
 <template>
-  <div class="flex flex-col px-2">
+  <div class="flex flex-col">
     <PGPHeader />
     <NuxtPage />
     <PGPFooter />

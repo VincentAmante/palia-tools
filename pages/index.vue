@@ -200,12 +200,11 @@ function openNewLayoutModal() {
       >
         <img src="/logo.webp" class="max-w-[3rem]">
         <div class="text-left pb-4 flex flex-col">
-          <a href="/" class="flex items-center gap-1 justify-start">
+          <NuxtLink to="/" class="flex items-center gap-1 justify-start">
             <h1 class="text-lg font-bold opacity-80 w-full">
               Palia Garden Planner
             </h1>
-
-          </a>
+          </NuxtLink>
           <a class="w-full opacity-75 text-xs ">https://palia-garden-planner.vercel.app</a>
         </div>
       </div>
@@ -275,7 +274,9 @@ function openNewLayoutModal() {
                   <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="plotTileRow flex cols-3 gap-1">
                     <div v-for="(tile, index) in row" :key="index" class="plotTile">
                       <CropTile
-                        :tile="tile as Tile" :is-disabled="!plot.isActive" :bonus-hovered="hoveredBonus"
+                        :tile="tile as Tile"
+                        :is-disabled="!plot.isActive"
+                        :bonus-hovered="hoveredBonus"
                         :is-alt="(plotRowIndex + plotIndex) % 2 === 0"
                         @contextmenu="((e) => clearTile(e, rowIndex, index, plot as Plot))"
                         @click="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
@@ -289,7 +290,6 @@ function openNewLayoutModal() {
           </div>
         </div>
 
-        <!-- Coverage Stat Display -->
         <div class="my-2 px-2 w-fit">
           <div
             ref="statDisplay" class="flex flex-wrap gap-2 w-fit px-4 mt-4 cursor-help"
@@ -363,13 +363,10 @@ function openNewLayoutModal() {
       </div>
     </section>
 
-    <div class="flex flex-col gap-2 px-4 lg:px-16 max-w-xl py-4 pb-4">
-      <p class="text-warning font-bold uppercase">
-        Resets your plot, please be careful around this button!
-      </p>
+    <div class="flex flex-col gap-2 px-4 lg:px-16 max-w-xl py-1">
       <button class="btn my-0 btn-warning w-fit text-white" @click="clearAllPlots()">
         <font-awesome-icon class="text-xl" :icon="['fas', 'triangle-exclamation']" />
-        <p>Reset Plot</p>
+        <p>Clear Plot</p>
       </button>
     </div>
 
@@ -509,7 +506,8 @@ function openNewLayoutModal() {
         </div>
       </div>
     </section>
-    <div class="divider px-16" />
-    <ExtraInfo />
+    <div class="px-4 md:px-8 lg:px-16">
+      <CreditsSection />
+    </div>
   </main>
 </template>

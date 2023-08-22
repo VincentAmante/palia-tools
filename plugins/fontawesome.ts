@@ -2,7 +2,9 @@ import { config, library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import {
+  faArrowLeft,
   faArrowUpRightFromSquare,
+  faBars,
   faCaretDown,
   faCircleInfo,
   faCircleQuestion,
@@ -53,6 +55,8 @@ library.add(
   faTableCellsLarge,
   faSquarePlus,
   faTurnDown,
+  faArrowLeft,
+  faBars,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS
