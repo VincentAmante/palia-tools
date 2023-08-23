@@ -6,7 +6,7 @@
         <div class="w-full navbar py-4 md:px-12">
           <div class="flex-1 mx-2 ">
             <NuxtLink to="/" class="flex gap-2 items-center">
-              <img src="/logo.webp" class="max-w-[3rem]">
+              <nuxt-img format="webp" src="/logo.webp" class="max-w-[3rem]" />
               <div class="flex flex-col gap-0 leading-tight">
                 <h1 class="text-xl font-bold text-left lg:text-2xl leading-tight">
                   Palia Garden Planner
@@ -44,7 +44,7 @@
         <ul class="menu p-4 w-80 h-full bg-base-200 gap-2">
           <!-- <li>
             <div class="flex">
-              <img src="/logo.webp" class="max-w-[3rem]">
+              <nuxt-img format="webp" src="/logo.webp" class="max-w-[3rem]"/>
               <p class="text-lg font-bold">
                 Palia Garden Planner
               </p>

@@ -100,10 +100,10 @@ const bonus = computed(() => {
           {{ count }}
         </p>
       </div>
-      <img
-        v-if="(crop && crop.image != null && crop.image != '')" class="absolute -z-10 max-w-[45px]"
+      <nuxt-img
+        v-if="(crop && crop.image != null && crop.image !== '')" class="absolute -z-10 max-w-[45px]"
         :src="crop.image" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
-      >
+      />
       <font-awesome-icon
         v-else class="absolute -z-10 max-w-[45px] text-warning text-3xl "
         :icon="['fas', 'eraser']"

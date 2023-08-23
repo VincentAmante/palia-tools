@@ -231,10 +231,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                 :data-tip="getTooltipMessage(cropType, 'star', crop.star.produce, crop.star.gold)"
               >
                 <div class="relative h-full aspect-square p-1 flex flex-col items-center justify-center">
-                  <img
+                  <nuxt-img
                     :src="getCropImage(cropType, cropOptions[cropType].starType)"
                     class="max-w-[2.25rem] object-contain aspect-square"
-                  >
+                  />
                   <p
                     class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                   >
@@ -250,10 +250,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                 data-tip="Unsold crops for further processing"
               >
                 <div class="relative h-full aspect-square p-1 flex flex-col items-center justify-center">
-                  <img
+                  <nuxt-img
                     :src="crops[cropType]?.image"
                     class="max-w-[2.25rem] object-contain aspect-square"
-                  >
+                  />
                   <p
                     class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                   >
@@ -273,10 +273,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                 class="tooltip tooltip-right" data-tip="Excess seeds for replanting"
               >
                 <div class="relative h-full aspect-square p-1 flex flex-col items-center justify-center">
-                  <img
+                  <nuxt-img
                     :src="getCropImage(cropType, 'seed')"
                     class="max-w-[2.25rem] object-contain aspect-square"
-                  >
+                  />
                   <p
                     class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                   >
@@ -298,10 +298,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                 :data-tip="getTooltipMessage(cropType, 'base', crop.base.produce, crop.base.gold)"
               >
                 <div class="relative h-full aspect-square p-1 flex flex-col items-center justify-center">
-                  <img
+                  <nuxt-img
                     :src="getCropImage(cropType, cropOptions[cropType].baseType)"
                     class="max-w-[2.25rem] object-contain aspect-square"
-                  >
+                  />
                   <p
                     class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                   >
@@ -314,10 +314,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                 data-tip="Unsold crops for further processing"
               >
                 <div class="relative h-full aspect-square p-1 flex flex-col items-center justify-center">
-                  <img
+                  <nuxt-img
                     :src="crops[cropType]?.image"
                     class="max-w-[2.25rem] object-contain aspect-square"
-                  >
+                  />
                   <p
                     class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                   >
@@ -333,10 +333,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                 class="tooltip tooltip-right" data-tip="Excess seeds for replanting"
               >
                 <div class="relative h-full aspect-square p-1 flex flex-col items-center justify-center">
-                  <img
+                  <nuxt-img
                     :src="getCropImage(cropType, 'seed')"
                     class="max-w-[2.25rem] object-contain aspect-square"
-                  >
+                  />
                   <p
                     class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                   >
@@ -366,10 +366,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                     <tr>
                       <th>Produce</th>
                       <th class="flex items-center gap-1">
-                        <img
+                        <nuxt-img
                           src="/gold.webp"
                           class="max-h-[1rem]"
-                        >Gold
+                        />Gold
                       </th>
                     </tr>
                   </thead>
@@ -392,10 +392,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                                 <div
                                   class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
                                 >
-                                  <img
+                                  <nuxt-img
                                     :src="getCropImage(cropType, cropOptions[cropType].starType)"
                                     class="max-w-[2.25rem] object-contain aspect-square"
-                                  >
+                                  />
                                   <p
                                     class="absolute bottom-0 right-0 text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                                     :class="(crop.star.produce < 0) ? 'text-red-600 font-black' : 'font-bold'"
@@ -426,10 +426,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                                 <div
                                   class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
                                 >
-                                  <img
+                                  <nuxt-img
                                     :src="crops[cropType]?.image"
                                     class="max-w-[2rem] object-contain aspect-square"
-                                  >
+                                  />
                                   <p
                                     class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                                   >
@@ -458,10 +458,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                                 <div
                                   class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
                                 >
-                                  <img
+                                  <nuxt-img
                                     :src="getCropImage(cropType, 'seed')"
                                     class="max-w-[2.25rem] object-contain aspect-square"
-                                  >
+                                  />
                                   <p
                                     class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                                   >
@@ -491,10 +491,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                                 <div
                                   class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
                                 >
-                                  <img
+                                  <nuxt-img
                                     :src="getCropImage(cropType, cropOptions[cropType].baseType)"
                                     class="max-w-[2.25rem] object-contain aspect-square"
-                                  >
+                                  />
                                   <p
                                     class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                                     :class="(crop.base.produce < 0) ? 'text-red-600 font-black' : 'font-bold'"
@@ -507,10 +507,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                                 <div
                                   class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
                                 >
-                                  <img
+                                  <nuxt-img
                                     :src="crops[cropType]?.image"
                                     class="max-w-[2rem]"
-                                  >
+                                  />
                                   <p
                                     class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                                   >
@@ -533,10 +533,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                                 <div
                                   class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
                                 >
-                                  <img
+                                  <nuxt-img
                                     :src="getCropImage(cropType, 'seed')"
                                     class="max-w-[2.25rem] object-contain aspect-square"
-                                  >
+                                  />
                                   <p
                                     class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
                                   >
@@ -558,7 +558,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                       </td>
                       <td class="">
                         <p class="flex gap-1 font-bold items-center pr-1">
-                          <img src="/gold.webp" class="max-h-[1.5rem]">{{
+                          <nuxt-img format="webp" src="/gold.webp" class="max-h-[1.5rem]" />{{
                             harvest.totalGold.toLocaleString() }}
                         </p>
                       </td>
@@ -726,7 +726,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                 class="flex md:flex-col gap-2 md:gap-1 items-center justify-start py-2 md:aspect-square p-1 rounded-lg bg-base-100"
               >
                 <div class="flex flex-col items-center justify-center pl-1">
-                  <img class="max-w-[3rem] object-contain p-1 py-1 aspect-square" :src="crop?.image">
+                  <nuxt-img format="webp" class="max-w-[3rem] object-contain p-1 py-1 aspect-square" :src="crop?.image" />
                   <p class="text-xs capitalize font-bold">
                     {{ crop?.type }}
                   </p>

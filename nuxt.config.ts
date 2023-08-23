@@ -13,6 +13,7 @@ export default defineNuxtConfig({
   },
   modules: [
     '@vueuse/nuxt',
+    '@nuxt/image',
   ],
   build: {
     transpile: [

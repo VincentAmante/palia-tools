@@ -81,7 +81,12 @@ const bonusBgColor = computed(() => {
   >
     <div class="absolute w-full h-full bg-opacity-20 -z-10" :class="bgColour" />
     <div class="lg:text-3xl font-bold uppercase select-none">
-      <img v-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" draggable="false" class="select-none p-1 max-w-[48px]" :src="tile?.crop?.image">
+      <nuxt-img
+        v-if="(tile?.crop?.image && tile?.crop?.image.length > 0)"
+        format="webp"
+        draggable="false" class="select-none p-1 max-w-[48px]"
+        :src="tile?.crop?.image"
+      />
       <div v-else>
         {{ code as string || ' ' }}
       </div>

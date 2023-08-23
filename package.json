@@ -22,6 +22,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^0.40.2",
     "@nuxt/devtools": "latest",
+    "@nuxt/image": "^1.0.0-rc.1",
     "@types/dom-to-image": "^2.6.4",
     "@types/node": "^18.17.3",
     "@typescript-eslint/eslint-plugin": "^6.4.1",

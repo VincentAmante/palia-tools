@@ -198,7 +198,7 @@ function openNewLayoutModal() {
         id="watermark" class="px-2 md:px-0 text-left gap-2 items-start w-fit leadiing-1"
         :class="(isTakingScreenshot) ? 'flex' : 'hidden'"
       >
-        <img src="/logo.webp" class="max-w-[3rem]">
+        <nuxt-img format="webp" src="/logo.webp" class="max-w-[3rem]" />
         <div class="text-left pb-4 flex flex-col">
           <NuxtLink to="/" class="flex items-center gap-1 justify-start">
             <h1 class="text-lg font-bold opacity-80 w-full">
