@@ -7,7 +7,7 @@ const crops = {
   [CropType.Tomato]: new Crop(
     CropType.Tomato,
     Bonus.WaterRetain,
-    '/crops/tomato.png',
+    '/crops/tomato.webp',
     // Base Values
     {
       base: 2,
@@ -43,7 +43,7 @@ const crops = {
   [CropType.Potato]: new Crop(
     CropType.Potato,
     Bonus.WaterRetain,
-    '/crops/potato.png',
+    '/crops/potato.webp',
     {
       base: 2,
       growthTime: 5,
@@ -71,7 +71,7 @@ const crops = {
   [CropType.Rice]: new Crop(
     CropType.Rice,
     Bonus.HarvestIncrease,
-    '/crops/rice.png',
+    '/crops/rice.webp',
     {
       base: 2,
       growthTime: 3,
@@ -100,7 +100,7 @@ const crops = {
   [CropType.Wheat]: new Crop(
     CropType.Wheat,
     Bonus.HarvestIncrease,
-    '/crops/wheat.png',
+    '/crops/wheat.webp',
     {
       base: 2,
       growthTime: 4,
@@ -128,7 +128,7 @@ const crops = {
   [CropType.Carrot]: new Crop(
     CropType.Carrot,
     Bonus.WeedPrevention,
-    '/crops/carrot.png',
+    '/crops/carrot.webp',
     {
       base: 2,
       growthTime: 3,
@@ -155,7 +155,7 @@ const crops = {
   [CropType.Onion]: new Crop(
     CropType.Onion,
     Bonus.WeedPrevention,
-    '/crops/onion.png',
+    '/crops/onion.webp',
     {
       base: 2,
       growthTime: 4,
@@ -182,7 +182,7 @@ const crops = {
   [CropType.Cotton]: new Crop(
     CropType.Cotton,
     Bonus.QualityIncrease,
-    '/crops/cotton.png',
+    '/crops/cotton.webp',
     {
       base: 2,
       growthTime: 5,
@@ -209,7 +209,7 @@ const crops = {
   [CropType.Blueberry]: new Crop(
     CropType.Blueberry,
     Bonus.SpeedIncrease,
-    '/crops/blueberry.png',
+    '/crops/blueberry.webp',
     {
       base: 4,
       growthTime: 9,
@@ -239,7 +239,7 @@ const crops = {
   [CropType.Apple]: new Crop(
     CropType.Apple,
     Bonus.SpeedIncrease,
-    '/crops/apple.png',
+    '/crops/apple.webp',
     {
       base: 16,
       growthTime: 12,

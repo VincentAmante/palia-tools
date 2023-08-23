@@ -184,7 +184,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
             <div class="font-bold flex gap-1 items-center text-xl">
               {{ Math.max(processedYields.totalResult.day, days) }} Days —
               <div class="flex gap-1 items-center">
-                <img src="/gold.png" class="max-h-[1rem]">{{
+                <img src="/gold.webp" class="max-h-[1rem]">{{
                   processedYields.totalResult.totalGold.toLocaleString() }}
               </div>
             </div>
@@ -193,7 +193,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
               <span class="flex gap-1 items-center">{{
                 (Math.round(processedYields.totalResult.totalGold
                   / processedYields.totalResult.day)).toLocaleString() }} <img
-                src="/gold.png"
+                src="/gold.webp"
                 class="max-h-[1rem]"
               ></span>
               / day
@@ -367,7 +367,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                       <th>Produce</th>
                       <th class="flex items-center gap-1">
                         <img
-                          src="/gold.png"
+                          src="/gold.webp"
                           class="max-h-[1rem]"
                         >Gold
                       </th>
@@ -558,7 +558,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                       </td>
                       <td class="">
                         <p class="flex gap-1 font-bold items-center pr-1">
-                          <img src="/gold.png" class="max-h-[1.5rem]">{{
+                          <img src="/gold.webp" class="max-h-[1.5rem]">{{
                             harvest.totalGold.toLocaleString() }}
                         </p>
                       </td>
