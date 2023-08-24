@@ -83,14 +83,14 @@ const bonusBgColor = computed(() => {
       <nuxt-img
         v-if="(tile?.crop?.image && tile?.crop?.image.length > 0)"
         format="webp"
-        draggable="false" class="select-none p-1 max-w-[48px]"
+        draggable="false" class="select-none p-1 max-w-[42px]"
         :src="tile?.crop?.image"
       />
       <div v-else>
         {{ code as string || ' ' }}
       </div>
     </div>
-    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.6rem] py-[0.5px] flex w-full gap-[0.8px] px-[2px] md:px-[1.8px] opacity-90">
+    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.6rem] py-[0.5px] flex w-full gap-[0.8px] px-[2px] md:px-[1.8px] opacity-70">
       <li v-show="bonuses?.includes(Bonus.QualityIncrease)">
         <font-awesome-icon class="text-yellow-200" :icon="['fas', 'star']" />
       </li>

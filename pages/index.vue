@@ -289,7 +289,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
 
             <div>
               <h3 class="font-semibold opacity-50 text-sm">
-                Fertilisers
+                Fertilisers per Day
               </h3>
               <div class="flex flex-wrap gap-2 py-2">
                 <div v-for="(count, index) in plotStatTotal.fertiliserCount" :key="index">
