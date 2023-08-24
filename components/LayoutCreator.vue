@@ -24,8 +24,6 @@ enum PlotStatus {
 }
 // Creates a v.01 code from the layout
 function layoutToCode(layout: PlotStatus[][]) {
-  // console.log('layout:', layout)
-
   // * technically 'plot' is just a boolean, do I really need to use an enum?
   let code = 'v0.1_DIM-'
   for (const layoutRow of layout) {
@@ -45,7 +43,6 @@ function layoutToCode(layout: PlotStatus[][]) {
     }
   }
   code = code.slice(0, -1)
-  // console.log('code:', code)
   return code
 }
 
@@ -79,7 +76,7 @@ watchEffect(() => {
     layout[i] = []
     for (let j = 0; j < selectedCol; j++) {
       // Allows for keeping the same layout when switching between custom layouts
-      if (selectedNewLayout.value == prevSelectedNewLayout.value && plotLayout.value[i] && plotLayout.value[i][j]) {
+      if (selectedNewLayout.value === prevSelectedNewLayout.value && plotLayout.value[i] && plotLayout.value[i][j]) {
         layout[i][j] = plotLayout.value[i][j]
         continue
       }
@@ -125,8 +122,6 @@ function togglePlot(row: number, col: number) {
 
     plotLayout.value[row][col] = PlotStatus.active
   }
-
-  // plotLayout.value = [...plotLayout.value]
 }
 
 function trimLayout(): PlotStatus[][] {
@@ -236,9 +231,9 @@ function trimLayout(): PlotStatus[][] {
               <div class="join">
                 <button class="join-item btn btn-sm btn-accent text-white" @click="rowInput--">-</button>
                 <input
-                  v-model="rowInput" type="number" name="row-input" class="join-item input input-accent input-sm max-w-16 text-center"
-                  min="1" max="9" step="1" :disabled="selectedNewLayout !== 'custom'"
-                  @change="enforceLayoutLimits()"
+                  v-model="rowInput" type="number" name="row-input"
+                  class="join-item input input-accent input-sm max-w-16 text-center" min="1" max="9" step="1"
+                  :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()"
                 >
                 <button class="join-item btn btn-sm btn-accent text-white" @click="rowInput++">+</button>
               </div>
@@ -248,9 +243,9 @@ function trimLayout(): PlotStatus[][] {
               <div class="join">
                 <button class="join-item btn btn-sm btn-accent text-white" @click="colInput--">-</button>
                 <input
-                  v-model="colInput" type="number" name="col-input" class="join-item input input-accent input-sm max-w-16"
-                  min="1" max="9" step="1" :disabled="selectedNewLayout !== 'custom'"
-                  @change="enforceLayoutLimits()"
+                  v-model="colInput" type="number" name="col-input"
+                  class="join-item input input-accent input-sm max-w-16" min="1" max="9" step="1"
+                  :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()"
                 >
                 <button class="join-item btn btn-sm btn-accent text-white" @click="colInput++">+</button>
               </div>
@@ -259,10 +254,9 @@ function trimLayout(): PlotStatus[][] {
           <div class=" flex flex-col gap-1 py-4 bg-base-300 px-2 rounded-md w-fit">
             <div v-for="(plotRow, plotRowIndex) of plotLayout" :key="plotRowIndex" class="flex gap-1">
               <div
-                v-for="(plot, index) of plotRow"
-                :key="index" class="aspect-square border-2 border-accent rounded w-6 cursor-pointer hover:bg-accent hover:bg-opacity-50 transition-all"
-                :class="plot === PlotStatus.active ? 'bg-accent' : ''"
-                @click="togglePlot(plotRowIndex, index)"
+                v-for="(plot, index) of plotRow" :key="index"
+                class="aspect-square border-2 border-accent rounded w-6 cursor-pointer hover:bg-accent hover:bg-opacity-50 transition-all"
+                :class="plot === PlotStatus.active ? 'bg-accent' : ''" @click="togglePlot(plotRowIndex, index)"
               />
             </div>
           </div>

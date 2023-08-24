@@ -1,6 +1,7 @@
 import uniqid from 'uniqid'
 import Bonus from '../enums/bonus'
 import type Crop from './crop'
+import type Fertiliser from './fertiliser'
 
 class Tile {
   private _crop: Crop | null = null
@@ -8,6 +9,7 @@ class Tile {
   private _bonusesReceived: Bonus[] = []
   private _id: string = uniqid()
   private _hasStarSeed: boolean = false
+  private _fertiliser: Fertiliser | null = null
 
   constructor(crop: Crop | null) {
     this._crop = crop
@@ -27,6 +29,14 @@ class Tile {
 
   set crop(crop: Crop | null) {
     this._crop = crop
+  }
+
+  get fertiliser(): Fertiliser | null {
+    return this._fertiliser
+  }
+
+  set fertiliser(fertiliser: Fertiliser | null) {
+    this._fertiliser = fertiliser
   }
 
   getCropBonus(): Bonus {

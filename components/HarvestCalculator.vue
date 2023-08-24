@@ -91,8 +91,6 @@ function setTab(tab: string) {
 }
 
 function setCropOption(cropType: CropType, type: 'star' | 'base', option: ProduceOptions) {
-  // console.log(cropType, type, option)
-
   if (type === 'star')
     cropOptions.value[cropType].starType = option
 
@@ -223,11 +221,14 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
               {{ baseChanceNormalSeed }}% Normal Seed
               Quality
             </p>
+            <p class="badge badge-warning text-xs">
+              No Fertiliser Costs
+            </p>
           </div>
           <div class="flex flex-wrap max-w-sm gap-1 bg-base-200 p-1 rounded-md">
             <template v-for="(crop, cropType) of processedYields.totalResult.crops" :key="cropType">
               <div
-                v-if="(crop.star.produce != 0)" class="tooltip capitalize"
+                v-if="(crop.star.produce !== 0)" class="tooltip capitalize"
                 :data-tip="getTooltipMessage(cropType, 'star', crop.star.produce, crop.star.gold)"
               >
                 <div class="relative h-full aspect-square p-1 flex flex-col items-center justify-center">
@@ -385,7 +386,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                           >
                             <template v-for="(crop, cropType) of harvest.crops" :key="cropType">
                               <div
-                                v-if="(crop.star.produce != 0)"
+                                v-if="(crop.star.produce !== 0)"
                                 class="tooltip tooltip-right"
                                 :data-tip="getTooltipMessage(cropType, 'star', crop.star.produce, crop.star.gold)"
                               >
@@ -484,7 +485,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                                 </div>
                               </div>
                               <div
-                                v-if="(crop.base.produce != 0)"
+                                v-if="(crop.base.produce !== 0)"
                                 class="tooltip tooltip-right"
                                 :data-tip="getTooltipMessage(cropType, 'base', crop.base.produce, crop.base.gold)"
                               >
@@ -570,7 +571,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           </div>
         </div>
       </div>
-      <div v-show="activeTab == 'options'" class="flex flex-col gap-2 py-4">
+      <div v-show="activeTab === 'options'" class="flex flex-col gap-2 py-4">
         <div class="flex flex-col gap-2">
           <h5 class="font-semibold">
             Main Options
@@ -700,6 +701,16 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
             </label>
             <p class="text-xs max-w-xs">
               Accounts for the cost of re-planting
+            </p>
+          </div>
+          <div class="flex flex-col  w-full bg-base-200 p-2 rounded-md gap-1">
+            <label class="flex gap-2 items-center">
+              <p class="opacity-50">Include Fertiliser Costs</p>
+              <input class="toggle" type="checkbox" disabled>
+            </label>
+            <p class="text-xs max-w-xs opacity-70">
+              <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
+              Not yet supported
             </p>
           </div>
         </div>

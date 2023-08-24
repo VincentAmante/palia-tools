@@ -2,17 +2,34 @@
 import { useClipboard, useElementBounding, useMousePressed, useUrlSearchParams } from '@vueuse/core'
 import domtoimage from 'dom-to-image-more'
 import { computed, onMounted, ref } from 'vue'
+import uniqid from 'uniqid'
 import LayoutCreator from '@/components/LayoutCreator.vue'
-import type { Crop, Plot, PlotStat, Tile } from '@/assets/scripts/garden-planner/imports'
-import { Bonus, CropType, Direction, Garden, crops, getCropFromType } from '@/assets/scripts/garden-planner/imports'
+import type { Plot, PlotStat, Tile } from '@/assets/scripts/garden-planner/imports'
+import { Bonus, Crop, CropType, Fertiliser, FertiliserType, Garden, crops, fertilisers, getCropFromType } from '@/assets/scripts/garden-planner/imports'
 
-const selectedCrop = ref<Crop | null>(null)
+const selectedItem = ref<Crop | Fertiliser | null | 'crop-erase' | 'fertiliser-erase'>(fertilisers[FertiliserType.HydratePro] as Fertiliser)
 const garden = ref(new Garden())
 const gardenTiles = ref(garden.value.plots)
 
 function selectTile(event: MouseEvent, row: number, col: number, plot: Plot) {
   if (event.button !== 2) {
-    plot.setTile(row, col, selectedCrop.value as Crop)
+    if (selectedItem.value === 'crop-erase') {
+      plot.setTile(row, col, null)
+    }
+    else if (selectedItem.value === 'fertiliser-erase') {
+      plot.removeFertiliserFromTile(row, col)
+    }
+    else {
+      if (selectedItem.value instanceof Crop) {
+        plot.setTile(row, col, selectedItem.value as Crop)
+      }
+      else if (selectedItem.value instanceof Fertiliser) {
+        plot.addFertiliserToTile(row, col, selectedItem.value as Fertiliser, {
+          removeSameId: true,
+        })
+      }
+    }
+
     garden.value.calculateBonuses()
   }
 }
@@ -30,26 +47,48 @@ const rightClickIsDown = ref(false)
 const { pressed } = useMousePressed()
 function handleHover(row: number, col: number, plot: Plot) {
   if (pressed.value && !rightClickIsDown.value) {
-    plot.setTile(row, col, selectedCrop.value as Crop)
+    if (selectedItem.value === 'crop-erase') {
+      plot.setTile(row, col, null)
+    }
+    else if (selectedItem.value === 'fertiliser-erase') {
+      plot.removeFertiliserFromTile(row, col)
+    }
+    else {
+      if (selectedItem.value instanceof Crop) {
+        plot.setTile(row, col, selectedItem.value as Crop)
+      }
+      else if (selectedItem.value instanceof Fertiliser) {
+        plot.addFertiliserToTile(row, col, selectedItem.value as Fertiliser, {
+          removeSameId: true,
+        })
+      }
+    }
+
     garden.value.calculateBonuses()
   }
   else if (pressed.value && rightClickIsDown.value) {
-    plot.setTile(row, col, null)
+    if (selectedItem.value === 'crop-erase' || selectedItem.value instanceof Crop)
+      plot.setTile(row, col, null)
+
+    else if (selectedItem.value === 'fertiliser-erase' || selectedItem.value instanceof Fertiliser)
+      plot.removeFertiliserFromTile(row, col)
+
     garden.value.calculateBonuses()
   }
 }
 
 function setCrop(type: CropType) {
-  selectedCrop.value = crops[type]
+  selectedItem.value = crops[type]
 }
 
 const plotStatTotal = computed(() => {
-  const { cropCount, cropTypeCount, cropBonusCoverage } = garden.value.calculateStats()
+  const { cropCount, cropTypeCount, cropBonusCoverage, fertiliserCount } = garden.value.calculateStats()
 
   return {
     cropCount,
     cropTypeCount,
     cropBonusCoverage,
+    fertiliserCount,
   } as PlotStat
 })
 
@@ -117,7 +156,7 @@ function saveAsImage() {
     },
   ).then((blob: Blob) => {
     const url = window.URL.createObjectURL(blob)
-    downloadURI(url, `${garden.value.saveLayout()}.png`)
+    downloadURI(url, `PaliaGardenPlan-${uniqid()}.png`)
     display.value.style.width = ''
     isTakingScreenshot.value = false
   })
@@ -139,31 +178,6 @@ function setActiveTab(tab: string) {
 
 const hoveredBonus = ref(Bonus.None)
 onMounted(() => {
-  // Set each plot's adjacency
-  const plotGridValue = gardenTiles.value as Plot[][]
-
-  // TODO: Maybe this should be done in the PlotLayout class
-  for (let i = 0; i < plotGridValue.length; i++) {
-    for (let j = 0; j < plotGridValue[0].length; j++) {
-      const plot = gardenTiles.value[i][j] as Plot
-      // North
-      if (i !== 0)
-        plot.setPlotAdjacent(Direction.North, gardenTiles.value[i - 1][j] as Plot)
-
-      // South
-      if (i !== plotGridValue.length - 1)
-        plot.setPlotAdjacent(Direction.South, gardenTiles.value[i + 1][j] as Plot)
-
-      // East
-      if (j !== plotGridValue[0].length - 1)
-        plot.setPlotAdjacent(Direction.East, gardenTiles.value[i][j + 1] as Plot)
-
-      // West
-      if (j !== 0)
-        plot.setPlotAdjacent(Direction.West, gardenTiles.value[i][j - 1] as Plot)
-    }
-  }
-
   if (urlParams.layout) {
     loadCode.value = urlParams.layout as string
     loadLayoutFromCode(loadCode.value)
@@ -183,6 +197,16 @@ onMounted(() => {
 const createLayoutDialog = ref<InstanceType<typeof LayoutCreator> | null>()
 function openNewLayoutModal() {
   createLayoutDialog.value?.openModal()
+}
+
+function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plot) {
+  event.preventDefault()
+  if (selectedItem.value === 'crop-erase' || selectedItem.value instanceof Crop)
+    plot.setTile(row, col, null)
+  else if (selectedItem.value === 'fertiliser-erase' || selectedItem.value instanceof Fertiliser)
+    plot.removeFertiliserFromTile(row, col)
+
+  garden.value.calculateBonuses()
 }
 </script>
 
@@ -212,28 +236,76 @@ function openNewLayoutModal() {
       <div id="planner" class="flex justify-between relative">
         <div class="crop-buttons px-4 md:px-0">
           <div class="py-2">
-            <h2 class="text-2xl font-bold">
-              Crops
+            <h2 class="text-xl font-bold">
+              Select
             </h2>
             <p :class="(isTakingScreenshot) ? 'hidden' : ''">
-              Click a crop to place on the tiles on the garden below
+              Pick a crop or fertiliser to place on the garden.
+            </p>
+            <p class="hidden md:block text-sm opacity-50 max-w-md" :class="(isTakingScreenshot) ? 'hidden' : ''">
+              Tip: Right clicking will remove a crop/fertiliser based on what you currently have selected.
+              Drag to do it to multiple tiles at once.
             </p>
           </div>
 
-          <div class="w-full">
-            <div class="flex flex-wrap gap-2 py-2">
-              <div v-for="(count, index) in plotStatTotal.cropTypeCount" :key="index">
-                <CropButton
-                  v-if="(index && index !== CropType.None && index !== null)"
-                  :crop="getCropFromType(index) as Crop"
-                  :is-selected="selectedCrop !== null && index === selectedCrop.type" :count="count"
-                  :in-picture-mode="isTakingScreenshot" @click="setCrop(index)"
-                />
-                <CropButton
-                  v-else :crop="{ type: CropType.None, image: '' } as Crop"
-                  :is-selected="selectedCrop?.type === CropType.None || selectedCrop == null"
-                  :in-picture-mode="isTakingScreenshot" @click="setCrop(CropType.None)"
-                />
+          <div class="w-full flex flex-col">
+            <div>
+              <h3 class="font-semibold opacity-50 text-sm">
+                Crops
+              </h3>
+              <div class="flex flex-wrap gap-2 py-2">
+                <div v-for="(count, index) in plotStatTotal.cropTypeCount" :key="index">
+                  <CropButton
+                    v-if="(index && index !== CropType.None && index !== null)"
+                    :crop="getCropFromType(index) as Crop"
+                    :is-selected="(selectedItem instanceof Crop) && selectedItem !== null && index === selectedItem.type"
+                    :count="count" :in-picture-mode="isTakingScreenshot" @click="setCrop(index)"
+                  />
+                  <button
+                    v-else
+                    class="relative bg-base-200 rounded-lg md:btn-lg w-14 md:w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
+                    :class="(selectedItem === 'crop-erase' && !isTakingScreenshot) ? 'bg-slate-100' : (isTakingScreenshot) ? 'hidden' : ''"
+                    :in-picture-mode="isTakingScreenshot"
+                    @click="selectedItem = 'crop-erase'"
+                  >
+                    <font-awesome-icon
+                      class="absolute -z-10 max-w-[45px] text-success text-3xl "
+                      :icon="['fas', 'eraser']"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="font-semibold opacity-50 text-sm">
+                Fertilisers per Day
+              </h3>
+              <div class="flex flex-wrap gap-2 py-2">
+                <div v-for="(count, index) in plotStatTotal.fertiliserCount" :key="index">
+                  <div>
+                    <FertiliserButton
+                      v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
+                      :is-selected="(selectedItem instanceof Fertiliser)
+                        && selectedItem
+                          !== null
+                        && index === selectedItem.type" :count="count" :in-picture-mode="isTakingScreenshot"
+                      @click="selectedItem = fertilisers[index]"
+                    />
+                    <button
+                      v-else
+                      class="relative bg-base-200 rounded-lg md:btn-lg w-14 md:w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
+                      :class="(selectedItem === 'fertiliser-erase' && !isTakingScreenshot) ? 'bg-slate-100' : (isTakingScreenshot) ? 'hidden' : ''"
+                      :in-picture-mode="isTakingScreenshot"
+                      @click="selectedItem = 'fertiliser-erase'"
+                    >
+                      <font-awesome-icon
+                        class="absolute -z-10 max-w-[45px] text-warning text-3xl "
+                        :icon="['fas', 'eraser']"
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -274,11 +346,9 @@ function openNewLayoutModal() {
                   <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="plotTileRow flex cols-3 gap-1">
                     <div v-for="(tile, index) in row" :key="index" class="plotTile">
                       <CropTile
-                        :tile="tile as Tile"
-                        :is-disabled="!plot.isActive"
-                        :bonus-hovered="hoveredBonus"
+                        :tile="tile as Tile" :is-disabled="!plot.isActive" :bonus-hovered="hoveredBonus"
                         :is-alt="(plotRowIndex + plotIndex) % 2 === 0"
-                        @contextmenu="((e) => clearTile(e, rowIndex, index, plot as Plot))"
+                        @contextmenu="((e: MouseEvent) => handleRightClick(e, rowIndex, index, plot as Plot))"
                         @click="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
                         @mouseover="handleHover(rowIndex, index, plot as Plot)"
                       />
@@ -462,7 +532,7 @@ function openNewLayoutModal() {
                   class="join-item bg-white bg-opacity-60 flex items-center justify-center px-2 py-1 w-full max-w-lg"
                 >
               </div>
-              <label class="flex gap-2 py-2 text-xs items-center">
+              <label class="flex gap-2 py-2 text-xs items-center font-semibold">
                 <input v-model="useMarkdown" type="checkbox" class="toggle toggle-sm">
                 <div class="join-item">Mask link with Markdown</div>
               </label>
@@ -476,29 +546,16 @@ function openNewLayoutModal() {
               <p class="text-sm">
                 Converts your layout into an easily-shareable image and downloads it.
               </p>
-              <p class="text-sm">
-                Includes the layout code as the file name.
-              </p>
               <button class="btn btn-accent text-white my-2" @click="saveAsImage()">
                 Download Image
               </button>
               <div class="flex flex-col gap-2">
                 <p class="text-sm">
-                  The resulting image is always landscape, which helps mobile-users share their layouts
-                  without needing to
-                  go on desktop
-                </p>
-                <p class="text-xs">
-                  Also adds the page title + link, which would help others find this website!
+                  The resulting image will always be a landscape image that shows the entire garden.
                 </p>
                 <p class="text-xs max-w-lg">
                   <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-warning" />
-                  This temporarily re-arranges the page until it
-                  finishes capturing the image and may take awhile, please wait until it finishes
-                </p>
-                <p v-show="(gardenTilesAreWide || gardenTilesAreLong)" class="text-xs">
-                  <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-warning" />
-                  Large layouts may take even longer to generate
+                  Page will slow down based on garden size while capturing the image
                 </p>
               </div>
             </div>

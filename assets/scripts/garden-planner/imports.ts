@@ -7,8 +7,11 @@ import Tile from './classes/tile'
 import Direction from './enums/direction'
 import Bonus from './enums/bonus'
 import CropCode from './enums/cropcode'
-import crops, { getCodeFromCrop, getCropFromCode, getCropFromType } from './croplist'
+import crops, { getCodeFromCrop, getCropFromCode, getCropFromType } from './crop-list'
 import Garden from './classes/garden'
+import Fertiliser from './classes/fertiliser'
+import FertiliserType from './enums/fertiliser'
+import fertilisers, { getCodeFromFertiliser, getFertiliserFromCode, getFertiliserFromType } from './fertiliser-list'
 
 import type { PlotStat } from './types/plotStat'
 
@@ -25,5 +28,11 @@ export {
   getCodeFromCrop,
   getCropFromType,
   Garden,
+  Fertiliser,
+  FertiliserType,
+  fertilisers,
+  getFertiliserFromType,
+  getCodeFromFertiliser,
+  getFertiliserFromCode,
 }
 export type { PlotStat }
