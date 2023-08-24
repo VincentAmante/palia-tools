@@ -2,6 +2,7 @@
 import { useClipboard, useElementBounding, useMousePressed, useUrlSearchParams } from '@vueuse/core'
 import domtoimage from 'dom-to-image-more'
 import { computed, onMounted, ref } from 'vue'
+import uniqid from 'uniqid'
 import LayoutCreator from '@/components/LayoutCreator.vue'
 import type { Plot, PlotStat, Tile } from '@/assets/scripts/garden-planner/imports'
 import { Bonus, Crop, CropType, Fertiliser, FertiliserType, Garden, crops, fertilisers, getCropFromType } from '@/assets/scripts/garden-planner/imports'
@@ -155,7 +156,7 @@ function saveAsImage() {
     },
   ).then((blob: Blob) => {
     const url = window.URL.createObjectURL(blob)
-    downloadURI(url, `${garden.value.saveLayout()}.png`)
+    downloadURI(url, `PaliaGardenPlan-${uniqid()}.png`)
     display.value.style.width = ''
     isTakingScreenshot.value = false
   })
@@ -197,17 +198,6 @@ const createLayoutDialog = ref<InstanceType<typeof LayoutCreator> | null>()
 function openNewLayoutModal() {
   createLayoutDialog.value?.openModal()
 }
-
-const itemIsCrop = computed(() => {
-  return selectedItem.value instanceof Crop
-})
-
-const itemIsFertiliser = computed(() => {
-  if (selectedItem.value === 'fertiliser-erase')
-    return false
-
-  return selectedItem.value instanceof Fertiliser
-})
 
 function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plot) {
   event.preventDefault()
@@ -274,7 +264,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                   <button
                     v-else
                     class="relative bg-base-200 rounded-lg md:btn-lg w-14 md:w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
-                    :class="(selectedItem === 'crop-erase' && !inPictureMode) ? 'bg-slate-100' : (inPictureMode) ? 'hidden' : ''"
+                    :class="(selectedItem === 'crop-erase' && !isTakingScreenshot) ? 'bg-slate-100' : (isTakingScreenshot) ? 'hidden' : ''"
                     :in-picture-mode="isTakingScreenshot"
                     @click="selectedItem = 'crop-erase'"
                   >
@@ -305,7 +295,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                     <button
                       v-else
                       class="relative bg-base-200 rounded-lg md:btn-lg w-14 md:w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
-                      :class="(selectedItem === 'fertiliser-erase' && !inPictureMode) ? 'bg-slate-100' : (inPictureMode) ? 'hidden' : ''"
+                      :class="(selectedItem === 'fertiliser-erase' && !isTakingScreenshot) ? 'bg-slate-100' : (isTakingScreenshot) ? 'hidden' : ''"
                       :in-picture-mode="isTakingScreenshot"
                       @click="selectedItem = 'fertiliser-erase'"
                     >
@@ -556,29 +546,16 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
               <p class="text-sm">
                 Converts your layout into an easily-shareable image and downloads it.
               </p>
-              <p class="text-sm">
-                Includes the layout code as the file name.
-              </p>
               <button class="btn btn-accent text-white my-2" @click="saveAsImage()">
                 Download Image
               </button>
               <div class="flex flex-col gap-2">
                 <p class="text-sm">
-                  The resulting image is always landscape, which helps mobile-users share their layouts
-                  without needing to
-                  go on desktop
-                </p>
-                <p class="text-xs">
-                  Also adds the page title + link, which would help others find this website!
+                  The resulting image will always be a landscape image that shows the entire garden.
                 </p>
                 <p class="text-xs max-w-lg">
                   <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-warning" />
-                  This temporarily re-arranges the page until it
-                  finishes capturing the image and may take awhile, please wait until it finishes
-                </p>
-                <p v-show="(gardenTilesAreWide || gardenTilesAreLong)" class="text-xs">
-                  <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-warning" />
-                  Large layouts may take even longer to generate
+                  Page will slow down based on garden size while capturing the image
                 </p>
               </div>
             </div>

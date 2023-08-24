@@ -119,14 +119,14 @@ class Garden {
     let cropIndex = 0
     for (const plot of this._layout.flat()) {
       if (plot.isActive) {
-        const regex = /[A-Z](?:'[A-Z]|[^A-Z])*/g
+        const regex = /[A-Z](?:\.[A-Z]|[^A-Z])*/g
         const cropCodes = crops[cropIndex].match(regex)
         if (cropCodes == null)
           throw new Error('Invalid crop code')
 
         for (let i = 0; i < plot.tiles.length; i++) {
           for (let j = 0; j < plot.tiles[i].length; j++) {
-            let [cropCode, fertiliserCode] = cropCodes.shift()?.split('\'') as [CropCode, FertiliserCode]
+            let [cropCode, fertiliserCode] = cropCodes.shift()?.split('.') as [CropCode, FertiliserCode]
             fertiliserCode = fertiliserCode ?? null
 
             const crop = getCropFromCode(cropCode)
@@ -170,9 +170,7 @@ class Garden {
             layoutCode += CropCode.None
 
           if (tile.fertiliser)
-            layoutCode += `'${(getCodeFromFertiliser(tile.fertiliser) ?? FertiliserCode.None) as FertiliserCode}`
-          else
-            layoutCode += `'${FertiliserCode.None}`
+            layoutCode += `.${(getCodeFromFertiliser(tile.fertiliser) ?? FertiliserCode.None) as FertiliserCode}`
         }
 
         if (plot !== this._layout.flat().slice(-1)[0])

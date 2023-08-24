@@ -75,15 +75,14 @@ const bonusBgColor = computed(() => {
 <template>
   <div
     draggable="false"
-    class="relative select-none min-w-[3.5rem] aspect-square bg-base-200 cursor-pointer rounded-lg hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
+    class="relative select-none min-w-[3.5rem] md:min-w-[3.75rem] aspect-square bg-base-200 cursor-pointer rounded-lg hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(props.isDisabled ? 'invisible' : ''), (props.isAlt ? 'border-[1px] border-orange-700 border-opacity-50' : '')]"
   >
     <div class="absolute w-full h-full bg-opacity-20 -z-10" :class="bgColour" />
     <div class="lg:text-3xl font-bold uppercase select-none">
       <nuxt-img
         v-if="(tile?.crop?.image && tile?.crop?.image.length > 0)"
-        format="webp"
-        draggable="false" class="select-none p-1 max-w-[42px]"
+        draggable="false" class="select-none p-1 max-w-[42px] md:max-w-[44px]"
         :src="tile?.crop?.image"
       />
       <div v-else>
@@ -111,7 +110,7 @@ const bonusBgColor = computed(() => {
       <nuxt-img
         v-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0"
         format="webp"
-        draggable="false" class="select-none max-w-[18px]"
+        draggable="false" class="select-none max-w-[20px]"
         :src="tile?.fertiliser?.image"
       />
     </div>
