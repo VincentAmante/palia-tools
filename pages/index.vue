@@ -490,6 +490,9 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                 class="join-item bg-white bg-opacity-60 flex items-center justify-center px-2 py-1 w-full max-w-lg"
               >
             </div>
+            <div class="flex items-center gap-1">
+              Support Versions: <span class="text-sm font-bold badge badge-primary">v0.1</span> <span class="text-sm font-bold badge badge-secondary">v0.2</span>
+            </div>
           </div>
 
           <div v-show="activeTab === 'save'" class="flex flex-col gap-2 w-full">
