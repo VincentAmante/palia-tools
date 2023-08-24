@@ -28,7 +28,7 @@
               <li><span class="italic">Technical — </span> Upgraded save codes from v0.1 to v0.2 for fertiliser support</li>
               <li><span class="italic">UI — </span> Shifted garden layout to accomodate fertilisers and be easier on the eyes</li>
               <li><span class="italic">Technical — </span>Removed save code from images exported using the planner</li>
-              <li><span class="italic">Technical — </span>Changed how the font is loaded to improve bandwidth usage on my part</li>
+              <li><span class="italic">Technical — </span>Changed how the font is loaded to improve server bandwidth usage</li>
             </ul>
           </div>
 
