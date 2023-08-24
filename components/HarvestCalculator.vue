@@ -221,6 +221,9 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
               {{ baseChanceNormalSeed }}% Normal Seed
               Quality
             </p>
+            <p class="badge badge-warning text-xs">
+              No Fertiliser Costs
+            </p>
           </div>
           <div class="flex flex-wrap max-w-sm gap-1 bg-base-200 p-1 rounded-md">
             <template v-for="(crop, cropType) of processedYields.totalResult.crops" :key="cropType">
@@ -698,6 +701,16 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
             </label>
             <p class="text-xs max-w-xs">
               Accounts for the cost of re-planting
+            </p>
+          </div>
+          <div class="flex flex-col  w-full bg-base-200 p-2 rounded-md gap-1">
+            <label class="flex gap-2 items-center">
+              <p class="opacity-50">Include Fertiliser Costs</p>
+              <input class="toggle" type="checkbox" disabled>
+            </label>
+            <p class="text-xs max-w-xs opacity-70">
+              <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
+              Not yet supported
             </p>
           </div>
         </div>
