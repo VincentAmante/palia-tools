@@ -48,7 +48,7 @@ const bonus = computed(() => {
     case Bonus.QualityIncrease:
       return {
         icon: 'star',
-        colour: 'text-yellow-500',
+        colour: 'text-yellow-600',
       }
     case Bonus.HarvestIncrease:
       return {

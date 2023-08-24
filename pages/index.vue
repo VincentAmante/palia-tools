@@ -532,7 +532,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                   class="join-item bg-white bg-opacity-60 flex items-center justify-center px-2 py-1 w-full max-w-lg"
                 >
               </div>
-              <label class="flex gap-2 py-2 text-xs items-center">
+              <label class="flex gap-2 py-2 text-xs items-center font-semibold">
                 <input v-model="useMarkdown" type="checkbox" class="toggle toggle-sm">
                 <div class="join-item">Mask link with Markdown</div>
               </label>
