@@ -17,7 +17,7 @@ interface ProduceInfoOptions {
   growthTime: number
   isReharvestable?: boolean
   reharvestCooldown?: number
-  reharvestLimit?: number // Amount of times the crop can be reharvested
+  reharvestLimit?: number
 }
 
 interface GoldValues {
@@ -94,9 +94,6 @@ class Crop {
       this._produceInfo = produceInfo as ProduceInfo
     }
 
-    if (!goldValues.hasPreserve) {
-      // console.log(`${this._type} does not have preserve`)
-    }
     // if goldValues type is GoldValuesOptions, then we need to convert it to GoldValues
     if ((goldValues as GoldValuesOptions).crop) {
       const goldValuesOptions = goldValues as GoldValuesOptions
@@ -209,7 +206,6 @@ class Crop {
         ? processCount * goldValues.seedStar
         : processCount * goldValues.seed
       remainder = cropsNotConverted
-      // console.log(`${this._type} goldValue: `, goldValue)
     }
     else if (type === 'preserve') {
       // This whole section is written in preperation for the idea that more than 1 crop could be used to make a preserve

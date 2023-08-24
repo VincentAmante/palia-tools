@@ -1,4 +1,5 @@
 import type CropType from '../enums/crops'
+import type { FertiliserType } from '../imports'
 import type Bonus from '../enums/bonus'
 
 interface PlotStat {
@@ -22,6 +23,14 @@ interface PlotStat {
     [Bonus.WaterRetain]: number
     [Bonus.QualityIncrease]: number
     [Bonus.SpeedIncrease]: number
+  }
+  fertiliserCount: {
+    [FertiliserType.None]: number
+    [FertiliserType.QualityUp]: number
+    [FertiliserType.HarvestBoost]: number
+    [FertiliserType.WeedBlock]: number
+    [FertiliserType.SpeedyGro]: number
+    [FertiliserType.HydratePro]: number
   }
 }
 

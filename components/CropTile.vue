@@ -68,7 +68,6 @@ const bonusBgColor = computed(() => {
   if (!(props.tile?.bonuses.includes(props.bonusHovered as Bonus)))
     return ''
 
-  // For now it's white, but I might change it to a more visible colour
   return 'opacity-70 bg-white'
 })
 </script>
@@ -91,7 +90,7 @@ const bonusBgColor = computed(() => {
         {{ code as string || ' ' }}
       </div>
     </div>
-    <ul class="absolute top-0 left-0 m-0 text-[10px] lg:text-[0.65rem] py-[0.5px] flex w-full gap-[2px] px-1">
+    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.6rem] py-[0.5px] flex w-full gap-[0.8px] px-[2px] md:px-[1.8px] opacity-90">
       <li v-show="bonuses?.includes(Bonus.QualityIncrease)">
         <font-awesome-icon class="text-yellow-200" :icon="['fas', 'star']" />
       </li>
@@ -105,9 +104,17 @@ const bonusBgColor = computed(() => {
         <font-awesome-icon class=" text-rose-500 " :icon="['fas', 'shield']" />
       </li>
       <li v-show="bonuses?.includes(Bonus.SpeedIncrease)">
-        <font-awesome-icon class="text-orange-500" :icon="['fas', 'forward-fast']" />
+        <font-awesome-icon class="text-orange-600" :icon="['fas', 'forward-fast']" />
       </li>
     </ul>
+    <div class="absolute bottom-0 right-0 p-[2px]">
+      <nuxt-img
+        v-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0"
+        format="webp"
+        draggable="false" class="select-none max-w-[18px]"
+        :src="tile?.fertiliser?.image"
+      />
+    </div>
     <div
       class=" transition-all w-full absolute h-full -z-20"
       :class="bonusBgColor"

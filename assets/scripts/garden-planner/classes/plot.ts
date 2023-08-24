@@ -1,7 +1,15 @@
+/**
+ * ! NOTE
+ * ! This file is due for a revision when the plot-system re-write is done
+ * ! This change will affect the way crops and fertilisers are placed on plots
+ * ! Also yes, this file needs a LOT of revision
+ */
+
 import uniqid from 'uniqid'
-import Direction from '../enums/direction'
 import type Bonus from '../enums/bonus'
 import CropType from '../enums/crops'
+import Direction from '../enums/direction'
+import type Fertiliser from './fertiliser'
 import type Crop from './crop'
 import Tile from './tile'
 
@@ -63,6 +71,13 @@ class Plot {
     return this._tiles[x][y]
   }
 
+  /**
+   * Removes a crop from a tile and recursively removes adjacent tiles with the same id
+   *
+   * @param row - The row of the tile to remove the crop from
+   * @param col - The column of the tile to remove the crop from
+   * @returns
+   */
   removeCropFromTile(row: number, col: number): void {
     // this is to prevent the plot from being interacted with when inactive
     if (!this._isActive)
@@ -100,12 +115,20 @@ class Plot {
     this.removeCropFromTile(row, col)
     this._tiles[row][col].crop = crop
     this._tiles[row][col].id = id
+
+    // This is because of how fertilisers are typically added to blueberries and apple trees
+    // I forgot to check how this behaviour works in-game
+    if (crop.type === CropType.Apple || crop.type === CropType.Blueberry)
+      this.removeFertiliserFromTile(row, col)
   }
 
   private placeCropOnPlot(plot: Plot, row: number, col: number, crop: Crop, id: string = uniqid()): void {
     plot.removeCropFromTile(row, col)
     plot.tiles[row][col].crop = crop
     plot.tiles[row][col].id = id
+
+    if (crop.type === CropType.Apple || crop.type === CropType.Blueberry)
+      plot.removeFertiliserFromTile(row, col)
   }
 
   private placeCropOnTiles(startRow: number, startCol: number, endRow: number, endCol: number, crop: Crop, id: string = uniqid()): void {
@@ -133,42 +156,30 @@ class Plot {
     }
 
     if ((crop.type as CropType) === CropType.Apple) {
-      // console.log('placing apple')
-      // console.log('row: ', row, ' column: ', column)
-      // Assigns them the same id so that they can be removed together
       const id: string = uniqid()
 
       if (row === 0 && column === 0) {
         this.placeCropOnTiles(row, column, TILE_ROWS, TILE_COLS, crop, id)
       }
       else {
-        // console.log('placing apple on non-northwest plot')
-
-        // With this row, we only need to check for an adjacent to the west
         if (
           row === 0
           && column > 0
           && this._adjacentPlots.east
           && this._adjacentPlots.east.isActive
         ) {
-          // console.log('placing apple on east plot')
           this.placeCropOnTiles(row, column, TILE_ROWS, TILE_COLS, crop, id)
           this.placeCropsOnPlot(this._adjacentPlots.east, 0, 0, TILE_ROWS, column, crop, id)
         }
-
-        // With this column, we only need to check for an adjacent to the south
         else if (
           row > 0
           && column === 0
           && this._adjacentPlots.south
           && this._adjacentPlots.south.isActive
         ) {
-          // console.log('placing apple on south plot')
           this.placeCropOnTiles(row, column, TILE_ROWS, TILE_COLS, crop, id)
           this.placeCropsOnPlot(this._adjacentPlots.south, 0, 0, row, TILE_COLS, crop, id)
         }
-
-        // This set up means that the plot southeast of the current plot will be intersected by the apple tree
         else if (
           row > 0
           && column > 0
@@ -181,29 +192,24 @@ class Plot {
           && this._adjacentPlots.east._adjacentPlots.south
           && this._adjacentPlots.east._adjacentPlots.south.isActive
         ) {
-          // console.log('placing apple on southeast plot')
           this.placeCropOnTiles(row, column, TILE_ROWS, TILE_COLS, crop, id)
           this.placeCropsOnPlot(this._adjacentPlots.east, row, 0, TILE_ROWS, column, crop, id)
           this.placeCropsOnPlot(this._adjacentPlots.south, 0, column, row, TILE_COLS, crop, id)
           this.placeCropsOnPlot(this._adjacentPlots.south._adjacentPlots.east, 0, 0, row, column, crop, id)
         }
-        // Invalid placement
         else {
-          console.error('invalid placement')
-          return
+          throw new Error('Invalid placement')
         }
       }
     }
 
     else if ((crop.type as CropType) === CropType.Blueberry) {
-      // Assigns them the same id so that they can be removed together
       const id: string = uniqid()
 
       if (row < TILE_ROWS - 1 && column < TILE_COLS - 1) {
         this.placeCropOnTiles(row, column, row + 2, column + 2, crop, id)
       }
 
-      // Berry bush will be placed on this plot and on the east plot
       else if (
         row < TILE_ROWS - 1
         && column === TILE_COLS - 1
@@ -213,8 +219,6 @@ class Plot {
         this.placeCropOnTiles(row, column, row + 2, TILE_COLS, crop, id)
         this.placeCropsOnPlot(this._adjacentPlots.east, row, 0, row + 2, 1, crop, id)
       }
-
-      // Berry bush will be placed on this plot and on the south plot
       else if (
         row === TILE_ROWS - 1
         && column < TILE_COLS - 1
@@ -224,8 +228,6 @@ class Plot {
         this.placeCropOnTiles(row, column, TILE_ROWS, column + 2, crop, id)
         this.placeCropsOnPlot(this._adjacentPlots.south, 0, column, 1, column + 2, crop, id)
       }
-
-      // Berry bush will be placed on this plot, on the east plot, south plot, and on the southeast plot
       else if (
         row === TILE_ROWS - 1
         && column === TILE_COLS - 1
@@ -259,8 +261,6 @@ class Plot {
 
     this.calculateBonusesReceived()
 
-    // Recalculate bonuses for adjacent plots
-    // This is done so that the bonuses of adjacent plots are updated when a crop is planted
     // TODO: Improve this so that it doesn't have to recalculate all tiles of adjacent plots
     if (this._adjacentPlots.north)
       this._adjacentPlots.north.calculateBonusesReceived()
@@ -285,6 +285,96 @@ class Plot {
 
   get isActive(): boolean {
     return this._isActive
+  }
+
+  addFertiliserToTile(row: number, column: number, fertiliser: Fertiliser | null, {
+    removeSameId = true,
+    fertiliserForcedId = '',
+  }): void {
+    if (!this._isActive)
+      return
+
+    if (fertiliser === null) {
+      this.removeFertiliserFromTile(row, column, removeSameId)
+      return
+    }
+
+    // Prevents fertilisers with the same id from being added to the same tile
+    // This check is needed because the code for adding fertilisers to adjacent tiles is recursive
+    if (this._tiles[row][column].fertiliser !== null && this._tiles[row][column].fertiliser?.id === fertiliser.id)
+      return
+
+    // forced id is used when adding fertilisers to blueberries and apple trees
+    const fertiliserId = (fertiliserForcedId === '') ? uniqid() : fertiliserForcedId
+
+    fertiliser.id = fertiliserId
+    this._tiles[row][column].fertiliser = fertiliser
+
+    if (this._tiles[row][column].crop?.type === CropType.Apple || this._tiles[row][column].crop?.type === CropType.Blueberry) {
+      const tileId = this._tiles[row][column].id
+
+      // look for adjacent tiles with the same id and recursively add fertiliser to them
+      const matchingTiles: Tile[] = this._tiles.flat().filter((tile: Tile) => tile.id === tileId)
+      matchingTiles.forEach((tile: Tile) => {
+        const tileX: number = this._tiles.findIndex((row: Tile[]) => row.includes(tile))
+        const tileY: number = this._tiles[tileX].findIndex((t: Tile) => t === tile)
+        this._tiles[tileX][tileY].fertiliser = fertiliser
+      })
+
+      // look for adjacent tiles with the same id in adjacent plots and recursively add fertiliser to them
+      for (const adjacentPlot of Object.values(this._adjacentPlots)) {
+        if (adjacentPlot === null)
+          continue
+        const matchingTiles: Tile[] = adjacentPlot.tiles.flat().filter((tile: Tile) => tile.id === tileId)
+        matchingTiles.forEach((tile: Tile) => {
+          const tileX: number = adjacentPlot.tiles.findIndex((row: Tile[]) => row.includes(tile))
+          const tileY: number = adjacentPlot.tiles[tileX].findIndex((t: Tile) => t === tile)
+          adjacentPlot.addFertiliserToTile(tileX, tileY, fertiliser, {
+            removeSameId,
+            fertiliserForcedId: fertiliserId,
+          })
+        })
+      }
+    }
+  }
+
+  removeFertiliserFromTile(row: number, column: number, removeSameId: boolean = true): void {
+    if (!this._isActive)
+      return
+
+    const tileHadFertiliser = (this._tiles[row][column].fertiliser !== null)
+    if (!tileHadFertiliser)
+      return
+    this._tiles[row][column].fertiliser = null
+
+    // Code to remove fertilisers added to blueberries and apple trees
+    // ? Is this even how it should work? I haven't verified it
+    if (this._tiles[row][column].crop?.type === CropType.Apple || this._tiles[row][column].crop?.type === CropType.Blueberry) {
+      if (!removeSameId)
+        return
+
+      // remove fertilisers with the same id from the same plot
+      const fertiliserId = this._tiles[row][column].id
+      const matchingTiles: Tile[] = this._tiles.flat().filter((tile: Tile) => tile.id === fertiliserId)
+      matchingTiles.forEach((tile: Tile) => {
+        const tileX: number = this._tiles.findIndex((row: Tile[]) => row.includes(tile))
+        const tileY: number = this._tiles[tileX].findIndex((t: Tile) => t === tile)
+        this._tiles[tileX][tileY].fertiliser = null
+      })
+
+      // look for adjacent tiles with the same id in adjacent plots and recursively remove them
+      for (const adjacentPlot of Object.values(this._adjacentPlots)) {
+        if (adjacentPlot === null)
+          continue
+        const matchingTiles: Tile[] = adjacentPlot.tiles.flat().filter((tile: Tile) => tile.id === fertiliserId)
+
+        matchingTiles.forEach((tile: Tile) => {
+          const tileX: number = adjacentPlot.tiles.findIndex((row: Tile[]) => row.includes(tile))
+          const tileY: number = adjacentPlot.tiles[tileX].findIndex((t: Tile) => t === tile)
+          adjacentPlot.removeFertiliserFromTile(tileX, tileY, removeSameId)
+        })
+      }
+    }
   }
 
   // Sets the plot adjacent to the given side
@@ -381,6 +471,10 @@ class Plot {
             continue
           bonuses.push(adjacentTile.crop.cropBonus as Bonus)
         }
+
+        if (tile.fertiliser !== null)
+          bonuses.push(tile.fertiliser.effect)
+
         tile.bonusesReceived = bonuses
       }
     }

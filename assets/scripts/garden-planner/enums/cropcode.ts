@@ -1,14 +1,14 @@
 enum CropCode {
-  None = 'Na',
-  Tomato = 'To',
-  Potato = 'Po',
-  Rice = 'Ri',
-  Wheat = 'Wh',
-  Carrot = 'Ca',
-  Onion = 'On',
+  None = 'N',
+  Tomato = 'T',
+  Potato = 'P',
+  Rice = 'R',
+  Wheat = 'W',
+  Carrot = 'C',
+  Onion = 'O',
   Cotton = 'Co',
-  Blueberry = 'Bl',
-  Apple = 'Ap',
+  Blueberry = 'B',
+  Apple = 'A',
 }
 
 export default CropCode

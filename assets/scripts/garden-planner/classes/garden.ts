@@ -3,7 +3,11 @@ import Bonus from '../enums/bonus'
 import CropType from '../enums/crops'
 import CropCode from '../enums/cropcode'
 import type { PlotStat } from '../types/plotStat'
-import crops, { getCodeFromCrop, getCropFromCode } from '../croplist'
+import crops, { getCodeFromCrop, getCropFromCode } from '../crop-list'
+import { parseSave } from '../save-handler'
+import FertiliserType from '../enums/fertiliser'
+import FertiliserCode from '../enums/fertilisercode'
+import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliser-list'
 
 import Plot from './plot'
 import Tile from './tile'
@@ -43,7 +47,7 @@ interface HarvestInfo {
 
 class Garden {
   private _layout: Plot[][] = []
-  private _version: string = '0.1'
+  private _version: string = '0.2'
 
   constructor() {
     const defaultRows = 3
@@ -68,80 +72,6 @@ class Garden {
     this._layout = layout
   }
 
-  // TODO: Make this version agnostic
-  validateLayout(layout: string): {
-    isValid: boolean
-    message: string
-  } {
-    const [version, dimensionInfo, cropsInfo] = layout.split('_')
-
-    // validate version
-    // remove v from version (v0.1 -> 0.1)
-    const saveVersionNumber = version.substring(1)
-    const supportedVersions = ['0.1']
-    if (!supportedVersions.includes(saveVersionNumber)) {
-      return {
-        isValid: false,
-        message: 'Unsupported version',
-      }
-    }
-
-    // Validate dimensions, all rows must have the same length
-    const dimensions = dimensionInfo.split('-').splice(1)
-    const rowSize = dimensions.length
-    const colSize = dimensions[0].length
-
-    // Dimension info must be 0 or 1
-    for (let i = 0; i < rowSize; i++) {
-      for (let j = 0; j < colSize; j++) {
-        if (dimensions[i][j] !== '0' && dimensions[i][j] !== '1') {
-          return {
-            isValid: false,
-            message: 'INVALID LAYOUT CODE: Invalid dimension info, 0 = inactive, 1 = active',
-          }
-        }
-      }
-    }
-
-    // Count the number of active plots
-    const activePlots = dimensions.flat().filter(dimension => dimension === '1').length
-
-    if (activePlots > 9) {
-      return {
-        isValid: false,
-        message: 'INVALID LAYOUT CODE: Too many active plots, maximum is 9',
-      }
-    }
-
-    // Validate crops
-    const crops = cropsInfo.split('-').splice(1)
-    for (const cropInfo of crops) {
-      const cropCodes = cropInfo.split(/(?=[A-Z])/)
-
-      const tilesPerPlot = 9
-      if (cropCodes.length !== tilesPerPlot) {
-        return {
-          isValid: false,
-          message: `INVALID LAYOUT CODE: Invalid crop info, expected ${tilesPerPlot} crop codes, got ${cropCodes.length}`,
-        }
-      }
-
-      for (const cropCode of cropCodes) {
-        if (!Object.values(CropCode).includes(cropCode as CropCode)) {
-          return {
-            isValid: false,
-            message: 'INVALID LAYOUT CODE: Invalid crop code found',
-          }
-        }
-      }
-    }
-
-    return {
-      isValid: true,
-      message: '',
-    }
-  }
-
   clearAllPlots(): void {
     for (const plot of this._layout.flat()) {
       plot.tiles = [
@@ -153,10 +83,7 @@ class Garden {
   }
 
   loadLayout(layout: string) {
-    const [, dimensionInfo, cropsInfo] = layout.split('_')
-
-    if (!this.validateLayout(layout).isValid)
-      throw new Error('Invalid layout code')
+    const { version, dimensionInfo, cropInfo: cropsInfo } = parseSave(layout)
 
     this._layout = []
     const dimensions = dimensionInfo.split('-').splice(1)
@@ -192,19 +119,26 @@ class Garden {
     let cropIndex = 0
     for (const plot of this._layout.flat()) {
       if (plot.isActive) {
-        const cropCodes = crops[cropIndex].split(/(?=[A-Z])/)
+        const regex = /[A-Z](?:'[A-Z]|[^A-Z])*/g
+        const cropCodes = crops[cropIndex].match(regex)
+        if (cropCodes == null)
+          throw new Error('Invalid crop code')
 
         for (let i = 0; i < plot.tiles.length; i++) {
           for (let j = 0; j < plot.tiles[i].length; j++) {
-            const cropCode = cropCodes.shift() as CropCode
-            const crop = getCropFromCode(cropCode)
+            let [cropCode, fertiliserCode] = cropCodes.shift()?.split('\'') as [CropCode, FertiliserCode]
+            fertiliserCode = fertiliserCode ?? null
 
-            if (crop == null || crop.type === CropType.None)
+            const crop = getCropFromCode(cropCode)
+            const fertiliser = getFertiliserFromCode(fertiliserCode)
+            if ((crop == null || crop.type === CropType.None) && (fertiliser == null || fertiliser.type === FertiliserType.None))
               continue
 
             // This is to prevent overwriting existing crops, such as placed apple trees or blueberry bushes
-            if (plot.getTile(i, j).crop == null && plot.getTile(i, j).crop?.type !== CropType.None)
+            if (plot.getTile(i, j).crop == null && plot.getTile(i, j).crop?.type !== CropType.None) {
               plot.setTile(i, j, crop)
+              plot.addFertiliserToTile(i, j, fertiliser, {})
+            }
           }
         }
         cropIndex++
@@ -234,6 +168,11 @@ class Garden {
             layoutCode += (getCodeFromCrop(tile.crop) ?? CropCode.None) as CropCode
           else
             layoutCode += CropCode.None
+
+          if (tile.fertiliser)
+            layoutCode += `'${(getCodeFromFertiliser(tile.fertiliser) ?? FertiliserCode.None) as FertiliserCode}`
+          else
+            layoutCode += `'${FertiliserCode.None}`
         }
 
         if (plot !== this._layout.flat().slice(-1)[0])
@@ -1169,11 +1108,28 @@ class Garden {
 
   calculateStats() {
     const individualCrops = new Map<string, Tile>()
+
+    const fertiliserCount: {
+      [key in FertiliserType]: number
+    } = {
+      [FertiliserType.None]: 0,
+      [FertiliserType.QualityUp]: 0,
+      [FertiliserType.HarvestBoost]: 0,
+      [FertiliserType.WeedBlock]: 0,
+      [FertiliserType.SpeedyGro]: 0,
+      [FertiliserType.HydratePro]: 0,
+    }
+
     for (const plot of this._layout.flat()) {
       if (!plot.isActive)
         continue
 
       for (const tile of plot.tiles.flat()) {
+        // Calculated early because fertilisers can be placed on empty crops
+        // and also is not affected by crop type (e.g: trees consume 4 fertilisers)
+        if (tile.fertiliser && tile.fertiliser.type !== FertiliserType.None)
+          fertiliserCount[tile.fertiliser.type]++
+
         if (tile.crop && tile.crop.type !== CropType.None)
           individualCrops.set(tile.id, tile)
       }
@@ -1221,6 +1177,7 @@ class Garden {
       cropCount: individualCrops.size,
       cropTypeCount,
       cropBonusCoverage: bonusCoverage,
+      fertiliserCount,
     } as PlotStat
   }
 }
