@@ -242,7 +242,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             <p :class="(isTakingScreenshot) ? 'hidden' : ''">
               Pick a crop or fertiliser to place on the garden.
             </p>
-            <p class="hidden md:block text-sm opacity-50 max-w-md" :class="(isTakingScreenshot) ? 'hidden' : ''">
+            <p class="text-sm opacity-50 max-w-md" :class="(isTakingScreenshot) ? 'hidden' : 'hidden md:block '">
               Tip: Right clicking will remove a crop/fertiliser based on what you currently have selected.
               Drag to do it to multiple tiles at once.
             </p>
@@ -548,14 +548,12 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
               </h4>
               <p class="text-sm">
                 Converts your layout into an easily-shareable image and downloads it.
+                Good for those whose screens cannot fit the entire garden.
               </p>
               <button class="btn btn-accent text-white my-2" @click="saveAsImage()">
                 Download Image
               </button>
               <div class="flex flex-col gap-2">
-                <p class="text-sm">
-                  The resulting image will always be a landscape image that shows the entire garden.
-                </p>
                 <p class="text-xs max-w-lg">
                   <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-warning" />
                   Page will slow down based on garden size while capturing the image
