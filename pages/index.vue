@@ -7,7 +7,7 @@ import LayoutCreator from '@/components/LayoutCreator.vue'
 import type { Plot, PlotStat, Tile } from '@/assets/scripts/garden-planner/imports'
 import { Bonus, Crop, CropType, Fertiliser, FertiliserType, Garden, crops, fertilisers, getCropFromType } from '@/assets/scripts/garden-planner/imports'
 
-const selectedItem = ref<Crop | Fertiliser | null | 'crop-erase' | 'fertiliser-erase'>(fertilisers[FertiliserType.HydratePro] as Fertiliser)
+const selectedItem = ref<Crop | Fertiliser | null | 'crop-erase' | 'fertiliser-erase'>('crop-erase')
 const garden = ref(new Garden())
 const gardenTiles = ref(garden.value.plots)
 
