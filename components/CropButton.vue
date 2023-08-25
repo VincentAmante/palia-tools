@@ -19,7 +19,7 @@ const props = defineProps({
   },
 })
 
-const { val: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
+const { get: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
 const tooltip = computed(() => {
   switch (props.crop.type) {
     case CropType.Tomato:

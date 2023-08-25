@@ -9,8 +9,10 @@ export const useTakingScreenshot = defineStore('isTakingScreenshot', () => {
     val.value = newVal
   }
 
+  const get = computed(() => val.value)
+
   return {
-    val,
     set,
+    get,
   }
 })
