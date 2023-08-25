@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
 import { Bonus, Fertiliser, FertiliserType } from '@/assets/scripts/garden-planner/imports'
 
 const props = defineProps({
@@ -15,11 +17,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  inPictureMode: {
-    type: Boolean,
-    default: false,
-  },
 })
+
+const { val: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
 
 const tooltip = computed(() => {
   switch (props.fertiliser.type) {
@@ -77,9 +77,9 @@ const bonus = computed(() => {
 <template>
   <div class="md:tooltip md:tooltip-right tooltip-accent" :data-tip="tooltip">
     <button
-      v-if="!(fertiliser.type === FertiliserType.None && inPictureMode)"
+      v-if="!(fertiliser.type === FertiliserType.None && isTakingScreenshot)"
       class="relative bg-base-200 rounded-lg btn-lg w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
-      :class="(isSelected && !inPictureMode) ? 'bg-slate-100' : ''"
+      :class="(isSelected && !isTakingScreenshot) ? 'bg-slate-100' : ''"
     >
       <font-awesome-icon
         v-if="bonus.icon !== ''"
