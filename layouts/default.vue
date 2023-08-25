@@ -1,10 +1,6 @@
 <script setup lang="ts">
 useHead({
   title: 'Palia Garden Planner',
-  meta: [
-    {
-    },
-  ],
 })
 </script>
 

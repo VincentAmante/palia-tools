@@ -1,63 +1,46 @@
-# Nuxt 3 Minimal Starter
+# Palia Garden Planner / Palia Tools
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A fan-made Garden Planner for the game [Palia](https://palia.com).
+Displays bonus coverage based on crops and fertilisers, and approximates the harvest value.
+Made on Nuxt and Vue, hosted on Vercel.
 
-## Setup
+[Link to Website](https://palia-garden-planner.vercel.app)
 
-Make sure to install the dependencies:
+## Why is this called Palia Tools?
+
+There's current plans to add other tools once the planner is considered feature-complete, with everything on the Road Map being ticked off.
+What these tools are will depend on the current situation of community-made tools by the time the Garden Planner is at version 1.0.
+
+## Roadmap
+
+Plans for the Planner are found here: [Roadmap Link](https://palia-garden-planner.vercel.app/roadmap)
+
+## Contributing Guidelines
+
+## Project Setup
+
+Made with the Nuxt minimal starter. Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+
+### Installation
 
 ```bash
 # npm
 npm install
-
 # pnpm
 pnpm install
-
 # yarn
 yarn install
 ```
 
-## Development Server
+### Development Server
 
 Start the development server on `http://localhost:3000`:
 
 ```bash
 # npm
 npm run dev
-
 # pnpm
 pnpm run dev
-
 # yarn
 yarn dev
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
