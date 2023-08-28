@@ -6,13 +6,37 @@
         Return
       </p>
     </NuxtLink>
+    <div class="card max-w-xl bg-base-300">
+      <div class="card-body">
+        <h2 class="card-title">
+          <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="" />
+          Notice
+        </h2>
+        <div class="flex flex-col gap-1">
+          <p>
+            Open-Sourcing of the project may get delayed or subject to change.
+            The initial plan is still sometime before the end of August,
+            but more pressing matters may delay this.
+          </p>
+          <p>
+            I'm currently in the process of requesting clarification from the Palia Team
+            regarding what the Garden Planner is allowed to do before its code can be released to the public.
+          </p>
+
+          <p class="py-4 font-bold">
+            I sincerely apologise for the delay. I'll update this notice as soon as the situation changes.
+            If the planner is approved as-is, then the source code will be released immediately.
+          </p>
+        </div>
+      </div>
+    </div>
     <section class="pb-2">
       <div class="py-4">
         <h1 class="text-2xl font-bold md:text-3xl">
           Garden Planner Roadmap
         </h1>
         <p class="text-xs md:text-sm">
-          Last Updated: August 22, 2023
+          Last Updated: August 28, 2023
         </p>
       </div>
       <div class="flex flex-col gap-2 text-justify text-sm max-w-3xl md:text-base leading-10">
@@ -39,13 +63,15 @@
 
       <div class="collapse collapse-arrow bg-base-200">
         <input type="checkbox">
-        <div class="collapse-title text-xl">
-          Open Sourcing
+        <div class="collapse-title text-xl flex items-center gap-1">
+          <p class="line-through">
+            Open Sourcing
+          </p>(See Notice)
         </div>
         <div class="collapse-content flex flex-col gap-2">
           <div class="py-2">
             <p class="text-sm italic">
-              ETA: End of Week - Before end of August
+              ETA: Before end of August - ???
             </p>
           </div>
           <p>
@@ -55,8 +81,8 @@
             and anyone will be free to modify or even make variations of the project.
           </p>
           <p>
-            Right now it's delayed because this will be my first open-source project.
-            I want to clean things up a bit and research on how this works before I make it public.
+            It's delayed because this would be my first open-source project.
+            I'm currently making sure all things are good to go before I release it the public.
           </p>
         </div>
       </div>
@@ -89,13 +115,13 @@
 
       <div class="collapse collapse-arrow bg-base-200">
         <input type="checkbox">
-        <div class="collapse-title text-xl">
+        <div class="collapse-title text-xl line-through">
           Fertilisers & v0.2 Codes
         </div>
         <div class="collapse-content flex flex-col gap-2">
           <div class="py-2">
-            <p class="text-sm italic">
-              ETA: As soon as possible
+            <p class="text-sm italic font-bold">
+              ETA: Already arrived!
             </p>
           </div>
           <p>
