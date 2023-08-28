@@ -16,7 +16,9 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@pinia/nuxt": "^0.4.11",
     "dom-to-image-more": "^3.1.6",
+    "pinia": "^2.1.6",
     "uniqid": "^5.4.0"
   },
   "devDependencies": {
@@ -37,5 +39,8 @@
     "postcss": "^8.4.28",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.1.6"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }

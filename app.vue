@@ -17,7 +17,6 @@ useServerSeoMeta({
 })
 
 // For Google Search Console
-
 useHead({
   meta: [
     {

@@ -14,6 +14,7 @@ export default defineNuxtConfig({
   modules: [
     '@vueuse/nuxt',
     '@nuxt/image',
+    '@pinia/nuxt',
   ],
   build: {
     transpile: [

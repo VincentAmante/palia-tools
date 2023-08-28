@@ -3,6 +3,7 @@ import { useClipboard, useElementBounding, useMousePressed, useUrlSearchParams }
 import domtoimage from 'dom-to-image-more'
 import { computed, onMounted, ref } from 'vue'
 import uniqid from 'uniqid'
+import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
 import LayoutCreator from '@/components/LayoutCreator.vue'
 import type { Plot, PlotStat, Tile } from '@/assets/scripts/garden-planner/imports'
 import { Bonus, Crop, CropType, Fertiliser, FertiliserType, Garden, crops, fertilisers, getCropFromType } from '@/assets/scripts/garden-planner/imports'
@@ -140,9 +141,9 @@ const plotsDisplay = ref(null as unknown as HTMLElement)
 const { width: plotsDisplayWidth } = useElementBounding(plotsDisplay)
 const { width: statDisplayWidth } = useElementBounding(statDisplay)
 
-const isTakingScreenshot = ref(false)
+const isTakingScreenshot = useTakingScreenshot()
 function saveAsImage() {
-  isTakingScreenshot.value = true
+  isTakingScreenshot.set(true)
   let displayWidth = plotsDisplayWidth.value + 200
   if (!gardenTilesAreWide.value)
     displayWidth += statDisplayWidth.value
@@ -158,7 +159,7 @@ function saveAsImage() {
     const url = window.URL.createObjectURL(blob)
     downloadURI(url, `PaliaGardenPlan-${uniqid()}.png`)
     display.value.style.width = ''
-    isTakingScreenshot.value = false
+    isTakingScreenshot.set(false)
   })
 }
 
@@ -216,11 +217,11 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
     <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
     <section
       id="display" ref="display" class="bg-base-100 flex flex-col md:px-16 py-4 font-['Roboto_Slab']"
-      :class="(isTakingScreenshot) ? 'px-16' : ''"
+      :class="(isTakingScreenshot.get) ? 'px-16' : ''"
     >
       <div
         id="watermark" class="px-2 md:px-0 text-left gap-2 items-start w-fit leadiing-1"
-        :class="(isTakingScreenshot) ? 'flex' : 'hidden'"
+        :class="(isTakingScreenshot.get) ? 'flex' : 'hidden'"
       >
         <nuxt-img format="webp" src="/logo.webp" class="max-w-[3rem]" />
         <div class="text-left pb-4 flex flex-col">
@@ -239,10 +240,10 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             <h2 class="text-xl font-bold">
               Select
             </h2>
-            <p :class="(isTakingScreenshot) ? 'hidden' : ''">
+            <p :class="(isTakingScreenshot.get) ? 'hidden' : ''">
               Pick a crop or fertiliser to place on the garden.
             </p>
-            <p class="text-sm opacity-50 max-w-md" :class="(isTakingScreenshot) ? 'hidden' : 'hidden md:block '">
+            <p class="text-sm opacity-50 max-w-md" :class="(isTakingScreenshot.get) ? 'hidden' : 'hidden md:block '">
               Tip: Right clicking will remove a crop/fertiliser based on what you currently have selected.
               Drag to do it to multiple tiles at once.
             </p>
@@ -259,13 +260,13 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                     v-if="(index && index !== CropType.None && index !== null)"
                     :crop="getCropFromType(index) as Crop"
                     :is-selected="(selectedItem instanceof Crop) && selectedItem !== null && index === selectedItem.type"
-                    :count="count" :in-picture-mode="isTakingScreenshot" @click="setCrop(index)"
+                    :count="count" @click="setCrop(index)"
                   />
                   <button
                     v-else
                     class="relative bg-base-200 rounded-lg md:btn-lg w-14 md:w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
-                    :class="(selectedItem === 'crop-erase' && !isTakingScreenshot) ? 'bg-slate-100' : (isTakingScreenshot) ? 'hidden' : ''"
-                    :in-picture-mode="isTakingScreenshot"
+                    :class="(selectedItem === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-slate-100' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                    :in-picture-mode="isTakingScreenshot.get"
                     @click="selectedItem = 'crop-erase'"
                   >
                     <font-awesome-icon
@@ -289,14 +290,13 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                       :is-selected="(selectedItem instanceof Fertiliser)
                         && selectedItem
                           !== null
-                        && index === selectedItem.type" :count="count" :in-picture-mode="isTakingScreenshot"
+                        && index === selectedItem.type" :count="count"
                       @click="selectedItem = fertilisers[index]"
                     />
                     <button
                       v-else
                       class="relative bg-base-200 rounded-lg md:btn-lg w-14 md:w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
-                      :class="(selectedItem === 'fertiliser-erase' && !isTakingScreenshot) ? 'bg-slate-100' : (isTakingScreenshot) ? 'hidden' : ''"
-                      :in-picture-mode="isTakingScreenshot"
+                      :class="(selectedItem === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-slate-100' : (isTakingScreenshot.get) ? 'hidden' : ''"
                       @click="selectedItem = 'fertiliser-erase'"
                     >
                       <font-awesome-icon
@@ -318,7 +318,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             Garden
           </h2>
           <button
-            class="btn btn-sm text-sm w-fit" :class="(isTakingScreenshot) ? 'hidden' : ''"
+            class="btn btn-sm text-sm w-fit" :class="(isTakingScreenshot.get) ? 'hidden' : ''"
             @click="openNewLayoutModal()"
           >
             <span>
@@ -327,7 +327,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             New Layout
           </button>
         </div>
-        <div class="md:hidden py-2 text-xs opacity-40" :class="(isTakingScreenshot) ? 'hidden' : ''">
+        <div class="md:hidden py-2 text-xs opacity-40" :class="(isTakingScreenshot.get) ? 'hidden' : ''">
           <h2 class="font-bold">
             Are you on a small screen?
           </h2>
@@ -335,9 +335,9 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
         </div>
       </div>
       <div class="flex flex-col" :class="(gardenTilesAreWide) ? '' : 'md:flex-row'">
-        <div :class="(gardenTilesAreWide && !isTakingScreenshot) ? 'overflow-x-auto py-2' : ''">
+        <div :class="(gardenTilesAreWide && !isTakingScreenshot.get) ? 'overflow-x-auto py-2' : ''">
           <div
-            class="rounded-xl md:w-fit p-2 bg-base-300" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
+            class="rounded-xl md:w-fit p-2 bg-base-300" :class="(isTakingScreenshot.get) ? 'w-fit' : 'w-full'"
             @contextmenu.prevent.self=""
           >
             <div ref="plotsDisplay" class="w-full overflow-auto lg:overflow-auto flex flex-col gap-3 p-3">
