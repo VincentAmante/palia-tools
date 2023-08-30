@@ -30,7 +30,7 @@ const crops = {
 
     // Conversion Info
     {
-      cropsPerSeed: 2,
+      cropsPerSeed: 3,
       seedsPerConversion: 2,
       cropsPerPreserve: 1,
     },
