@@ -530,11 +530,12 @@ class Garden {
 
             if (seedsRequired > 0) {
               const cropsConsumed
-                = Math.ceil((cropsPerSeed / seedsPerConversion) * seedsRequired)
-                + (Math.ceil((cropsPerSeed / seedsPerConversion) * seedsRequired) % cropsPerSeed)
+                = Math.ceil(((cropsPerSeed / seedsPerConversion) * seedsRequired)
+                + (((cropsPerSeed / seedsPerConversion) * seedsRequired) % cropsPerSeed),
+                )
               harvest.crops[cropType].star -= cropsConsumed
               seedsRemainder[cropType].star
-                += (cropsConsumed / cropsPerSeed) * seedsPerConversion - seedsRequired
+                += Math.floor((cropsConsumed / cropsPerSeed) * seedsPerConversion - seedsRequired)
             }
 
             seedsRemainder[cropType].star -= remainderSeedsUsed
@@ -553,7 +554,7 @@ class Garden {
               harvest.crops[cropType].base -= cropsConsumed
 
               seedsRemainder[cropType].base
-                += (cropsConsumed / cropsPerSeed) * seedsPerConversion - seedsRequired
+                += Math.floor((cropsConsumed / cropsPerSeed) * seedsPerConversion - seedsRequired)
             }
 
             seedsRemainder[cropType].base -= remainderSeedsUsed
