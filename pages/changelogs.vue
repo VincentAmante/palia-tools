@@ -16,6 +16,28 @@
       <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
         <input type="checkbox" checked>
         <h2 class="collapse-title text-xl font-bold">
+          August 30, 2023 (Hotfix)
+        </h2>
+        <div class="collapse-content flex flex-col gap-6 text-sm md:text-base  leading-6">
+          <div class="flex flex-col gap-2">
+            <h3 class="font-bold">
+              Changes Summary
+            </h3>
+            <ul class="list-disc list-inside">
+              <li>Adjusted crops consumed per seed for Tomatoes</li>
+              <li>
+                Fix to how crops consumed were being calculated that <span class="font-bold">shouldn't make anything different</span>
+                (was only a rounding error for tomato seeds)
+              </li>
+            </ul>
+
+            <p>This change was added hastily, so if any bugs occur please report it to me on Discord <span class="font-bold">(.aisen)</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
+        <input type="checkbox">
+        <h2 class="collapse-title text-xl font-bold">
           August 24, 2023
         </h2>
         <div class="collapse-content flex flex-col gap-6 text-sm md:text-base  leading-6">
