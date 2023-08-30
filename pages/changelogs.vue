@@ -27,7 +27,7 @@
               <li>Adjusted crops consumed per seed for Tomatoes to match the 0.167 patch changes</li>
               <li>
                 Fix to how crops consumed were being calculated that <span class="font-bold">shouldn't make anything different</span>
-                (was only a rounding error for tomato seeds)
+                (was only a rounding error for tomato seeds caused by the above change)
               </li>
             </ul>
 

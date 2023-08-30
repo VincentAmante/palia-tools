@@ -14,18 +14,15 @@
         </h2>
         <div class="flex flex-col gap-1">
           <p>
-            Open-Sourcing of the project may get delayed or subject to change.
-            The initial plan is still sometime before the end of August,
-            but more pressing matters may delay this.
+            Open-Sourcing of the project is delayed and may be subject to change.
+            The Palia Team has heard my request for clarification on what the Planner can and cannot do as a fan-tool
+            and is currently in the process of discussing it.
+            As it deals with permissions and licensing, I cannot make the project public until I get
+            the all-clear from them.
           </p>
-          <p>
-            I'm currently in the process of requesting clarification from the Palia Team
-            regarding what the Garden Planner is allowed to do before its code can be released to the public.
-          </p>
-
           <p class="py-4 font-bold">
             I sincerely apologise for the delay. I'll update this notice as soon as the situation changes.
-            If the planner is approved as-is, then the source code will be released immediately.
+            Once the planner is in a state approved for open-sourcing, I'll release the source code as soon as I can.
           </p>
         </div>
       </div>
