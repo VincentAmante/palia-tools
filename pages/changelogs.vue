@@ -16,6 +16,28 @@
       <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
         <input type="checkbox" checked>
         <h2 class="collapse-title text-xl font-bold">
+          September 2, 2023 (Hotfix)
+        </h2>
+        <div class="collapse-content flex flex-col gap-6 text-sm md:text-base  leading-6">
+          <div class="flex flex-col gap-2">
+            <h3 class="font-bold">
+              Changes Summary
+            </h3>
+            <ul class="list-disc list-inside">
+              <li>Fixed 2 bugs causing seed replants to not be calculated properly</li>
+            </ul>
+            <p>
+              This hotfix tackles a major bug that causes excess seeds to not be properly used in re-plants. It also fixes a bug where re-harvestable plants
+              would have incorrect re-plant days when calculated for days above its regular lifespan.
+            </p>
+            <p>The change should increase gold values by a variable amount and should now properly represent accurate replant deductions</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
+        <input type="checkbox">
+        <h2 class="collapse-title text-xl font-bold">
           August 30, 2023 (Hotfix)
         </h2>
         <div class="collapse-content flex flex-col gap-6 text-sm md:text-base  leading-6">
