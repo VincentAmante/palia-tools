@@ -525,38 +525,34 @@ class Garden {
           const { cropsPerSeed, seedsPerConversion } = crop.conversionInfo
 
           if (seeds.star > 0) {
-            const seedsRequired = (seeds.star -= seedsRemainder[cropType].star)
-            const remainderSeedsUsed = seeds.star - seedsRequired
+            const seedsToProduce = Math.max(0, (seeds.star - seedsRemainder[cropType].star))
 
-            if (seedsRequired > 0) {
-              const cropsConsumed
-                = Math.ceil((cropsPerSeed / seedsPerConversion) * seedsRequired)
-                + (Math.ceil((cropsPerSeed / seedsPerConversion) * seedsRequired) % cropsPerSeed)
+            if (seedsToProduce > 0) {
+              const cropsConsumed = Math.max(Math.ceil((cropsPerSeed / seedsPerConversion) * seedsToProduce), cropsPerSeed)
               harvest.crops[cropType].star -= cropsConsumed
+              const seedsProduced = Math.floor((cropsConsumed / cropsPerSeed) * seedsPerConversion)
               seedsRemainder[cropType].star
-                += (cropsConsumed / cropsPerSeed) * seedsPerConversion - seedsRequired
+                += Math.floor(seedsProduced - seedsToProduce)
             }
 
-            seedsRemainder[cropType].star -= remainderSeedsUsed
+            const remainderSeedsToBeUsed = seeds.star - seedsToProduce
+            seedsRemainder[cropType].star -= remainderSeedsToBeUsed
             harvest.seedsRemainder[cropType].star = seedsRemainder[cropType].star
           }
 
           if (seeds.base > 0) {
-            const seedsRequired = (seeds.base -= seedsRemainder[cropType].base)
-            const remainderSeedsUsed = seeds.base - seedsRequired
+            const seedsToProduce = Math.max(0, (seeds.base - seedsRemainder[cropType].base))
 
-            if (seedsRequired > 0) {
-              const cropsConsumed
-                = Math.ceil((cropsPerSeed / seedsPerConversion) * seedsRequired)
-                + (Math.ceil((cropsPerSeed / seedsPerConversion) * seedsRequired) % cropsPerSeed)
-
+            if (seedsToProduce > 0) {
+              const cropsConsumed = Math.max(Math.ceil((cropsPerSeed / seedsPerConversion) * seedsToProduce), cropsPerSeed)
               harvest.crops[cropType].base -= cropsConsumed
-
+              const seedsProduced = Math.floor((cropsConsumed / cropsPerSeed) * seedsPerConversion)
               seedsRemainder[cropType].base
-                += (cropsConsumed / cropsPerSeed) * seedsPerConversion - seedsRequired
+                += Math.floor(seedsProduced - seedsToProduce)
             }
 
-            seedsRemainder[cropType].base -= remainderSeedsUsed
+            const remainderSeedsToBeUsed = seeds.base - seedsToProduce
+            seedsRemainder[cropType].base -= remainderSeedsToBeUsed
             harvest.seedsRemainder[cropType].base = seedsRemainder[cropType].base
           }
         }

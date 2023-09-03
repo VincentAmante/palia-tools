@@ -149,32 +149,29 @@ class Crop {
   // Assumes player harvests on the day it is harvestable
   isHarvestableOnDay(day: number) {
     const { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
-    const totalGrowthTime = growthTime + reharvestCooldown * reharvestLimit
+    const totalGrowthTime = growthTime + (reharvestCooldown * reharvestLimit)
+    const onLastHarvest = (day % totalGrowthTime) === 0
+    const doReplant = onLastHarvest
 
-    // TODO: re-do this logic, it's a bit confusing
-    const cycleDay = day > totalGrowthTime ? day % totalGrowthTime : day
-    const isOnCycleDay = day > totalGrowthTime ? day % totalGrowthTime === 0 : true
+    console.log('onLastHarvest', onLastHarvest)
+
+    // // TODO: re-do this logic, it's a bit confusing
+    // const cycleDay = day > totalGrowthTime ? day % totalGrowthTime : day
+    // const isOnCycleDay = day > totalGrowthTime ? day % totalGrowthTime === 0 : true
 
     const harvestableDays = []
     harvestableDays.push(growthTime)
     for (let i = 0; i < reharvestLimit; i++)
       harvestableDays.push(growthTime + reharvestCooldown * (i + 1))
 
-    let doReplant = false
-
-    if (day >= totalGrowthTime)
-      doReplant = true
-
-    // cycleDay is 0 when it's the last day of the cycle, which means it's harvestable
-    if (isOnCycleDay && day > totalGrowthTime) {
+    if (onLastHarvest) {
       return {
         isHarvestable: true,
         doReplant,
       }
     }
-
     return {
-      isHarvestable: harvestableDays.includes(cycleDay),
+      isHarvestable: harvestableDays.includes(day % totalGrowthTime),
       doReplant,
     }
     // return harvestableDays.includes(cycleDay)
