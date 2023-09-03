@@ -813,14 +813,14 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
             Note
           </h5>
           <div class="py-2 flex flex-col gap-2">
-            <div class="text-sm flex flex-wrap break-words gap-1">
+            <div class="text-sm">
               This tool uses information on crops gathered
               from
               resources such as Arenvanya's
               <NuxtLink
                 href="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
                 target="_blank"
-                class="flex items-center gap-1 text-info"
+                class="items-center gap-1 text-info inline-block"
               >
                 <font-awesome-icon
                   :icon="['fas', 'arrow-up-right-from-square']"
@@ -831,7 +831,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
               and their
               <NuxtLink
                 to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
-                target="_blank" class="flex items-center gap-1 text-info"
+                target="_blank" class="inline-block gap-1 text-info"
               >
                 <font-awesome-icon
                   :icon="['fas', 'arrow-up-right-from-square']"
@@ -842,41 +842,37 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
               as well as a mix of observations and testings done by fellow Palians discussed on Discord
             </div>
             <p class="text-sm">
-              While values may not be exact, they should hopefully be enough to give a general idea of how
-              your layout will turn out
+              Despite this, the final values are still arbitrary and might not reflect the actual values
+              experienced in-game
             </p>
           </div>
           <h5 class="font-bold">
-            How it works (18/8/2023)
+            How it works (3/9/2023)
           </h5>
           <ol class="list-inside list-decimal text-sm">
             <li>
-              This approximator acquires how many of each crop you'll harvest on the day they become
-              harvestable
+              The planner first approximates how many of each crop will be harvested on each day and estimates their star/normal ratio
             </li>
-            <li>Quality Boosts and Harvest Boosts are accounted for</li>
+            <li>
+              Crops will be deducted for replanting if the option is enabled
+            </li>
+            <li>Quality Boosts and Harvest Boosts are factored in using arbitrary values</li>
             <li>
               <font-awesome-icon
                 class="text-warning text-sm px-[1px]"
                 :icon="['fas', 'triangle-exclamation']"
               /><span class="font-bold">Speed Growth is not yet
-                supported</span>, as I lack enough information
-              on how the bonus works
+                supported</span> as current information on its behaviour suggests it's either bugged or
+              lacks enough consistency to be approximated properly
             </li>
-            <li>Weed Chance is not accounted for, as I don't understand it either haha</li>
-            <li>It then calculates the value of each crop based on the options you've selected</li>
-            <li>
-              When a crop has been set to process via seed collector or preserve jar, it returns the remainder
-              which
-              <span class="font-bold">will then added to the next calculations</span>
-            </li>
+            <li>The approximates display the gold value of the crop when sold as itself/as itself when converted to seeds/preserves</li>
+            <li>When calculating seeds and preserves for selling/replanting, it uses any remainders for the next harvest</li>
             <li>
               <font-awesome-icon
                 class="text-warning text-sm px-[1px]"
                 :icon="['fas', 'triangle-exclamation']"
-              />When a
-              crop is set to process to a seed/preserve, it will
-              <span class="font-bold">not calculate the gold value of
+              />Crops when converted will
+              <span class="font-bold">not factor in the gold value of
                 any leftovers on the last calculated day</span>
             </li>
             <li>
@@ -892,24 +888,24 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
         </div>
         <div>
           <h5 class="font-bold">
-            Assumptions (18/8/2023)
+            Assumptions (3/9/2023)
           </h5>
           <ul class="list-inside list-disc text-sm">
-            <li>The player will harvest on the exact day it becomes harvestable</li>
-            <li>The crops will be watered or retains water every day of its cycle</li>
+            <li>Player will harvest on the exact day it becomes harvestable</li>
+            <li>Crops will be watered or retains water every day of its cycle</li>
             <li>
-              Star seeds have a base quality chance of <span class="font-bold">66% (Needs
-                re-verification)</span>
+              Star seeds will have a base quality chance of <span class="font-bold">66% (Varies on level,
+                but this is an average value for approximations)</span>
             </li>
             <li>
               After level 25 Gardening, star seeds have a quality chance of 100% <span
                 class="font-bold"
-              >Confirmed by Arenvanya</span>
+              >- Confirmed by Arenvanya</span>
             </li>
             <li>
-              Cotton Boost applied throughout a crop's entire lifespan will increase the quality chance by 66%
+              Cotton Boost/Quality Up Fertiliser applied throughout a crop's entire lifespan will increase the quality chance to about 66% (arbitrary)
             </li>
-            <li>Weed Chance will not yet be considered in the approximations</li>
+            <li>Weed chance and its effects is not accounted for, the planner assumes the player will handle it</li>
             <li>Speed Growth will not yet be considered in the approximations</li>
             <li>Every buff the crops have in the layout will last until the final day of calculations</li>
           </ul>
