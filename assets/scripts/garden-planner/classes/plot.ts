@@ -8,7 +8,7 @@
 import uniqid from 'uniqid'
 import type Bonus from '../enums/bonus'
 import CropType from '../enums/crops'
-import Direction from '../enums/direction'
+import Direction from '../../utils/enums/direction'
 import type Fertiliser from './fertiliser'
 import type Crop from './crop'
 import Tile from './tile'

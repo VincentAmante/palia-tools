@@ -16,6 +16,9 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@pinia/nuxt',
   ],
+  plugins: [
+    { src: '~/plugins/vuekonva', mode: 'client' },
+  ],
   build: {
     transpile: [
       '@fortawesome/fontawesome-svg-core',
@@ -23,6 +26,7 @@ export default defineNuxtConfig({
       '@fortawesome/free-regular-svg-icons',
       '@fortawesome/free-solid-svg-icons',
       '@fortawesome/vue-fontawesome',
+      'vue-conva',
     ],
   },
   typescript: {
