@@ -16,6 +16,31 @@
       <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
         <input type="checkbox" checked>
         <h2 class="collapse-title text-xl font-bold">
+          September 9, 2023 (Hotfix)
+        </h2>
+        <div class="collapse-content flex flex-col gap-6 text-sm md:text-base  leading-6">
+          <div class="flex flex-col gap-2">
+            <h3 class="font-bold">
+              Changes Summary
+            </h3>
+            <ul class="list-disc list-inside">
+              <li>Allowed for illegal plot amounts</li>
+            </ul>
+            <p>
+              Requested feature, part as a way to support increased plot sizes in the future and as a temporary solution to support partially connected layouts.
+              This change allows for layouts that exceed the maximum plot count of 9 (as of the current date).
+            </p>
+            <p>
+              Recent changes have been slow for various reasons, mostly the development of a small side-project that could be added on here.
+              I'll soon return to the roadmap-schedule, potentially updating it to be more accurate.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
+        <input type="checkbox">
+        <h2 class="collapse-title text-xl font-bold">
           September 2, 2023 (Hotfix)
         </h2>
         <div class="collapse-content flex flex-col gap-6 text-sm md:text-base  leading-6">

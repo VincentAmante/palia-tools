@@ -303,7 +303,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
       </div>
 
       <div class="px-4 md:px-0">
-        <div class="py-0 pt-4 md:py-4 flex flex-col lg:flex-row lg:items-center gap-2">
+        <div class="py-0 pt-4 md:pt-4 flex flex-col lg:flex-row lg:items-center gap-2">
           <h2 class="text-3xl font-bold">
             Garden
           </h2>
@@ -316,6 +316,12 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             </span>
             New Layout
           </button>
+        </div>
+        <div class="py-1">
+          <p v-show="garden.activePlotCount > 9" class="badge badge-warning text-white flex gap-2">
+            <font-awesome-icon :icon="['fas', 'exclamation-triangle']" />
+            Over max plot count
+          </p>
         </div>
         <div class="md:hidden py-2 text-xs opacity-40" :class="(isTakingScreenshot.get) ? 'hidden' : ''">
           <h2 class="font-bold">
@@ -423,7 +429,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
       </div>
     </section>
 
-    <button class="btn my-0 btn-warning w-fit text-white" @click="clearAllPlots()">
+    <button class="btn my-0 btn-warning w-fit text-white md:mx-8 lg:mx-16" @click="clearAllPlots()">
       <font-awesome-icon class="text-xl" :icon="['fas', 'triangle-exclamation']" />
       <p>Clear Plot</p>
     </button>

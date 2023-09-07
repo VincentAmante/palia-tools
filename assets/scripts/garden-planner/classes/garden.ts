@@ -82,6 +82,10 @@ class Garden {
     }
   }
 
+  get activePlotCount(): number {
+    return this._layout.flat().filter(plot => plot.isActive).length
+  }
+
   loadLayout(layout: string) {
     const { version, dimensionInfo, cropInfo: cropsInfo } = parseSave(layout)
 
