@@ -64,6 +64,7 @@ function onLayoutSelect() {
   }
 }
 
+const MAX_PLOTS = 9
 watchEffect(() => {
   if (rowInput.value > 9)
     rowInput.value = 9
@@ -111,15 +112,15 @@ const activePlots = computed(() => {
   return count
 })
 
+const allowIllegalLayout = ref(false)
 function togglePlot(row: number, col: number) {
-  const maxPlots = 9
+  const maxPlots = (allowIllegalLayout.value ? 27 : 9)
   if (plotLayout.value[row][col] === PlotStatus.active) {
     plotLayout.value[row][col] = PlotStatus.inactive
   }
   else {
     if (activePlots.value >= maxPlots)
       return
-
     plotLayout.value[row][col] = PlotStatus.active
   }
 }
@@ -216,10 +217,22 @@ function trimLayout(): PlotStatus[][] {
           Editor
         </h4>
         <div>
-          <p class="flex gap-1">
-            Active Plots: <span class="flex items-center align-middle gap-1">{{ activePlots
-            }}<span class="text-xs">/</span>9</span>
-          </p>
+          <div class="flex items-start flex-col bg-base-200 p-2 rounded-md w-fit">
+            <p class="flex gap-1 font-bold">
+              Active Plots: <span class="flex items-center align-middle gap-1">{{ activePlots
+              }}<span class="text-xs">/</span>{{ allowIllegalLayout ? 27 : 9 }}</span>
+            </p>
+            <label v-show="selectedNewLayout === 'custom'" class="label w-fit flex flex-col items-start">
+              <span class="text-sm">Allow Illegal Layout</span>
+              <div class="flex gap-1 pt-1">
+                <input
+                  v-model="allowIllegalLayout" type="checkbox" name="allow-illegal-layout"
+                  class="toggle toggle-sm"
+                >
+              </div>
+              <span class="text-xs">3x the max count</span>
+            </label>
+          </div>
           <p class="text-sm">
             Click on any plot-tile to determine if there is a plot there or not
           </p>
