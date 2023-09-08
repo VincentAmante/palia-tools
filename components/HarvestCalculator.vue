@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
+import HarvestCalculatorInfo from './garden-planner/HarvestCalculator/HarvestCalculatorInfo.vue'
 import { CropType, Garden, crops } from '@/assets/scripts/garden-planner/imports'
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/garden'
 
@@ -122,23 +123,20 @@ watchEffect(() => {
 })
 
 function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmount: number, gold: number) {
-  if (produceAmount > 0 && type === 'star')
+  if (type === 'star' && produceAmount > 0)
     return `${(cropOptions.value[cropType].starType !== 'crop' ? `${cropOptions.value[cropType].starType}:` : '')} ${gold.toLocaleString()} Gold`
-
-  else if (produceAmount > 0 && type === 'base')
+  else if (type === 'base' && produceAmount > 0)
     return `${(cropOptions.value[cropType].baseType !== 'crop' ? `${cropOptions.value[cropType].baseType}:` : '')} ${gold.toLocaleString()} Gold`
-
   else if (produceAmount < 0)
     return 'Crop was deducted for replanting'
-
   else
     return 'No produce'
 }
 </script>
 
 <template>
-  <div class="rounded-lg my-4 px-2 py-2">
-    <div class="bg-base-300 p-4 rounded-lg max-w-xl">
+  <div class="sm:rounded-lg my-4 px-0 py-2 mx-0">
+    <div class="bg-base-300 p-4 sm:rounded-lg max-w-xl">
       <div class="flex flex-col gap-1 pb-2">
         <div class="text-xl md:text-2xl font-bold">
           Harvest Approximations <span
@@ -268,7 +266,6 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                   </p>
                 </div>
               </div>
-
               <div
                 v-if="(harvestData.harvestTotal.seedsRemainder[cropType].star > 0)"
                 class="tooltip tooltip-right" data-tip="Excess seeds for replanting"
@@ -807,109 +804,8 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           </div>
         </div>
       </div>
-      <div v-show="activeTab === 'info'" class="flex flex-col gap-2 py-4 px-2">
-        <div class="max-w-lg">
-          <h5 class="font-bold">
-            Note
-          </h5>
-          <div class="py-2 flex flex-col gap-2">
-            <div class="text-sm">
-              This tool uses information on crops gathered
-              from
-              resources such as Arenvanya's
-              <NuxtLink
-                href="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
-                target="_blank"
-                class="items-center gap-1 text-info inline-block"
-              >
-                <font-awesome-icon
-                  :icon="['fas', 'arrow-up-right-from-square']"
-                  class="text-xs"
-                />
-                Gardening Guide
-              </NuxtLink>
-              and their
-              <NuxtLink
-                to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
-                target="_blank" class="inline-block gap-1 text-info"
-              >
-                <font-awesome-icon
-                  :icon="['fas', 'arrow-up-right-from-square']"
-                  class="text-xs"
-                />
-                Math Spreadsheet
-              </NuxtLink>
-              as well as a mix of observations and testings done by fellow Palians discussed on Discord
-            </div>
-            <p class="text-sm">
-              Despite this, the final values are still arbitrary and might not reflect the actual values
-              experienced in-game
-            </p>
-          </div>
-          <h5 class="font-bold">
-            How it works (3/9/2023)
-          </h5>
-          <ol class="list-inside list-decimal text-sm">
-            <li>
-              The planner first approximates how many of each crop will be harvested on each day and estimates their star/normal ratio
-            </li>
-            <li>
-              Crops will be deducted for replanting if the option is enabled
-            </li>
-            <li>Quality Boosts and Harvest Boosts are factored in using arbitrary values</li>
-            <li>
-              <font-awesome-icon
-                class="text-warning text-sm px-[1px]"
-                :icon="['fas', 'triangle-exclamation']"
-              /><span class="font-bold">Speed Growth is not yet
-                supported</span> as current information on its behaviour suggests it's either bugged or
-              lacks enough consistency to be approximated properly
-            </li>
-            <li>The approximates display the gold value of the crop when sold as itself/as itself when converted to seeds/preserves</li>
-            <li>When calculating seeds and preserves for selling/replanting, it uses any remainders for the next harvest</li>
-            <li>
-              <font-awesome-icon
-                class="text-warning text-sm px-[1px]"
-                :icon="['fas', 'triangle-exclamation']"
-              />Crops when converted will
-              <span class="font-bold">not factor in the gold value of
-                any leftovers on the last calculated day</span>
-            </li>
-            <li>
-              <font-awesome-icon
-                class="text-warning text-sm px-[1px]"
-                :icon="['fas', 'triangle-exclamation']"
-              />
-              Seed/Preserve conversion time is
-              <span class="font-bold">not</span>
-              yet considered in the approximations
-            </li>
-          </ol>
-        </div>
-        <div>
-          <h5 class="font-bold">
-            Assumptions (3/9/2023)
-          </h5>
-          <ul class="list-inside list-disc text-sm">
-            <li>Player will harvest on the exact day it becomes harvestable</li>
-            <li>Crops will be watered or retains water every day of its cycle</li>
-            <li>
-              Star seeds will have a base quality chance of <span class="font-bold">66% (Varies on level,
-                but this is an average value for approximations)</span>
-            </li>
-            <li>
-              After level 25 Gardening, star seeds have a quality chance of 100% <span
-                class="font-bold"
-              >- Confirmed by Arenvanya</span>
-            </li>
-            <li>
-              Cotton Boost/Quality Up Fertiliser applied throughout a crop's entire lifespan will increase the quality chance to about 66% (arbitrary)
-            </li>
-            <li>Weed chance and its effects is not accounted for, the planner assumes the player will handle it</li>
-            <li>Speed Growth will not yet be considered in the approximations</li>
-            <li>Every buff the crops have in the layout will last until the final day of calculations</li>
-          </ul>
-        </div>
+      <div v-show="activeTab === 'info'">
+        <HarvestCalculatorInfo />
       </div>
     </div>
   </div>

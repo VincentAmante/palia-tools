@@ -12,9 +12,11 @@ import {
   faDroplet,
   faEraser,
   faForwardFast,
+  faGift,
   faHeart,
   faInfoCircle,
   faJar,
+  faMap,
   faPaste,
   faPlus,
   faRecycle,
@@ -57,6 +59,8 @@ library.add(
   faTurnDown,
   faArrowLeft,
   faBars,
+  faGift,
+  faMap,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS

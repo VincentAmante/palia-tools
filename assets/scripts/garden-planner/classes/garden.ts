@@ -12,7 +12,7 @@ import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliser-list
 import Plot from './plot'
 import Tile from './tile'
 
-interface CalculateYieldOptions {
+interface ICalculateYieldOptions {
   days?: number
   includeReplant?: boolean
   postLevel25: boolean
@@ -29,7 +29,7 @@ type CalculateValueOptions = {
   }
 }
 
-interface HarvestInfo {
+interface IHarvestInfo {
   day: number
   crops: {
     [key in CropType]: {
@@ -60,7 +60,7 @@ class Garden {
     }
 
     this.loadLayout(
-      `v${this._version}_DIM-111-111-111_CROPS-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa`,
+      `v${this._version}_DIM-111-111-111_CROPS-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN`,
     )
   }
 
@@ -279,7 +279,7 @@ class Garden {
     }
   }
 
-  calculateYield(options: CalculateYieldOptions) {
+  calculateYield(options: ICalculateYieldOptions) {
     // Gets a list of all tiles, and excludes tiles that contain duplicates (i.e. 9 apples tiles should only return 1 tile)
     const individualCrops = new Map<string, Tile>()
 
@@ -310,7 +310,7 @@ class Garden {
     }
     else {
       return {
-        harvests: [] as HarvestInfo[],
+        harvests: [] as IHarvestInfo[],
         harvestTotal: {
           day: 0,
           crops: {
@@ -356,7 +356,7 @@ class Garden {
             },
           },
           seedsRemainder: getCropMap(),
-        } as HarvestInfo,
+        } as IHarvestInfo,
       }
     }
 
@@ -412,7 +412,7 @@ class Garden {
 
     // Reduce growth time by 1 to account for speed boost
     for (let day = minGrowthTime - 1; day <= maxGrowthTime; day++) {
-      const harvest: HarvestInfo = {
+      const harvest: IHarvestInfo = {
         day,
         crops: getCropMap(),
         seedsRemainder: getCropMap(),
@@ -423,48 +423,7 @@ class Garden {
           base: number
           star: number
         }
-      } = {
-        [CropType.None]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Tomato]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Potato]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Rice]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Wheat]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Carrot]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Onion]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Cotton]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Blueberry]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Apple]: {
-          base: 0,
-          star: 0,
-        },
-      }
+      } = getCropMap()
 
       for (const [, tile] of individualCrops) {
         const crop = tile.crop
@@ -577,16 +536,16 @@ class Garden {
       harvests,
       harvestTotal,
     } as {
-      harvests: HarvestInfo[]
-      harvestTotal: HarvestInfo
+      harvests: IHarvestInfo[]
+      harvestTotal: IHarvestInfo
     }
   }
 
   calculateValue(
     options: CalculateValueOptions,
     harvestInfo: {
-      harvests: HarvestInfo[]
-      harvestTotal: HarvestInfo
+      harvests: IHarvestInfo[]
+      harvestTotal: IHarvestInfo
     },
   ) {
     const result: {
@@ -820,6 +779,7 @@ class Garden {
               = crop.calculateGoldValue(baseProduce + baseRemainder, baseOption, false).goldValue ?? 0
             break
         }
+
         dayResult.crops[cropType as CropType].base.gold += baseGoldValue
         dayResult.crops[cropType as CropType].base.produce += convertedBaseUnits
         dayResult.crops[cropType as CropType].base.cropRemainder

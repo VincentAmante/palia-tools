@@ -83,6 +83,8 @@ function validatePlotMatrix(dimensionInfo: string) {
         throw new Error('Invalid dimension info')
     }
   }
+
+  // * Removed to allow illegal plot counts
   // // Count the number of active plots
   // const maxPlots = 9
   // const activePlots = dimensions.flat().map((row) => {

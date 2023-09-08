@@ -22,10 +22,10 @@ enum PlotStatus {
   active = 1,
   inactive = 0,
 }
-// Creates a v.01 code from the layout
+// Creates a v.02 code from the layout
 function layoutToCode(layout: PlotStatus[][]) {
-  // * technically 'plot' is just a boolean, do I really need to use an enum?
-  let code = 'v0.1_DIM-'
+  // ? technically 'plot' is just a boolean, do I really need to use an enum?
+  let code = 'v0.2_DIM-'
   for (const layoutRow of layout) {
     for (const plot of layoutRow)
       code += plot
@@ -64,12 +64,14 @@ function onLayoutSelect() {
   }
 }
 
-const MAX_PLOTS = 9
+const MAX_ROWS = 9
+const MAX_COLS = 9
 watchEffect(() => {
-  if (rowInput.value > 9)
-    rowInput.value = 9
-  if (colInput.value > 9)
-    colInput.value = 9
+  if (rowInput.value > MAX_ROWS)
+    rowInput.value = MAX_ROWS
+  if (colInput.value > MAX_COLS)
+    colInput.value = MAX_COLS
+
   const selectedRow = rowInput.value
   const selectedCol = colInput.value
   const layout: PlotStatus[][] = []
@@ -90,10 +92,10 @@ watchEffect(() => {
 })
 
 function enforceLayoutLimits() {
-  if (rowInput.value > 9)
-    rowInput.value = 9
-  if (colInput.value > 9)
-    colInput.value = 9
+  if (rowInput.value > MAX_ROWS)
+    rowInput.value = MAX_ROWS
+  if (colInput.value > MAX_COLS)
+    colInput.value = MAX_COLS
   if (rowInput.value < 1)
     rowInput.value = 1
   if (colInput.value < 1)
@@ -101,15 +103,9 @@ function enforceLayoutLimits() {
 }
 
 const activePlots = computed(() => {
-  let count = 0
-  for (let i = 0; i < plotLayout.value.length; i++) {
-    for (let j = 0; j < plotLayout.value[i].length; j++) {
-      if (plotLayout.value[i][j] === PlotStatus.active) {
-        count++
-      }
-    }
-  }
-  return count
+  return plotLayout.value.flat().reduce((count, isActive) => {
+    return count + isActive
+  }, 0)
 })
 
 const allowIllegalLayout = ref(false)
