@@ -3,9 +3,11 @@ import { useClipboard, useElementBounding, useMousePressed, useUrlSearchParams }
 import domtoimage from 'dom-to-image-more'
 import { computed, onMounted, ref } from 'vue'
 import uniqid from 'uniqid'
+import StatsDisplay from './StatsDisplay.vue'
+import GardenDisplay from '@/components/garden-planner/GardenDisplay.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
 import LayoutCreator from '@/components/LayoutCreator.vue'
-import type { Plot, PlotStat, Tile } from '@/assets/scripts/garden-planner/imports'
+import type { Plot, PlotStat } from '@/assets/scripts/garden-planner/imports'
 import { Bonus, Crop, CropType, Fertiliser, FertiliserType, Garden, crops, fertilisers, getCropFromType } from '@/assets/scripts/garden-planner/imports'
 
 const selectedItem = ref<Crop | Fertiliser | null | 'crop-erase' | 'fertiliser-erase'>('crop-erase')
@@ -30,7 +32,6 @@ function selectTile(event: MouseEvent, row: number, col: number, plot: Plot) {
         })
       }
     }
-
     garden.value.calculateBonuses()
   }
 }
@@ -45,31 +46,43 @@ const rightClickIsDown = ref(false)
 const { pressed } = useMousePressed()
 function handleHover(row: number, col: number, plot: Plot) {
   if (pressed.value && !rightClickIsDown.value) {
-    if (selectedItem.value === 'crop-erase') {
-      plot.setTile(row, col, null)
-    }
-    else if (selectedItem.value === 'fertiliser-erase') {
-      plot.removeFertiliserFromTile(row, col)
-    }
-    else {
-      if (selectedItem.value instanceof Crop) {
-        plot.setTile(row, col, selectedItem.value as Crop)
-      }
-      else if (selectedItem.value instanceof Fertiliser) {
-        plot.addFertiliserToTile(row, col, selectedItem.value as Fertiliser, {
-          removeSameId: true,
-        })
-      }
+    switch (selectedItem.value) {
+      case 'crop-erase':
+        plot.setTile(row, col, null)
+        break
+      case 'fertiliser-erase':
+        plot.removeFertiliserFromTile(row, col)
+        break
+      default:
+        if (selectedItem.value instanceof Crop) {
+          plot.setTile(row, col, selectedItem.value as Crop)
+        }
+        else if (selectedItem.value instanceof Fertiliser) {
+          plot.addFertiliserToTile(row, col, selectedItem.value as Fertiliser, {
+            removeSameId: true,
+          })
+        }
+        break
     }
 
     garden.value.calculateBonuses()
   }
-  else if (pressed.value && rightClickIsDown.value) {
-    if (selectedItem.value === 'crop-erase' || selectedItem.value instanceof Crop)
-      plot.setTile(row, col, null)
 
-    else if (selectedItem.value === 'fertiliser-erase' || selectedItem.value instanceof Fertiliser)
-      plot.removeFertiliserFromTile(row, col)
+  else if (pressed.value && rightClickIsDown.value) {
+    switch (selectedItem.value) {
+      case 'crop-erase':
+        plot.setTile(row, col, null)
+        break
+      case 'fertiliser-erase':
+        plot.removeFertiliserFromTile(row, col)
+        break
+      default:
+        if (selectedItem.value instanceof Crop)
+          plot.setTile(row, col, null)
+        else if (selectedItem.value instanceof Fertiliser)
+          plot.removeFertiliserFromTile(row, col)
+        break
+    }
 
     garden.value.calculateBonuses()
   }
@@ -79,16 +92,7 @@ function setCrop(type: CropType) {
   selectedItem.value = crops[type]
 }
 
-const plotStatTotal = computed(() => {
-  const { cropCount, cropTypeCount, cropBonusCoverage, fertiliserCount } = garden.value.calculateStats()
-
-  return {
-    cropCount,
-    cropTypeCount,
-    cropBonusCoverage,
-    fertiliserCount,
-  } as PlotStat
-})
+const plotStatTotal = computed(() => ({ ...garden.value.calculateStats() } as PlotStat))
 
 function downloadURI(uri: string, name: string) {
   const link = document.createElement('a')
@@ -126,10 +130,10 @@ function clearAllPlots() {
 }
 
 const display = ref(null as unknown as HTMLElement)
-const statDisplay = ref(null as unknown as HTMLElement)
-const plotsDisplay = ref(null as unknown as HTMLElement)
-const { width: plotsDisplayWidth } = useElementBounding(plotsDisplay)
-const { width: statDisplayWidth } = useElementBounding(statDisplay)
+const statDisplay = ref<InstanceType<typeof StatsDisplay> | null>()
+const gardenDisplay = ref<InstanceType<typeof GardenDisplay> | null>()
+const { width: plotsDisplayWidth } = useElementBounding(gardenDisplay.value?.getPlotsDisplay() as HTMLElement)
+const { width: statDisplayWidth } = useElementBounding(statDisplay.value?.getStatsDisplay() as HTMLElement)
 
 const isTakingScreenshot = useTakingScreenshot()
 function saveAsImage() {
@@ -191,7 +195,7 @@ function openNewLayoutModal() {
 }
 
 function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plot) {
-  event.preventDefault()
+  // event.preventDefault()
   if (selectedItem.value === 'crop-erase' || selectedItem.value instanceof Crop)
     plot.setTile(row, col, null)
   else if (selectedItem.value === 'fertiliser-erase' || selectedItem.value instanceof Fertiliser)
@@ -331,101 +335,20 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
         </div>
       </div>
       <div class="flex flex-col" :class="(gardenTilesAreWide) ? '' : 'md:flex-row'">
-        <div :class="(gardenTilesAreWide && !isTakingScreenshot.get) ? 'overflow-x-auto py-2' : ''">
-          <div
-            class="rounded-xl md:w-fit p-2 bg-base-300" :class="(isTakingScreenshot.get) ? 'w-fit' : 'w-full'"
-            @contextmenu.prevent.self=""
-          >
-            <div ref="plotsDisplay" class="w-full overflow-auto lg:overflow-auto flex flex-col gap-3 p-3">
-              <div v-for="(plotRow, plotRowIndex) in gardenTiles" :key="plotRowIndex" class="plotRow flex gap-3">
-                <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="plot flex flex-col gap-1 relative">
-                  <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="plotTileRow flex cols-3 gap-1">
-                    <div v-for="(tile, index) in row" :key="index" class="plotTile">
-                      <CropTile
-                        :tile="tile as Tile" :is-disabled="!plot.isActive" :bonus-hovered="hoveredBonus"
-                        :is-alt="(plotRowIndex + plotIndex) % 2 === 0"
-                        @contextmenu="((e: MouseEvent) => handleRightClick(e, rowIndex, index, plot as Plot))"
-                        @click="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
-                        @mouseover="handleHover(rowIndex, index, plot as Plot)"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="my-2 px-2 w-fit">
-          <div
-            ref="statDisplay" class="flex flex-wrap gap-2 w-fit px-4 mt-4 cursor-help"
-            :class="(gardenTilesAreWide) ? '' : 'lg:grid lg:grid-cols-2'"
-          >
-            <CoverageStat
-              :total-crops="plotStatTotal.cropCount"
-              :covered="plotStatTotal.cropBonusCoverage['Quality Increase']" class="text-amber-600"
-              @mouseover="hoveredBonus = Bonus.QualityIncrease" @mouseleave="hoveredBonus = Bonus.None"
-            >
-              <template #icon>
-                <font-awesome-icon :icon="['fas', 'star']" />
-              </template>
-              <template #title>
-                Quality Increase
-              </template>
-            </CoverageStat>
-
-            <CoverageStat
-              :total-crops="plotStatTotal.cropCount"
-              :covered="plotStatTotal.cropBonusCoverage['Harvest Increase']" class="text-green-600"
-              @mouseover="hoveredBonus = Bonus.HarvestIncrease" @mouseleave="hoveredBonus = Bonus.None"
-            >
-              <template #icon>
-                <font-awesome-icon :icon="['fas', 'wheat-awn']" />
-              </template>
-              <template #title>
-                Harvest Increase
-              </template>
-            </CoverageStat>
-            <CoverageStat
-              :total-crops="plotStatTotal.cropCount"
-              :covered="plotStatTotal.cropBonusCoverage['Water Retain']" class="text-sky-500"
-              @mouseover="hoveredBonus = Bonus.WaterRetain" @mouseleave="hoveredBonus = Bonus.None"
-            >
-              <template #icon>
-                <font-awesome-icon :icon="['fas', 'droplet']" />
-              </template>
-              <template #title>
-                Water Retain
-              </template>
-            </CoverageStat>
-
-            <CoverageStat
-              :total-crops="plotStatTotal.cropCount"
-              :covered="plotStatTotal.cropBonusCoverage['Speed Increase']" class="text-orange-400"
-              @mouseover="hoveredBonus = Bonus.SpeedIncrease" @mouseleave="hoveredBonus = Bonus.None"
-            >
-              <template #icon>
-                <font-awesome-icon :icon="['fas', 'forward-fast']" />
-              </template>
-              <template #title>
-                Growth Boost
-              </template>
-            </CoverageStat>
-
-            <CoverageStat
-              :total-crops="plotStatTotal.cropCount"
-              :covered="plotStatTotal.cropBonusCoverage['Weed Prevention']" class="text-rose-400"
-              @mouseover="hoveredBonus = Bonus.WeedPrevention" @mouseleave="hoveredBonus = Bonus.None"
-            >
-              <template #icon>
-                <font-awesome-icon :icon="['fas', 'shield']" />
-              </template>
-              <template #title>
-                Weed Prevention
-              </template>
-            </CoverageStat>
-          </div>
-        </div>
+        <GardenDisplay
+          ref="gardenDisplay"
+          :garden-tiles="gardenTiles as Plot[][]"
+          :garden-tiles-are-wide="gardenTilesAreWide"
+          :hovered-bonus="hoveredBonus as Bonus"
+          @right-click="handleRightClick"
+          @mouseover="handleHover"
+          @select-tile="selectTile"
+        />
+        <StatsDisplay
+          v-model:hovered-bonus="hoveredBonus"
+          :garden-tiles-are-wide="gardenTilesAreWide"
+          :plot-stat-total="plotStatTotal"
+        />
       </div>
     </section>
 

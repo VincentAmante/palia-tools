@@ -39,7 +39,6 @@ const isLg = computed(() => screenWidth.value >= 1024)
                 </li>
               </ul>
             </div>
-            <TimeDisplay v-if="(isLg)" class="hidden lg:block" />
           </div>
           <div class="flex-none lg:hidden">
             <label for="my-drawer-3" class="btn btn-square btn-ghost">
@@ -69,9 +68,6 @@ const isLg = computed(() => screenWidth.value >= 1024)
             <NuxtLink to="/changelogs">
               Changelogs
             </NuxtLink>
-          </li>
-          <li>
-            <TimeDisplay v-if="(!isLg)" class="lg:hidden" />
           </li>
         </ul>
       </div>
