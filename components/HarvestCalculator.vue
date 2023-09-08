@@ -135,8 +135,8 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
 </script>
 
 <template>
-  <div class="rounded-lg my-4 px-2 py-2">
-    <div class="bg-base-300 p-4 rounded-lg max-w-xl">
+  <div class="sm:rounded-lg my-4 px-0 py-2 mx-0">
+    <div class="bg-base-300 p-4 sm:rounded-lg max-w-xl">
       <div class="flex flex-col gap-1 pb-2">
         <div class="text-xl md:text-2xl font-bold">
           Harvest Approximations <span

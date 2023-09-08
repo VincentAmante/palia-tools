@@ -352,12 +352,12 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
       </div>
     </section>
 
-    <button class="btn my-0 btn-warning w-fit text-white md:mx-8 lg:mx-16" @click="clearAllPlots()">
+    <button class="btn my-0 mx-3 btn-warning w-fit text-white md:mx-8 lg:mx-16" @click="clearAllPlots()">
       <font-awesome-icon class="text-xl" :icon="['fas', 'triangle-exclamation']" />
       <p>Clear Plot</p>
     </button>
 
-    <div class="flex flex-col gap-2 px-1 lg:px-16 max-w-4xl py-1">
+    <div class="flex flex-col gap-2 lg:px-16 max-w-4xl py-1">
       <HarvestCalculator :layout="garden as Garden" />
     </div>
     <div class="divider px-16" />
