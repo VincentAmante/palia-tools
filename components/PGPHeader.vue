@@ -37,6 +37,28 @@ const isLg = computed(() => screenWidth.value >= 1024)
                     Changelogs
                   </NuxtLink>
                 </li>
+                <li class="dropdown dropdown-hover dropdown-bottom dropdown-end">
+                  <label tabindex="0" class="text-lg">
+                    <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xl" />
+                    External Tools
+                  </label>
+                  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                    <li class="text-sm">
+                      <NuxtLink to="https://palia.anniebananie.io" class="inline-block">
+                        <font-awesome-icon :icon="['fas', 'gift']" class="text-xl" />
+                        Gift Tracker
+                        <span class="text-xs">(anniebananie)</span>
+                      </NuxtLink>
+                    </li>
+                    <li class="text-sm">
+                      <NuxtLink to="https://palia.th.gl/" class="inline-block">
+                        <font-awesome-icon :icon="['fas', 'map']" class="text-xl" />
+                        Interactive Map
+                        <span class="text-xs">(The Hidden Gaming Lair)</span>
+                      </NuxtLink>
+                    </li>
+                  </ul>
+                </li>
               </ul>
             </div>
           </div>
@@ -50,15 +72,6 @@ const isLg = computed(() => screenWidth.value >= 1024)
       <div class="drawer-side">
         <label for="my-drawer-3" class="drawer-overlay" />
         <ul class="menu p-4 w-80 h-full bg-base-200 gap-2">
-          <!-- <li>
-            <div class="flex">
-              <nuxt-img format="webp" src="/logo.webp" class="max-w-[3rem]"/>
-              <p class="text-lg font-bold">
-                Palia Garden Planner
-              </p>
-            </div>
-            <div class="divider py-0 my-0" />
-          </li> -->
           <li class="text-lg font-bold normal-case">
             <NuxtLink to="/roadmap">
               Roadmap
@@ -68,6 +81,30 @@ const isLg = computed(() => screenWidth.value >= 1024)
             <NuxtLink to="/changelogs">
               Changelogs
             </NuxtLink>
+          </li>
+          <li>
+            <div class="text-lg font-bold flex flex-col items-start">
+              <p class="flex gap-2 items-center">
+                <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xl" />
+                External Tools
+              </p>
+              <ul>
+                <li class="text-sm">
+                  <NuxtLink to="https://palia.anniebananie.io" class="inline-block">
+                    <font-awesome-icon :icon="['fas', 'gift']" class="text-xl" />
+                    Gift Tracker
+                    <span class="text-xs">(anniebananie)</span>
+                  </NuxtLink>
+                </li>
+                <li class="text-sm">
+                  <NuxtLink to="https://palia.th.gl/" class="inline-block">
+                    <font-awesome-icon :icon="['fas', 'map']" class="text-xl" />
+                    Interactive Map
+                    <span class="text-xs">(The Hidden Gaming Lair)</span>
+                  </NuxtLink>
+                </li>
+              </ul>
+            </div>
           </li>
         </ul>
       </div>
