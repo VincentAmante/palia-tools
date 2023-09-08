@@ -54,6 +54,11 @@ class Tile {
     return this._bonuses
   }
 
+  /**
+   * {bonusesReceived} - unlike {bonuses} - track how many sources of a bonus a tile has
+   *  This is used for bushes/trees, which requires multiple sources to apply a bonus,
+   *  regardless of whether those sources are on the same tile
+   */
   get bonusesReceived(): Bonus[] {
     return this._bonusesReceived
   }
