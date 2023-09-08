@@ -60,7 +60,7 @@ class Garden {
     }
 
     this.loadLayout(
-      `v${this._version}_DIM-111-111-111_CROPS-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa`,
+      `v${this._version}_DIM-111-111-111_CROPS-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN`,
     )
   }
 
