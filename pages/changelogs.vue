@@ -16,7 +16,7 @@
       <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
         <input type="checkbox" checked>
         <h2 class="collapse-title text-xl font-bold">
-          September 9, 2023 (Hotfix)
+          September 8, 2023
         </h2>
         <div class="collapse-content flex flex-col gap-6 text-sm md:text-base  leading-6">
           <div class="flex flex-col gap-2">
@@ -25,10 +25,16 @@
             </h3>
             <ul class="list-disc list-inside">
               <li>Allowed for illegal plot amounts</li>
+              <li>Added external tools</li>
             </ul>
             <p>
-              Requested feature, part as a way to support increased plot sizes in the future and as a temporary solution to support partially connected layouts.
+              <span class="font-bold">Illegal Plots: </span>Requested feature, part as a way to support increased plot sizes in the future and as a temporary solution to support partially connected layouts.
               This change allows for layouts that exceed the maximum plot count of 9 (as of the current date).
+            </p>
+            <p>
+              <span class="font-bold">External Tools: </span>
+              Added external links to other Palia tools, as part of mutual agreements to provide visibility to each other's tools.
+              If you're a developer and would like to have your tool added, feel free to contact me on Discord! <span class="font-bold">(.aisen)</span>
             </p>
             <p>
               Recent changes have been slow for various reasons, mostly the development of a small side-project that could be added on here.
