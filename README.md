@@ -6,6 +6,12 @@ Made on Nuxt and Vue, hosted on Vercel.
 
 [Link to Website](https://palia-garden-planner.vercel.app)
 
+## Is this Open-Source?
+
+Technically no, as I've been hoping for an all-clear from the Palia Team.
+As it hasn't arrived yet and I'm still waiting,
+I've decided to at least make the code itself publicly available for viewing for full transparency and to allow critiques/suggestions/issues/etc.
+
 ## Why is this called Palia Tools?
 
 There's current plans to add other tools once the planner is considered feature-complete, with everything on the Road Map being ticked off.
