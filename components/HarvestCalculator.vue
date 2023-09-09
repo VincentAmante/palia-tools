@@ -23,7 +23,7 @@ const harvestData = computed(() => {
   if (daysToCalculate <= 0)
     daysToCalculate = 0
 
-  return props.layout.calculateYield({
+  return props.layout.simulateYield({
     postLevel25: postLevel25.value,
     allStarSeeds: allStarSeeds.value,
     includeReplant: includeReplant.value,
