@@ -18,7 +18,7 @@ Plans for the Planner are found here: [Roadmap Link](https://palia-garden-planne
 
 ## Contributing Guide
 
-See the CONTRIBUTING.md for info
+See the [CONTRIBUTING.md](https://github.com/VincentAmante/palia-tools/blob/main/CONTRIBUTNG.md) for info
 
 ## Project Setup
 
