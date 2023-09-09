@@ -2,11 +2,13 @@ import Crop from './classes/crop'
 import CropType from './enums/crops'
 import Bonus from './enums/bonus'
 import CropCode from './enums/cropcode'
+import CropSize from './enums/crop-size'
 
 const crops = {
   [CropType.Tomato]: new Crop(
     CropType.Tomato,
     Bonus.WaterRetain,
+    CropSize.Single,
     '/crops/tomato.webp',
     // Base Values
     {
@@ -43,6 +45,7 @@ const crops = {
   [CropType.Potato]: new Crop(
     CropType.Potato,
     Bonus.WaterRetain,
+    CropSize.Single,
     '/crops/potato.webp',
     {
       base: 2,
@@ -71,6 +74,7 @@ const crops = {
   [CropType.Rice]: new Crop(
     CropType.Rice,
     Bonus.HarvestIncrease,
+    CropSize.Single,
     '/crops/rice.webp',
     {
       base: 2,
@@ -100,6 +104,7 @@ const crops = {
   [CropType.Wheat]: new Crop(
     CropType.Wheat,
     Bonus.HarvestIncrease,
+    CropSize.Single,
     '/crops/wheat.webp',
     {
       base: 2,
@@ -128,6 +133,7 @@ const crops = {
   [CropType.Carrot]: new Crop(
     CropType.Carrot,
     Bonus.WeedPrevention,
+    CropSize.Single,
     '/crops/carrot.webp',
     {
       base: 2,
@@ -155,6 +161,7 @@ const crops = {
   [CropType.Onion]: new Crop(
     CropType.Onion,
     Bonus.WeedPrevention,
+    CropSize.Single,
     '/crops/onion.webp',
     {
       base: 2,
@@ -182,6 +189,7 @@ const crops = {
   [CropType.Cotton]: new Crop(
     CropType.Cotton,
     Bonus.QualityIncrease,
+    CropSize.Single,
     '/crops/cotton.webp',
     {
       base: 2,
@@ -209,6 +217,7 @@ const crops = {
   [CropType.Blueberry]: new Crop(
     CropType.Blueberry,
     Bonus.SpeedIncrease,
+    CropSize.Bush,
     '/crops/blueberry.webp',
     {
       base: 4,
@@ -239,6 +248,7 @@ const crops = {
   [CropType.Apple]: new Crop(
     CropType.Apple,
     Bonus.SpeedIncrease,
+    CropSize.Tree,
     '/crops/apple.webp',
     {
       base: 16,

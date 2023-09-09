@@ -9,6 +9,7 @@ import uniqid from 'uniqid'
 import type Bonus from '../enums/bonus'
 import CropType from '../enums/crops'
 import Direction from '../enums/direction'
+import CropSize from '../enums/crop-size'
 import type Fertiliser from './fertiliser'
 import type Crop from './crop'
 import Tile from './tile'
@@ -116,9 +117,9 @@ class Plot {
     this._tiles[row][col].crop = crop
     this._tiles[row][col].id = id
 
-    // This is because of how fertilisers are typically added to blueberries and apple trees
+    // This is because of how fertilisers are typically added to bushes and trees
     // I forgot to check how this behaviour works in-game
-    if (crop.type === CropType.Apple || crop.type === CropType.Blueberry)
+    if (crop.size !== CropSize.Single)
       this.removeFertiliserFromTile(row, col)
   }
 
@@ -127,7 +128,7 @@ class Plot {
     plot.tiles[row][col].crop = crop
     plot.tiles[row][col].id = id
 
-    if (crop.type === CropType.Apple || crop.type === CropType.Blueberry)
+    if (crop.size !== CropSize.Single)
       plot.removeFertiliserFromTile(row, col)
   }
 
@@ -155,7 +156,7 @@ class Plot {
       return
     }
 
-    if ((crop.type as CropType) === CropType.Apple) {
+    if ((crop.size as CropSize) === CropSize.Tree) {
       const id: string = uniqid()
 
       if (row === 0 && column === 0) {
@@ -203,7 +204,7 @@ class Plot {
       }
     }
 
-    else if ((crop.type as CropType) === CropType.Blueberry) {
+    else if ((crop.size as CropSize) === CropSize.Bush) {
       const id: string = uniqid()
 
       if (row < TILE_ROWS - 1 && column < TILE_COLS - 1) {
@@ -304,13 +305,13 @@ class Plot {
     if (this._tiles[row][column].fertiliser !== null && this._tiles[row][column].fertiliser?.id === fertiliser.id)
       return
 
-    // forced id is used when adding fertilisers to blueberries and apple trees
+    // forced id is used when adding fertilisers to bushes and trees
     const fertiliserId = (fertiliserForcedId === '') ? uniqid() : fertiliserForcedId
 
     fertiliser.id = fertiliserId
     this._tiles[row][column].fertiliser = fertiliser
 
-    if (this._tiles[row][column].crop?.type === CropType.Apple || this._tiles[row][column].crop?.type === CropType.Blueberry) {
+    if (this._tiles[row][column].crop?.size === CropSize.Tree || this._tiles[row][column].crop?.size === CropSize.Bush) {
       const tileId = this._tiles[row][column].id
 
       // look for adjacent tiles with the same id and recursively add fertiliser to them
@@ -347,9 +348,9 @@ class Plot {
       return
     this._tiles[row][column].fertiliser = null
 
-    // Code to remove fertilisers added to blueberries and apple trees
+    // Code to remove fertilisers added to bushes and trees
     // ? Is this even how it should work? I haven't verified it
-    if (this._tiles[row][column].crop?.type === CropType.Apple || this._tiles[row][column].crop?.type === CropType.Blueberry) {
+    if (this._tiles[row][column].crop?.size === CropSize.Tree || this._tiles[row][column].crop?.size === CropSize.Bush) {
       if (!removeSameId)
         return
 

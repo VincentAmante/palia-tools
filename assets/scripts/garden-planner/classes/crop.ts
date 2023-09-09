@@ -1,5 +1,6 @@
 import type Bonus from '../enums/bonus'
 import type CropType from '../enums/crops'
+import type CropSize from '../enums/crop-size'
 
 interface IProduceInfo {
   base: number
@@ -52,6 +53,7 @@ class Crop {
   private _produceInfo: IProduceInfo
   private _goldValues: IGoldValues
   private _conversionInfo: ICropConversions
+  private _size: CropSize
   private _images: {
     preserve: string
     seed: string
@@ -60,6 +62,7 @@ class Crop {
   constructor(
     type: CropType,
     cropBonus: Bonus,
+    size: CropSize,
     image: string,
     produceInfo: IProduceInfo | IProduceInfoOptions,
     goldValues: IGoldValues | IGoldValuesOptions,
@@ -74,6 +77,7 @@ class Crop {
   ) {
     this._type = type
     this._cropBonus = cropBonus
+    this._size = size
     this._image = image
     this._images = images
 
@@ -113,6 +117,10 @@ class Crop {
 
   get type(): string {
     return this._type
+  }
+
+  get size(): CropSize {
+    return this._size
   }
 
   get image(): string {

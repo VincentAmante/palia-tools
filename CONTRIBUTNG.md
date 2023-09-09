@@ -1,8 +1,8 @@
 # How to Contribute
 
 First off, thank you so much for deciding to contribute.
-I still have a lot of learning left to do in development and as this is my first project,
-I'm excited to receive critique and feedback of my work.
+I still have a lot of learning left to do in development and as this is my first public project,
+I'm highly open to receive critique and feedback of my work.
 
 ## Issues/Suggestions/Pull Request Instructions
 
@@ -40,8 +40,10 @@ I will get around to it and test them when I can, and if merged, will be credite
 ### Code Improvements
 
 A lot of the planner was written with me prioritising releasing changes/additions with the intent to optimise later.
-This proved to be a less than ideal decision. As such I'm looking for people who can help break the files into smaller pieces,
-which will hopefully make the planner easier to maintain/modify in the future
+This proved to be a less than ideal decision. As such I'm open to changes that break the files into smaller pieces,
+which will hopefully make the planner easier to maintain/modify in the future.
+
+In general I also welcome any improvements to the planner code.
 
 ### Behavioural Parity
 
@@ -61,4 +63,3 @@ but may be declined if I prefer the approach I had in mind.
 This is not to discourage you from making those additions yourselves, but a warning that your efforts might not be properly rewarded.
 
 Anything else though is still welcome, and is unlikely to have conflicts with my own changes.
-
