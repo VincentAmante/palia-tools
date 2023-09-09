@@ -2,6 +2,7 @@ import Direction from '../enums/direction'
 import Bonus from '../enums/bonus'
 import CropType from '../enums/crops'
 import CropCode from '../enums/cropcode'
+import CropSize from '../enums/crop-size'
 import type { PlotStat } from '../types/plotStat'
 import crops, { getCodeFromCrop, getCropFromCode } from '../crop-list'
 import { parseSave } from '../save-handler'
@@ -160,10 +161,10 @@ class Garden {
 
   // Assign bonuses to a crop based on type and bonuses received
   calculateBonuses(): void {
-    const appleTiles: {
+    const treeTiles: {
       [key: string]: Tile[]
     } = {}
-    const blueberryTiles: {
+    const bushTiles: {
       [key: string]: Tile[]
     } = {}
 
@@ -185,14 +186,14 @@ class Garden {
         if (!tile.crop || tile.crop.type === CropType.None)
           continue
 
-        if (tile.crop?.type === CropType.Apple) {
-          if (tile.id in appleTiles)
-            appleTiles[tile.id].push(tile)
+        if (tile.crop?.size === CropSize.Tree) {
+          if (tile.id in treeTiles)
+            treeTiles[tile.id].push(tile)
           else
-            appleTiles[tile.id] = [tile]
+            treeTiles[tile.id] = [tile]
 
-          if (appleTiles[tile.id].length === 9) {
-            const bonusesReceived = appleTiles[tile.id].map(tile => tile.bonusesReceived).flat()
+          if (treeTiles[tile.id].length === 9) {
+            const bonusesReceived = treeTiles[tile.id].map(tile => tile.bonusesReceived).flat()
             const bonusCounts: {
               [key: string]: number
             } = {}
@@ -206,20 +207,20 @@ class Garden {
 
             for (const bonus in bonusCounts) {
               if (bonusCounts[bonus] >= 3) {
-                for (const appleTile of appleTiles[tile.id])
+                for (const appleTile of treeTiles[tile.id])
                   appleTile.bonuses.push(bonus as Bonus)
               }
             }
           }
         }
-        else if (tile.crop?.type === CropType.Blueberry) {
-          if (tile.id in blueberryTiles)
-            blueberryTiles[tile.id].push(tile)
+        else if (tile.crop?.size === CropSize.Bush) {
+          if (tile.id in bushTiles)
+            bushTiles[tile.id].push(tile)
           else
-            blueberryTiles[tile.id] = [tile]
+            bushTiles[tile.id] = [tile]
 
-          if (blueberryTiles[tile.id].length === 4) {
-            const bonusesReceived = blueberryTiles[tile.id]
+          if (bushTiles[tile.id].length === 4) {
+            const bonusesReceived = bushTiles[tile.id]
               .map(tile => tile.bonusesReceived)
               .flat()
 
@@ -236,7 +237,7 @@ class Garden {
 
             for (const bonus in bonusCounts) {
               if (bonusCounts[bonus] >= 2) {
-                for (const blueberryTile of blueberryTiles[tile.id])
+                for (const blueberryTile of bushTiles[tile.id])
                   blueberryTile.bonuses.push(bonus as Bonus)
               }
             }
