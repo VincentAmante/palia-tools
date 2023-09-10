@@ -3,7 +3,7 @@ import { useClipboard, useElementBounding, useMousePressed, useUrlSearchParams }
 import domtoimage from 'dom-to-image-more'
 import { computed, onMounted, ref } from 'vue'
 import uniqid from 'uniqid'
-import StatsDisplay from './StatsDisplay.vue'
+import StatsDisplay from '@/components/garden-planner/StatsDisplay.vue'
 import GardenDisplay from '@/components/garden-planner/GardenDisplay.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
 import LayoutCreator from '@/components/LayoutCreator.vue'
