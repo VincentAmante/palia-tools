@@ -2,48 +2,19 @@ import Direction from '../enums/direction'
 import Bonus from '../enums/bonus'
 import CropType from '../enums/crops'
 import CropCode from '../enums/cropcode'
+import CropSize from '../enums/crop-size'
 import type { PlotStat } from '../types/plotStat'
 import crops, { getCodeFromCrop, getCropFromCode } from '../crop-list'
 import { parseSave } from '../save-handler'
 import FertiliserType from '../enums/fertiliser'
 import FertiliserCode from '../enums/fertilisercode'
 import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliser-list'
+import type { CalculateValueOptions, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo } from '../utils/garden-helpers'
+import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
 
 import Plot from './plot'
 import Tile from './tile'
-
-interface CalculateYieldOptions {
-  days?: number
-  includeReplant?: boolean
-  postLevel25: boolean
-  allStarSeeds?: boolean
-  starChanceOverride?: number
-  baseChanceOverride?: number
-  includeReplantCost?: boolean
-}
-
-type CalculateValueOptions = {
-  [key in CropType]: {
-    baseType: 'crop' | 'seed' | 'preserve'
-    starType: 'crop' | 'seed' | 'preserve'
-  }
-}
-
-interface HarvestInfo {
-  day: number
-  crops: {
-    [key in CropType]: {
-      base: number
-      star: number
-    }
-  }
-  seedsRemainder: {
-    [key in CropType]: {
-      base: number
-      star: number
-    }
-  }
-}
+import type Crop from './crop'
 
 class Garden {
   private _layout: Plot[][] = []
@@ -60,7 +31,7 @@ class Garden {
     }
 
     this.loadLayout(
-      `v${this._version}_DIM-111-111-111_CROPS-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa-NaNaNaNaNaNaNaNaNa`,
+      `v${this._version}_DIM-111-111-111_CROPS-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN`,
     )
   }
 
@@ -80,6 +51,10 @@ class Garden {
         [new Tile(null), new Tile(null), new Tile(null)],
       ]
     }
+  }
+
+  get activePlotCount(): number {
+    return this._layout.flat().filter(plot => plot.isActive).length
   }
 
   loadLayout(layout: string) {
@@ -186,10 +161,10 @@ class Garden {
 
   // Assign bonuses to a crop based on type and bonuses received
   calculateBonuses(): void {
-    const appleTiles: {
+    const treeTiles: {
       [key: string]: Tile[]
     } = {}
-    const blueberryTiles: {
+    const bushTiles: {
       [key: string]: Tile[]
     } = {}
 
@@ -211,14 +186,14 @@ class Garden {
         if (!tile.crop || tile.crop.type === CropType.None)
           continue
 
-        if (tile.crop?.type === CropType.Apple) {
-          if (tile.id in appleTiles)
-            appleTiles[tile.id].push(tile)
+        if (tile.crop?.size === CropSize.Tree) {
+          if (tile.id in treeTiles)
+            treeTiles[tile.id].push(tile)
           else
-            appleTiles[tile.id] = [tile]
+            treeTiles[tile.id] = [tile]
 
-          if (appleTiles[tile.id].length === 9) {
-            const bonusesReceived = appleTiles[tile.id].map(tile => tile.bonusesReceived).flat()
+          if (treeTiles[tile.id].length === 9) {
+            const bonusesReceived = treeTiles[tile.id].map(tile => tile.bonusesReceived).flat()
             const bonusCounts: {
               [key: string]: number
             } = {}
@@ -232,20 +207,20 @@ class Garden {
 
             for (const bonus in bonusCounts) {
               if (bonusCounts[bonus] >= 3) {
-                for (const appleTile of appleTiles[tile.id])
+                for (const appleTile of treeTiles[tile.id])
                   appleTile.bonuses.push(bonus as Bonus)
               }
             }
           }
         }
-        else if (tile.crop?.type === CropType.Blueberry) {
-          if (tile.id in blueberryTiles)
-            blueberryTiles[tile.id].push(tile)
+        else if (tile.crop?.size === CropSize.Bush) {
+          if (tile.id in bushTiles)
+            bushTiles[tile.id].push(tile)
           else
-            blueberryTiles[tile.id] = [tile]
+            bushTiles[tile.id] = [tile]
 
-          if (blueberryTiles[tile.id].length === 4) {
-            const bonusesReceived = blueberryTiles[tile.id]
+          if (bushTiles[tile.id].length === 4) {
+            const bonusesReceived = bushTiles[tile.id]
               .map(tile => tile.bonusesReceived)
               .flat()
 
@@ -262,7 +237,7 @@ class Garden {
 
             for (const bonus in bonusCounts) {
               if (bonusCounts[bonus] >= 2) {
-                for (const blueberryTile of blueberryTiles[tile.id])
+                for (const blueberryTile of bushTiles[tile.id])
                   blueberryTile.bonuses.push(bonus as Bonus)
               }
             }
@@ -275,7 +250,12 @@ class Garden {
     }
   }
 
-  calculateYield(options: CalculateYieldOptions) {
+  /**
+   * Simulates the garden for a given number of days and returns the yield
+   * @param options - Options for calculating yield
+   * @returns
+   */
+  simulateYield(options: ICalculateYieldOptions) {
     // Gets a list of all tiles, and excludes tiles that contain duplicates (i.e. 9 apples tiles should only return 1 tile)
     const individualCrops = new Map<string, Tile>()
 
@@ -306,53 +286,12 @@ class Garden {
     }
     else {
       return {
-        harvests: [] as HarvestInfo[],
+        harvests: [] as IHarvestInfo[],
         harvestTotal: {
           day: 0,
-          crops: {
-            [CropType.Tomato]: {
-              base: 0,
-              star: 0,
-            },
-            [CropType.Potato]: {
-              base: 0,
-              star: 0,
-            },
-            [CropType.Rice]: {
-              base: 0,
-              star: 0,
-            },
-            [CropType.Wheat]: {
-              base: 0,
-              star: 0,
-            },
-            [CropType.Carrot]: {
-              base: 0,
-              star: 0,
-            },
-            [CropType.Onion]: {
-              base: 0,
-              star: 0,
-            },
-            [CropType.Cotton]: {
-              base: 0,
-              star: 0,
-            },
-            [CropType.Apple]: {
-              base: 0,
-              star: 0,
-            },
-            [CropType.Blueberry]: {
-              base: 0,
-              star: 0,
-            },
-            [CropType.None]: {
-              base: 0,
-              star: 0,
-            },
-          },
+          crops: getCropMap(),
           seedsRemainder: getCropMap(),
-        } as HarvestInfo,
+        } as IHarvestInfo,
       }
     }
 
@@ -368,36 +307,8 @@ class Garden {
     if (options.days && options.days > 0)
       maxGrowthTime = options.days
 
-    const harvests: {
-      day: number
-      crops: {
-        [key in CropType]: {
-          base: number
-          star: number
-        }
-      }
-      seedsRemainder?: {
-        [key in CropType]: {
-          base: number
-          star: number
-        }
-      }
-    }[] = []
-
-    const harvestTotal: {
-      day: number
-      crops: {
-        [key in CropType]: {
-          base: number
-          star: number
-        }
-      }
-      seedsRemainder: {
-        [key in CropType]: {
-          base: number
-          star: number
-        }
-      }
+    const harvests: IHarvestInfo[] = []
+    const harvestTotal: IHarvestInfo & {
       totalGold: number
     } = {
       day: 0,
@@ -408,7 +319,7 @@ class Garden {
 
     // Reduce growth time by 1 to account for speed boost
     for (let day = minGrowthTime - 1; day <= maxGrowthTime; day++) {
-      const harvest: HarvestInfo = {
+      const harvest: IHarvestInfo = {
         day,
         crops: getCropMap(),
         seedsRemainder: getCropMap(),
@@ -419,48 +330,7 @@ class Garden {
           base: number
           star: number
         }
-      } = {
-        [CropType.None]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Tomato]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Potato]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Rice]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Wheat]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Carrot]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Onion]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Cotton]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Blueberry]: {
-          base: 0,
-          star: 0,
-        },
-        [CropType.Apple]: {
-          base: 0,
-          star: 0,
-        },
-      }
+      } = getCropMap()
 
       for (const [, tile] of individualCrops) {
         const crop = tile.crop
@@ -521,7 +391,6 @@ class Garden {
             continue
 
           const seeds = seedsRequired[cropType]
-
           const { cropsPerSeed, seedsPerConversion } = crop.conversionInfo
 
           if (seeds.star > 0) {
@@ -573,34 +442,24 @@ class Garden {
       harvests,
       harvestTotal,
     } as {
-      harvests: HarvestInfo[]
-      harvestTotal: HarvestInfo
+      harvests: IHarvestInfo[]
+      harvestTotal: IHarvestInfo
     }
   }
 
   calculateValue(
     options: CalculateValueOptions,
     harvestInfo: {
-      harvests: HarvestInfo[]
-      harvestTotal: HarvestInfo
+      harvests: IHarvestInfo[]
+      harvestTotal: IHarvestInfo
     },
   ) {
     const result: {
       day: number
       crops: {
         [key in CropType]: {
-          base: {
-            produce: number
-            type: 'crop' | 'seed' | 'preserve'
-            gold: number
-            cropRemainder: number
-          }
-          star: {
-            produce: number
-            type: 'crop' | 'seed' | 'preserve'
-            gold: number
-            cropRemainder: number
-          }
+          base: ICropValue
+          star: ICropValue
         }
       }
       totalGold: number
@@ -616,158 +475,16 @@ class Garden {
     for (const harvest of harvestInfo.harvests) {
       const day = harvest.day
       const cropTypes = harvest.crops
-      const dayResult = {
+      const dayResult: IDayResult = {
         day,
-        crops: {
-          [CropType.Tomato]: {
-            base: {
-              produce: 0,
-              type: options[CropType.Tomato].baseType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-            star: {
-              produce: 0,
-              type: options[CropType.Tomato].starType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-          },
-          [CropType.Potato]: {
-            base: {
-              produce: 0,
-              type: options[CropType.Potato].baseType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-            star: {
-              produce: 0,
-              type: options[CropType.Potato].starType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-          },
-          [CropType.Rice]: {
-            base: {
-              produce: 0,
-              type: options[CropType.Rice].baseType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-            star: {
-              produce: 0,
-              type: options[CropType.Rice].starType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-          },
-          [CropType.Wheat]: {
-            base: {
-              produce: 0,
-              type: options[CropType.Wheat].baseType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-            star: {
-              produce: 0,
-              type: options[CropType.Wheat].starType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-          },
-          [CropType.Carrot]: {
-            base: {
-              produce: 0,
-              type: options[CropType.Carrot].baseType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-            star: {
-              produce: 0,
-              type: options[CropType.Carrot].starType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-          },
-          [CropType.Onion]: {
-            base: {
-              produce: 0,
-              type: options[CropType.Onion].baseType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-            star: {
-              produce: 0,
-              type: options[CropType.Onion].starType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-          },
-          [CropType.Cotton]: {
-            base: {
-              produce: 0,
-              type: options[CropType.Cotton].baseType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-            star: {
-              produce: 0,
-              type: options[CropType.Cotton].starType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-          },
-          [CropType.Blueberry]: {
-            base: {
-              produce: 0,
-              type: options[CropType.Blueberry].baseType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-            star: {
-              produce: 0,
-              type: options[CropType.Blueberry].starType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-          },
-          [CropType.Apple]: {
-            base: {
-              produce: 0,
-              type: options[CropType.Apple].baseType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-            star: {
-              produce: 0,
-              type: options[CropType.Apple].starType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-          },
-          [CropType.None]: {
-            base: {
-              produce: 0,
-              type: options[CropType.None].baseType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-            star: {
-              produce: 0,
-              type: options[CropType.None].starType,
-              gold: 0,
-              cropRemainder: 0,
-            },
-          },
-        },
+        crops: getCropValueMap(options),
         totalGold: 0,
       }
 
       for (const cropType in cropTypes) {
         const baseOption = options[cropType as CropType].baseType
-        const starOption = options[cropType as CropType].starType
-
         const baseProduce = cropTypes[cropType as CropType].base
+        const starOption = options[cropType as CropType].starType
         const starProduce = cropTypes[cropType as CropType].star
 
         if (cropType === CropType.None)
@@ -784,221 +501,37 @@ class Garden {
           // There is nothing to calculate
           continue
         }
-        let baseGoldValue = 0
-        let convertedBaseUnits = 0
-        let starGoldValue = 0
-        let convertedStarUnits = 0
 
-        switch (baseOption) {
-          case 'crop':
-            remainders[cropType as CropType].base += 0
-            baseGoldValue = crop.calculateGoldValue(baseProduce, baseOption, false).goldValue
-            convertedBaseUnits = baseProduce
-            break
-          case 'seed':
-            remainders[cropType as CropType].base = 0
-            remainders[cropType as CropType].base += crop.convertCropToSeed(
-              baseProduce + baseRemainder,
-            )?.remainder
-            convertedBaseUnits = crop?.convertCropToSeed(baseProduce + baseRemainder)?.count
-            baseGoldValue = crop.calculateGoldValue(
-              baseProduce + baseRemainder,
-              baseOption,
-              false,
-            ).goldValue
-            break
-          case 'preserve':
-            remainders[cropType as CropType].base = 0
-            remainders[cropType as CropType].base
-              += crop.convertCropToPreserve(baseProduce + baseRemainder).remainder ?? 0
-            convertedBaseUnits = crop.convertCropToPreserve(baseProduce + baseRemainder).count ?? 0
-            baseGoldValue
-              = crop.calculateGoldValue(baseProduce + baseRemainder, baseOption, false).goldValue ?? 0
-            break
-        }
+        const { goldValue: baseGoldValue, newRemainder: newBaseRemainder, convertedUnits: convertedBaseUnits } = calculateCropResult(
+          crop,
+          baseProduce,
+          baseRemainder,
+          baseOption,
+          false,
+        )
         dayResult.crops[cropType as CropType].base.gold += baseGoldValue
         dayResult.crops[cropType as CropType].base.produce += convertedBaseUnits
-        dayResult.crops[cropType as CropType].base.cropRemainder
-          = remainders[cropType as CropType].base
+        dayResult.crops[cropType as CropType].base.cropRemainder = newBaseRemainder
 
-        switch (starOption) {
-          case 'crop':
-            remainders[cropType as CropType].star += 0
-            starGoldValue = crop?.calculateGoldValue(starProduce, starOption, true).goldValue
-            convertedStarUnits = starProduce
-            break
-          case 'seed':
-            remainders[cropType as CropType].star = 0
-            remainders[cropType as CropType].star
-              += crop?.convertCropToSeed(starProduce + starRemainder)?.remainder ?? 0
-            convertedStarUnits = crop?.convertCropToSeed(starProduce + starRemainder)?.count
-            starGoldValue = crop?.calculateGoldValue(starProduce + starRemainder, starOption, true)
-              .goldValue
-            break
-          case 'preserve':
-            remainders[cropType as CropType].star = 0
-            remainders[cropType as CropType].star
-              += crop?.convertCropToPreserve(starProduce + starRemainder).remainder ?? 0
-            convertedStarUnits = crop?.convertCropToPreserve(starProduce + starRemainder).count
-            starGoldValue = crop?.calculateGoldValue(starProduce + starRemainder, starOption, true)
-              .goldValue
-            break
-        }
-
+        const { goldValue: starGoldValue, newRemainder: newStarRemainder, convertedUnits: convertedStarUnits } = calculateCropResult(
+          crop,
+          starProduce,
+          starRemainder,
+          starOption,
+          true,
+        )
         dayResult.crops[cropType as CropType].star.gold += starGoldValue
         dayResult.crops[cropType as CropType].star.produce += convertedStarUnits
-        dayResult.crops[cropType as CropType].star.cropRemainder
-          = remainders[cropType as CropType].star
+        dayResult.crops[cropType as CropType].star.cropRemainder = newStarRemainder
         dayResult.totalGold += baseGoldValue + starGoldValue
       }
 
       result.push(dayResult)
     }
 
-    const totalResult = {
+    const totalResult: IDayResult = {
       day: harvestInfo.harvestTotal.day,
-      crops: {
-        [CropType.Tomato]: {
-          base: {
-            produce: 0,
-            type: options[CropType.Tomato].baseType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-          star: {
-            produce: 0,
-            type: options[CropType.Tomato].starType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-        },
-        [CropType.Potato]: {
-          base: {
-            produce: 0,
-            type: options[CropType.Potato].baseType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-          star: {
-            produce: 0,
-            type: options[CropType.Potato].starType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-        },
-        [CropType.Rice]: {
-          base: {
-            produce: 0,
-            type: options[CropType.Rice].baseType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-          star: {
-            produce: 0,
-            type: options[CropType.Rice].starType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-        },
-        [CropType.Wheat]: {
-          base: {
-            produce: 0,
-            type: options[CropType.Wheat].baseType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-          star: {
-            produce: 0,
-            type: options[CropType.Wheat].starType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-        },
-        [CropType.Carrot]: {
-          base: {
-            produce: 0,
-            type: options[CropType.Carrot].baseType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-          star: {
-            produce: 0,
-            type: options[CropType.Carrot].starType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-        },
-        [CropType.Onion]: {
-          base: {
-            produce: 0,
-            type: options[CropType.Onion].baseType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-          star: {
-            produce: 0,
-            type: options[CropType.Onion].starType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-        },
-        [CropType.Cotton]: {
-          base: {
-            produce: 0,
-            type: options[CropType.Cotton].baseType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-          star: {
-            produce: 0,
-            type: options[CropType.Cotton].starType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-        },
-        [CropType.Blueberry]: {
-          base: {
-            produce: 0,
-            type: options[CropType.Blueberry].baseType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-          star: {
-            produce: 0,
-            type: options[CropType.Blueberry].starType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-        },
-        [CropType.Apple]: {
-          base: {
-            produce: 0,
-            type: options[CropType.Apple].baseType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-          star: {
-            produce: 0,
-            type: options[CropType.Apple].starType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-        },
-        [CropType.None]: {
-          base: {
-            produce: 0,
-            type: options[CropType.None].baseType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-          star: {
-            produce: 0,
-            type: options[CropType.None].starType,
-            gold: 0,
-            cropRemainder: 0,
-          },
-        },
-      },
+      crops: getCropValueMap(options),
       totalGold: 0,
     }
 
@@ -1019,78 +552,28 @@ class Garden {
       const baseRemainder = totalResult.crops[cropType as CropType].base.cropRemainder
       const starRemainder = totalResult.crops[cropType as CropType].star.cropRemainder
 
-      let baseGoldValue = 0
-      let convertedBaseUnits = 0
+      const { goldValue: baseGoldValue, newRemainder: newBaseRemainder, convertedUnits: convertedBaseUnits } = calculateCropResult(
+        crop,
+        baseProduce,
+        baseRemainder,
+        baseOption,
+        false,
+      )
 
-      switch (baseOption) {
-        case 'crop':
-          totalResult.crops[cropType as CropType].base.cropRemainder += 0
-          baseGoldValue = crop?.calculateGoldValue(baseProduce, baseOption, false).goldValue ?? 0
-          convertedBaseUnits = baseProduce
-          break
-        case 'seed':
-          totalResult.crops[cropType as CropType].base.cropRemainder = 0
-          totalResult.crops[cropType as CropType].base.cropRemainder += crop.convertCropToSeed(
-            baseProduce + baseRemainder,
-          )?.remainder
-          convertedBaseUnits = crop?.convertCropToSeed(baseProduce + baseRemainder)?.count
-          baseGoldValue = crop.calculateGoldValue(
-            baseProduce + baseRemainder,
-            baseOption,
-            false,
-          ).goldValue
-          break
-        case 'preserve':
-          totalResult.crops[cropType as CropType].base.cropRemainder = 0
-          totalResult.crops[cropType as CropType].base.cropRemainder += crop.convertCropToPreserve(
-            baseProduce + baseRemainder,
-          ).remainder
-          convertedBaseUnits = crop.convertCropToPreserve(baseProduce + baseRemainder).count
-          baseGoldValue = crop.calculateGoldValue(
-            baseProduce + baseRemainder,
-            baseOption,
-            false,
-          ).goldValue
-          break
-      }
       totalResult.crops[cropType as CropType].base.gold += baseGoldValue
       totalResult.crops[cropType as CropType].base.produce += convertedBaseUnits
-      totalResult.crops[cropType as CropType].base.cropRemainder += baseRemainder
+      totalResult.crops[cropType as CropType].base.cropRemainder = newBaseRemainder
 
-      let starGoldValue = 0
-      let convertedStarUnits = 0
-
-      switch (starOption) {
-        case 'crop':
-          totalResult.crops[cropType as CropType].star.cropRemainder += 0
-          starGoldValue = crop?.calculateGoldValue(starProduce, starOption, true).goldValue ?? 0
-          convertedStarUnits = starProduce
-          break
-        case 'seed':
-          totalResult.crops[cropType as CropType].star.cropRemainder = 0
-          totalResult.crops[cropType as CropType].star.cropRemainder += crop.convertCropToSeed(
-            starProduce + starRemainder,
-          ).remainder
-          convertedStarUnits = crop?.convertCropToSeed(starProduce + starRemainder).count
-          starGoldValue = crop.calculateGoldValue(
-            starProduce + starRemainder,
-            starOption,
-            true,
-          ).goldValue
-          break
-        case 'preserve':
-          totalResult.crops[cropType as CropType].star.cropRemainder = 0
-          totalResult.crops[cropType as CropType].star.cropRemainder
-            += crop?.convertCropToPreserve(starProduce + starRemainder).remainder ?? 0
-          convertedStarUnits = crop?.convertCropToPreserve(starProduce + starRemainder).count ?? 0
-          starGoldValue
-            = crop?.calculateGoldValue(starProduce + starRemainder, starOption, true).goldValue ?? 0
-          break
-      }
-
+      const { goldValue: starGoldValue, newRemainder: newStarRemainder, convertedUnits: convertedStarUnits } = calculateCropResult(
+        crop,
+        starProduce,
+        starRemainder,
+        starOption,
+        true,
+      )
       totalResult.crops[cropType as CropType].star.gold += starGoldValue
       totalResult.crops[cropType as CropType].star.produce += convertedStarUnits
-      totalResult.crops[cropType as CropType].star.cropRemainder += starRemainder
+      totalResult.crops[cropType as CropType].star.cropRemainder = newStarRemainder
 
       totalResult.totalGold += baseGoldValue + starGoldValue
     }
@@ -1103,16 +586,9 @@ class Garden {
   calculateStats() {
     const individualCrops = new Map<string, Tile>()
 
-    const fertiliserCount: {
-      [key in FertiliserType]: number
-    } = {
-      [FertiliserType.None]: 0,
-      [FertiliserType.QualityUp]: 0,
-      [FertiliserType.HarvestBoost]: 0,
-      [FertiliserType.WeedBlock]: 0,
-      [FertiliserType.SpeedyGro]: 0,
-      [FertiliserType.HydratePro]: 0,
-    }
+    const fertiliserCount: Record<string, number> = Object.fromEntries(
+      Object.values(FertiliserType).map(fertiliserType => [fertiliserType, 0]),
+    )
 
     for (const plot of this._layout.flat()) {
       if (!plot.isActive)
@@ -1129,16 +605,9 @@ class Garden {
       }
     }
 
-    const bonusCoverage: {
-      [key in Bonus]: number
-    } = {
-      [Bonus.None]: 0,
-      [Bonus.HarvestIncrease]: 0,
-      [Bonus.WeedPrevention]: 0,
-      [Bonus.WaterRetain]: 0,
-      [Bonus.QualityIncrease]: 0,
-      [Bonus.SpeedIncrease]: 0,
-    }
+    const bonusCoverage: Record<string, number> = Object.fromEntries(
+      Object.values(Bonus).map(bonus => [bonus, 0]),
+    )
 
     for (const crop of individualCrops.values()) {
       for (const bonus of crop.bonuses) {
@@ -1147,21 +616,9 @@ class Garden {
       }
     }
 
-    const cropTypeCount: {
-      [key in CropType]: number
-    } = {
-      [CropType.None]: 0,
-      [CropType.Tomato]: 0,
-      [CropType.Potato]: 0,
-      [CropType.Rice]: 0,
-      [CropType.Wheat]: 0,
-      [CropType.Carrot]: 0,
-      [CropType.Onion]: 0,
-      [CropType.Cotton]: 0,
-      [CropType.Blueberry]: 0,
-      [CropType.Apple]: 0,
-    }
-
+    const cropTypeCount: Record<string, number> = Object.fromEntries(
+      Object.values(CropType).map(cropType => [cropType, 0]),
+    )
     for (const crop of individualCrops.values()) {
       if (crop.crop && crop.crop.type !== CropType.None)
         cropTypeCount[crop.crop.type as CropType]++
@@ -1175,58 +632,42 @@ class Garden {
     } as PlotStat
   }
 }
-export default Garden
-export type { CalculateValueOptions }
 
-// TODO: Move this to a better place
-function getCropMap() {
-  const cropValue: {
-    [key in CropType]: {
-      base: number
-      star: number
-    }
-  } = {
-    [CropType.None]: {
-      base: 0,
-      star: 0,
-    },
-    [CropType.Tomato]: {
-      base: 0,
-      star: 0,
-    },
-    [CropType.Potato]: {
-      base: 0,
-      star: 0,
-    },
-    [CropType.Rice]: {
-      base: 0,
-      star: 0,
-    },
-    [CropType.Wheat]: {
-      base: 0,
-      star: 0,
-    },
-    [CropType.Carrot]: {
-      base: 0,
-      star: 0,
-    },
-    [CropType.Onion]: {
-      base: 0,
-      star: 0,
-    },
-    [CropType.Cotton]: {
-      base: 0,
-      star: 0,
-    },
-    [CropType.Blueberry]: {
-      base: 0,
-      star: 0,
-    },
-    [CropType.Apple]: {
-      base: 0,
-      star: 0,
-    },
+function calculateCropResult(
+  crop: Crop | null,
+  produce: number,
+  remainder: number,
+  option: string,
+  isStar: boolean,
+) {
+  let convertedUnits = 0
+  let goldValue = 0
+  let newRemainder = 0
+
+  switch (option) {
+    case 'crop':
+      newRemainder = remainder
+      convertedUnits = produce
+      goldValue = crop?.calculateGoldValue(produce, option, isStar).goldValue ?? 0
+      break
+    case 'seed':
+      convertedUnits = crop?.convertCropToSeed(produce + remainder)?.count ?? 0
+      newRemainder = crop?.convertCropToSeed(produce + remainder)?.remainder ?? 0
+      goldValue = crop?.calculateGoldValue(produce + remainder, option, isStar).goldValue ?? 0
+      break
+    case 'preserve':
+      convertedUnits = crop?.convertCropToPreserve(produce + remainder)?.count ?? 0
+      newRemainder = crop?.convertCropToPreserve(produce + remainder)?.remainder ?? 0
+      goldValue = crop?.calculateGoldValue(produce + remainder, option, isStar).goldValue ?? 0
+      break
   }
 
-  return cropValue
+  return {
+    convertedUnits,
+    goldValue,
+    newRemainder,
+  }
 }
+
+export default Garden
+export type { CalculateValueOptions }

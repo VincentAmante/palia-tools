@@ -12,9 +12,11 @@ import {
   faDroplet,
   faEraser,
   faForwardFast,
+  faGift,
   faHeart,
   faInfoCircle,
   faJar,
+  faMap,
   faPaste,
   faPlus,
   faRecycle,
@@ -29,6 +31,8 @@ import {
   faTurnDown,
   faWheatAwn,
 } from '@fortawesome/free-solid-svg-icons'
+
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
   faShield,
@@ -57,6 +61,9 @@ library.add(
   faTurnDown,
   faArrowLeft,
   faBars,
+  faGift,
+  faMap,
+  faGithub,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS

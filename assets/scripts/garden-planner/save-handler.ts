@@ -84,14 +84,15 @@ function validatePlotMatrix(dimensionInfo: string) {
     }
   }
 
-  // Count the number of active plots
-  const maxPlots = 9
-  const activePlots = dimensions.flat().map((row) => {
-    return row.split('').filter(col => col === '1').length
-  }).reduce((acc, curr) => acc + curr)
+  // * Removed to allow illegal plot counts
+  // // Count the number of active plots
+  // const maxPlots = 9
+  // const activePlots = dimensions.flat().map((row) => {
+  //   return row.split('').filter(col => col === '1').length
+  // }).reduce((acc, curr) => acc + curr)
 
-  if (activePlots > maxPlots)
-    throw new Error(`Too many active plots: ${activePlots} > ${maxPlots}`)
+  // if (activePlots > maxPlots)
+  //   throw new Error(`Too many active plots: ${activePlots} > ${maxPlots}`)
 }
 
 export { convertV0_1CodestoV0_2 as convertV_0_1_to_V_0_2, parseSave }

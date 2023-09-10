@@ -14,15 +14,20 @@
         </h2>
         <div class="flex flex-col gap-1">
           <p>
-            Open-Sourcing of the project is delayed and may be subject to change.
-            The Palia Team has heard my request for clarification on what the Planner can and cannot do as a fan-tool
-            and is currently in the process of discussing it.
-            As it deals with permissions and licensing, I cannot make the project public until I get
-            the all-clear from them.
+            Open-Sourcing of the project is still delayed,
+            but the source code is now viewable on GitHub.
           </p>
-          <p class="py-4 font-bold">
-            I sincerely apologise for the delay. I'll update this notice as soon as the situation changes.
-            Once the planner is in a state approved for open-sourcing, I'll release the source code as soon as I can.
+          <NuxtLink
+            to="https://github.com/VincentAmante/palia-tools"
+            target="_blank"
+            class="btn btn-sm btn-primary w-fit"
+          >
+            <font-awesome-icon :icon="['fab', 'github']" class="" />
+            Link to Github
+          </NuxtLink>
+          <p>
+            The lack of an OS-license is because I'm still waiting for the Palia team to respond to my query for clarification.
+            Until then, the use of the source code is limited to the terms of use allowed by Github.
           </p>
         </div>
       </div>
@@ -33,10 +38,16 @@
           Garden Planner Roadmap
         </h1>
         <p class="text-xs md:text-sm">
-          Last Updated: August 28, 2023
+          Last Updated: September 9, 2023
         </p>
       </div>
       <div class="flex flex-col gap-2 text-justify text-sm max-w-3xl md:text-base leading-10">
+        <p class="leading-6">
+          <span class="font-bold">Update (September 9):</span>
+          Hey all! I'm facing delays for various reasons this past week, and will work at a slower pace for health/personal reasons.
+          I'm updating the roadmap but I'm not sure if I'll be able to meet the deadlines I've set for myself.
+        </p>
+        <div class="divider max-w-xs" />
         <p class="text-sm text-justify">
           Hey everyone! The Palia Garden Planner started out as a fun little tool for quickly sharing garden
           layouts
@@ -92,7 +103,7 @@
         <div class="collapse-content flex flex-col gap-2">
           <div class="py-2">
             <p class="text-sm italic">
-              ETA: Near end of August - First week of September
+              ETA: Early September
             </p>
           </div>
           <p>
@@ -161,7 +172,7 @@
         <div class="collapse-content flex flex-col gap-2">
           <div class="py-2">
             <p class="text-sm italic">
-              ETA: Early September
+              ETA: Early - Mid September
             </p>
           </div>
           <p>
@@ -195,7 +206,7 @@
         <div class="collapse-content flex flex-col gap-2">
           <div class="py-2">
             <p class="text-sm italic">
-              ETA: Early September
+              ETA: Early - Mid September
             </p>
           </div>
           <p>
@@ -228,9 +239,6 @@
               ETA: ???
             </p>
           </div>
-          <p class="font-bold">
-            Secret c:
-          </p>
         </div>
       </div>
     </section>
