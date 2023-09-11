@@ -52,7 +52,7 @@ class Plot {
   }
 
   get tiles(): Tile[][] {
-    // this is to prevent the plot from being interacted with for calculations when inactive
+    // prevents plot from being interacted with for calculations when inactive
     if (!this._isActive) {
       return [
         [new Tile(null), new Tile(null), new Tile(null)],
@@ -65,7 +65,7 @@ class Plot {
   }
 
   getTile(x: number, y: number): Tile {
-    // this is to prevent the plot from being interacted with for calculations when inactive
+    // prevents tile from being interacted with for calculations when inactive
     if (!this._isActive)
       return new Tile(null)
 
@@ -123,6 +123,14 @@ class Plot {
       this.removeFertiliserFromTile(row, col)
   }
 
+  /**
+   * Places crop on any plot, used for placing crops on adjacent plots
+   * @param plot
+   * @param row
+   * @param col
+   * @param crop
+   * @param id
+   */
   private placeCropOnPlot(plot: Plot, row: number, col: number, crop: Crop, id: string = uniqid()): void {
     plot.removeCropFromTile(row, col)
     plot.tiles[row][col].crop = crop
@@ -399,8 +407,13 @@ class Plot {
     }
   }
 
-  // Returns the tiles adjacent to the given tile
-  getAdjacentTiles(x: number, y: number): Tile[] {
+  /**
+   *  Returns the tiles adjacent to the given tile, including tiles from adjacent plots
+   * @param row
+   * @param col
+   * @returns
+   */
+  getAdjacentTiles(row: number, col: number): Tile[] {
     const getAdjacentTiles = (x: number, y: number): Tile[] => {
       const adjacentTiles: Tile[] = []
       if (x > 0)
@@ -429,25 +442,7 @@ class Plot {
 
       return adjacentTiles
     }
-    return getAdjacentTiles(x, y)
-  }
-
-  // Returns the tiles on the side of the plot, for adjacent plots
-  getCardinalTiles(side: Direction): Tile[] | null {
-    if (side === Direction.North)
-      return this._tiles[0]
-    else if (side === Direction.South)
-      return this._tiles[TILE_ROWS - 1]
-
-    const cardinalTiles: Tile[] = []
-    for (let i = 0; i < TILE_ROWS; i++) {
-      if (side === Direction.East)
-        cardinalTiles.push(this._tiles[i][TILE_COLS - 1])
-      else if (side === Direction.West)
-        cardinalTiles.push(this._tiles[i][0])
-    }
-
-    return null
+    return getAdjacentTiles(row, col)
   }
 
   calculateBonusesReceived(): void {
