@@ -121,6 +121,9 @@ class Garden {
     }
   }
 
+  /**
+   * @returns a string containing the layout info of the garden
+   */
   saveLayout(): string {
     let layoutCode = `v${this._version}_DIM-`
     const rows = this._layout.length
@@ -447,6 +450,13 @@ class Garden {
     }
   }
 
+  /**
+   *  Calculates the gold value of the crops harvested
+   *
+   * @param options - What to sell each crop as
+   * @param harvestInfo - The yield of the garden
+   * @returns gold value data for each day and the total gold value
+   */
   calculateValue(
     options: CalculateValueOptions,
     harvestInfo: {
@@ -583,7 +593,13 @@ class Garden {
     }
   }
 
+  /**
+   *
+   * @returns data about the garden, particularly crop count, fertiliser count, and bonus coverage
+   */
   calculateStats() {
+    // Individual crops accounts for crops that are planted on multiple tiles
+    // e.g: 9 apple tiles will only count as 1 apple tree
     const individualCrops = new Map<string, Tile>()
 
     const fertiliserCount: Record<string, number> = Object.fromEntries(
@@ -633,11 +649,21 @@ class Garden {
   }
 }
 
+/**
+ *  Calculates gold value of crops based on the option selected
+ *
+ * @param crop - crop to calculate
+ * @param produce - number of crops to sell
+ * @param remainder - remainder from previous days
+ * @param option - What to sell the crop as
+ * @param isStar
+ * @returns
+ */
 function calculateCropResult(
   crop: Crop | null,
   produce: number,
   remainder: number,
-  option: string,
+  option: 'crop' | 'seed' | 'preserve',
   isStar: boolean,
 ) {
   let convertedUnits = 0
