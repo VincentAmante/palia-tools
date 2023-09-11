@@ -15,13 +15,20 @@ function getStatsDisplay() {
   return statsDisplay.value
 }
 
-defineExpose({
-  getStatsDisplay,
-})
+function modifyStatsDisplayClassList(callback: (classList: DOMTokenList) => void) {
+  const statsDisplay = getStatsDisplay()
+  if (statsDisplay)
+    callback(statsDisplay.classList)
+}
 
 function updateHoveredBonus(bonus: Bonus) {
   emit('update:hoveredBonus', bonus)
 }
+
+defineExpose({
+  getStatsDisplay,
+  modifyStatsDisplayClassList,
+})
 </script>
 
 <template>

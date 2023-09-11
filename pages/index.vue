@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useClipboard, useElementBounding, useMousePressed, useUrlSearchParams } from '@vueuse/core'
+import { useClipboard, useMousePressed, useUrlSearchParams } from '@vueuse/core'
 import domtoimage from 'dom-to-image-more'
 import { computed, onMounted, ref } from 'vue'
 import uniqid from 'uniqid'
@@ -132,17 +132,20 @@ function clearAllPlots() {
 const display = ref(null as unknown as HTMLElement)
 const statDisplay = ref<InstanceType<typeof StatsDisplay> | null>()
 const gardenDisplay = ref<InstanceType<typeof GardenDisplay> | null>()
-const { width: plotsDisplayWidth } = useElementBounding(gardenDisplay.value?.getPlotsDisplay() as HTMLElement)
-const { width: statDisplayWidth } = useElementBounding(statDisplay.value?.getStatsDisplay() as HTMLElement)
+// const { width: plotsDisplayWidth } = useElementBounding(gardenDisplay.value?.getPlotsDisplay() as HTMLElement)
+// const { width: statDisplayWidth } = useElementBounding(statDisplay.value?.getStatsDisplay() as HTMLElement)
 
 const isTakingScreenshot = useTakingScreenshot()
 function saveAsImage() {
   isTakingScreenshot.set(true)
-  let displayWidth = plotsDisplayWidth.value + 200
+  let displayWidth = ((gardenDisplay.value?.getPlotsDisplay() as HTMLElement).clientWidth) + 164
   if (!gardenTilesAreWide.value)
-    displayWidth += statDisplayWidth.value
+    displayWidth += ((statDisplay.value?.getStatsDisplay() as HTMLElement).clientWidth)
 
   display.value.style.width = `${displayWidth}px`
+  gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
+    classList.add(`w-${displayWidth}`)
+  })
   const htmlContent = display.value as HTMLElement
 
   domtoimage.toBlob(
@@ -153,6 +156,9 @@ function saveAsImage() {
     const url = window.URL.createObjectURL(blob)
     downloadURI(url, `PaliaGardenPlan-${uniqid()}.png`)
     display.value.style.width = ''
+    gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
+      classList.remove(`w-${displayWidth}`)
+    })
     isTakingScreenshot.set(false)
   })
 }
@@ -231,7 +237,10 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
       <div id="planner" class="flex justify-between relative">
         <div class="crop-buttons px-4 md:px-0">
           <div class="py-2">
-            <h2 class="text-xl font-bold">
+            <h2
+              v-show="!isTakingScreenshot.get"
+              class="text-xl font-bold"
+            >
               Select
             </h2>
             <p :class="(isTakingScreenshot.get) ? 'hidden' : ''">
@@ -345,6 +354,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
           @select-tile="selectTile"
         />
         <StatsDisplay
+          ref="statDisplay"
           v-model:hovered-bonus="hoveredBonus"
           :garden-tiles-are-wide="gardenTilesAreWide"
           :plot-stat-total="plotStatTotal"

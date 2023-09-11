@@ -24,8 +24,15 @@ function getPlotsDisplay() {
   return plotsDisplay.value
 }
 
+function modifyPlotsDisplayClassList(callback: (classList: DOMTokenList) => void) {
+  const plotsDisplay = getPlotsDisplay()
+  if (plotsDisplay)
+    callback(plotsDisplay.classList)
+}
+
 defineExpose({
   getPlotsDisplay,
+  modifyPlotsDisplayClassList,
 })
 const { get: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
 
