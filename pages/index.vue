@@ -10,6 +10,15 @@ import LayoutCreator from '@/components/LayoutCreator.vue'
 import type { Plot, PlotStat } from '@/assets/scripts/garden-planner/imports'
 import { Bonus, Crop, CropType, Fertiliser, FertiliserType, Garden, crops, fertilisers, getCropFromType } from '@/assets/scripts/garden-planner/imports'
 
+useHead({
+  link: [
+    {
+      rel: 'canonical',
+      href: 'https://palia-garden-planner.vercel.app/',
+    },
+  ],
+})
+
 const selectedItem = ref<Crop | Fertiliser | null | 'crop-erase' | 'fertiliser-erase'>('crop-erase')
 const garden = ref(new Garden())
 const gardenTiles = ref(garden.value.plots)

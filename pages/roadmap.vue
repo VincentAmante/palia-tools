@@ -1,3 +1,14 @@
+<script setup lang="ts">
+useHead({
+  link: [
+    {
+      rel: 'canonical',
+      href: 'https://palia-garden-planner.vercel.app/roadmap',
+    },
+  ],
+})
+</script>
+
 <template>
   <main class="flex flex-col px-4 py-2 md:px-8 lg:px-16 gap-2 text-justify">
     <NuxtLink to="/" class="flex items-center gap-2 btn w-fit btn-sm btn-ghost">
