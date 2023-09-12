@@ -1,4 +1,4 @@
-import Direction from '../../utils/enums/direction'
+import Direction from '../enums/direction'
 import Bonus from '../enums/bonus'
 import CropType from '../enums/crops'
 import CropCode from '../enums/cropcode'

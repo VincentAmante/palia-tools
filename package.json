@@ -19,10 +19,8 @@
     "@pinia/nuxt": "^0.4.11",
     "dayjs": "^1.11.9",
     "dom-to-image-more": "^3.1.6",
-    "konva": "^9.2.0",
     "pinia": "^2.1.6",
-    "uniqid": "^5.4.0",
-    "vue-konva": "^3.0.2"
+    "uniqid": "^5.4.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.40.2",
