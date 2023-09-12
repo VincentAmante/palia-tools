@@ -8,7 +8,8 @@
 import uniqid from 'uniqid'
 import type Bonus from '../enums/bonus'
 import CropType from '../enums/crops'
-import Direction from '../../utils/enums/direction'
+import Direction from '../enums/direction'
+import CropSize from '../enums/crop-size'
 import type Fertiliser from './fertiliser'
 import type Crop from './crop'
 import Tile from './tile'
@@ -51,7 +52,7 @@ class Plot {
   }
 
   get tiles(): Tile[][] {
-    // this is to prevent the plot from being interacted with for calculations when inactive
+    // prevents plot from being interacted with for calculations when inactive
     if (!this._isActive) {
       return [
         [new Tile(null), new Tile(null), new Tile(null)],
@@ -64,7 +65,7 @@ class Plot {
   }
 
   getTile(x: number, y: number): Tile {
-    // this is to prevent the plot from being interacted with for calculations when inactive
+    // prevents tile from being interacted with for calculations when inactive
     if (!this._isActive)
       return new Tile(null)
 
@@ -116,18 +117,26 @@ class Plot {
     this._tiles[row][col].crop = crop
     this._tiles[row][col].id = id
 
-    // This is because of how fertilisers are typically added to blueberries and apple trees
+    // This is because of how fertilisers are typically added to bushes and trees
     // I forgot to check how this behaviour works in-game
-    if (crop.type === CropType.Apple || crop.type === CropType.Blueberry)
+    if (crop.size !== CropSize.Single)
       this.removeFertiliserFromTile(row, col)
   }
 
+  /**
+   * Places crop on any plot, used for placing crops on adjacent plots
+   * @param plot
+   * @param row
+   * @param col
+   * @param crop
+   * @param id
+   */
   private placeCropOnPlot(plot: Plot, row: number, col: number, crop: Crop, id: string = uniqid()): void {
     plot.removeCropFromTile(row, col)
     plot.tiles[row][col].crop = crop
     plot.tiles[row][col].id = id
 
-    if (crop.type === CropType.Apple || crop.type === CropType.Blueberry)
+    if (crop.size !== CropSize.Single)
       plot.removeFertiliserFromTile(row, col)
   }
 
@@ -155,7 +164,7 @@ class Plot {
       return
     }
 
-    if ((crop.type as CropType) === CropType.Apple) {
+    if ((crop.size as CropSize) === CropSize.Tree) {
       const id: string = uniqid()
 
       if (row === 0 && column === 0) {
@@ -203,7 +212,7 @@ class Plot {
       }
     }
 
-    else if ((crop.type as CropType) === CropType.Blueberry) {
+    else if ((crop.size as CropSize) === CropSize.Bush) {
       const id: string = uniqid()
 
       if (row < TILE_ROWS - 1 && column < TILE_COLS - 1) {
@@ -304,13 +313,13 @@ class Plot {
     if (this._tiles[row][column].fertiliser !== null && this._tiles[row][column].fertiliser?.id === fertiliser.id)
       return
 
-    // forced id is used when adding fertilisers to blueberries and apple trees
+    // forced id is used when adding fertilisers to bushes and trees
     const fertiliserId = (fertiliserForcedId === '') ? uniqid() : fertiliserForcedId
 
     fertiliser.id = fertiliserId
     this._tiles[row][column].fertiliser = fertiliser
 
-    if (this._tiles[row][column].crop?.type === CropType.Apple || this._tiles[row][column].crop?.type === CropType.Blueberry) {
+    if (this._tiles[row][column].crop?.size === CropSize.Tree || this._tiles[row][column].crop?.size === CropSize.Bush) {
       const tileId = this._tiles[row][column].id
 
       // look for adjacent tiles with the same id and recursively add fertiliser to them
@@ -347,9 +356,9 @@ class Plot {
       return
     this._tiles[row][column].fertiliser = null
 
-    // Code to remove fertilisers added to blueberries and apple trees
+    // Code to remove fertilisers added to bushes and trees
     // ? Is this even how it should work? I haven't verified it
-    if (this._tiles[row][column].crop?.type === CropType.Apple || this._tiles[row][column].crop?.type === CropType.Blueberry) {
+    if (this._tiles[row][column].crop?.size === CropSize.Tree || this._tiles[row][column].crop?.size === CropSize.Bush) {
       if (!removeSameId)
         return
 
@@ -398,8 +407,13 @@ class Plot {
     }
   }
 
-  // Returns the tiles adjacent to the given tile
-  getAdjacentTiles(x: number, y: number): Tile[] {
+  /**
+   *  Returns the tiles adjacent to the given tile, including tiles from adjacent plots
+   * @param row
+   * @param col
+   * @returns
+   */
+  getAdjacentTiles(row: number, col: number): Tile[] {
     const getAdjacentTiles = (x: number, y: number): Tile[] => {
       const adjacentTiles: Tile[] = []
       if (x > 0)
@@ -428,25 +442,7 @@ class Plot {
 
       return adjacentTiles
     }
-    return getAdjacentTiles(x, y)
-  }
-
-  // Returns the tiles on the side of the plot, for adjacent plots
-  getCardinalTiles(side: Direction): Tile[] | null {
-    if (side === Direction.North)
-      return this._tiles[0]
-    else if (side === Direction.South)
-      return this._tiles[TILE_ROWS - 1]
-
-    const cardinalTiles: Tile[] = []
-    for (let i = 0; i < TILE_ROWS; i++) {
-      if (side === Direction.East)
-        cardinalTiles.push(this._tiles[i][TILE_COLS - 1])
-      else if (side === Direction.West)
-        cardinalTiles.push(this._tiles[i][0])
-    }
-
-    return null
+    return getAdjacentTiles(row, col)
   }
 
   calculateBonusesReceived(): void {

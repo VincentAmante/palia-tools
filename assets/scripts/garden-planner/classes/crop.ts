@@ -1,7 +1,8 @@
 import type Bonus from '../enums/bonus'
 import type CropType from '../enums/crops'
+import type CropSize from '../enums/crop-size'
 
-interface ProduceInfo {
+interface IProduceInfo {
   base: number
   // NOTE: withBonus is an override, I'm not sure if all crops follow the (1.5x) rule
   withBonus: number
@@ -11,7 +12,7 @@ interface ProduceInfo {
   reharvestLimit: number // Amount of times the crop can be reharvested
 }
 
-interface ProduceInfoOptions {
+interface IProduceInfoOptions {
   base: number
   withBonus?: number
   growthTime: number
@@ -20,7 +21,7 @@ interface ProduceInfoOptions {
   reharvestLimit?: number
 }
 
-interface GoldValues {
+interface IGoldValues {
   crop: number
   cropStar: number
   seed: number
@@ -29,14 +30,7 @@ interface GoldValues {
   preserveStar: number
   hasPreserve: boolean
 }
-
-interface CropConversions {
-  cropsPerSeed: number
-  seedsPerConversion: number
-  cropsPerPreserve: number
-}
-
-interface GoldValuesOptions {
+interface IGoldValuesOptions {
   crop: number
   cropStar: number
   seed: number
@@ -46,13 +40,20 @@ interface GoldValuesOptions {
   hasPreserve: boolean
 }
 
+interface ICropConversions {
+  cropsPerSeed: number
+  seedsPerConversion: number
+  cropsPerPreserve: number
+}
+
 class Crop {
   private _type: CropType
   private _cropBonus: Bonus
   private _image: string
-  private _produceInfo: ProduceInfo
-  private _goldValues: GoldValues
-  private _conversionInfo: CropConversions
+  private _produceInfo: IProduceInfo
+  private _goldValues: IGoldValues
+  private _conversionInfo: ICropConversions
+  private _size: CropSize
   private _images: {
     preserve: string
     seed: string
@@ -61,10 +62,11 @@ class Crop {
   constructor(
     type: CropType,
     cropBonus: Bonus,
+    size: CropSize,
     image: string,
-    produceInfo: ProduceInfo | ProduceInfoOptions,
-    goldValues: GoldValues | GoldValuesOptions,
-    conversionInfo: CropConversions, // How much of each crop is required to make a seed/preserve
+    produceInfo: IProduceInfo | IProduceInfoOptions,
+    goldValues: IGoldValues | IGoldValuesOptions,
+    conversionInfo: ICropConversions, // How much of each crop is required to make a seed/preserve
     images: {
       preserve: string
       seed: string
@@ -75,12 +77,12 @@ class Crop {
   ) {
     this._type = type
     this._cropBonus = cropBonus
+    this._size = size
     this._image = image
     this._images = images
 
-    // if produceInfo type is ProduceInfoOptions, then we need to convert it to ProduceInfo
-    if ((produceInfo as ProduceInfoOptions).base) {
-      const produceInfoOptions = produceInfo as ProduceInfoOptions
+    if ((produceInfo as IProduceInfoOptions).base) {
+      const produceInfoOptions = produceInfo as IProduceInfoOptions
       this._produceInfo = {
         base: produceInfoOptions.base,
         withBonus: produceInfoOptions.withBonus || produceInfoOptions.base * 1.5,
@@ -91,12 +93,11 @@ class Crop {
       }
     }
     else {
-      this._produceInfo = produceInfo as ProduceInfo
+      this._produceInfo = produceInfo as IProduceInfo
     }
 
-    // if goldValues type is GoldValuesOptions, then we need to convert it to GoldValues
-    if ((goldValues as GoldValuesOptions).crop) {
-      const goldValuesOptions = goldValues as GoldValuesOptions
+    if ((goldValues as IGoldValuesOptions).crop) {
+      const goldValuesOptions = goldValues as IGoldValuesOptions
       this._goldValues = {
         crop: goldValuesOptions.crop,
         cropStar: goldValuesOptions.cropStar,
@@ -108,7 +109,7 @@ class Crop {
       }
     }
     else {
-      this._goldValues = goldValues as GoldValues
+      this._goldValues = goldValues as IGoldValues
     }
 
     this._conversionInfo = conversionInfo
@@ -116,6 +117,10 @@ class Crop {
 
   get type(): string {
     return this._type
+  }
+
+  get size(): CropSize {
+    return this._size
   }
 
   get image(): string {
@@ -126,15 +131,15 @@ class Crop {
     return this._cropBonus
   }
 
-  get produceInfo(): ProduceInfo {
+  get produceInfo(): IProduceInfo {
     return this._produceInfo
   }
 
-  get goldValues(): GoldValues {
+  get goldValues(): IGoldValues {
     return this._goldValues
   }
 
-  get conversionInfo(): CropConversions {
+  get conversionInfo(): ICropConversions {
     return this._conversionInfo
   }
 
@@ -153,12 +158,6 @@ class Crop {
     const onLastHarvest = (day % totalGrowthTime) === 0
     const doReplant = onLastHarvest
 
-    console.log('onLastHarvest', onLastHarvest)
-
-    // // TODO: re-do this logic, it's a bit confusing
-    // const cycleDay = day > totalGrowthTime ? day % totalGrowthTime : day
-    // const isOnCycleDay = day > totalGrowthTime ? day % totalGrowthTime === 0 : true
-
     const harvestableDays = []
     harvestableDays.push(growthTime)
     for (let i = 0; i < reharvestLimit; i++)
@@ -174,7 +173,6 @@ class Crop {
       isHarvestable: harvestableDays.includes(day % totalGrowthTime),
       doReplant,
     }
-    // return harvestableDays.includes(cycleDay)
   }
 
   get totalGrowTime(): number {
@@ -256,4 +254,4 @@ class Crop {
 }
 
 export default Crop
-export type { ProduceInfo, ProduceInfoOptions }
+export type { IProduceInfo, IProduceInfoOptions }
