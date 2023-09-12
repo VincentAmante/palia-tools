@@ -28,6 +28,9 @@ export default defineNuxtConfig({
   typescript: {
     shim: false,
   },
+  plugins: [
+    { src: '~/plugins/vuekonva', mode: 'client' },
+  ],
   app: {
     head: {
       charset: 'utf-8',
