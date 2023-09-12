@@ -1,10 +1,9 @@
-// File acts as a central import file for all classes and enums
-
+// File acts as a central import file for all classes and enums for use outside of the scripts folder
+import Direction from '../utils/enums/direction'
 import Crop from './classes/crop'
 import CropType from './enums/crops'
 import Plot from './classes/plot'
 import Tile from './classes/tile'
-import Direction from './enums/direction'
 import Bonus from './enums/bonus'
 import CropCode from './enums/cropcode'
 import crops, { getCodeFromCrop, getCropFromCode, getCropFromType } from './crop-list'
