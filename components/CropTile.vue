@@ -58,7 +58,7 @@ const bgColour = computed(() => {
     case CropType.Corn:
       return 'bg-green-800'
     case CropType.SpicyPepper:
-      return 'bg-orange-700'
+      return 'bg-amber-600' 
     default:
       return ''
   }
