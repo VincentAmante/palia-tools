@@ -220,7 +220,7 @@ const crops = {
     CropSize.Bush,
     '/crops/blueberry.webp',
     {
-      base: 4,
+      base: 6,
       growthTime: 9,
       isReharvestable: true,
       reharvestCooldown: 3,
@@ -276,6 +276,65 @@ const crops = {
       seed: '/seeds/apple.png',
     },
   ),
+  [CropType.Corn]: new Crop(
+    CropType.Corn,
+    Bonus.HarvestIncrease,
+    CropSize.Single,
+    '/crops/corn.webp',
+    {
+      base: 2,
+      growthTime: 5,
+    },
+    {
+      crop: 40,
+      cropStar: 60,
+      seed: 15,
+      seedStar: 22,
+      hasPreserve: true,
+      preserve: 68,
+      preserveStar: 102,
+    },
+    {
+      cropsPerSeed: 1,
+      seedsPerConversion: 2,
+      cropsPerPreserve: 1,
+    },
+    {
+      preserve: '/jars/corn.webp',
+      seed: '/seeds/corn.webp',
+    },
+  ),
+  [CropType.SpicyPepper]: new Crop(
+    CropType.SpicyPepper,
+    Bonus.QualityIncrease,
+    CropSize.Bush,
+    '/crops/spicy-pepper.webp',
+    {
+      base: 6,
+      growthTime: 6,
+      isReharvestable: true,
+      reharvestCooldown: 3,
+      reharvestLimit: 3,
+    },
+    {
+      crop: 32,
+      cropStar: 48,
+      seed: 85,
+      seedStar: 127,
+      hasPreserve: true,
+      preserve: 48,
+      preserveStar: 72,
+    },
+    {
+      cropsPerSeed: 4,
+      seedsPerConversion: 1,
+      cropsPerPreserve: 1,
+    },
+    {
+      preserve: '/jars/spicy-pepper.webp',
+      seed: '/seeds/spicy-pepper.webp',
+    },
+  ),
   [CropType.None]: null,
 }
 
@@ -299,6 +358,10 @@ function getCropFromCode(code: CropCode): Crop | null {
       return crops[CropType.Blueberry]
     case CropCode.Apple:
       return crops[CropType.Apple]
+    case CropCode.Corn:
+      return crops[CropType.Corn]
+    case CropCode.SpicyPepper:
+      return crops[CropType.SpicyPepper]
     default:
       return crops[CropType.None]
   }
@@ -324,6 +387,10 @@ function getCodeFromCrop(crop: Crop): CropCode {
       return CropCode.Blueberry
     case CropType.Apple:
       return CropCode.Apple
+    case CropType.Corn:
+      return CropCode.Corn
+    case CropType.SpicyPepper:
+      return CropCode.SpicyPepper
     default:
       return CropCode.None
   }

@@ -25,7 +25,32 @@ useHead({
       </div>
 
       <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
-        <input type="checkbox" checked>
+        <input type="checkbox">
+        <h2 class="collapse-title text-xl font-bold">
+          September 13, 2023 (Hotfix)
+        </h2>
+        <div class="collapse-content flex flex-col gap-6 text-sm md:text-base  leading-6">
+          <div class="flex flex-col gap-2">
+            <h3 class="font-bold">
+              Changes Summary
+            </h3>
+            <ul class="list-disc list-inside">
+              <li>Added corn and spicy pepper</li>
+              <li>Fixed bug where remainders weren't being properly calculated in the planner</li>
+              <li>Fixed huge oversight where bushes gave 4 crops per harvest when it actually gives 6</li>
+            </ul>
+            <p>
+              This hotfix adds the new crops added in the 0.168 patch.
+              It also fixed some incorrect values that I've not detected for a long time.
+              If you notice discrepancies in your harvest/gold values, please do report it to me on Discord <span class="font-bold">(.aisen)</span>
+              as I tend to miss some values while working on the planner.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
+        <input type="checkbox">
         <h2 class="collapse-title text-xl font-bold">
           September 8, 2023
         </h2>

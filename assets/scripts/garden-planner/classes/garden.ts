@@ -522,6 +522,7 @@ class Garden {
         dayResult.crops[cropType as CropType].base.gold += baseGoldValue
         dayResult.crops[cropType as CropType].base.produce += convertedBaseUnits
         dayResult.crops[cropType as CropType].base.cropRemainder = newBaseRemainder
+        remainders[cropType as CropType].base = newBaseRemainder
 
         const { goldValue: starGoldValue, newRemainder: newStarRemainder, convertedUnits: convertedStarUnits } = calculateCropResult(
           crop,
@@ -530,9 +531,11 @@ class Garden {
           starOption,
           true,
         )
+
         dayResult.crops[cropType as CropType].star.gold += starGoldValue
         dayResult.crops[cropType as CropType].star.produce += convertedStarUnits
         dayResult.crops[cropType as CropType].star.cropRemainder = newStarRemainder
+        remainders[cropType as CropType].star = newStarRemainder
         dayResult.totalGold += baseGoldValue + starGoldValue
       }
 
@@ -581,9 +584,13 @@ class Garden {
         starOption,
         true,
       )
+
       totalResult.crops[cropType as CropType].star.gold += starGoldValue
       totalResult.crops[cropType as CropType].star.produce += convertedStarUnits
+
       totalResult.crops[cropType as CropType].star.cropRemainder = newStarRemainder
+      if (crop.type === CropType.SpicyPepper)
+        console.log('After:', totalResult.crops[cropType as CropType].star.cropRemainder)
 
       totalResult.totalGold += baseGoldValue + starGoldValue
     }
@@ -670,6 +677,11 @@ function calculateCropResult(
   let goldValue = 0
   let newRemainder = 0
 
+  const cropsCombined = produce + remainder
+
+  if (crop?.type === CropType.SpicyPepper)
+    console.log('cropsCombined: ', cropsCombined)
+
   switch (option) {
     case 'crop':
       newRemainder = remainder
@@ -677,14 +689,14 @@ function calculateCropResult(
       goldValue = crop?.calculateGoldValue(produce, option, isStar).goldValue ?? 0
       break
     case 'seed':
-      convertedUnits = crop?.convertCropToSeed(produce + remainder)?.count ?? 0
-      newRemainder = crop?.convertCropToSeed(produce + remainder)?.remainder ?? 0
-      goldValue = crop?.calculateGoldValue(produce + remainder, option, isStar).goldValue ?? 0
+      convertedUnits = crop?.convertCropToSeed(cropsCombined)?.count ?? 0
+      newRemainder = crop?.convertCropToSeed(cropsCombined)?.remainder ?? 0
+      goldValue = crop?.calculateGoldValue(cropsCombined, option, isStar).goldValue ?? 0
       break
     case 'preserve':
-      convertedUnits = crop?.convertCropToPreserve(produce + remainder)?.count ?? 0
-      newRemainder = crop?.convertCropToPreserve(produce + remainder)?.remainder ?? 0
-      goldValue = crop?.calculateGoldValue(produce + remainder, option, isStar).goldValue ?? 0
+      convertedUnits = crop?.convertCropToPreserve(cropsCombined)?.count ?? 0
+      newRemainder = crop?.convertCropToPreserve(cropsCombined)?.remainder ?? 0
+      goldValue = crop?.calculateGoldValue(cropsCombined, option, isStar).goldValue ?? 0
       break
   }
 

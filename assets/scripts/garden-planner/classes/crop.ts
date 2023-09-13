@@ -233,6 +233,7 @@ class Crop {
     const { cropsPerSeed, seedsPerConversion } = this._conversionInfo
     const cropsNotConverted = cropsCount % cropsPerSeed
     const processCount = ((cropsCount - cropsNotConverted) / cropsPerSeed) * seedsPerConversion
+
     return {
       count: processCount,
       remainder: cropsNotConverted,
