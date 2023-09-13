@@ -1,44 +1,65 @@
-import type Coordinates from 'assets/scripts/utils/types/coordinates'
-import type { BuildingType } from '../../imports'
-import type { BuildingImage, BuildingRect, BuildingSnapBox } from '../IBuilding'
-import type IBuilding from '../IBuilding'
+import SnapBox from '../parts/SnapBox'
 
-export default class HarvestHouse implements IBuilding {
-  _id: string
-  _type: BuildingType
-  _needsParent: boolean
-  _baseCoords: Coordinates
-  _baseRotation: number
-  _baseDimensions: Dimensions
-  _opacity: number
-  _snapBox: { rect: BuildingSnapBox; boxInfo: { [x: string]: RectData } }
-  _collisionBoxes: { rect: BuildingRect; boxInfo: { [x: string]: RectData } }[]
-  _image: { image: BuildingImage; boxInfo: { [x: string]: RectData } }
-  _openSlots: { North: boolean; East: boolean; South: boolean; West: boolean }
-  _children: { North: IBuilding | null; East: IBuilding | null; South: IBuilding | null; West: IBuilding | null }
-  _parent: IBuilding | null
+import CollisionBox from '../parts/CollisionBox'
+import BuildingImage from '../parts/Image'
+import type Dimensions from '../../../utils/types/dimensions'
+import { BuildingType } from '../../enums/building-type'
+import { Building } from '../building'
+import type { GridSizing } from '../../types/ConfigOptions'
+import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
-  checkCollision(building: IBuilding, excludeIds: string[]): boolean {
-    throw new Error('Method not implemented.')
+export class HarvestHouse extends Building {
+  _name: string = 'Harvest House'
+  override _type: BuildingType = BuildingType.HarvestHouse
+  override _needsParent: boolean = false
+  override _baseCoords: Coordinates = { x: 0, y: 0 }
+  override _baseRotation: number = 0
+  override _baseDimensions: Dimensions = { width: 11, height: 11 }
+  override _opacity: number = 1
+
+  constructor(gridSizing: GridSizing) {
+    super(gridSizing)
   }
 
-  get id(): string {
-    throw new Error('Method not implemented.')
-  }
+  protected _snapBox: SnapBox = new SnapBox(
+    {
+      ...this._baseCoords,
+      ...this._baseDimensions,
+    },
+    this._id,
+    this._gridSizing,
+  )
 
-  get baseCoords(): Coordinates {  
-    throw new Error('Method not implemented.')
-  }
+  protected _collisionBoxes: CollisionBox[] = [
+    new CollisionBox(
+      {
+        ...this._baseCoords,
+        ...this._baseDimensions,
+      },
+      this._id,
+      this._gridSizing,
+    ),
+  ]
 
-  get baseRotation(): number {
-    throw new Error('Method not implemented.')
-  }
+  protected _image: BuildingImage = new BuildingImage(
+    {
+      ...this._baseCoords,
+      ...this._baseDimensions,
+      imageSrc: '/buildings/harvest-house.svg',
+    },
+    this._id,
+    this._gridSizing,
+  )
 
-  get image(): BuildingImage {
-    throw new Error('Method not implemented.')
-  }
-
-  constructor() {
-
-  }
+  protected _openSlots: {
+    North: boolean
+    East: boolean
+    South: boolean
+    West: boolean
+  } = {
+      North: true,
+      East: true,
+      South: false,
+      West: true,
+    }
 }

@@ -1,331 +1,233 @@
-import Konva from 'konva'
 import uniqid from 'uniqid'
-import type { BuildingType } from '../enums/building-type'
-import { Direction } from '@/assets/scripts/utils/imports'
+import { BuildingType } from '../enums/building-type'
+import { Direction } from '../imports'
+import type { GridSizing } from '../types/ConfigOptions'
+import SnapBox from './parts/SnapBox'
+import type { SnapBoxRect } from './parts/SnapBox'
+import CollisionBox from './parts/CollisionBox'
+import BuildingImage from './parts/Image'
+import type { ImageType } from './parts/Image'
+import { shiftDirectionByRotation } from './utils/helpers'
+import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
-// Information about the building itself that is not related to it's display
-export interface BuildingData {
-  type: BuildingType
+interface Dimensions {
+  width: number
+  height: number
+}
 
-  // This lets us track building groups for transformations
-  // Directions are relative to the building's rotation
-  children: {
+interface IOpenSlots {
+  North: boolean
+  East: boolean
+  South: boolean
+  West: boolean
+}
+interface IOpenSlotsConstructor {
+  North?: boolean
+  East?: boolean
+  South?: boolean
+  West?: boolean
+}
+
+export abstract class Building {
+  protected _id: string = uniqid()
+  protected _type: BuildingType = BuildingType.None
+  protected _needsParent: boolean = false
+  protected _baseCoords: Coordinates = { x: 0, y: 0 }
+  protected _baseRotation: number = 0
+  protected _baseDimensions: Dimensions = { width: 0, height: 0 }
+  protected _opacity: number = 1
+  protected _snapBox: SnapBox
+  protected _collisionBoxes: CollisionBox[] = []
+  protected _image: BuildingImage
+  protected _gridSizing: GridSizing
+
+  protected _openSlots: {
+    North: boolean
+    East: boolean
+    South: boolean
+    West: boolean
+  }
+
+  protected _children: {
     North: Building | null
     East: Building | null
     South: Building | null
     West: Building | null
-  }
-
-  // Open slots determine whether a building can be placed in a given direction
-  // Useful for buildings like the harvest house, which has the front-door and as such it's South slot is closed
-  openSlots: {
-    North: boolean
-    East: boolean
-    South: boolean
-    West: boolean
-  }
-  parent: Building | null
-  needsParent: boolean
-}
-
-interface BuildingDataConstructor {
-  type: BuildingType
-  needsParent?: boolean
-  openSlots?: {
-    North: boolean
-    East: boolean
-    South: boolean
-    West: boolean
-  }
-}
-
-// Information about the building's display on the canvas, plus id for referencing
-export interface KonvaData {
-  x: number
-  y: number
-  width: number
-  height: number
-  rotation: number
-  id: string
-  imageUrl: string
-  opacity: number
-  offsetX: number
-  offsetY: number
-}
-
-interface KonvaDataConstructor {
-  x: number
-  y: number
-  width: number
-  height: number
-  imageUrl: string
-  rotation?: number
-}
-
-class Building {
-  private _id: string
-  private _buildingData: BuildingData
-  private _konvaData: KonvaData
-
-  constructor(
-    {
-      type, needsParent = true,
-      openSlots = {
-        North: true,
-        East: true,
-        South: true,
-        West: true,
-      },
-    }: BuildingDataConstructor,
-    { x, y, width, height, imageUrl, rotation = 0 }: KonvaDataConstructor,
-    id: string = uniqid(),
-  ) {
-    this._id = id
-
-    this._buildingData = {
-      type,
-      children: {
-        North: null,
-        East: null,
-        South: null,
-        West: null,
-      },
-      openSlots,
-      parent: null,
-      needsParent,
+  } = {
+      North: null,
+      East: null,
+      South: null,
+      West: null,
     }
 
-    const offsetX = width / 2
-    const offsetY = height / 2
+  protected _parent: Building | null = null
 
-    this._konvaData = {
+  constructor(gridSizing: GridSizing) {
+    const { x, y } = this._baseCoords
+    const { width, height } = this._baseDimensions
+    this._gridSizing = gridSizing
+
+    this._snapBox = new SnapBox({
       x,
       y,
       width,
       height,
-      rotation: rotation % 360,
-      id,
-      imageUrl,
-      opacity: 1,
-      offsetX,
-      offsetY,
+    }, this._id, gridSizing)
+
+    this._image = new BuildingImage({
+      x,
+      y,
+      width,
+      height,
+      imageSrc: '',
+    }, this._id, gridSizing)
+
+    this._collisionBoxes = [
+      new CollisionBox({
+        x,
+        y,
+        width,
+        height,
+      }, this._id, gridSizing),
+    ]
+
+    this._openSlots = {
+      North: true,
+      East: true,
+      South: true,
+      West: true,
     }
+  }
+
+  checkCollision(building: Building, excludeIds: string[]): boolean {
+    const collisionBoxes = this._collisionBoxes
+    const buildingCollisionBoxes = building._collisionBoxes
+
+    for (let i = 0; i < collisionBoxes.length; i++) {
+      for (let j = 0; j < buildingCollisionBoxes.length; j++) {
+        if (collisionBoxes[i].isIntersectingWith(buildingCollisionBoxes[j], excludeIds))
+          return true
+      }
+    }
+
+    return false
   }
 
   get id(): string {
     return this._id
   }
 
-  resetId() {
-    this._id = uniqid()
-    this._konvaData.id = this._id
+  get type(): BuildingType {
+    return this._type
   }
 
-  get childrenId(): string[] {
-    return Object.values(this._buildingData.children)
-      .filter(child => child !== null)
-      .map(child => child!.id)
+  get needsParent(): boolean {
+    return this._needsParent
   }
 
-  get parent(): string | null {
-    return this._buildingData.parent ? this._buildingData.parent.id : null
+  get baseCoords(): Coordinates {
+    return this._baseCoords
   }
 
-  // Get center coordinates of a building's side
-  getSnapCoords(direction: Direction) {
-    const { x, y, width, height, offsetX, offsetY } = this._konvaData
-
-    const newDirection = shiftDirectionByRotation(direction, this._konvaData.rotation)
-
-    switch (newDirection) {
-      case Direction.North:
-        return {
-          x: (x - offsetX) + (width / 2),
-          y: (y - offsetY) + 0,
-        }
-      case Direction.East:
-        return {
-          x: (x - offsetX) + width,
-          y: (y - offsetY) + (height / 2),
-        }
-      case Direction.South:
-        return {
-          x: (x - offsetX) + (width / 2),
-          y: (y - offsetY) + height,
-        }
-      case Direction.West:
-        return {
-          x: (x - offsetX),
-          y: (y - offsetY) + (height / 2),
-        }
-    }
+  get baseRotation(): number {
+    return this._baseRotation
   }
 
-  get konvaData(): KonvaData {
-    return this._konvaData
+  get image(): ImageType {
+    return this._image.rect
   }
 
-  get coordinates(): { x: number; y: number } {
-    return { x: this._konvaData.x, y: this._konvaData.y }
-  }
-
-  set coordinates({ x, y }: { x: number; y: number }) {
-    this._konvaData.x = x
-    this._konvaData.y = y
-  }
-
-  get buildingData(): BuildingData {
-    return this._buildingData
-  }
-
-  get konvaImage() {
-    this._konvaData.offsetX = this._konvaData.width / 2
-    this._konvaData.offsetY = this._konvaData.height / 2
-
-    const image = new Image()
-    image.src = this._konvaData.imageUrl
-    image.width = this._konvaData.width
-    image.height = this._konvaData.height
-
-    return {
-      x: this._konvaData.x,
-      y: this._konvaData.y,
-      width: this._konvaData.width,
-      height: this._konvaData.height,
-      rotation: this._konvaData.rotation,
-      id: this._konvaData.id,
-      opacity: this._konvaData.opacity,
-      offsetX: this._konvaData.offsetX,
-      offsetY: this._konvaData.offsetY,
-      draggable: true,
-      image,
-    }
-  }
-
-  get boundingBox(): Konva.Rect {
-    const { x, y, width, height } = this._konvaData
-    return new Konva.Rect({
-      x,
-      y,
-      width,
-      height,
-      rotation: this._konvaData.rotation,
-      stroke: 'black',
-      strokeWidth: 1,
-      offsetX: width / 2,
-      offsetY: height / 2,
-    })
-  }
-
-  get allChildBuildings(): Building[] {
-    const children = Object.values(this._buildingData.children)
-    const childBuildings = children.filter(child => child !== null) as Building[]
-
-    return childBuildings.reduce((acc, child) => {
-      return [...acc, ...child.allChildBuildings]
-    }, childBuildings)
-  }
-
-  setOpacity(opacity: number) {
-    this._konvaData.opacity = opacity
+  get snapBox(): SnapBoxRect {
+    return this._snapBox.rect
   }
 
   addChild(building: Building, direction: Direction) {
-    if (this.slotIsOpen(direction)) {
-      this._buildingData.children[direction] = building
-      building._buildingData.parent = this
-      this._buildingData.openSlots[direction] = false
-
-      // close child's opposite slot
-      const oppositeDirection = shiftDirectionByRotation(direction, 180)
-      building._buildingData.openSlots[oppositeDirection] = false
-    }
-    else {
-      throw new Error(`Slot is not open: ${direction}`)
-    }
-  }
-
-  get rotation(): number {
-    return this._konvaData.rotation
-  }
-
-  rotateBuilding(deltaDeg: number) {
-    this._konvaData.rotation += deltaDeg
-    this._konvaData.rotation %= 360
-    if (this._konvaData.rotation < 0)
-      this._konvaData.rotation += 360
+    this._children[direction] = building
   }
 
   removeChild(direction: Direction) {
-    if (this._buildingData.children[direction] !== null) {
-      this._buildingData.children[direction]!._buildingData.parent = null
-      this._buildingData.children[direction] = null
-      this._buildingData.openSlots[direction] = true
-    }
-    else {
-      throw new Error(`No child to remove: ${direction}`)
-    }
+    this._children[direction] = null
   }
 
-  slotIsOpen(direction: Direction) {
-    return this._buildingData.openSlots[direction]
+  updateCoords({ x, y }: Coordinates) {
+    this._baseCoords = { x, y }
+    this._image.updateCoords({ x, y })
+    this._snapBox.updateCoords({ x, y })
+    this._collisionBoxes.forEach(collisionBox => collisionBox.updateCoords({ x, y }))
+  }
+
+  isSlotOpen(direction: Direction): boolean {
+    return this._openSlots[direction]
   }
 
   snapToBuilding(building: Building, direction: Direction) {
     const { x, y } = building.getSnapCoords(direction)
-    const { width, height } = this._konvaData
+    const { width, height } = this._image.rect
 
-    const newDirection = shiftDirectionByRotation(direction, building.rotation)
-
-    switch (newDirection) {
-      case Direction.North:
-        this._konvaData.x = x
-        this._konvaData.y = y - (height / 2)
-        break
-      case Direction.East:
-        this._konvaData.x = x + (width / 2)
-        this._konvaData.y = y
-        break
-      case Direction.South:
-        this._konvaData.x = x
-        this._konvaData.y = y + (height / 2)
-        break
-      case Direction.West:
-        this._konvaData.x = x - (width / 2)
-        this._konvaData.y = y
-        break
-    }
-  }
-
-  rotateToSnapDirection(direction: Direction, building: Building) {
-    const newDirection = shiftDirectionByRotation(direction, building.rotation)
+    const newDirection = shiftDirectionByRotation(direction, building.baseRotation)
 
     switch (newDirection) {
       case Direction.North:
-        this._konvaData.rotation = 0
+        this._baseCoords.x = x
         break
       case Direction.East:
-        this._konvaData.rotation = 90
+        this._baseCoords.x = x + (width() / 2)
+        this._baseCoords.y = y
         break
       case Direction.South:
-        this._konvaData.rotation = 180
+        this._baseCoords.x = x
+        this._baseCoords.y = y + (height() / 2)
         break
       case Direction.West:
-        this._konvaData.rotation = 270
+        this._baseCoords.x = x - (width() / 2)
+        this._baseCoords.y = y
         break
     }
+
+    this.updateCoords(this._baseCoords)
+  }
+
+  getSnapCoords(direction: Direction): Coordinates {
+    switch (direction) {
+      case Direction.North:
+        return this._snapBox.getCoords(Direction.North)
+      case Direction.East:
+        return this._snapBox.getCoords(Direction.East)
+      case Direction.South:
+        return this._snapBox.getCoords(Direction.South)
+      case Direction.West:
+        return this._snapBox.getCoords(Direction.West)
+    }
+  }
+
+  // rotates the building to face the given side of another building
+  rotateToFace(direction: Direction) {
+    switch (direction) {
+      case Direction.North:
+        this._baseRotation = 0
+        break
+      case Direction.East:
+        this._baseRotation = 90
+        break
+      case Direction.South:
+        this._baseRotation = 180
+        break
+      case Direction.West:
+        this._baseRotation = 270
+        break
+    }
+
+    this._image.updateRotation(this._baseRotation)
+    this._snapBox.updateRotation(this._baseRotation)
+    this._collisionBoxes.forEach(collisionBox => collisionBox.updateRotation(this._baseRotation))
+  }
+
+  rotateBuilding(rotation: number) {
+    console.log(rotation)
+
+    this._baseRotation = rotation
+    this._image.updateRotation(rotation)
+    this._snapBox.updateRotation(rotation)
+    this._collisionBoxes.forEach(collisionBox => collisionBox.updateRotation(rotation))
   }
 }
-
-// Helper functions for rotating buildings
-// Directions is North, East, South, West
-// if rotation is 90, North becomes East, East becomes South, etc.
-// TODO: Move to utils
-function shiftDirectionByRotation(direction: Direction, rotation: number) {
-  const directions = [Direction.North, Direction.East, Direction.South, Direction.West]
-  const index = directions.indexOf(direction)
-  const newIndex = (index + (rotation / 90)) % 4
-  return directions[newIndex]
-}
-
-export default Building
