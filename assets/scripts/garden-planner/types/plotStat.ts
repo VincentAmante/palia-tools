@@ -14,6 +14,8 @@ interface PlotStat {
     [CropType.Cotton]: number
     [CropType.Apple]: number
     [CropType.Blueberry]: number
+    [CropType.Corn]: number
+    [CropType.SpicyPepper]: number
     [CropType.None]: number
   }
   cropBonusCoverage: {

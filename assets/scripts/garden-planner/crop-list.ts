@@ -276,6 +276,65 @@ const crops = {
       seed: '/seeds/apple.png',
     },
   ),
+  [CropType.Corn]: new Crop(
+    CropType.Corn,
+    Bonus.HarvestIncrease,
+    CropSize.Single,
+    '/crops/corn.webp',
+    {
+      base: 2,
+      growthTime: 5,
+    },
+    {
+      crop: 40,
+      cropStar: 60,
+      seed: 15,
+      seedStar: 22,
+      hasPreserve: false,
+      preserve: 0,
+      preserveStar: 0,
+    },
+    {
+      cropsPerSeed: 1,
+      seedsPerConversion: 3,
+      cropsPerPreserve: 0,
+    },
+    {
+      preserve: '',
+      seed: ''
+    }
+  ),
+  [CropType.SpicyPepper]: new Crop(
+    CropType.SpicyPepper,
+    Bonus.QualityIncrease,
+    CropSize.Bush,
+    '/crops/spicy-pepper.webp',
+    {
+      base: 2,
+      growthTime: 5,
+      isReharvestable: true,
+      reharvestCooldown: 2,
+      reharvestLimit: 3,
+    },
+    {
+      crop: 40,
+      cropStar: 60,
+      seed: 15,
+      seedStar: 22,
+      hasPreserve: false,
+      preserve: 0,
+      preserveStar: 0,
+    },
+    {
+      cropsPerSeed: 4,
+      seedsPerConversion: 1,
+      cropsPerPreserve: 1,
+    },
+    {
+      preserve: '',
+      seed: ''
+    }
+  ),
   [CropType.None]: null,
 }
 

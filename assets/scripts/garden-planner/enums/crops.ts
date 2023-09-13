@@ -9,6 +9,8 @@ enum CropType {
   Cotton = 'cotton',
   Blueberry = 'blueberry',
   Apple = 'apple',
+  Corn = 'corn',
+  SpicyPepper = 'spicy-pepper',
 }
 
 export default CropType

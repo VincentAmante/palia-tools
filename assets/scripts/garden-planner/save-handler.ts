@@ -15,6 +15,8 @@ const v0_1CropCodes: { [key in CropCode]: string } = {
   [CropCode.Cotton]: 'Co',
   [CropCode.Blueberry]: 'Bl',
   [CropCode.Apple]: 'Ap',
+  [CropCode.Corn]: 'Cr',
+  [CropCode.SpicyPepper]: 'SP',
 }
 
 const v0_2CropCodes: { [key in CropCode]: string } = {
@@ -28,6 +30,8 @@ const v0_2CropCodes: { [key in CropCode]: string } = {
   [CropCode.Cotton]: 'Co',
   [CropCode.Blueberry]: 'B',
   [CropCode.Apple]: 'A',
+  [CropCode.Corn]: 'Cr',
+  [CropCode.SpicyPepper]: 'SP',
 }
 
 function convertV0_1CodestoV0_2(save: string): string {
