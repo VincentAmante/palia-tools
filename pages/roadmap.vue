@@ -25,8 +25,8 @@ useHead({
         </h2>
         <div class="flex flex-col gap-1">
           <p>
-            Open-Sourcing of the project is still delayed,
-            but the source code is now viewable on GitHub.
+            Open-Sourcing of the project will proceed soon!
+            Project is public but licensing the code will be added shortly.
           </p>
           <NuxtLink
             to="https://github.com/VincentAmante/palia-tools"
@@ -36,10 +36,6 @@ useHead({
             <font-awesome-icon :icon="['fab', 'github']" class="" />
             Link to Github
           </NuxtLink>
-          <p>
-            The lack of an OS-license is because I'm still waiting for the Palia team to respond to my query for clarification.
-            Until then, the use of the source code is limited to the terms of use allowed by Github.
-          </p>
         </div>
       </div>
     </div>
