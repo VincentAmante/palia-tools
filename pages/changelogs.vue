@@ -25,7 +25,7 @@ useHead({
       </div>
 
       <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
-        <input type="checkbox">
+        <input type="checkbox" checked>
         <h2 class="collapse-title text-xl font-bold">
           September 13, 2023 (Hotfix)
         </h2>
