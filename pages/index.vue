@@ -266,11 +266,6 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
               <h3 class="font-semibold opacity-50 text-sm">
                 Crops
               </h3>
-              <p class="text-xs">
-                <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-warning" />
-                Spicy Pepper and Corn values are undergoing final verification.
-                If you see this notice, this will go away in a few hours.
-              </p>
               <div class="flex flex-wrap gap-2 py-2">
                 <div v-for="(count, index) in plotStatTotal.cropTypeCount" :key="index">
                   <CropButton
