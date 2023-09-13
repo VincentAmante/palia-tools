@@ -10,7 +10,7 @@ enum CropCode {
   Blueberry = 'B',
   Apple = 'A',
   Corn = 'Cr',
-  SpicyPepper = 'S',
+  SpicyPepper = 'Sp',
 }
 
 export default CropCode
