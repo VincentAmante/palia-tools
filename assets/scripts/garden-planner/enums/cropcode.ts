@@ -4,13 +4,13 @@ enum CropCode {
   Potato = 'P',
   Rice = 'R',
   Wheat = 'W',
+  Corn = 'Cr',
   Carrot = 'C',
   Onion = 'O',
   Cotton = 'Co',
+  SpicyPepper = 'SP',
   Blueberry = 'B',
   Apple = 'A',
-  Corn = 'Cr',
-  SpicyPepper = 'SP',
 }
 
 export default CropCode

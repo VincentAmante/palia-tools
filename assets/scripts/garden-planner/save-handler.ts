@@ -25,13 +25,13 @@ const v0_2CropCodes: { [key in CropCode]: string } = {
   [CropCode.Potato]: 'P',
   [CropCode.Rice]: 'R',
   [CropCode.Wheat]: 'W',
+  [CropCode.Corn]: 'Cr',
   [CropCode.Carrot]: 'C',
   [CropCode.Onion]: 'O',
   [CropCode.Cotton]: 'Co',
+  [CropCode.SpicyPepper]: 'SP',
   [CropCode.Blueberry]: 'B',
   [CropCode.Apple]: 'A',
-  [CropCode.Corn]: 'Cr',
-  [CropCode.SpicyPepper]: 'SP',
 }
 
 function convertV0_1CodestoV0_2(save: string): string {

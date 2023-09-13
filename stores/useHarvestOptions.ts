@@ -43,7 +43,15 @@ export const useHarvestOptions = defineStore('harvestOptions', () => {
       starType: 'crop' as ProduceOptions,
       baseType: 'crop' as ProduceOptions,
     },
+    [CropType.Corn]: {
+      starType: 'crop' as ProduceOptions,
+      baseType: 'crop' as ProduceOptions,
+    },
     [CropType.Cotton]: {
+      starType: 'crop' as ProduceOptions,
+      baseType: 'crop' as ProduceOptions,
+    },
+    [CropType.SpicyPepper]: {
       starType: 'crop' as ProduceOptions,
       baseType: 'crop' as ProduceOptions,
     },
@@ -60,14 +68,6 @@ export const useHarvestOptions = defineStore('harvestOptions', () => {
       baseType: 'crop' as ProduceOptions,
     },
     [CropType.Apple]: {
-      starType: 'crop' as ProduceOptions,
-      baseType: 'crop' as ProduceOptions,
-    },
-    [CropType.Corn]: {
-      starType: 'crop' as ProduceOptions,
-      baseType: 'crop' as ProduceOptions,
-    },
-    [CropType.SpicyPepper]: {
       starType: 'crop' as ProduceOptions,
       baseType: 'crop' as ProduceOptions,
     },

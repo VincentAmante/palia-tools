@@ -129,7 +129,34 @@ const crops = {
       seed: '/seeds/wheat.png',
     },
   ),
-
+  [CropType.Corn]: new Crop(
+    CropType.Corn,
+    Bonus.HarvestIncrease,
+    CropSize.Single,
+    '/crops/corn.webp',
+    {
+      base: 2,
+      growthTime: 5,
+    },
+    {
+      crop: 40,
+      cropStar: 60,
+      seed: 15,
+      seedStar: 22,
+      hasPreserve: false,
+      preserve: 0,
+      preserveStar: 0,
+    },
+    {
+      cropsPerSeed: 1,
+      seedsPerConversion: 3,
+      cropsPerPreserve: 0,
+    },
+    {
+      preserve: '',
+      seed: ''
+    }
+  ),
   [CropType.Carrot]: new Crop(
     CropType.Carrot,
     Bonus.WeedPrevention,
@@ -214,6 +241,37 @@ const crops = {
       seed: '/seeds/cotton.png',
     },
   ),
+  [CropType.SpicyPepper]: new Crop(
+    CropType.SpicyPepper,
+    Bonus.QualityIncrease,
+    CropSize.Bush,
+    '/crops/spicy-pepper.webp',
+    {
+      base: 2,
+      growthTime: 5,
+      isReharvestable: true,
+      reharvestCooldown: 2,
+      reharvestLimit: 3,
+    },
+    {
+      crop: 40,
+      cropStar: 60,
+      seed: 15,
+      seedStar: 22,
+      hasPreserve: false,
+      preserve: 0,
+      preserveStar: 0,
+    },
+    {
+      cropsPerSeed: 4,
+      seedsPerConversion: 1,
+      cropsPerPreserve: 1,
+    },
+    {
+      preserve: '',
+      seed: ''
+    }
+  ),
   [CropType.Blueberry]: new Crop(
     CropType.Blueberry,
     Bonus.SpeedIncrease,
@@ -276,65 +334,6 @@ const crops = {
       seed: '/seeds/apple.png',
     },
   ),
-  [CropType.Corn]: new Crop(
-    CropType.Corn,
-    Bonus.HarvestIncrease,
-    CropSize.Single,
-    '/crops/corn.webp',
-    {
-      base: 2,
-      growthTime: 5,
-    },
-    {
-      crop: 40,
-      cropStar: 60,
-      seed: 15,
-      seedStar: 22,
-      hasPreserve: false,
-      preserve: 0,
-      preserveStar: 0,
-    },
-    {
-      cropsPerSeed: 1,
-      seedsPerConversion: 3,
-      cropsPerPreserve: 0,
-    },
-    {
-      preserve: '',
-      seed: ''
-    }
-  ),
-  [CropType.SpicyPepper]: new Crop(
-    CropType.SpicyPepper,
-    Bonus.QualityIncrease,
-    CropSize.Bush,
-    '/crops/spicy-pepper.webp',
-    {
-      base: 2,
-      growthTime: 5,
-      isReharvestable: true,
-      reharvestCooldown: 2,
-      reharvestLimit: 3,
-    },
-    {
-      crop: 40,
-      cropStar: 60,
-      seed: 15,
-      seedStar: 22,
-      hasPreserve: false,
-      preserve: 0,
-      preserveStar: 0,
-    },
-    {
-      cropsPerSeed: 4,
-      seedsPerConversion: 1,
-      cropsPerPreserve: 1,
-    },
-    {
-      preserve: '',
-      seed: ''
-    }
-  ),
   [CropType.None]: null,
 }
 
@@ -348,12 +347,16 @@ function getCropFromCode(code: CropCode): Crop | null {
       return crops[CropType.Rice]
     case CropCode.Wheat:
       return crops[CropType.Wheat]
+    case CropCode.Corn:
+      return crops[CropType.Corn]
     case CropCode.Carrot:
       return crops[CropType.Carrot]
     case CropCode.Onion:
       return crops[CropType.Onion]
     case CropCode.Cotton:
       return crops[CropType.Cotton]
+    case CropCode.SpicyPepper:
+      return crops[CropType.SpicyPepper]
     case CropCode.Blueberry:
       return crops[CropType.Blueberry]
     case CropCode.Apple:
@@ -373,12 +376,16 @@ function getCodeFromCrop(crop: Crop): CropCode {
       return CropCode.Rice
     case CropType.Wheat:
       return CropCode.Wheat
+    case CropType.Corn:
+      return CropCode.Corn
     case CropType.Carrot:
       return CropCode.Carrot
     case CropType.Onion:
       return CropCode.Onion
     case CropType.Cotton:
       return CropCode.Cotton
+    case CropType.SpicyPepper:
+      return CropCode.SpicyPepper
     case CropType.Blueberry:
       return CropCode.Blueberry
     case CropType.Apple:

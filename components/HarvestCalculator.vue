@@ -53,7 +53,15 @@ const cropOptions = ref({
     starType: 'crop' as ProduceOptions,
     baseType: 'crop' as ProduceOptions,
   },
+  [CropType.Corn]: {
+    starType: 'crop' as ProduceOptions,
+    baseType: 'crop' as ProduceOptions,
+  },
   [CropType.Cotton]: {
+    starType: 'crop' as ProduceOptions,
+    baseType: 'crop' as ProduceOptions,
+  },
+  [CropType.SpicyPepper]: {
     starType: 'crop' as ProduceOptions,
     baseType: 'crop' as ProduceOptions,
   },
@@ -70,14 +78,6 @@ const cropOptions = ref({
     baseType: 'crop' as ProduceOptions,
   },
   [CropType.Apple]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.Corn]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.SpicyPepper]: {
     starType: 'crop' as ProduceOptions,
     baseType: 'crop' as ProduceOptions,
   },

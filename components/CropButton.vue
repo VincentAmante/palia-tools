@@ -30,20 +30,20 @@ const tooltip = computed(() => {
       return 'Rice: Harvest Increase'
     case CropType.Wheat:
       return 'Wheat: Harvest Increase'
+    case CropType.Corn:
+      return 'Corn: Harvest Increase'
     case CropType.Onion:
       return 'Onion: Weed Prevention'
     case CropType.Carrot:
       return 'Carrot: Weed Prevention'
     case CropType.Cotton:
       return 'Cotton: Quality Increase'
+    case CropType.SpicyPepper:
+      return 'Spicy Pepper: Quality Increase. 2x2, needs 2 of a bonus for the buff to activate'
     case CropType.Apple:
       return 'Apple Tree: Speed Increase. 3x3, needs 3 of a bonus for the buff to activate'
     case CropType.Blueberry:
       return 'Berry Bush: Speed Increase. 2x2, needs 2 of a bonus for the buff to activate'
-    case CropType.Corn:
-      return 'Corn: Harvest Increase'
-    case CropType.SpicyPepper:
-      return 'Spicy Pepper: Quality Increase. 2x2, needs 2 of a bonus for the buff to activate'
     case CropType.None:
       return 'Remove Crop'
     default:

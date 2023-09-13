@@ -4,13 +4,13 @@ enum CropType {
   Potato = 'potato',
   Rice = 'rice',
   Wheat = 'wheat',
+  Corn = 'corn',
   Carrot = 'carrot',
   Onion = 'onion',
   Cotton = 'cotton',
+  SpicyPepper = 'spicy-pepper',
   Blueberry = 'blueberry',
   Apple = 'apple',
-  Corn = 'corn',
-  SpicyPepper = 'spicy-pepper',
 }
 
 export default CropType

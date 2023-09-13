@@ -9,13 +9,13 @@ interface PlotStat {
     [CropType.Potato]: number
     [CropType.Wheat]: number
     [CropType.Rice]: number
+    [CropType.Corn]: number
     [CropType.Carrot]: number
     [CropType.Onion]: number
     [CropType.Cotton]: number
+    [CropType.SpicyPepper]: number
     [CropType.Apple]: number
     [CropType.Blueberry]: number
-    [CropType.Corn]: number
-    [CropType.SpicyPepper]: number
     [CropType.None]: number
   }
   cropBonusCoverage: {
