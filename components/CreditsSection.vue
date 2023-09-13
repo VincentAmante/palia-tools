@@ -10,6 +10,7 @@
       <ul class="list-disc list-inside">
         <li>Arenvanya <span class="text-xs">(information)</span></li>
         <li>st3fannl <span class="text-xs">(assets)</span></li>
+        <li>Mctalian <span class="text-xs">(code contribution)</span></li>
       </ul>
       <p class="text-sm">
         I also thank Singularity 6 for developing Palia, and everyone else for using the planner and providing feedback!
