@@ -252,6 +252,7 @@ class Building {
 
   rotateBuilding(deltaDeg: number) {
     this._konvaData.rotation += deltaDeg
+
     this._konvaData.rotation %= 360
     if (this._konvaData.rotation < 0)
       this._konvaData.rotation += 360

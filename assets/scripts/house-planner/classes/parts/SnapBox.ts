@@ -4,13 +4,10 @@ import type { GridSizing } from '../../types/ConfigOptions'
 import { Direction } from '../../imports'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 import type Dimensions from '@/assets/scripts/utils/types/dimensions'
+import { toScale, unscale } from '@/assets/scripts/house-planner/classes/utils/helpers'
 
 export type SnapBoxRect = Konva.Rect & {
   id: string
-}
-
-function toScale(value: number, gridSizing: GridSizing) {
-  return value * gridSizing.cellSize * gridSizing.sizeMultiplier
 }
 
 export default class SnapBox {
@@ -28,6 +25,7 @@ export default class SnapBox {
       x, y, width, height,
       offsetX = 0, offsetY = 0,
       offsetWidth = 0, offsetHeight = 0,
+      rotation = 0,
     }: {
       x: number
       y: number
@@ -37,6 +35,7 @@ export default class SnapBox {
       offsetY?: number
       offsetWidth?: number
       offsetHeight?: number
+      rotation?: number
     },
     id: string = uniqid(),
     gridSizing: GridSizing,
@@ -47,17 +46,19 @@ export default class SnapBox {
     this._baseCoords = { x, y }
     this._baseDimensions = { width: toScale(width, gridSizing), height: toScale(height, gridSizing) }
     this._offsetCoords = { x: toScale(offsetX, gridSizing), y: toScale(offsetY, gridSizing) }
-    this._offsetDimensions = { width: toScale(offsetHeight, gridSizing), height: toScale(offsetHeight, gridSizing) }
+    this._offsetDimensions = { width: toScale(offsetWidth, gridSizing), height: toScale(offsetHeight, gridSizing) }
 
     this._rect = new Konva.Rect({
       x: this._baseCoords.x,
       y: this._baseCoords.y,
       width: this._baseDimensions.width + this._offsetDimensions.width,
       height: this._baseDimensions.height + this._offsetDimensions.height,
-      fill: 'rgba(0, 0, 0, 10)',
+      stroke: 'rgba(0, 0, 0, 10)',
+      strokeWidth: 1,
       id: this._id,
-      offsetX: toScale((width + offsetWidth) / 2, gridSizing),
-      offsetY: toScale((height + offsetHeight) / 2, gridSizing),
+      offsetX: toScale(offsetX + (width + offsetWidth) / 2, gridSizing),
+      offsetY: toScale(offsetY + (height + offsetHeight) / 2, gridSizing),
+      rotation,
     }) as SnapBoxRect
   }
 
@@ -67,40 +68,42 @@ export default class SnapBox {
 
   updateCoords({ x, y }: Coordinates) {
     this._baseCoords = { x, y }
-    // this._rect.x(x)
-    // this._rect.y(y)
+
+    this._rect.x = x
+    this._rect.y = y
   }
 
   updateRotation(rotation: number) {
     this._rotation = rotation
-    this._rect.rotation(rotation)
+    this._rect.rotation = rotation
   }
 
   getCoords(direction: Direction): Coordinates {
-    const { x, y, width, height } = this._rect
+    const { x, y } = this._baseCoords
+    const { width, height } = this._baseDimensions
     const offsetX = this._offsetCoords.x
     const offsetY = this._offsetCoords.y
 
     switch (direction) {
       case Direction.North:
         return {
-          x: (x() - offsetX) + (width() / 2),
-          y: (y() - offsetY),
+          x: (x - offsetX),
+          y: (y - offsetY) - (height / 2),
         }
       case Direction.East:
         return {
-          x: (x() - offsetX) + width(),
-          y: (y() - offsetY) + (height() / 2),
+          x: (x - offsetX) + (width / 2),
+          y: (y - offsetY),
         }
       case Direction.South:
         return {
-          x: (x() - offsetX) + (width() / 2),
-          y: (y() - offsetY) + height(),
+          x: (x - offsetX),
+          y: (y - offsetY) + (height / 2),
         }
       case Direction.West:
         return {
-          x: (x() - offsetX),
-          y: (y() - offsetY) + (height() / 2),
+          x: (x - offsetX) - (width / 2),
+          y: (y - offsetY),
         }
     }
   }
@@ -111,5 +114,30 @@ export default class SnapBox {
 
   get y(): number {
     return this._rect.y()
+  }
+
+  get copy(): SnapBox {
+    const width = unscale(this._baseDimensions.width, this._gridSizing)
+    const height = unscale(this._baseDimensions.height, this._gridSizing)
+    const offsetWidth = unscale(this._offsetDimensions.width, this._gridSizing)
+    const offsetHeight = unscale(this._offsetDimensions.height, this._gridSizing)
+    const offsetX = unscale(this._offsetCoords.x, this._gridSizing)
+    const offsetY = unscale(this._offsetCoords.y, this._gridSizing)
+
+    return new SnapBox(
+      {
+        x: this._baseCoords.x,
+        y: this._baseCoords.y,
+        width,
+        height,
+        offsetX,
+        offsetY,
+        offsetWidth,
+        offsetHeight,
+        rotation: this._rotation,
+      },
+      this._id,
+      this._gridSizing,
+    )
   }
 }

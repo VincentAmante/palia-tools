@@ -3,10 +3,14 @@ import uniqid from 'uniqid'
 import type { GridSizing } from '../../types/ConfigOptions'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 import type Dimensions from '@/assets/scripts/utils/types/dimensions'
-import { toScale } from '@/assets/scripts/house-planner/classes/utils/helpers'
+import { toScale, unscale } from '@/assets/scripts/house-planner/classes/utils/helpers'
 
 export type CollisionBoxRect = Konva.Rect & {
   id: string
+}
+
+interface Corners {
+  [key: string]: Coordinates
 }
 
 export default class CollisionBox {
@@ -17,6 +21,7 @@ export default class CollisionBox {
   private _offsetDimensions: Dimensions
   private _rect: CollisionBoxRect
   private _rotation: number = 0
+  private _gridSizing: GridSizing
 
   constructor(
     {
@@ -37,6 +42,7 @@ export default class CollisionBox {
     gridSizing: GridSizing,
   ) {
     this._id = id
+    this._gridSizing = gridSizing
 
     this._baseCoords = { x, y }
     this._baseDimensions = { width: toScale(width, gridSizing), height: toScale(height, gridSizing) }
@@ -68,17 +74,89 @@ export default class CollisionBox {
   }
 
   isIntersectingWith(box: CollisionBox, excludeIds: string[]): boolean {
-    const thisRect = this._rect
+    console.log(excludeIds)
+
+    if (excludeIds.includes(box.rect.id)) {
+      console.log('excluded')
+      return false
+    }
+
+    const rect = this._rect
     const boxRect = box.rect
 
-    if (excludeIds.includes(boxRect.id()))
-      return false
+    const rectCorners: Corners = {
+      topLeft: { x: rect.x(), y: rect.y() },
+      topRight: { x: rect.x() + rect.width(), y: rect.y() },
+      bottomRight: { x: rect.x() + rect.width(), y: rect.y() + rect.height() },
+      bottomLeft: { x: rect.x(), y: rect.y() + rect.height() },
+    }
 
-    return thisRect.intersects(boxRect)
+    const otherRectCorners: Corners = {
+      topLeft: { x: boxRect.x(), y: boxRect.y() },
+      topRight: { x: boxRect.x() + boxRect.width(), y: boxRect.y() },
+      bottomRight: { x: boxRect.x() + boxRect.width(), y: boxRect.y() + boxRect.height() },
+      bottomLeft: { x: boxRect.x(), y: boxRect.y() + boxRect.height() },
+    }
+
+    const isPointInsideRect = (point: Coordinates, boxCorners: Corners): boolean => {
+      const { topLeft, topRight, bottomLeft } = boxCorners
+      const { x, y } = point
+
+      const isInsideX = (x >= topLeft.x && x <= topRight.x)
+      const isInsideY = (y >= topLeft.y && y <= bottomLeft.y)
+
+      return isInsideX && isInsideY
+    }
+
+    // see if any points are inside the other rect
+    for (const corner in rectCorners) {
+      if (excludeIds.includes(boxRect.id))
+        continue
+      if (isPointInsideRect(rectCorners[corner], otherRectCorners))
+        return true
+    }
+
+    return false
+  }
+
+  isCoordInside({ x, y }: Coordinates): boolean {
+    const rect = this._rect
+
+    const rectCorners: Corners = {
+      topLeft: { x: (rect.x() - rect.width() / 2), y: (rect.y() - rect.height() / 2) },
+      topRight: { x: (rect.x() - rect.width() / 2) + rect.width(), y: ((rect.y() - rect.height() / 2) - rect.height() / 2) },
+      bottomRight: { x: (rect.x() - rect.width() / 2) + rect.width(), y: (rect.y() - rect.height() / 2) + rect.height() },
+      bottomLeft: { x: (rect.x() - rect.width() / 2), y: (rect.y() - rect.height() / 2) + rect.height() },
+    }
+
+    const isPointInsideRect = (point: Coordinates, boxCorners: Corners): boolean => {
+      const { topLeft, topRight, bottomLeft } = boxCorners
+      const { x, y } = point
+
+      const isInsideX = (x >= topLeft.x && x <= topRight.x)
+      const isInsideY = (y >= topLeft.y && y <= bottomLeft.y)
+
+      return isInsideX && isInsideY
+    }
+
+    return isPointInsideRect({ x, y }, rectCorners)
   }
 
   updateRotation(rotation: number) {
     this._rotation = rotation
     this._rect.rotation(rotation)
+  }
+
+  get copy(): CollisionBox {
+    const { x, y } = this._baseCoords
+    const width = unscale(this._baseDimensions.width, this._gridSizing)
+    const height = unscale(this._baseDimensions.height, this._gridSizing)
+
+    return new CollisionBox({
+      x,
+      y,
+      width,
+      height,
+    }, this._id, this._gridSizing)
   }
 }

@@ -3,7 +3,7 @@ import uniqid from 'uniqid'
 import type { GridSizing } from '../../types/ConfigOptions'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 import type Dimensions from '@/assets/scripts/utils/types/dimensions'
-import { toScale } from '@/assets/scripts/house-planner/classes/utils/helpers'
+import { toScale, unscale } from '@/assets/scripts/house-planner/classes/utils/helpers'
 
 export type ImageType = Konva.Image & {
   id: string
@@ -69,7 +69,6 @@ export default class BuildingImage {
 
     const { x, y } = this._baseCoords
     const { width, height } = this._baseDimensions
-    console.log('x, y, width, height', x, y, width, height)
 
     return new Konva.Image({
       x,
@@ -93,5 +92,28 @@ export default class BuildingImage {
   updateRotation(rotation: number) {
     this._rotation = rotation
     this._rect.rotation(rotation)
+  }
+
+  get copy(): BuildingImage {
+    const width = unscale(this._baseDimensions.width, this._gridSizing)
+    const height = unscale(this._baseDimensions.height, this._gridSizing)
+    const offsetWidth = unscale(this._offsetDimensions.width, this._gridSizing)
+    const offsetHeight = unscale(this._offsetDimensions.height, this._gridSizing)
+
+    const copyImage = new BuildingImage({
+      x: this._baseCoords.x,
+      y: this._baseCoords.y,
+      width,
+      height,
+      imageSrc: this._imageSrc,
+      offsetX: this._offsetCoords.x,
+      offsetY: this._offsetCoords.y,
+      offsetWidth,
+      offsetHeight,
+    }, this._id, this._gridSizing)
+
+    copyImage.updateRotation(this._rotation)
+
+    return copyImage
   }
 }

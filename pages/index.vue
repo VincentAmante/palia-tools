@@ -141,8 +141,6 @@ function clearAllPlots() {
 const display = ref(null as unknown as HTMLElement)
 const statDisplay = ref<InstanceType<typeof StatsDisplay> | null>()
 const gardenDisplay = ref<InstanceType<typeof GardenDisplay> | null>()
-// const { width: plotsDisplayWidth } = useElementBounding(gardenDisplay.value?.getPlotsDisplay() as HTMLElement)
-// const { width: statDisplayWidth } = useElementBounding(statDisplay.value?.getStatsDisplay() as HTMLElement)
 
 const isTakingScreenshot = useTakingScreenshot()
 function saveAsImage() {
