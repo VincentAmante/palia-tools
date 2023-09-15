@@ -296,7 +296,7 @@ const crops = {
     },
     {
       cropsPerSeed: 1,
-      seedsPerConversion: 2,
+      seedsPerConversion: 4,
       cropsPerPreserve: 1,
     },
     {
@@ -327,7 +327,7 @@ const crops = {
     },
     {
       cropsPerSeed: 4,
-      seedsPerConversion: 1,
+      seedsPerConversion: 2,
       cropsPerPreserve: 1,
     },
     {
