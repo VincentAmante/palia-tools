@@ -147,9 +147,11 @@ const gardenDisplay = ref<InstanceType<typeof GardenDisplay> | null>()
 const isTakingScreenshot = useTakingScreenshot()
 function saveAsImage() {
   isTakingScreenshot.set(true)
-  let displayWidth = ((gardenDisplay.value?.getPlotsDisplay() as HTMLElement).clientWidth) + 164
+  let displayWidth = ((gardenDisplay.value?.getPlotsDisplay() as HTMLElement).clientWidth) + 200
   if (!gardenTilesAreWide.value)
     displayWidth += ((statDisplay.value?.getStatsDisplay() as HTMLElement).clientWidth)
+
+  // displayWidth = Math.max(displayWidth, 1024)
 
   display.value.style.width = `${displayWidth}px`
   gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
@@ -266,7 +268,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
               <h3 class="font-semibold opacity-50 text-sm">
                 Crops
               </h3>
-              <div class="flex flex-wrap gap-2 py-2">
+              <div class="flex flex-wrap gap-2 py-2 w-fit">
                 <div v-for="(count, index) in plotStatTotal.cropTypeCount" :key="index">
                   <CropButton
                     v-if="(index && index !== CropType.None && index !== null)"
