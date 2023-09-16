@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import type { PropType } from 'vue'
 import type { Crop } from '@/assets/scripts/garden-planner/imports'
-import { Bonus, CropType, Tile, getCodeFromCrop } from '@/assets/scripts/garden-planner/imports'
+import { Bonus, Tile, getCodeFromCrop } from '@/assets/scripts/garden-planner/imports'
 
 const props = defineProps({
   tile: Tile,
@@ -54,8 +54,10 @@ const bonusBgColor = computed(() => {
 <template>
   <div
     draggable="false"
-    class="relative select-none min-w-[3.5rem] md:min-w-[3.75rem] aspect-square bg-base-200 cursor-pointer rounded-lg hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
-    :class="[(props.isDisabled ? 'invisible' : ''), (props.isAlt ? 'border-[1px] border-orange-700 border-opacity-50' : '')]"
+    class="relative select-none min-w-[3rem] sm:min-w-[3.25rem] bg-secondary lg:min-w-[3.45rem] aspect-square cursor-pointer rounded-lg hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
+    :class="[(isDisabled ? 'invisible' : ''),
+             (isAlt ? 'border-[1px] border-primary' : 'border-[1px] border-misc'),
+    ]"
   >
     <div class="absolute w-full h-full bg-opacity-20 -z-10" :class="bgColour" />
     <div class="lg:text-3xl font-bold uppercase select-none">
@@ -68,21 +70,21 @@ const bonusBgColor = computed(() => {
         {{ code as string || ' ' }}
       </div>
     </div>
-    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.6rem] py-[0.5px] flex w-full gap-[0.8px] px-[2px] md:px-[1.8px] opacity-70">
+    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.6rem] py-[0.5px] flex w-full gap-[0.8px] px-[2px] md:px-[1.8px]">
       <li v-show="bonuses?.includes(Bonus.QualityIncrease)">
-        <font-awesome-icon class="text-yellow-200" :icon="['fas', 'star']" />
+        <font-awesome-icon class="text-quality-increase" :icon="['fas', 'star']" />
       </li>
       <li v-show="bonuses?.includes(Bonus.HarvestIncrease)">
-        <font-awesome-icon class="text-green-800" :icon="['fas', 'wheat-awn']" />
+        <font-awesome-icon class="text-harvest-boost" :icon="['fas', 'wheat-awn']" />
       </li>
       <li v-show="bonuses?.includes(Bonus.WaterRetain)">
-        <font-awesome-icon class="text-sky-200" :icon="['fas', 'droplet']" />
+        <font-awesome-icon class="text-water-retain" :icon="['fas', 'droplet']" />
       </li>
       <li v-show="bonuses?.includes(Bonus.WeedPrevention)">
-        <font-awesome-icon class=" text-rose-500 " :icon="['fas', 'shield']" />
+        <font-awesome-icon class=" text-weed-prevention" :icon="['fas', 'shield']" />
       </li>
       <li v-show="bonuses?.includes(Bonus.SpeedIncrease)">
-        <font-awesome-icon class="text-orange-600" :icon="['fas', 'forward-fast']" />
+        <font-awesome-icon class="text-growth-boost" :icon="['fas', 'forward-fast']" />
       </li>
     </ul>
     <div class="absolute bottom-0 right-0 p-[2px]">

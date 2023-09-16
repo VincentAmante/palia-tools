@@ -43,32 +43,32 @@ const bonus = computed(() => {
     case Bonus.WaterRetain:
       return {
         icon: 'droplet',
-        colour: 'text-sky-500',
+        colour: 'text-water-retain',
       }
     case Bonus.QualityIncrease:
       return {
         icon: 'star',
-        colour: 'text-yellow-600',
+        colour: 'text-quality-increase',
       }
     case Bonus.HarvestIncrease:
       return {
         icon: 'wheat-awn',
-        colour: 'text-green-500',
+        colour: 'text-harvest-boost',
       }
     case Bonus.WeedPrevention:
       return {
         icon: 'shield',
-        colour: 'text-rose-500',
+        colour: 'text-weed-prevention',
       }
     case Bonus.SpeedIncrease:
       return {
         icon: 'forward-fast',
-        colour: 'text-orange-500',
+        colour: 'text-growth-boost',
       }
     default:
       return {
         icon: '',
-        colour: 'text-gray-500',
+        colour: 'text-misc',
       }
   }
 })
@@ -78,8 +78,8 @@ const bonus = computed(() => {
   <div class="md:tooltip md:tooltip-right tooltip-accent" :data-tip="tooltip">
     <button
       v-if="!(fertiliser.type === FertiliserType.None && isTakingScreenshot)"
-      class="relative bg-base-200 rounded-lg btn-lg w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
-      :class="(isSelected && !isTakingScreenshot) ? 'bg-slate-100' : ''"
+      class="relative btn btn-secondary btn-square btn-lg border-misc border-2 aspect-square flex flex-col items-center justify-center isolate"
+      :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
     >
       <font-awesome-icon
         v-if="bonus.icon !== ''"

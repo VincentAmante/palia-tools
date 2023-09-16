@@ -43,7 +43,7 @@ const crops = {
     {
       cropCode: CropCode.Tomato,
       cropTooltip: 'Tomato: Water Retention',
-      cropBackgroundColor: 'bg-blue-700',
+      cropBackgroundColor: 'bg-water-retain',
     },
   ),
 
@@ -77,7 +77,7 @@ const crops = {
     {
       cropCode: CropCode.Potato,
       cropTooltip: 'Potato: Water Retention',
-      cropBackgroundColor: 'bg-blue-800',
+      cropBackgroundColor: 'bg-water-retain',
     },
   ),
 
@@ -112,7 +112,7 @@ const crops = {
     {
       cropCode: CropCode.Rice,
       cropTooltip: 'Rice: Harvest Increase',
-      cropBackgroundColor: 'bg-green-700',
+      cropBackgroundColor: 'bg-harvest-boost',
     },
   ),
 
@@ -146,7 +146,7 @@ const crops = {
     {
       cropCode: CropCode.Wheat,
       cropTooltip: 'Wheat: Harvest Increase',
-      cropBackgroundColor: 'bg-green-800',
+      cropBackgroundColor: 'bg-harvest-boost',
     },
   ),
   [CropType.Carrot]: new Crop(
@@ -179,7 +179,7 @@ const crops = {
     {
       cropCode: CropCode.Carrot,
       cropTooltip: 'Carrot: Weed Prevention',
-      cropBackgroundColor: 'bg-fuchsia-800',
+      cropBackgroundColor: 'bg-weed-prevention',
     },
   ),
   [CropType.Onion]: new Crop(
@@ -212,7 +212,7 @@ const crops = {
     {
       cropCode: CropCode.Onion,
       cropTooltip: 'Onion: Weed Prevention',
-      cropBackgroundColor: 'bg-fuchsia-700',
+      cropBackgroundColor: 'bg-weed-prevention',
     },
   ),
   [CropType.Cotton]: new Crop(
@@ -245,7 +245,7 @@ const crops = {
     {
       cropCode: CropCode.Cotton,
       cropTooltip: 'Cotton: Quality Increase',
-      cropBackgroundColor: 'bg-amber-600',
+      cropBackgroundColor: 'bg-quality-increase',
     },
   ),
   [CropType.Blueberry]: new Crop(
@@ -281,7 +281,7 @@ const crops = {
     {
       cropCode: CropCode.Blueberry,
       cropTooltip: 'Berry Bush: Speed Increase. 2x2, needs 2 of a bonus for the buff to activate',
-      cropBackgroundColor: 'bg-orange-700',
+      cropBackgroundColor: 'bg-growth-boost',
     },
   ),
   [CropType.Apple]: new Crop(
@@ -317,7 +317,7 @@ const crops = {
     {
       cropCode: CropCode.Apple,
       cropTooltip: 'Apple Tree: Speed Increase. 3x3, needs 3 of a bonus for the buff to activate',
-      cropBackgroundColor: 'bg-orange-700',
+      cropBackgroundColor: 'bg-growth-boost',
     },
   ),
   [CropType.Corn]: new Crop(
@@ -350,7 +350,7 @@ const crops = {
     {
       cropCode: CropCode.Corn,
       cropTooltip: 'Corn: Harvest Increase',
-      cropBackgroundColor: 'bg-green-800',
+      cropBackgroundColor: 'bg-harvest-boost',
     },
   ),
   [CropType.SpicyPepper]: new Crop(
@@ -386,7 +386,7 @@ const crops = {
     {
       cropCode: CropCode.SpicyPepper,
       cropTooltip: 'Spicy Pepper: Quality Increase. 2x2, needs 2 of a bonus for the buff to activate',
-      cropBackgroundColor: 'bg-amber-600',
+      cropBackgroundColor: 'bg-quality-increase',
     },
   ),
   [CropType.None]: null,
@@ -422,7 +422,7 @@ function getCropFromCode(code: CropCode): Crop | null {
 }
 
 function getCodeFromCrop(crop: Crop): CropCode {
-  return crop.cropCode;
+  return crop.cropCode
 }
 
 function getCropFromType(type: CropType): Crop | null {

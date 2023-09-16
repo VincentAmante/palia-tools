@@ -31,7 +31,7 @@ const percentString = computed(() => {
 <template>
   <div class="coverage-stat flex flex-col items-center justify-center gap-2 group">
     <div
-      class="radial-progress bg-white bg-opacity-20 group-hover:bg-opacity-60 transition-all border-4 border-solid  border-white border-opacity-0"
+      class="radial-progress bg-accent group-hover:bg-opacity-60 transition-all border-4 border-solid  border-white border-opacity-0"
       :style="[percent, '--size: clamp(8px, 4.35rem, 18vw)']"
     >
       <div class="relative flex flex-col text-center items-center justify-center">

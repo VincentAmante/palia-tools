@@ -143,20 +143,22 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
 </script>
 
 <template>
-  <div class="sm:rounded-lg my-4 px-0 py-2 mx-0">
-    <div class="bg-base-300 p-4 sm:rounded-lg max-w-xl">
+  <div class="sm:rounded-lg w-full h-full max-w-2xl">
+    <div class="bg-primary sm:rounded-lg max-h-[460px]">
       <div class="flex flex-col gap-1 pb-2">
-        <div class="text-xl md:text-2xl font-bold">
-          Harvest Approximations <span
-            class="text-sm font-normal  "
-          >(WIP)</span>
+        <div class="w-full bg-misc sm:rounded-lg sm:rounded-b-none p-2">
+          <div class="text-xl md:text-3xl">
+            Harvest Approximations <span
+              class="text-sm font-normal  "
+            >(WIP)</span>
+          </div>
         </div>
-        <p class="max-w-sm">
+        <!-- <p class="max-w-sm">
           Rough estimate of layout gold value
         </p>
         <p class="text-xs max-w-sm font-bold">
           See info for approximation details and limitations
-        </p>
+        </p> -->
         <p class="text-xs">
           <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
           Approximations are still under testing
@@ -184,7 +186,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
       </div>
       <div v-show="activeTab === 'display'" class="flex flex-col gap-2 py-4">
         <div class="py-2 px-2 flex flex-col gap-2">
-          <div>
+          <div class=" bg-accent text-misc rounded-md flex justify-center gap-4">
             <div class="font-bold flex gap-1 items-center text-xl">
               {{ Math.max(processedYields.totalResult.day, days) }} Days —
               <div class="flex gap-1 items-center">
@@ -192,7 +194,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                   processedYields.totalResult.totalGold.toLocaleString() }}
               </div>
             </div>
-            <p v-if="processedYields.totalResult.totalGold !== 0" class="flex gap-1 items-center">
+            <p v-if="processedYields.totalResult.totalGold !== 0" class="flex gap-1 items-center text-xl">
               Average:
               <span class="flex gap-1 items-center">{{
                 (Math.round(processedYields.totalResult.totalGold

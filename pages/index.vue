@@ -47,7 +47,7 @@ function selectTile(event: MouseEvent, row: number, col: number, plot: Plot) {
 
 // To dynamically react to the size of the garden, regardless of screen size
 const gardenTilesAreWide = computed(() => {
-  return gardenTiles.value[0].length >= 5
+  return gardenTiles.value[0].length >= 4
 })
 
 // Drag click to select multiple tiles
@@ -151,8 +151,6 @@ function saveAsImage() {
   if (!gardenTilesAreWide.value)
     displayWidth += ((statDisplay.value?.getStatsDisplay() as HTMLElement).clientWidth)
 
-  // displayWidth = Math.max(displayWidth, 1024)
-
   display.value.style.width = `${displayWidth}px`
   gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
     classList.add(`w-${displayWidth}`)
@@ -227,107 +225,92 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
     <GuideCard />
     <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
     <section
-      id="display" ref="display" class="bg-base-100 flex flex-col md:px-16 py-4 font-['Roboto_Slab']"
-      :class="(isTakingScreenshot.get) ? 'px-16' : ''"
+      id="display" ref="display" class="md:px-4 xl:px-8 py-4 font-['Roboto_Slab']"
+      :class="(isTakingScreenshot.get) ? 'px-4' : ''"
     >
-      <div
-        id="watermark" class="px-2 md:px-0 text-left gap-2 items-start w-fit leadiing-1"
-        :class="(isTakingScreenshot.get) ? 'flex' : 'hidden'"
-      >
-        <nuxt-img format="webp" src="/logo.webp" class="max-w-[3rem]" />
-        <div class="text-left pb-4 flex flex-col">
-          <NuxtLink to="/" class="flex items-center gap-1 justify-start">
-            <h1 class="text-lg font-bold opacity-80 w-full">
-              Palia Garden Planner
-            </h1>
-          </NuxtLink>
-          <a class="w-full opacity-75 text-xs ">https://palia-garden-planner.vercel.app</a>
-        </div>
-      </div>
-
-      <div id="planner" class="flex justify-between relative">
-        <div class="crop-buttons px-4 md:px-0">
-          <div class="py-2">
-            <h2
-              v-show="!isTakingScreenshot.get"
-              class="text-xl font-bold"
-            >
-              Select
-            </h2>
-            <p :class="(isTakingScreenshot.get) ? 'hidden' : ''">
-              Pick a crop or fertiliser to place on the garden.
-            </p>
-            <p class="text-sm opacity-50 max-w-md" :class="(isTakingScreenshot.get) ? 'hidden' : 'hidden md:block '">
-              Tip: Right clicking will remove a crop/fertiliser based on what you currently have selected.
-              Drag to do it to multiple tiles at once.
-            </p>
+      <div class="flex flex-col bg-accent rounded-lg">
+        <div
+          id="watermark" class="px-2 md:px-0 text-left gap-2 items-start w-fit leadiing-1"
+          :class="(isTakingScreenshot.get) ? 'flex' : 'hidden'"
+        >
+          <nuxt-img format="webp" src="/logo.webp" class="max-w-[3rem]" />
+          <div class="text-left pb-4 flex flex-col">
+            <NuxtLink to="/" class="flex items-center gap-1 justify-start">
+              <h1 class="text-lg font-bold opacity-80 w-full">
+                Palia Garden Planner
+              </h1>
+            </NuxtLink>
+            <a class="w-full opacity-75 text-xs ">https://palia-garden-planner.vercel.app</a>
           </div>
+        </div>
 
-          <div class="w-full flex flex-col">
-            <div>
-              <h3 class="font-semibold opacity-50 text-sm">
-                Crops
-              </h3>
-              <div class="flex flex-wrap gap-2 py-2 w-fit">
-                <div v-for="(count, index) in plotStatTotal.cropTypeCount" :key="index">
-                  <CropButton
-                    v-if="(index && index !== CropType.None && index !== null)"
-                    :crop="getCropFromType(index) as Crop"
-                    :is-selected="(selectedItem instanceof Crop) && selectedItem !== null && index === selectedItem.type"
-                    :count="count" @click="setCrop(index)"
-                  />
-                  <button
-                    v-else
-                    class="relative bg-base-200 rounded-lg md:btn-lg w-14 md:w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
-                    :class="(selectedItem === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-slate-100' : (isTakingScreenshot.get) ? 'hidden' : ''"
-                    :in-picture-mode="isTakingScreenshot.get"
-                    @click="selectedItem = 'crop-erase'"
-                  >
-                    <font-awesome-icon
-                      class="absolute -z-10 max-w-[45px] text-success text-3xl "
-                      :icon="['fas', 'eraser']"
-                    />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="font-semibold opacity-50 text-sm">
-                Fertilisers per Day
-              </h3>
-              <div class="flex flex-wrap gap-2 py-2">
-                <div v-for="(count, index) in plotStatTotal.fertiliserCount" :key="index">
-                  <div>
-                    <FertiliserButton
-                      v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
-                      :is-selected="(selectedItem instanceof Fertiliser)
-                        && selectedItem
-                          !== null
-                        && index === selectedItem.type" :count="count"
-                      @click="selectedItem = fertilisers[index]"
+        <div id="planner" class="flex justify-between relative">
+          <div class="crop-buttons px-4">
+            <div class="w-full flex flex-col">
+              <div>
+                <h3 class="font-semibold opacity-50 text-sm">
+                  Crops
+                </h3>
+                <div class="flex flex-wrap gap-2 py-2">
+                  <div v-for="(count, index) in plotStatTotal.cropTypeCount" :key="index">
+                    <CropButton
+                      v-if="(index && index !== CropType.None && index !== null)"
+                      :crop="getCropFromType(index) as Crop"
+                      :is-selected="(selectedItem instanceof Crop) && selectedItem !== null && index === selectedItem.type"
+                      :count="count" @click="setCrop(index)"
                     />
                     <button
                       v-else
-                      class="relative bg-base-200 rounded-lg md:btn-lg w-14 md:w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
-                      :class="(selectedItem === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-slate-100' : (isTakingScreenshot.get) ? 'hidden' : ''"
-                      @click="selectedItem = 'fertiliser-erase'"
+                      class="relative btn btn-secondary btn-square btn-lg border-misc border-2 aspect-square flex flex-col items-center justify-center isolate"
+                      :class="(selectedItem === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                      :in-picture-mode="isTakingScreenshot.get"
+                      @click="selectedItem = 'crop-erase'"
                     >
                       <font-awesome-icon
-                        class="absolute -z-10 max-w-[45px] text-warning text-3xl "
+                        class="absolute -z-10 max-w-[45px] text-success text-3xl "
                         :icon="['fas', 'eraser']"
                       />
                     </button>
                   </div>
                 </div>
               </div>
+
+              <div>
+                <h3 class="font-semibold opacity-50 text-sm">
+                  Fertilisers per Day
+                </h3>
+                <div class="flex flex-wrap gap-2 py-2">
+                  <div v-for="(count, index) in plotStatTotal.fertiliserCount" :key="index">
+                    <div>
+                      <FertiliserButton
+                        v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
+                        :is-selected="(selectedItem instanceof Fertiliser)
+                          && selectedItem
+                            !== null
+                          && index === selectedItem.type" :count="count"
+                        @click="selectedItem = fertilisers[index]"
+                      />
+                      <button
+                        v-else
+                        class="relative btn btn-secondary btn-square btn-lg border-misc border-2 aspect-square flex flex-col items-center justify-center isolate"
+                        :class="(selectedItem === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                        @click="selectedItem = 'fertiliser-erase'"
+                      >
+                        <font-awesome-icon
+                          class="absolute -z-10 max-w-[45px] text-warning text-3xl "
+                          :icon="['fas', 'eraser']"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="px-4 md:px-0">
-        <div class="py-0 pt-4 md:pt-4 flex flex-col lg:flex-row lg:items-center gap-2">
+        <div class="px-4 md:px-0">
+          <!-- <div class="py-0 pt-4 md:pt-4 flex flex-col lg:flex-row lg:items-center gap-2">
           <h2 class="text-3xl font-bold">
             Garden
           </h2>
@@ -340,36 +323,42 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             </span>
             New Layout
           </button>
+        </div> -->
+          <div class="py-1">
+            <p v-show="garden.activePlotCount > 9" class="badge badge-warning text-white flex gap-2">
+              <font-awesome-icon :icon="['fas', 'exclamation-triangle']" />
+              Over max plot count
+            </p>
+          </div>
+          <div class="md:hidden py-2 text-xs opacity-40" :class="(isTakingScreenshot.get) ? 'hidden' : ''">
+            <h2 class="font-bold">
+              Are you on a small screen?
+            </h2>
+            <p>The garden grid is scrollable!</p>
+          </div>
         </div>
-        <div class="py-1">
-          <p v-show="garden.activePlotCount > 9" class="badge badge-warning text-white flex gap-2">
-            <font-awesome-icon :icon="['fas', 'exclamation-triangle']" />
-            Over max plot count
-          </p>
+        <div class="flex flex-col lg:flex-row justify-between md:px-4 lg:px-4 gap-4" :class="(gardenTilesAreWide) ? 'md:flex-col' : ''">
+          <div>
+            <GardenDisplay
+              ref="gardenDisplay"
+              :garden-tiles="gardenTiles as Plot[][]"
+              :garden-tiles-are-wide="gardenTilesAreWide"
+              :hovered-bonus="hoveredBonus as Bonus"
+              class="opacity-100 mx-auto sm:mx-"
+              @right-click="handleRightClick"
+              @mouseover="handleHover"
+              @select-tile="selectTile"
+            />
+          </div>
+          <StatsDisplay
+            ref="statDisplay"
+            v-model:hovered-bonus="hoveredBonus"
+            class="sm:hidden"
+            :garden-tiles-are-wide="gardenTilesAreWide"
+            :plot-stat-total="plotStatTotal"
+          />
+          <HarvestCalculator :layout="garden as Garden" />
         </div>
-        <div class="md:hidden py-2 text-xs opacity-40" :class="(isTakingScreenshot.get) ? 'hidden' : ''">
-          <h2 class="font-bold">
-            Are you on a small screen?
-          </h2>
-          <p>The garden grid is scrollable!</p>
-        </div>
-      </div>
-      <div class="flex flex-col" :class="(gardenTilesAreWide) ? '' : 'md:flex-row'">
-        <GardenDisplay
-          ref="gardenDisplay"
-          :garden-tiles="gardenTiles as Plot[][]"
-          :garden-tiles-are-wide="gardenTilesAreWide"
-          :hovered-bonus="hoveredBonus as Bonus"
-          @right-click="handleRightClick"
-          @mouseover="handleHover"
-          @select-tile="selectTile"
-        />
-        <StatsDisplay
-          ref="statDisplay"
-          v-model:hovered-bonus="hoveredBonus"
-          :garden-tiles-are-wide="gardenTilesAreWide"
-          :plot-stat-total="plotStatTotal"
-        />
       </div>
     </section>
 
@@ -378,9 +367,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
       <p>Clear Plot</p>
     </button>
 
-    <div class="flex flex-col gap-2 lg:px-16 max-w-4xl py-1">
-      <HarvestCalculator :layout="garden as Garden" />
-    </div>
+    <div class="flex flex-col gap-2 lg:px-16 max-w-4xl py-1" />
     <div class="divider px-16" />
     <section id="save-load-export" class="flex flex-col gap-2 px-4 lg:px-16 max-w-4xl py-4 pb-12">
       <h2 class="text-2xl font-bold">

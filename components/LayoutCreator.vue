@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
 import { CropCode } from '@/assets/scripts/garden-planner/imports'
+import PGPModal from '@/components/PGPModal.vue'
 
 const emit = defineEmits(['createNewLayout'])
-const createLayoutDialog = ref<HTMLDialogElement | null>(null)
+
+const modal = ref<InstanceType<typeof PGPModal> | null>(null)
+// const createLayoutDialog = ref<HTMLDialogElement | null>(null)
 function openModal() {
-  createLayoutDialog.value?.showModal()
+  modal.value?.showModal()
 }
 defineExpose({
   openModal,
@@ -15,7 +18,7 @@ const selectedNewLayout = ref('3x3')
 const prevSelectedNewLayout = ref('3x3')
 function createNewLayout() {
   emit('createNewLayout', layoutToCode(trimLayout()))
-  createLayoutDialog.value?.close()
+  modal.value?.hideModal()
 }
 
 enum PlotStatus {
@@ -166,11 +169,22 @@ function trimLayout(): PlotStatus[][] {
 </script>
 
 <template>
-  <dialog id="create-layout" ref="createLayoutDialog" class="modal">
-    <form ref="createLayoutForm" method="dialog" class="modal-box flex flex-col gap-2" @submit.prevent="">
+  <!-- <dialog id="create-layout" ref="createLayoutDialog" class="modal">
+    <div ref="createLayoutForm" method="dialog" class="modal-box flex flex-col gap-2" @submit.prevent="">
       <h3 className="font-bold text-xl">
         New Layout
       </h3>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog> -->
+
+  <PGPModal ref="modal">
+    <template #header>
+      New Layout
+    </template>
+    <template #body>
       <div class="flex flex-col gap-1">
         <h4 class="font-bold">
           Dimensions
@@ -287,9 +301,6 @@ function trimLayout(): PlotStatus[][] {
           You'll need at least 1 plot active
         </p>
       </div>
-    </form>
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-  </dialog>
+    </template>
+  </PGPModal>
 </template>

@@ -53,9 +53,9 @@ function handleHover(rowIndex: number, index: number, plot: Plot) {
 </script>
 
 <template>
-  <div :class="(gardenTilesAreWide && !isTakingScreenshot) ? 'overflow-x-auto py-2' : ''">
+  <div :class="(gardenTilesAreWide && !isTakingScreenshot) ? 'overflow-x-auto' : ''">
     <div
-      class="rounded-xl md:w-fit p-2 bg-base-300" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
+      class="rounded-xl md:w-fit bg-accent" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
       @contextmenu.prevent.self=""
     >
       <div ref="plotsDisplay" class="w-full overflow-auto lg:overflow-auto flex flex-col gap-3 p-3">
