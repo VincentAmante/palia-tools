@@ -144,7 +144,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
 
 <template>
   <div class="sm:rounded-lg w-full h-full max-w-2xl">
-    <div class="bg-primary sm:rounded-lg max-h-[460px]">
+    <div class="bg-primary sm:rounded-lg ">
       <div class="flex flex-col gap-1">
         <div class="w-full bg-misc sm:rounded-lg sm:rounded-b-none p-2 sm:px-6 flex justify-between items-center">
           <div class="text-lg md:text-2xl">
@@ -174,7 +174,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           </div>
         </div>
       </div>
-      <div v-show="activeTab === 'display'" class="flex flex-col gap-2 py-2">
+      <div v-show="activeTab === 'display'" class="flex flex-col gap-2 py-2 overflow-hidden max-h-[486px] overflow-y-scroll">
         <div class="py-2 px-2 flex flex-col gap-2">
           <div class=" bg-accent text-misc rounded-md flex justify-center gap-4">
             <div class="font-bold flex gap-1 items-center text-xl">
@@ -223,7 +223,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
               No Fertiliser Costs
             </p>
           </div>
-          <div class="flex flex-wrap max-w-sm gap-1 bg-base-200 p-1 rounded-md">
+          <div class="flex flex-wrap max-w-sm gap-1 bg-accent p-1 rounded-md">
             <template v-for="(crop, cropType) of processedYields.totalResult.crops" :key="cropType">
               <div
                 v-if="(crop.star.produce !== 0)" class="tooltip capitalize"
@@ -240,7 +240,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                     {{ crop.star.produce }}
                   </p>
                   <p class="absolute bottom-0 left-0">
-                    <font-awesome-icon class="text-yellow-200 text-sm" :icon="['fas', 'star']" />
+                    <font-awesome-icon class="text-quality-increase text-sm" :icon="['fas', 'star']" />
                   </p>
                 </div>
               </div>
@@ -259,7 +259,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                     {{ crop.star.cropRemainder }}
                   </p>
                   <p class="absolute bottom-0 left-0">
-                    <font-awesome-icon class="text-yellow-200 text-sm" :icon="['fas', 'star']" />
+                    <font-awesome-icon class="text-quality-increase text-sm" :icon="['fas', 'star']" />
                   </p>
                   <p class="absolute top-0 right-0">
                     <font-awesome-icon class="text-white text-sm" :icon="['fas', 'recycle']" />
@@ -281,7 +281,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
                     {{ harvestData.harvestTotal.seedsRemainder[cropType].star }}
                   </p>
                   <p class="absolute bottom-0 left-0">
-                    <font-awesome-icon class="text-yellow-200 text-sm" :icon="['fas', 'star']" />
+                    <font-awesome-icon class="text-quality-increase text-sm" :icon="['fas', 'star']" />
                   </p>
                   <p class="absolute top-0 right-0">
                     <font-awesome-icon
@@ -351,224 +351,208 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
             </template>
           </div>
         </div>
-        <div class="collapse collapse-arrow border-solid border-4 border-base-200">
-          <input type="checkbox">
-          <h4 class="font-bold collapse-title bg-base-200">
-            Harvest by Day
-          </h4>
-          <div class="collapse-content px-0 pb-4">
-            <div class="overflow-hidden ">
-              <div class="overflow-y-auto max-h-96 overflow-x-hidden">
-                <table v-if="harvestData" class="table table-zebra">
-                  <thead>
-                    <tr>
-                      <th>Produce</th>
-                      <th class="flex items-center gap-1">
-                        <nuxt-img
-                          src="/gold.webp"
-                          class="max-h-[1rem]"
-                        />Gold
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(harvest, index) of processedYields.result" :key="index">
-                      <td class="flex gap-1 items-end flex-wrap w-full max-w-md">
-                        <div class="flex flex-col w-full">
-                          <p class="font-bold text-xs">
-                            Day {{ harvest.day }}
-                          </p>
-                          <div
-                            class="flex flex-wrap max-w-xl w-fit items-start justify-start gap-1"
-                          >
-                            <template v-for="(crop, cropType) of harvest.crops" :key="cropType">
-                              <div
-                                v-if="(crop.star.produce !== 0)"
-                                class="tooltip tooltip-right"
-                                :data-tip="getTooltipMessage(cropType, 'star', crop.star.produce, crop.star.gold)"
-                              >
-                                <div
-                                  class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
-                                >
-                                  <nuxt-img
-                                    :src="getCropImage(cropType, cropOptions[cropType].starType)"
-                                    class="max-w-[2.25rem] object-contain aspect-square"
-                                  />
-                                  <p
-                                    class="absolute bottom-0 right-0 text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
-                                    :class="(crop.star.produce < 0) ? 'text-red-600 font-black' : 'font-bold'"
-                                  >
-                                    {{ crop.star.produce }}
-                                  </p>
-                                  <p class="absolute bottom-0 left-0">
-                                    <font-awesome-icon
-                                      class="text-yellow-200 text-sm"
-                                      :icon="['fas', 'star']"
-                                    />
-                                  </p>
-                                  <p
-                                    v-show="(crop.star.produce < 0)"
-                                    class="absolute top-0 right-0"
-                                  >
-                                    <font-awesome-icon
-                                      class="text-red-600 text-sm"
-                                      :icon="['fas', 'seedling']"
-                                    />
-                                  </p>
-                                </div>
-                              </div>
-                              <div
-                                v-if="(crop.star.cropRemainder > 0)"
-                                class="tooltip tooltip-right"
-                              >
-                                <div
-                                  class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
-                                >
-                                  <nuxt-img
-                                    :src="crops[cropType]?.image"
-                                    class="max-w-[2rem] object-contain aspect-square"
-                                  />
-                                  <p
-                                    class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
-                                  >
-                                    {{ crop.star.cropRemainder }}
-                                  </p>
-                                  <p class="absolute bottom-0 left-0">
-                                    <font-awesome-icon
-                                      class="text-yellow-200 text-sm"
-                                      :icon="['fas', 'star']"
-                                    />
-                                  </p>
 
-                                  <p class="absolute top-0 right-0">
-                                    <font-awesome-icon
-                                      class="text-white text-sm"
-                                      :icon="['fas', 'recycle']"
-                                    />
-                                  </p>
-                                </div>
-                              </div>
-                              <div
-                                v-if="(harvestData.harvests[index].seedsRemainder[cropType].star > 0)"
-                                class="tooltip tooltip-right"
-                                data-tip="Excess seeds for replanting"
-                              >
-                                <div
-                                  class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
-                                >
-                                  <nuxt-img
-                                    :src="getCropImage(cropType, 'seed')"
-                                    class="max-w-[2.25rem] object-contain aspect-square"
-                                  />
-                                  <p
-                                    class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
-                                  >
-                                    {{
-                                      harvestData.harvests[index].seedsRemainder[cropType].star
-                                    }}
-                                  </p>
-                                  <p class="absolute bottom-0 left-0">
-                                    <font-awesome-icon
-                                      class="text-yellow-200 text-sm"
-                                      :icon="['fas', 'star']"
-                                    />
-                                  </p>
-                                  <p class="absolute top-0 right-0">
-                                    <font-awesome-icon
-                                      class="font-bold text-white text-lg"
-                                      :icon="['fas', 'turn-down']"
-                                    />
-                                  </p>
-                                </div>
-                              </div>
-                              <div
-                                v-if="(crop.base.produce !== 0)"
-                                class="tooltip tooltip-right"
-                                :data-tip="getTooltipMessage(cropType, 'base', crop.base.produce, crop.base.gold)"
-                              >
-                                <div
-                                  class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
-                                >
-                                  <nuxt-img
-                                    :src="getCropImage(cropType, cropOptions[cropType].baseType)"
-                                    class="max-w-[2.25rem] object-contain aspect-square"
-                                  />
-                                  <p
-                                    class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
-                                    :class="(crop.base.produce < 0) ? 'text-red-600 font-black' : 'font-bold'"
-                                  >
-                                    {{ crop.base.produce }}
-                                  </p>
-                                </div>
-                              </div>
-                              <div v-if="(crop.base.cropRemainder > 0)" class="tooltip">
-                                <div
-                                  class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
-                                >
-                                  <nuxt-img
-                                    :src="crops[cropType]?.image"
-                                    class="max-w-[2rem]"
-                                  />
-                                  <p
-                                    class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
-                                  >
-                                    {{ crop.base.cropRemainder }}
-                                  </p>
-
-                                  <p class="absolute top-0 right-0">
-                                    <font-awesome-icon
-                                      class="text-white text-sm"
-                                      :icon="['fas', 'recycle']"
-                                    />
-                                  </p>
-                                </div>
-                              </div>
-                              <div
-                                v-if="(harvestData.harvests[index].seedsRemainder[cropType].base > 0)"
-                                class="tooltip tooltip-right"
-                                data-tip="Excess seeds for replanting"
-                              >
-                                <div
-                                  class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
-                                >
-                                  <nuxt-img
-                                    :src="getCropImage(cropType, 'seed')"
-                                    class="max-w-[2.25rem] object-contain aspect-square"
-                                  />
-                                  <p
-                                    class="absolute bottom-0 right-0 font-bold text-xs p-[1px] px-[2px] text-center align-middle rounded-full bg-base-200 bg-opacity-60"
-                                  >
-                                    {{
-                                      harvestData.harvests[index].seedsRemainder[cropType].base
-                                    }}
-                                  </p>
-                                  <p class="absolute top-0 right-0">
-                                    <font-awesome-icon
-                                      class="font-bold text-white text-lg"
-                                      :icon="['fas', 'turn-down']"
-                                    />
-                                  </p>
-                                </div>
-                              </div>
-                            </template>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="">
-                        <p class="flex gap-1 font-bold items-center pr-1">
-                          <nuxt-img format="webp" src="/gold.webp" class="max-h-[1.5rem]" />{{
-                            harvest.totalGold.toLocaleString() }}
+        <div class="isolate">
+          <div class="h-full">
+            <div class="overflow-x-hidden px-4">
+              <table v-if="harvestData" class="table px-4 bg-accent text-misc">
+                <tbody class="h-full">
+                  <tr v-for="(harvest, index) of processedYields.result" :key="index">
+                    <td class="flex gap-1 items-end flex-wrap w-full max-w-md">
+                      <div class="flex flex-col w-full">
+                        <p class="font-semibold text-xs">
+                          Day {{ harvest.day }}
                         </p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                        <div
+                          class="flex flex-wrap max-w-xl w-fit items-start justify-start gap-1"
+                        >
+                          <template v-for="(crop, cropType) of harvest.crops" :key="cropType">
+                            <div
+                              v-if="(crop.star.produce !== 0)"
+                              class="tooltip tooltip-right"
+                              :data-tip="getTooltipMessage(cropType, 'star', crop.star.produce, crop.star.gold)"
+                            >
+                              <div
+                                class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
+                              >
+                                <nuxt-img
+                                  :src="getCropImage(cropType, cropOptions[cropType].starType)"
+                                  class="max-w-[2.25rem] object-contain aspect-square"
+                                />
+                                <p
+                                  class="absolute top-0 right-0 text-xs p-[1px] px-[6px] text-center align-middle rounded-lg bg-neutral bg-opacity-40"
+                                  :class="(crop.star.produce < 0) ? 'text-error font-black' : 'text-accent font-semibold'"
+                                >
+                                  {{ crop.star.produce }}
+                                </p>
+                                <p class="absolute bottom-0 left-0">
+                                  <font-awesome-icon
+                                    class="text-quality-increase text-sm"
+                                    :icon="['fas', 'star']"
+                                  />
+                                </p>
+                                <p
+                                  v-show="(crop.star.produce < 0)"
+                                  class="absolute top-0 right-0"
+                                >
+                                  <font-awesome-icon
+                                    class="text-error text-sm"
+                                    :icon="['fas', 'seedling']"
+                                  />
+                                </p>
+                              </div>
+                            </div>
+                            <div
+                              v-if="(crop.star.cropRemainder > 0)"
+                              class="tooltip tooltip-right"
+                            >
+                              <div
+                                class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
+                              >
+                                <nuxt-img
+                                  :src="crops[cropType]?.image"
+                                  class="max-w-[2rem] object-contain aspect-square"
+                                />
+                                <p
+                                  class="absolute top-0 right-0 text-xs p-[1px] px-[6px] text-center align-middle rounded-lg bg-neutral bg-opacity-40 text-warning"
+                                >
+                                  {{ crop.star.cropRemainder }}
+                                </p>
+                                <p class="absolute bottom-0 left-0">
+                                  <font-awesome-icon
+                                    class="text-quality-increase text-sm"
+                                    :icon="['fas', 'star']"
+                                  />
+                                </p>
+
+                                <p class="absolute top-0 right-0">
+                                  <font-awesome-icon
+                                    class="text-white text-sm"
+                                    :icon="['fas', 'recycle']"
+                                  />
+                                </p>
+                              </div>
+                            </div>
+                            <div
+                              v-if="(harvestData.harvests[index].seedsRemainder[cropType].star > 0)"
+                              class="tooltip tooltip-right"
+                              data-tip="Excess seeds for replanting"
+                            >
+                              <div
+                                class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
+                              >
+                                <nuxt-img
+                                  :src="getCropImage(cropType, 'seed')"
+                                  class="max-w-[2.25rem] object-contain aspect-square"
+                                />
+                                <p
+                                  class="absolute top-0 right-0 text-xs p-[1px] px-[6px] text-center align-middle rounded-lg bg-neutral bg-opacity-40"
+                                >
+                                  {{
+                                    harvestData.harvests[index].seedsRemainder[cropType].star
+                                  }}
+                                </p>
+                                <p class="absolute bottom-0 left-0">
+                                  <font-awesome-icon
+                                    class="text-quality-increase text-sm"
+                                    :icon="['fas', 'star']"
+                                  />
+                                </p>
+                                <p class="absolute top-0 right-0">
+                                  <font-awesome-icon
+                                    class="font-bold text-white text-lg"
+                                    :icon="['fas', 'turn-down']"
+                                  />
+                                </p>
+                              </div>
+                            </div>
+                            <div
+                              v-if="(crop.base.produce !== 0)"
+                              class="tooltip tooltip-right"
+                              :data-tip="getTooltipMessage(cropType, 'base', crop.base.produce, crop.base.gold)"
+                            >
+                              <div
+                                class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
+                              >
+                                <nuxt-img
+                                  :src="getCropImage(cropType, cropOptions[cropType].baseType)"
+                                  class="max-w-[2.25rem] object-contain aspect-square"
+                                />
+                                <p
+                                  class="absolute top-0 right-0 text-xs p-[1px] px-[6px] text-center align-middle rounded-lg bg-neutral bg-opacity-40"
+                                  :class="(crop.base.produce < 0) ? 'text-error font-black' : 'text-accent font-bold'"
+                                >
+                                  {{ crop.base.produce }}
+                                </p>
+                              </div>
+                            </div>
+                            <div v-if="(crop.base.cropRemainder > 0)" class="tooltip">
+                              <div
+                                class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
+                              >
+                                <nuxt-img
+                                  :src="crops[cropType]?.image"
+                                  class="max-w-[2rem]"
+                                />
+                                <p
+                                  class="absolute top-0 right-0 text-xs p-[1px] px-[6px] text-center align-middle rounded-lg bg-neutral bg-opacity-40"
+                                >
+                                  {{ crop.base.cropRemainder }}
+                                </p>
+
+                                <p class="absolute top-0 right-0">
+                                  <font-awesome-icon
+                                    class="text-white text-sm"
+                                    :icon="['fas', 'recycle']"
+                                  />
+                                </p>
+                              </div>
+                            </div>
+                            <div
+                              v-if="(harvestData.harvests[index].seedsRemainder[cropType].base > 0)"
+                              class="tooltip tooltip-right"
+                              data-tip="Excess seeds for replanting"
+                            >
+                              <div
+                                class="relative h-full aspect-square p-1 flex flex-col items-center justify-center"
+                              >
+                                <nuxt-img
+                                  :src="getCropImage(cropType, 'seed')"
+                                  class="max-w-[2.25rem] object-contain aspect-square"
+                                />
+                                <p
+                                  class="absolute top-0 right-0 text-xs p-[1px] px-[6px] text-center align-middle rounded-lg bg-neutral bg-opacity-40"
+                                >
+                                  {{
+                                    harvestData.harvests[index].seedsRemainder[cropType].base
+                                  }}
+                                </p>
+                                <p class="absolute top-0 right-0">
+                                  <font-awesome-icon
+                                    class="font-bold text-white text-lg"
+                                    :icon="['fas', 'turn-down']"
+                                  />
+                                </p>
+                              </div>
+                            </div>
+                          </template>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="">
+                      <p class="flex gap-1 font-bold items-center pr-1">
+                        <nuxt-img format="webp" src="/gold.webp" class="max-h-[1.5rem]" />{{
+                          harvest.totalGold.toLocaleString() }}
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
-      <div v-show="activeTab === 'options'" class="flex flex-col gap-2 py-4">
+      <div v-show="activeTab === 'options'" class="flex flex-col gap-2 py-4 overflow-hidden max-h-[486px] overflow-y-scroll">
         <div class="flex flex-col gap-2">
           <h5 class="font-semibold">
             Main Options
@@ -804,7 +788,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           </div>
         </div>
       </div>
-      <div v-show="activeTab === 'info'">
+      <div v-show="activeTab === 'info'" class="overflow-hidden max-h-[486px] overflow-y-scroll">
         <HarvestCalculatorInfo />
       </div>
     </div>

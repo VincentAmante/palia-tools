@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-2 py-4 px-2">
+  <div class="flex flex-col gap-2 py-4 px-2 text-neutral">
     <div class="max-w-lg">
       <h5 class="font-bold">
         Note
@@ -12,7 +12,7 @@
           <NuxtLink
             href="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
             target="_blank"
-            class="items-center gap-1 text-info inline-block"
+            class="items-center gap-1 text-white inline-block font-bold"
           >
             <font-awesome-icon
               :icon="['fas', 'arrow-up-right-from-square']"
@@ -23,7 +23,7 @@
           and their
           <NuxtLink
             to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
-            target="_blank" class="inline-block gap-1 text-info"
+            target="_blank" class="inline-block gap-1 text-white font-bold"
           >
             <font-awesome-icon
               :icon="['fas', 'arrow-up-right-from-square']"

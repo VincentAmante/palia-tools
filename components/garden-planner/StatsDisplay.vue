@@ -32,10 +32,9 @@ defineExpose({
 </script>
 
 <template>
-  <div class="my-2 px-2 w-fit">
+  <div class="px-2 w-fit">
     <div
-      ref="statsDisplay" class="flex flex-wrap gap-2 w-fit px-4 mt-4 cursor-help"
-      :class="(gardenTilesAreWide) ? '' : 'lg:grid lg:grid-cols-2'"
+      ref="statsDisplay" class="flex gap-2 w-fit px-4 cursor-help flex-wrap justify-center"
     >
       <CoverageStat
         :total-crops="plotStatTotal.cropCount"

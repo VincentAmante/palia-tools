@@ -334,14 +334,14 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             <p>The garden grid is scrollable!</p>
           </div> -->
         </div>
-        <div class="flex flex-col lg:flex-row justify-between md:px-4 lg:px-4 gap-4" :class="(gardenTilesAreWide) ? 'md:flex-col' : ''">
-          <div>
+        <div class="flex flex-col lg:justify-around lg:flex-row lg:gap-4" :class="(gardenTilesAreWide) ? 'md:flex-col' : ''">
+          <div class="">
             <GardenDisplay
               ref="gardenDisplay"
               :garden-tiles="gardenTiles as Plot[][]"
               :garden-tiles-are-wide="gardenTilesAreWide"
               :hovered-bonus="hoveredBonus as Bonus"
-              class="opacity-100 mx-auto sm:mx-"
+              class="opacity-100 mx-auto"
               @right-click="handleRightClick"
               @mouseover="handleHover"
               @select-tile="selectTile"
@@ -350,19 +350,35 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
           <StatsDisplay
             ref="statDisplay"
             v-model:hovered-bonus="hoveredBonus"
-            class="sm:hidden"
+            class="sm:hidden bg-primary"
             :garden-tiles-are-wide="gardenTilesAreWide"
             :plot-stat-total="plotStatTotal"
           />
-          <HarvestCalculator :layout="garden as Garden" />
+          <HarvestCalculator
+            class=""
+            :layout="garden"
+          />
+        </div>
+
+        <div class="w-full bg-primary rounded-b-lg py-1 flex">
+          <div>
+            <StatsDisplay
+              ref="statDisplay"
+              v-model:hovered-bonus="hoveredBonus"
+              class="hidden sm:block"
+              :garden-tiles-are-wide="gardenTilesAreWide"
+              :plot-stat-total="plotStatTotal"
+            />
+          </div>
+          <div>
+            <button class="btn my-0 mx-3 btn-warning w-fit text-white md:mx-8 lg:mx-16" @click="clearAllPlots()">
+              <font-awesome-icon class="text-xl" :icon="['fas', 'triangle-exclamation']" />
+              <p>Clear Plot</p>
+            </button>
+          </div>
         </div>
       </div>
     </section>
-
-    <button class="btn my-0 mx-3 btn-warning w-fit text-white md:mx-8 lg:mx-16" @click="clearAllPlots()">
-      <font-awesome-icon class="text-xl" :icon="['fas', 'triangle-exclamation']" />
-      <p>Clear Plot</p>
-    </button>
 
     <div class="flex flex-col gap-2 lg:px-16 max-w-4xl py-1" />
     <div class="divider px-16" />

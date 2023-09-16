@@ -29,10 +29,10 @@ const percentString = computed(() => {
 </script>
 
 <template>
-  <div class="coverage-stat flex flex-col items-center justify-center gap-2 group">
+  <div class="coverage-stat flex flex-col items-center justify-center gap-1 group">
     <div
       class="radial-progress bg-accent group-hover:bg-opacity-60 transition-all border-4 border-solid  border-white border-opacity-0"
-      :style="[percent, '--size: clamp(8px, 4.35rem, 18vw)']"
+      :style="[percent, '--size: clamp(8px, 4.2rem, 16vw)']"
     >
       <div class="relative flex flex-col text-center items-center justify-center">
         <div class="pt-2 md:pt-3 text-lg lg:text-xl flex flex-col items-center justify-center te">
@@ -45,7 +45,7 @@ const percentString = computed(() => {
         </div>
       </div>
     </div>
-    <div class="uppercase font-semibold max-w-[12ch] text-xs  h-12 text-center break-words align-top flex items-start">
+    <div class="uppercase font-semibold max-w-[12ch] text-misc text-xs h-12 text-center break-words align-top flex items-start">
       <slot name="title">
         Title missing
       </slot>

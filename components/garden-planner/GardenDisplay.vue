@@ -58,7 +58,7 @@ function handleHover(rowIndex: number, index: number, plot: Plot) {
       class="rounded-xl sm:w-fit sm:mx-auto bg-accent" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
       @contextmenu.prevent.self=""
     >
-      <div ref="plotsDisplay" class="w-full overflow-auto lg:overflow-auto flex flex-col gap-3 p-3">
+      <div ref="plotsDisplay" class="w-full overflow-auto lg:overflow-auto flex flex-col gap-3">
         <div v-for="(plotRow, plotRowIndex) in gardenTiles" :key="plotRowIndex" class="plotRow flex gap-3">
           <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="plot flex flex-col gap-1 relative">
             <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="plotTileRow flex cols-3 gap-1">
