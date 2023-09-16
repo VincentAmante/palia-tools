@@ -141,8 +141,6 @@ function clearAllPlots() {
 const display = ref(null as unknown as HTMLElement)
 const statDisplay = ref<InstanceType<typeof StatsDisplay> | null>()
 const gardenDisplay = ref<InstanceType<typeof GardenDisplay> | null>()
-// const { width: plotsDisplayWidth } = useElementBounding(gardenDisplay.value?.getPlotsDisplay() as HTMLElement)
-// const { width: statDisplayWidth } = useElementBounding(statDisplay.value?.getStatsDisplay() as HTMLElement)
 
 const isTakingScreenshot = useTakingScreenshot()
 function saveAsImage() {
@@ -151,7 +149,7 @@ function saveAsImage() {
   if (!gardenTilesAreWide.value)
     displayWidth += ((statDisplay.value?.getStatsDisplay() as HTMLElement).clientWidth)
 
-  display.value.style.width = `${displayWidth}px`
+  display.value.style.width = '1248px'
   gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
     classList.add(`w-${displayWidth}`)
   })
@@ -228,7 +226,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
       id="display" ref="display" class="md:px-4 xl:px-8 py-4 font-['Roboto_Slab']"
       :class="(isTakingScreenshot.get) ? 'px-4' : ''"
     >
-      <div class="flex flex-col bg-accent rounded-lg">
+      <div class="flex flex-col bg-accent md:rounded-lg">
         <div
           id="watermark" class="px-2 md:px-0 text-left gap-2 items-start w-fit leadiing-1"
           :class="(isTakingScreenshot.get) ? 'flex' : 'hidden'"
@@ -244,39 +242,38 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
           </div>
         </div>
 
-        <div id="planner" class="flex justify-between relative">
-          <div class="crop-buttons px-4">
-            <div class="w-full flex flex-col">
-              <div>
-                <h3 class="font-semibold opacity-50 text-sm">
-                  Crops
-                </h3>
-                <div class="flex flex-wrap gap-2 py-2">
-                  <div v-for="(count, index) in plotStatTotal.cropTypeCount" :key="index">
-                    <CropButton
-                      v-if="(index && index !== CropType.None && index !== null)"
-                      :crop="getCropFromType(index) as Crop"
-                      :is-selected="(selectedItem instanceof Crop) && selectedItem !== null && index === selectedItem.type"
-                      :count="count" @click="setCrop(index)"
+        <div id="planner" class="relative py-4">
+          <div class="crop-buttons px-4 w-full flex flex-col md:flex-row ">
+            <div class="md:basis-2/3">
+              <h3 class="font-semibold text-palia-blue">
+                Crops
+              </h3>
+              <div class="flex flex-wrap gap-2 py-2">
+                <div v-for="(count, index) in plotStatTotal.cropTypeCount" :key="index">
+                  <CropButton
+                    v-if="(index && index !== CropType.None && index !== null)"
+                    :crop="getCropFromType(index) as Crop"
+                    :is-selected="(selectedItem instanceof Crop) && selectedItem !== null && index === selectedItem.type"
+                    :count="count" @click="setCrop(index)"
+                  />
+                  <button
+                    v-else
+                    class="relative w-14 rounded-md btn-secondary border-misc border-2 aspect-square flex flex-col items-center justify-center isolate"
+                    :class="(selectedItem === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                    :in-picture-mode="isTakingScreenshot.get"
+                    @click="selectedItem = 'crop-erase'"
+                  >
+                    <font-awesome-icon
+                      class="absolute -z-10 max-w-[45px] text-success text-3xl "
+                      :icon="['fas', 'eraser']"
                     />
-                    <button
-                      v-else
-                      class="relative btn btn-secondary btn-square btn-lg border-misc border-2 aspect-square flex flex-col items-center justify-center isolate"
-                      :class="(selectedItem === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
-                      :in-picture-mode="isTakingScreenshot.get"
-                      @click="selectedItem = 'crop-erase'"
-                    >
-                      <font-awesome-icon
-                        class="absolute -z-10 max-w-[45px] text-success text-3xl "
-                        :icon="['fas', 'eraser']"
-                      />
-                    </button>
-                  </div>
+                  </button>
                 </div>
               </div>
-
+            </div>
+            <div class="flex flex-wrap lg:justify-end w-full md:basis-1/3">
               <div>
-                <h3 class="font-semibold opacity-50 text-sm">
+                <h3 class="font-semibold text-palia-blue">
                   Fertilisers per Day
                 </h3>
                 <div class="flex flex-wrap gap-2 py-2">
@@ -292,12 +289,12 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                       />
                       <button
                         v-else
-                        class="relative btn btn-secondary btn-square btn-lg border-misc border-2 aspect-square flex flex-col items-center justify-center isolate"
+                        class="relative w-14 rounded-md btn-secondary border-misc border-2 aspect-square flex flex-col items-center justify-center isolate"
                         :class="(selectedItem === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
                         @click="selectedItem = 'fertiliser-erase'"
                       >
                         <font-awesome-icon
-                          class="absolute -z-10 max-w-[45px] text-warning text-3xl "
+                          class="absolute -z-10 max-w-[42px] text-warning text-3xl "
                           :icon="['fas', 'eraser']"
                         />
                       </button>
@@ -330,12 +327,12 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
               Over max plot count
             </p>
           </div>
-          <div class="md:hidden py-2 text-xs opacity-40" :class="(isTakingScreenshot.get) ? 'hidden' : ''">
+          <!-- <div class="md:hidden py-2 text-xs opacity-40" :class="(isTakingScreenshot.get) ? 'hidden' : ''">
             <h2 class="font-bold">
               Are you on a small screen?
             </h2>
             <p>The garden grid is scrollable!</p>
-          </div>
+          </div> -->
         </div>
         <div class="flex flex-col lg:flex-row justify-between md:px-4 lg:px-4 gap-4" :class="(gardenTilesAreWide) ? 'md:flex-col' : ''">
           <div>

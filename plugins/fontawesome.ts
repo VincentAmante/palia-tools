@@ -22,8 +22,10 @@ import {
   faRecycle,
   faSeedling,
   faShield,
+  faSliders,
   faSquarePlus,
   faStar,
+  faTable,
   faTableCellsLarge,
   faTools,
   faTrash,
@@ -64,6 +66,8 @@ library.add(
   faGift,
   faMap,
   faGithub,
+  faTable,
+  faSliders,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS

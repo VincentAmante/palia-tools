@@ -145,46 +145,36 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
 <template>
   <div class="sm:rounded-lg w-full h-full max-w-2xl">
     <div class="bg-primary sm:rounded-lg max-h-[460px]">
-      <div class="flex flex-col gap-1 pb-2">
-        <div class="w-full bg-misc sm:rounded-lg sm:rounded-b-none p-2">
-          <div class="text-xl md:text-3xl">
+      <div class="flex flex-col gap-1">
+        <div class="w-full bg-misc sm:rounded-lg sm:rounded-b-none p-2 sm:px-6 flex justify-between items-center">
+          <div class="text-lg md:text-2xl">
             Harvest Approximations <span
-              class="text-sm font-normal  "
+              class="text-xs font-normal  "
             >(WIP)</span>
           </div>
+          <div class="tabs w-fit flex flex-nowrap">
+            <button
+              class="tab px-1 text-2xl" :class="activeTab === 'display' ? 'tab-active' : ''"
+              @click="setTab('display')"
+            >
+              <font-awesome-icon :icon="['fas', 'table']" />
+            </button>
+            <button
+              class="tab px-1 text-2xl" :class="activeTab === 'options' ? 'tab-active' : ''"
+              @click="setTab('options')"
+            >
+              <font-awesome-icon :icon="['fas', 'sliders']" />
+            </button>
+            <button
+              class="tab px-1 text-2xl" :class="activeTab === 'info' ? 'tab-active' : ''"
+              @click="setTab('info')"
+            >
+              <font-awesome-icon :icon="['fas', 'info-circle']" />
+            </button>
+          </div>
         </div>
-        <!-- <p class="max-w-sm">
-          Rough estimate of layout gold value
-        </p>
-        <p class="text-xs max-w-sm font-bold">
-          See info for approximation details and limitations
-        </p> -->
-        <p class="text-xs">
-          <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
-          Approximations are still under testing
-        </p>
       </div>
-      <div class="tabs tabs-boxed w-fit">
-        <button
-          class="tab" :class="activeTab === 'display' ? 'tab-active' : ''"
-          @click="setTab('display')"
-        >
-          Display
-        </button>
-        <button
-          class="tab" :class="activeTab === 'options' ? 'tab-active' : ''"
-          @click="setTab('options')"
-        >
-          Options
-        </button>
-        <button
-          class="tab" :class="activeTab === 'info' ? 'tab-active' : ''"
-          @click="setTab('info')"
-        >
-          Info
-        </button>
-      </div>
-      <div v-show="activeTab === 'display'" class="flex flex-col gap-2 py-4">
+      <div v-show="activeTab === 'display'" class="flex flex-col gap-2 py-2">
         <div class="py-2 px-2 flex flex-col gap-2">
           <div class=" bg-accent text-misc rounded-md flex justify-center gap-4">
             <div class="font-bold flex gap-1 items-center text-xl">
