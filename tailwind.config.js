@@ -14,6 +14,7 @@ module.exports = {
       'palia-blue': '#3A4A6B',
       'palia-dark-blue': '#2B3750',
       'misc': '#8B8072',
+      'misc-saturated': '#bfa178',
       'misc-secondary': '#00000025',
       'growth-boost': '#ED915E',
       'quality-increase': '#E0AA4A',
