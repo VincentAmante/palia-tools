@@ -149,7 +149,7 @@ function saveAsImage() {
   if (!gardenTilesAreWide.value)
     displayWidth += ((statDisplay.value?.getStatsDisplay() as HTMLElement).clientWidth)
 
-  display.value.style.width = '1248px'
+  display.value.style.width = '1440px'
   gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
     classList.add(`w-${displayWidth}`)
   })

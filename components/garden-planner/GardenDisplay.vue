@@ -53,12 +53,15 @@ function handleHover(rowIndex: number, index: number, plot: Plot) {
 </script>
 
 <template>
-  <div :class="(gardenTilesAreWide && !isTakingScreenshot) ? 'overflow-x-auto' : ''">
+  <div
+    class="h-full flex flex-col justify-center "
+    :class="(gardenTilesAreWide && !isTakingScreenshot) ? 'overflow-x-auto' : ''"
+  >
     <div
-      class="rounded-xl sm:w-fit sm:mx-auto bg-accent" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
+      class="rounded-xl sm:w-fit sm:mx-auto px-3 lg:px-1 bg-accent" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
       @contextmenu.prevent.self=""
     >
-      <div ref="plotsDisplay" class="w-full overflow-auto lg:overflow-auto flex flex-col gap-2">
+      <div ref="plotsDisplay" class="w-full overflow-auto grid gap-2">
         <div v-for="(plotRow, plotRowIndex) in gardenTiles" :key="plotRowIndex" class="plotRow flex gap-2">
           <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="plot flex flex-col gap-0 relative">
             <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="plotTileRow flex cols-3 gap-0">
@@ -67,8 +70,8 @@ function handleHover(rowIndex: number, index: number, plot: Plot) {
                   :tile="tile as Tile" :is-disabled="!plot.isActive" :bonus-hovered="hoveredBonus"
                   :index="(1 + rowIndex) + (index + (rowIndex * 2))"
                   :is-alt="(plotRowIndex + plotIndex) % 2 === 0"
-                  @click="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
-                  @contextmenu="((e: MouseEvent) => handleRightClick(event, rowIndex, index, plot as Plot))"
+                  @click.left="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
+                  @click.right="((e: MouseEvent) => handleRightClick(event, rowIndex, index, plot as Plot))"
                   @mouseover="handleHover(rowIndex, index, plot as Plot)"
                 />
               </div>

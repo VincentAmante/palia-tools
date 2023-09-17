@@ -143,7 +143,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
 </script>
 
 <template>
-  <div class="collapse collapse-arrow rounded-none sm:rounded-lg w-full h-full max-w-2xl">
+  <div class="collapse collapse-arrow rounded-none sm:rounded-lg w-full h-full max-w-2xl sm:mx-auto sm:py-4 lg:py-0 lg:mx-0">
     <div class="bg-primary sm:rounded-lg ">
       <div class="flex flex-col gap-1">
         <div class="w-full bg-misc sm:rounded-lg sm:rounded-b-none p-2 sm:px-6 flex justify-between items-center">
@@ -174,7 +174,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           </div>
         </div>
       </div>
-      <div v-show="activeTab === 'display'" class="flex flex-col gap-2 px-4 py-2 overflow-hidden max-h-[486px] overflow-y-scroll">
+      <div v-show="activeTab === 'display'" class="flex flex-col gap-2 px-4 py-2 overflow-hidden max-h-[386px] overflow-y-scroll">
         <div class="py-2 flex flex-col gap-2">
           <div class=" bg-accent text-misc rounded-md flex justify-center gap-4">
             <div class="font-bold flex gap-1 items-center text-xl">
