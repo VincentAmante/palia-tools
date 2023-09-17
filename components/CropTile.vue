@@ -19,6 +19,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  index: {
+    type: Number,
+    default: 0,
+  },
 })
 
 const code = computed(() => {
@@ -47,16 +51,82 @@ const bonusBgColor = computed(() => {
   if (!(props.tile?.bonuses.includes(props.bonusHovered as Bonus)))
     return ''
 
-  return 'opacity-70 bg-white'
+  return 'opacity-100 bg-white'
+})
+
+// based on 1-9, decide border corner radius
+const borderRadius = computed(() => {
+  if (props.index === 1)
+    return 'rounded-tl-lg'
+  if (props.index === 3)
+    return 'rounded-tr-lg'
+  if (props.index === 7)
+    return 'rounded-bl-lg'
+  if (props.index === 9)
+    return 'rounded-br-lg'
+
+  return ''
+})
+
+// based on 1-9, decide whether a border is needed
+const border = computed(() => {
+  let style = ''
+
+  style += (props.isAlt) ? ' border-misc' : ' border-misc border-collapse'
+
+  // if (props.index === 1)
+  //   style += 'border-t border-l'
+  // if (props.index === 3)
+  //   style += 'border-t border-r'
+  // if (props.index === 7)
+  //   style += 'border-b border-l'
+  // if (props.index === 9)
+  //   style += 'border-b border-r'
+
+  switch (props.index) {
+    case 1:
+      style += 'border-t border-l border-t-[1px]'
+      break
+    case 2:
+      style += 'border-t border-t-[1px] border-l'
+      break
+    case 3:
+      style += 'border-t border-t-[1px] border-r border-l'
+      break
+    case 4:
+      style += 'border-l border-t-[1px] border-l'
+      break
+    case 5:
+      style += 'border-t-[1px] border-l border-t'
+      break
+    case 6:
+      style += 'border-r border-l border-t-[1px] border-r-[1px]'
+      break
+    case 7:
+      style += ' border-b border-l border-t'
+      break
+    case 8:
+      style += 'border-b border-l border-b-[1px] border-t'
+      break
+    case 9:
+      style += 'border-b border-l border-l-[1px] border-r border-b-[1px] border-t'
+      break
+    default:
+      break
+  }
+
+  return style
 })
 </script>
 
 <template>
   <div
     draggable="false"
-    class="relative select-none min-w-[3rem] sm:min-w-[3.25rem] bg-secondary lg:min-w-[3.45rem] aspect-square cursor-pointer rounded-lg hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
+    class="relative select-none min-w-[3rem] sm:min-w-[3.25rem] bg-secondary lg:min-w-[3.5rem] aspect-square cursor-pointer hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
-             (isAlt ? 'border-[1px] border-primary' : 'border-[1px] border-misc'),
+             (isAlt ? 'border-misc' : 'border-misc border-collapse'),
+             border,
+             borderRadius,
     ]"
   >
     <div class="absolute w-full h-full bg-opacity-20 -z-10" :class="bgColour" />

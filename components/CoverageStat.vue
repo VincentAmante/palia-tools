@@ -29,13 +29,13 @@ const percentString = computed(() => {
 </script>
 
 <template>
-  <div class="coverage-stat flex flex-col items-center justify-center gap-1 group">
+  <div class="coverage-stat flex flex-col items-center justify-center gap-[1px] group">
     <div
-      class="radial-progress bg-accent group-hover:bg-opacity-60 transition-all border-4 border-solid  border-white border-opacity-0"
-      :style="[percent, '--size: clamp(8px, 4.2rem, 16vw)']"
+      class="radial-progress bg-accent group-hover:bg-white group-hover:bg-opacity-80 transition-all border-4 border-solid border-white border-opacity-0"
+      :style="[percent, '--size: clamp(8px, 4rem, 14vw)']"
     >
       <div class="relative flex flex-col text-center items-center justify-center">
-        <div class="pt-2 md:pt-3 text-lg lg:text-xl flex flex-col items-center justify-center te">
+        <div class="pt-2 md:pt-3 text-lg lg:text-lg flex flex-col items-center justify-center te">
           <slot name="icon" />
         </div>
         <div class="text font-semibold text-center flex flex-col items-center justify-center">

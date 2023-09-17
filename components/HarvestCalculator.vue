@@ -143,7 +143,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
 </script>
 
 <template>
-  <div class="sm:rounded-lg w-full h-full max-w-2xl">
+  <div class="collapse collapse-arrow rounded-none sm:rounded-lg w-full h-full max-w-2xl">
     <div class="bg-primary sm:rounded-lg ">
       <div class="flex flex-col gap-1">
         <div class="w-full bg-misc sm:rounded-lg sm:rounded-b-none p-2 sm:px-6 flex justify-between items-center">
@@ -154,19 +154,19 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           </div>
           <div class="tabs w-fit flex flex-nowrap">
             <button
-              class="tab px-1 text-2xl" :class="activeTab === 'display' ? 'tab-active' : ''"
+              class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'display' ? 'tab-active' : ''"
               @click="setTab('display')"
             >
               <font-awesome-icon :icon="['fas', 'table']" />
             </button>
             <button
-              class="tab px-1 text-2xl" :class="activeTab === 'options' ? 'tab-active' : ''"
+              class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'options' ? 'tab-active' : ''"
               @click="setTab('options')"
             >
               <font-awesome-icon :icon="['fas', 'sliders']" />
             </button>
             <button
-              class="tab px-1 text-2xl" :class="activeTab === 'info' ? 'tab-active' : ''"
+              class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'info' ? 'tab-active' : ''"
               @click="setTab('info')"
             >
               <font-awesome-icon :icon="['fas', 'info-circle']" />
@@ -174,8 +174,8 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           </div>
         </div>
       </div>
-      <div v-show="activeTab === 'display'" class="flex flex-col gap-2 py-2 overflow-hidden max-h-[486px] overflow-y-scroll">
-        <div class="py-2 px-2 flex flex-col gap-2">
+      <div v-show="activeTab === 'display'" class="flex flex-col gap-2 px-4 py-2 overflow-hidden max-h-[486px] overflow-y-scroll">
+        <div class="py-2 flex flex-col gap-2">
           <div class=" bg-accent text-misc rounded-md flex justify-center gap-4">
             <div class="font-bold flex gap-1 items-center text-xl">
               {{ Math.max(processedYields.totalResult.day, days) }} Days —
@@ -223,7 +223,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
               No Fertiliser Costs
             </p>
           </div>
-          <div class="flex flex-wrap max-w-sm gap-1 bg-accent p-1 rounded-md">
+          <div class="flex flex-wrap gap-1 bg-accent p-1 rounded-md">
             <template v-for="(crop, cropType) of processedYields.totalResult.crops" :key="cropType">
               <div
                 v-if="(crop.star.produce !== 0)" class="tooltip capitalize"
@@ -351,10 +351,9 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
             </template>
           </div>
         </div>
-
         <div class="isolate">
           <div class="h-full">
-            <div class="overflow-x-hidden px-4">
+            <div class="overflow-x-hidden">
               <table v-if="harvestData" class="table px-4 bg-accent text-misc">
                 <tbody class="h-full">
                   <tr v-for="(harvest, index) of processedYields.result" :key="index">

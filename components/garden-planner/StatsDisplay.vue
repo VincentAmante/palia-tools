@@ -32,9 +32,9 @@ defineExpose({
 </script>
 
 <template>
-  <div class="px-2 w-fit">
+  <div class="px-1 pt-1 sm:pt-0 md:px-2 w-full">
     <div
-      ref="statsDisplay" class="flex gap-2 w-fit px-4 cursor-help flex-wrap justify-center"
+      ref="statsDisplay" class="flex gap-0 md:gap-2 w-full md:w-fit md:px-4 cursor-help justify-center"
     >
       <CoverageStat
         :total-crops="plotStatTotal.cropCount"
