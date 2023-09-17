@@ -2,8 +2,8 @@ export class Item {
   readonly name: string
   readonly image: string
   readonly price: number
-  private readonly isStar: boolean
-  private readonly maxStack: number
+  readonly isStar: boolean
+  readonly maxStack: number
   private _count = 0
 
   constructor(name: string, image: string, price: number, isStar: boolean, maxStack: number) {

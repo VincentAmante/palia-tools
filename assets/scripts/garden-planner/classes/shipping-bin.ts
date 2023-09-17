@@ -39,11 +39,12 @@ export class ShippingBin {
      *  but I think it's better to just let the player figure out how to manage their shipping bin
      */
 
+    const id = `${item.name}:${(item.isStar) ? 'star' : 'normal'}`
     if (!this._binInfo[day])
       this._binInfo[day] = {}
-    if (!this._binInfo[day][item.name])
-      this._binInfo[day][item.name] = item
+    if (!this._binInfo[day][id])
+      this._binInfo[day][id] = item
     else
-      this._binInfo[day][item.name].add(item.count)
+      this._binInfo[day][id].add(item.count)
   }
 }
