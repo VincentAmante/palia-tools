@@ -61,7 +61,7 @@ watch(hour, () => {
     </div>
     <div class="flex text-misc bg-accent rounded-md items-center justify-between px-4 py-2">
       <p>Remind Me</p>
-      <input v-model="dayAlert" type="checkbox" class="toggle">
+      <input v-model="dayAlert" type="checkbox" class="toggle toggle-info">
     </div>
   </div>
 </template>
