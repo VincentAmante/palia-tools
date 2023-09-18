@@ -89,3 +89,13 @@ export interface IDayResult {
   crops: Record<CropType, { base: ICropValue; star: ICropValue }>
   totalGold: number
 }
+
+export interface ICalculateValueResult {
+  result: IDayResult[]
+  totalResult: IDayResult
+}
+
+export interface ISimulateYieldResult {
+  harvests: IHarvestInfo[]
+  harvestTotal: IHarvestInfo
+}

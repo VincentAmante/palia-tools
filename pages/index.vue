@@ -3,6 +3,7 @@ import { useClipboard, useMousePressed, useUrlSearchParams } from '@vueuse/core'
 import domtoimage from 'dom-to-image-more'
 import { computed, onMounted, ref } from 'vue'
 import uniqid from 'uniqid'
+import TimeDisplay from '@/components/TimeDisplay.vue'
 import StatsDisplay from '@/components/garden-planner/StatsDisplay.vue'
 import GardenDisplay from '@/components/garden-planner/GardenDisplay.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
@@ -224,7 +225,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
     <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
     <div class="flex flex-col w-full justify-center items-center">
       <section
-        id="display" ref="display" class="md:px-4 lg:px-8 py-4 font-['Roboto_Slab'] w-full max-w-[1440px]"
+        id="display" ref="display" class="md:px-4 lg:px-8 py-4 font-['Roboto_Slab'] w-full max-w-[1440px] 2xl:max-w-[1920px] 2xl:px-16"
         :class="(isTakingScreenshot.get) ? 'px-4' : ''"
       >
         <div class="flex flex-col bg-accent md:rounded-lg">
@@ -313,29 +314,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
               Over max plot count
             </p>
           </div>
-          <!-- <div class="px-4 md:px-0">
-          <div class="py-0 pt-4 md:pt-4 flex flex-col lg:flex-row lg:items-center gap-2">
-            <h2 class="text-3xl font-bold">
-              Garden
-            </h2>
-            <button
-              class="btn btn-sm text-sm w-fit" :class="(isTakingScreenshot.get) ? 'hidden' : ''"
-              @click="openNewLayoutModal()"
-            >
-              <span>
-                <font-awesome-icon :icon="['fas', 'table-cells-large']" />
-              </span>
-              New Layout
-            </button>
-          </div>
-          <div class="md:hidden py-2 text-xs opacity-40" :class="(isTakingScreenshot.get) ? 'hidden' : ''">
-            <h2 class="font-bold">
-              Are you on a small screen?
-            </h2>
-            <p>The garden grid is scrollable!</p>
-          </div>
-        </div> -->
-          <div class="flex flex-col lg:justify-around lg:flex-row lg:gap-4 pb-4" :class="(gardenTilesAreWide) ? 'md:flex-col' : ''">
+          <div class="flex flex-col lg:justify-around md:flex-row lg:gap-4 pb-4" :class="(gardenTilesAreWide) ? 'md:flex-col' : ''">
             <div class="">
               <GardenDisplay
                 ref="gardenDisplay"
@@ -351,7 +330,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             <StatsDisplay
               ref="statDisplay"
               v-model:hovered-bonus="hoveredBonus"
-              class="sm:hidden bg-primary mt-4"
+              class="md:hidden bg-primary mt-4"
               :garden-tiles-are-wide="gardenTilesAreWide"
               :plot-stat-total="plotStatTotal"
             />
@@ -361,22 +340,41 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             />
           </div>
 
-          <div class="w-full bg-primary rounded-b-lg py-4 flex md:px-4 lg:px-16">
-            <div>
+          <div class="w-full bg-primary rounded-b-lg py-4 grid md:grid-cols-9 gap-y-6 gap-x-4 lg:gap-6">
+            <div class="md:col-span-4 px-1">
               <StatsDisplay
                 ref="statDisplay"
                 v-model:hovered-bonus="hoveredBonus"
-                class="hidden sm:block"
+                class="hidden md:block"
                 :garden-tiles-are-wide="gardenTilesAreWide"
                 :plot-stat-total="plotStatTotal"
               />
             </div>
-            <div>
-              <button class="btn my-0 mx-3 btn-warning w-fit text-white md:mx-8 lg:mx-16" @click="clearAllPlots()">
-                <font-awesome-icon class="text-xl" :icon="['fas', 'triangle-exclamation']" />
-                <p>Clear Plot</p>
-              </button>
+            <div class="grid gap-3 md:gap-2 md:col-span-3 px-4">
+              <div class="grid grid-cols-2 gap-3 items-center">
+                <button class="btn btn-warning" @click="clearAllPlots()">
+                  <p>Clear Plot</p>
+                </button>
+                <button
+                  class="btn " :class="(isTakingScreenshot.get) ? 'hidden' : ''"
+                  @click="openNewLayoutModal()"
+                >
+                  New Layout
+                </button>
+              </div>
+              <div class="grid grid-cols-3 gap-3 items-center ">
+                <button class="btn btn-accent">
+                  Save
+                </button>
+                <button class="btn btn-accent">
+                  Load
+                </button>
+                <button class="btn btn-accent">
+                  Export
+                </button>
+              </div>
             </div>
+            <TimeDisplay />
           </div>
         </div>
       </section>

@@ -12,6 +12,7 @@ import Garden from './classes/garden'
 import Fertiliser from './classes/fertiliser'
 import FertiliserType from './enums/fertiliser'
 import fertilisers, { getCodeFromFertiliser, getFertiliserFromCode, getFertiliserFromType } from './fertiliser-list'
+import type { ICalculateValueResult, ISimulateYieldResult } from './utils/garden-helpers'
 
 import type { PlotStat } from './types/plotStat'
 
@@ -34,5 +35,7 @@ export {
   getFertiliserFromType,
   getCodeFromFertiliser,
   getFertiliserFromCode,
+  ICalculateValueResult,
+  ISimulateYieldResult,
 }
 export type { PlotStat }

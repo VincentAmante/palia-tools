@@ -35,17 +35,18 @@ const percentString = computed(() => {
       :style="[percent, '--size: clamp(8px, 4rem, 14vw)']"
     >
       <div class="relative flex flex-col text-center items-center justify-center">
-        <div class="pt-2 md:pt-3 text-lg lg:text-lg flex flex-col items-center justify-center te">
+        <div class="pt-2 text-lg lg:text-lg flex flex-col items-center justify-center te">
           <slot name="icon" />
         </div>
-        <div class="text font-semibold text-center flex flex-col items-center justify-center">
-          <p class="flex items-center text-sm gap-[1px]">
-            {{ percentString }}<span class="text-xs">%</span>
+        <div class="text font-bold text-center flex flex-col items-center justify-center">
+          <p class="flex items-center gap-[1px]">
+            {{ percentString }}
+            <!-- <span class="text-xs">%</span> -->
           </p>
         </div>
       </div>
     </div>
-    <div class="uppercase font-semibold max-w-[12ch] text-misc text-xs h-12 text-center break-words align-top flex items-start">
+    <div class="capitalise font-bold max-w-[10ch] text-misc text-xs h-12 text-center break-words align-top flex items-start pt-[2px]">
       <slot name="title">
         Title missing
       </slot>

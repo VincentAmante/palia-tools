@@ -1,21 +1,14 @@
-import { defineStore } from 'pinia'
+// import { defineStore } from 'pinia'
+// import { useStorage } from '@vueuse/core'
 
-export const useDayAlert = defineStore('dayAlert', () => {
-  const val = ref(false)
+// export const useDayAlert = defineStore('dayAlert', () => {
+//   const state = useStorage('day-alert', false)
 
-  if (localStorage.getItem('dayAlert') === 'true')
-    val.value = true
+//   const get = computed(() => state.value)
 
-  function set(newVal: boolean) {
-    val.value = newVal
-    localStorage.setItem('dayAlert', `${newVal}`)
-  }
-
-  const get = computed(() => val.value)
-
-  return {
-    set,
-    get,
-  }
-},
-)
+//   return {
+//     set,
+//     get,
+//   }
+// },
+// )

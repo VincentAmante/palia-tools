@@ -9,7 +9,7 @@ import { parseSave } from '../save-handler'
 import FertiliserType from '../enums/fertiliser'
 import FertiliserCode from '../enums/fertilisercode'
 import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliser-list'
-import type { CalculateValueOptions, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo } from '../utils/garden-helpers'
+import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo, ISimulateYieldResult } from '../utils/garden-helpers'
 import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
 
 import Plot from './plot'
@@ -459,10 +459,7 @@ class Garden {
    */
   calculateValue(
     options: CalculateValueOptions,
-    harvestInfo: {
-      harvests: IHarvestInfo[]
-      harvestTotal: IHarvestInfo
-    },
+    harvestInfo: ISimulateYieldResult,
   ) {
     const result: {
       day: number
@@ -597,7 +594,7 @@ class Garden {
     return {
       result,
       totalResult,
-    }
+    } as ICalculateValueResult
   }
 
   /**
