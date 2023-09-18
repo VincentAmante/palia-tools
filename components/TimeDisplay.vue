@@ -47,17 +47,9 @@ watch(hour, () => {
   console.log(hour.value)
   console.log(dayAlert.value)
 
-  if (dayAlert.value) {
-    console.log('showing')
+  if (dayAlert.value)
     show()
-  }
 })
-
-onMounted(() => {
-  show()
-})
-
-const testNumber = ref(0)
 </script>
 
 <template>
