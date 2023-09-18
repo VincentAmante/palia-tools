@@ -44,10 +44,7 @@ const {
 const dayAlert = useStorage('dayAlert', false)
 
 watch(hour, () => {
-  console.log(hour.value)
-  console.log(dayAlert.value)
-
-  if (dayAlert.value)
+  if (hour.value === 6 && dayAlert.value)
     show()
 })
 </script>
