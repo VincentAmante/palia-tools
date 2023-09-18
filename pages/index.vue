@@ -225,7 +225,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
     <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
     <div class="flex flex-col w-full justify-center items-center">
       <section
-        id="display" ref="display" class="md:px-4 lg:px-8 py-4 font-['Roboto_Slab'] w-full max-w-[1440px] 2xl:max-w-[1920px] 2xl:px-16"
+        id="display" ref="display" class="md:px-4 lg:px-8 py-4 font-['Roboto_Slab'] w-full max-w-[1280px] 2xl:max-w-[1440px] 2xl:px-16"
         :class="(isTakingScreenshot.get) ? 'px-4' : ''"
       >
         <div class="flex flex-col bg-accent md:rounded-lg">

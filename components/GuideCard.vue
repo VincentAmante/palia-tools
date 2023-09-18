@@ -1,6 +1,6 @@
 <template>
-  <div class="px-4 md:px-16 flex flex-col gap-2 max-w-[1920px]">
-    <div class="bg-misc-secondary rounded-lg p-4 md:p-2 h-fit flex flex-col md:flex-row items-center justify-center gap-2">
+  <div class="px-4 md:px-16 flex flex-col gap-2 items-center">
+    <div class="bg-misc-secondary rounded-lg p-4 max-w-[1680px]  md:p-2 h-fit flex flex-col md:flex-row items-center justify-center gap-2 w-full">
       <h3 class="font-semibold">
         <font-awesome-icon :icon="['fas', 'question-circle']" class="text-sm" />
         New to Gardening?
