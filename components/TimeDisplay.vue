@@ -19,6 +19,8 @@ const minuteFormatted = ref(minute.value < 10 ? `0${minute.value}` : minute.valu
 const meridiem = ref(hour.value >= 12 ? 'PM' : 'AM')
 const timeFormatted = ref(`${hourFormatted.value}:${minuteFormatted.value} ${meridiem.value}`)
 
+const INTERVAL_MS = 1000
+
 setInterval(() => {
   totalSeconds.value = (dayjs().utc().minute() * 60) + dayjs().utc().second()
   hour.value = Math.floor(totalSeconds.value / SECONDS_PER_HOUR)
@@ -29,19 +31,27 @@ setInterval(() => {
   meridiem.value = hour.value >= 12 ? 'PM' : 'AM'
 
   timeFormatted.value = `${hourFormatted.value}:${minuteFormatted.value} ${meridiem.value}`
-}, MS_PER_SECOND)
+}, INTERVAL_MS)
 
 const {
   show,
+  permissionGranted,
+  ensurePermissions,
 } = useWebNotification(
   {
     title: '6:00 AM in Palia',
     body: 'Time to Harvest!',
     icon: '/logo.webp',
+    requestPermissions: false,
   },
 )
 
 const dayAlert = useStorage('dayAlert', false)
+
+watch(dayAlert, () => {
+  if (dayAlert.value && !permissionGranted.value)
+    ensurePermissions()
+})
 
 watch(hour, () => {
   if (hour.value === 6 && dayAlert.value)

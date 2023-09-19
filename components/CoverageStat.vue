@@ -32,21 +32,20 @@ const percentString = computed(() => {
   <div class="coverage-stat flex flex-col items-center justify-center gap-[1px] group">
     <div
       class="radial-progress bg-accent group-hover:bg-white group-hover:bg-opacity-80 transition-all border-4 border-solid border-white border-opacity-0"
-      :style="[percent, '--size: clamp(8px, 4rem, 14vw)']"
+      :style="[percent, '--size: clamp(8px, 3.7rem, 17vw)']"
     >
-      <div class="relative flex flex-col text-center items-center justify-center">
-        <div class="pt-2 text-lg lg:text-lg flex flex-col items-center justify-center te">
+      <div class="relative flex flex-col text-center items-center justify-center gap-[2px]">
+        <div class="pt-2 text-sm lg:text-lg flex flex-col items-center justify-center">
           <slot name="icon" />
         </div>
-        <div class="text font-bold text-center flex flex-col items-center justify-center">
+        <div class="text-sm font-bold text-center flex flex-col items-center justify-center">
           <p class="flex items-center gap-[1px]">
             {{ percentString }}
-            <!-- <span class="text-xs">%</span> -->
           </p>
         </div>
       </div>
     </div>
-    <div class="capitalise font-bold max-w-[10ch] text-misc text-xs h-12 text-center break-words align-top flex items-start pt-[2px]">
+    <div class="capitalise font-extrabold max-w-[8ch] text-misc text-xs  h-12 text-center break-words align-top flex items-start pt-[2px]">
       <slot name="title">
         Title missing
       </slot>

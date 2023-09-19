@@ -120,7 +120,7 @@ const border = computed(() => {
 <template>
   <div
     draggable="false"
-    class="border-misc-saturated relative select-none min-w-[3rem] sm:min-w-[3.25rem] bg-secondary lg:min-w-[3.45rem] xl:min-w-[3.6rem] 2xl:min-w-[4rem]  aspect-square cursor-pointer hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
+    class="border-misc-saturated relative select-none min-w-[3rem] sm:min-w-[3.25rem] bg-secondary lg:min-w-[3rem] xl:min-w-[3.25rem] 2xl:min-w-[4rem]  aspect-square cursor-pointer hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
              border,
              borderRadius,
@@ -129,8 +129,9 @@ const border = computed(() => {
     <div class="absolute w-full h-full bg-opacity-20 -z-10" :class="bgColour" />
     <div class="lg:text-3xl font-bold uppercase select-none">
       <nuxt-img
-        v-if="(tile?.crop?.image && tile?.crop?.image.length > 0)"
-        draggable="false" class="select-none p-1 max-w-[42px] md:max-w-[44px]"
+        v-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px"
+        format="webp"
+        draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[40px] 2xl:max-w-[44px]"
         :src="tile?.crop?.image"
       />
       <div v-else>

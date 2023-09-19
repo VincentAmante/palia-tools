@@ -64,7 +64,7 @@ const bonus = computed(() => {
   <div class="md:tooltip md:tooltip-top lg:tooltip-right tooltip-info" :data-tip="tooltip">
     <button
       v-if="!(crop.type === CropType.None && isTakingScreenshot)"
-      class="relative w-14 rounded-md btn-secondary border-misc border-2 aspect-square flex flex-col items-center justify-center isolate"
+      class="relative w-14 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
       :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
     >
       <font-awesome-icon

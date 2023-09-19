@@ -5,7 +5,7 @@ useHead({
 </script>
 
 <template>
-  <div class="flex flex-col max-w-[1920px] mx-auto">
+  <div class="flex flex-col max-w-[1680px] mx-auto">
     <PGPHeader />
     <NuxtPage />
     <PGPFooter />

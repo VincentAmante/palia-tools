@@ -58,7 +58,7 @@ function handleHover(rowIndex: number, index: number, plot: Plot) {
     :class="(gardenTilesAreWide && !isTakingScreenshot) ? 'overflow-x-auto' : ''"
   >
     <div
-      class="rounded-xl sm:w-fit sm:mx-auto px-3 lg:px-1 bg-accent" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
+      class="rounded-xl sm:w-fit sm:mx-auto rpx-3 lg:px-1 bg-accent" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
       @contextmenu.prevent.self=""
     >
       <div ref="plotsDisplay" class="w-full overflow-auto grid gap-2">

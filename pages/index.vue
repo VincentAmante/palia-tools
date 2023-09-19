@@ -225,7 +225,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
     <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
     <div class="flex flex-col w-full justify-center items-center">
       <section
-        id="display" ref="display" class="md:px-4 lg:px-8 py-4 font-['Roboto_Slab'] w-full max-w-[1280px] 2xl:max-w-[1440px] 2xl:px-16"
+        id="display" ref="display" class="sm:px-12 lg:px-24 py-4 font-['Merriweather'] w-full max-w-[1680px]"
         :class="(isTakingScreenshot.get) ? 'px-4' : ''"
       >
         <div class="flex flex-col bg-accent md:rounded-lg">
@@ -260,7 +260,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                     />
                     <button
                       v-else
-                      class="relative w-14 rounded-md btn-secondary border-misc border-2 aspect-square flex flex-col items-center justify-center isolate"
+                      class="relative w-14 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
                       :class="(selectedItem === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
                       :in-picture-mode="isTakingScreenshot.get"
                       @click="selectedItem = 'crop-erase'"
@@ -291,7 +291,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                         />
                         <button
                           v-else
-                          class="relative w-14 rounded-md btn-secondary border-misc border-2 aspect-square flex flex-col items-center justify-center isolate"
+                          class="relative w-14 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
                           :class="(selectedItem === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
                           @click="selectedItem = 'fertiliser-erase'"
                         >
@@ -336,7 +336,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             />
             <HarvestCalculator
               class=""
-              :layout="garden"
+              :layout="garden as Garden"
             />
           </div>
 
@@ -380,8 +380,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
       </section>
     </div>
 
-    <div class="flex flex-col gap-2 lg:px-16 max-w-4xl py-1" />
-    <div class="divider px-16" />
+    <div class="divider sm:px-12 lg:px-24 before:bg-misc after:bg-misc" />
     <section id="save-load-export" class="flex flex-col gap-2 px-4 lg:px-16 max-w-4xl py-4 pb-12">
       <h2 class="text-2xl font-bold">
         Save/Load
