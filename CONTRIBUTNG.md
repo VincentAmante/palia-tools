@@ -29,10 +29,10 @@ You can make pull requests to suggest code changes directly.
 I will get around to it and test them when I can, and if merged, will be credited to you in the changelogs and credits section.
 
 - Pull requests can be made and tagged the same as either issue/suggestion with extra tags for PR state such as [wip | ready to pull | help wanted].
-- Refrain from making pull requests to main
+- PRs to main could be denied if they have major conflicts with other branches or has issues that will not be fixed in the PR
 - Ideally, PRs should be made to dev branch or to hotfix branch, depending on the type of change you want to make
 - Hotfix branch is synced to main and for making immediate changes that need to be addressed (Game Patch parity, urgent bugs, etc.)
-- Dev branch is for everything else
+- Dev branch is for everything else, especially incomplete/experimental changes
 - PRs to other branches are okay/welcome, as long as it is relevant to what those branches are for
 
 ## Things I need help with
