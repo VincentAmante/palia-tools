@@ -57,8 +57,8 @@ const crops = {
       seed: 20,
       seedStar: 30,
       hasPreserve: true,
-      preserve: 68,
-      preserveStar: 102,
+      preserve: 60,
+      preserveStar: 90,
     },
     {
       cropsPerSeed: 1,
