@@ -36,32 +36,7 @@ const bonuses = computed(() => {
 })
 
 const bgColour = computed(() => {
-  switch (props.tile?.crop?.type) {
-    case CropType.Tomato:
-      return 'bg-blue-700'
-    case CropType.Potato:
-      return 'bg-blue-800'
-    case CropType.Rice:
-      return 'bg-green-700'
-    case CropType.Wheat:
-      return 'bg-green-800'
-    case CropType.Onion:
-      return 'bg-fuchsia-700'
-    case CropType.Carrot:
-      return 'bg-fuchsia-800'
-    case CropType.Cotton:
-      return 'bg-amber-600'
-    case CropType.Apple:
-      return 'bg-orange-700'
-    case CropType.Blueberry:
-      return 'bg-orange-700'
-    case CropType.Corn:
-      return 'bg-green-800'
-    case CropType.SpicyPepper:
-      return 'bg-amber-600' 
-    default:
-      return ''
-  }
+  return props.tile?.crop?.cropBackgroundColor || ''
 })
 
 // Highlights tile if it has the bonus being hovered
