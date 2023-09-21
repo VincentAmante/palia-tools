@@ -1,4 +1,6 @@
-# NOTE: The license specified applies exclusively to the source code, configuration files, and documentation created and maintained within this repository. See README.md for more details
+
+**NOTE**: The license specified applies exclusively to the source code, configuration files, and documentation created and maintained within this repository. See README.md for more details
+
 # Released under MIT License
 
 Copyright (c) 2023 Vincent Amante
