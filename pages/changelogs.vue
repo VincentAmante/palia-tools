@@ -27,6 +27,23 @@ useHead({
       <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
         <input type="checkbox" checked>
         <h2 class="collapse-title text-xl font-bold">
+          September 21, 2023 (Hotfix)
+        </h2>
+        <div class="collapse-content flex flex-col gap-6 text-sm md:text-base  leading-6">
+          <div class="flex flex-col gap-2">
+            <h3 class="font-bold">
+              Changes Summary
+            </h3>
+            <ul class="list-disc list-inside">
+              <li>Fixed price of corn preserves (Issue #31 - agazarkiewicz)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
+        <input type="checkbox">
+        <h2 class="collapse-title text-xl font-bold">
           September 15, 2023 (Hotfix)
         </h2>
         <div class="collapse-content flex flex-col gap-6 text-sm md:text-base  leading-6">
@@ -42,7 +59,7 @@ useHead({
       </div>
 
       <div class="collapse collapse-arrow bg-base-200 max-w-2xl">
-        <input type="checkbox" checked>
+        <input type="checkbox">
         <h2 class="collapse-title text-xl font-bold">
           September 13, 2023 (Hotfix)
         </h2>
