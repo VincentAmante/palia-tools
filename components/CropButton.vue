@@ -64,7 +64,7 @@ const bonus = computed(() => {
   <div class="md:tooltip md:tooltip-top lg:tooltip-right tooltip-info" :data-tip="tooltip">
     <button
       v-if="!(crop.type === CropType.None && isTakingScreenshot)"
-      class="relative w-14 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+      class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
       :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
     >
       <font-awesome-icon
@@ -72,13 +72,13 @@ const bonus = computed(() => {
         class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black" :icon="['fas', bonus.icon]" :class="bonus.colour"
       />
       <div v-if="crop.type !== CropType.None" class="flex flex-col absolute bottom-0 right-0 py-[0.1rem] pr-[0.2rem]">
-        <p class="text-sm leading-none font-bold text-neutral-700">
+        <p class="text-xs leading-none font-bold text-neutral-700">
           {{ count }}
         </p>
       </div>
       <nuxt-img
         v-if="(crop && crop.image != null && crop.image !== '')" width="42px"
-        height="42px" class="absolute -z-10 max-w-[42px]"
+        height="42px" class="absolute -z-10 max-w-[34px]"
         :src="crop.image" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
       />
       <font-awesome-icon

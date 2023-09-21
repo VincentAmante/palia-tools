@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
-import HCInfo from './garden-planner/HarvestCalculator/HCInfo.vue'
+import LazyHCInfo from './garden-planner/HarvestCalculator/HCInfo.vue'
 import HCTags from './garden-planner/HarvestCalculator/HCTags.vue'
-import HCTotal from './garden-planner/HarvestCalculator/HCTotal.vue'
+import LazyHCTotal from './garden-planner/HarvestCalculator/HCTotal.vue'
 import type { ICalculateValueResult, ISimulateYieldResult } from '@/assets/scripts/garden-planner/imports'
 import { CropType, Garden, crops } from '@/assets/scripts/garden-planner/imports'
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/garden'
@@ -209,7 +209,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
             :base-chance-star-seed="baseChanceStarSeed"
             :base-chance-normal-seed="baseChanceNormalSeed"
           />
-          <HCTotal
+          <LazyHCTotal
             :processed-yields="processedYields as ICalculateValueResult"
             :harvest-data="harvestData as ISimulateYieldResult"
             :crop-options="cropOptions as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>"
@@ -415,7 +415,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           </div>
         </div>
       </div>
-      <div v-show="activeTab === 'options'" class="flex flex-col gap-2 py-4 overflow-hidden max-h-[386px] overflow-y-scroll">
+      <div v-if="activeTab === 'options'" class="flex flex-col gap-2 py-4 overflow-hidden max-h-[386px] overflow-y-scroll">
         <div class="flex flex-col gap-2">
           <h5 class="font-semibold">
             Main Options
@@ -651,8 +651,8 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           </div>
         </div>
       </div>
-      <div v-show="activeTab === 'info'" class="overflow-hidden max-h-[486px] overflow-y-scroll">
-        <HCInfo />
+      <div v-if="activeTab === 'info'" class="overflow-hidden max-h-[486px] overflow-y-scroll">
+        <LazyHCInfo />
       </div>
     </div>
   </div>

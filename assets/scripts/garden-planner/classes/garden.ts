@@ -559,6 +559,9 @@ class Garden {
       if (crop == null)
         continue
 
+      if (baseProduce === 0 && starProduce === 0)
+        continue
+
       const baseRemainder = totalResult.crops[cropType as CropType].base.cropRemainder
       const starRemainder = totalResult.crops[cropType as CropType].star.cropRemainder
 
@@ -586,8 +589,6 @@ class Garden {
       totalResult.crops[cropType as CropType].star.produce += convertedStarUnits
 
       totalResult.crops[cropType as CropType].star.cropRemainder = newStarRemainder
-      if (crop.type === CropType.SpicyPepper)
-        console.log('After:', totalResult.crops[cropType as CropType].star.cropRemainder)
 
       totalResult.totalGold += baseGoldValue + starGoldValue
     }
@@ -675,9 +676,13 @@ function calculateCropResult(
   let newRemainder = 0
 
   const cropsCombined = produce + remainder
-
-  if (crop?.type === CropType.SpicyPepper)
-    console.log('cropsCombined: ', cropsCombined)
+  if (produce === 0 && remainder === 0) {
+    return {
+      convertedUnits,
+      goldValue,
+      newRemainder,
+    }
+  }
 
   switch (option) {
     case 'crop':
