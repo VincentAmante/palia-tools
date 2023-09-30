@@ -71,7 +71,11 @@ watch(hour, () => {
     </div>
     <div class="flex text-misc bg-accent rounded-md items-center justify-between px-4 py-2">
       <p>6 AM Alarm</p>
-      <input v-model="dayAlert" name="reminder-toggle" type="checkbox" class="toggle toggle-info">
+      <input
+        v-model="dayAlert"
+        aria-label="Toggle 6 AM alarm"
+        name="reminder-toggle" type="checkbox" class="toggle toggle-info"
+      >
     </div>
   </div>
 </template>

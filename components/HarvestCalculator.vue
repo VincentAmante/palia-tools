@@ -142,6 +142,7 @@ watchEffect(() => {
           <div class="tabs w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0">
             <button
               id="approximator-display-tab"
+              aria-label="Display Tab"
               class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'display' ? 'tab-active' : ''"
               @click="setTab('display')"
             >
@@ -149,6 +150,7 @@ watchEffect(() => {
             </button>
             <button
               id="approximator-options-tab"
+              aria-label="Options Tab"
               class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'options' ? 'tab-active' : ''"
               @click="setTab('options')"
             >
@@ -156,6 +158,7 @@ watchEffect(() => {
             </button>
             <button
               id="approximator-info-tab"
+              aria-label="Info Tab"
               class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'info' ? 'tab-active' : ''"
               @click="setTab('info')"
             >

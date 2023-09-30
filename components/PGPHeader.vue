@@ -76,6 +76,7 @@ const { width: screenWidth } = useWindowSize()
             <label
 
               for="menu" class="btn btn-square btn-ghost"
+              aria-label="menu toggle"
             >
               <font-awesome-icon :icon="['fas', 'bars']" class="text-xl" />
             </label>
@@ -83,7 +84,10 @@ const { width: screenWidth } = useWindowSize()
         </div>
       </div>
       <div class="drawer-side">
-        <label for="menu" class="drawer-overlay" />
+        <label
+          for="menu" class="drawer-overlay"
+          aria-label="close menu"
+        />
         <ul class="menu p-4 w-80 h-full bg-base-200 gap-2">
           <li class="text-lg font-bold normal-case">
             <NuxtLink to="/roadmap">

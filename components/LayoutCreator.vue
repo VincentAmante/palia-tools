@@ -195,6 +195,7 @@ function trimLayout(): PlotStatus[][] {
         <select
           v-model="selectedNewLayout"
           name="layout-select" class="select select-bordered select-sm w-full max-w-xs"
+          aria-label="Select Layout"
           @change="onLayoutSelect()"
         >
           <option value="select" disabled selected>
