@@ -1,10 +1,10 @@
 <template>
   <div class="px-2 lg:px-12 lg:mx-4  flex flex-col gap-2 items-center text-center">
     <div class="bg-misc-secondary rounded-lg max-w-[1680px] p-4 md:p-2 h-fit flex flex-col md:flex-row items-center justify-center gap-2 w-full">
-      <h3 class="font-semibold">
+      <p class="font-semibold">
         <font-awesome-icon :icon="['fas', 'question-circle']" class="text-sm" />
         New to Gardening?
-      </h3>
+      </p>
       <p class="text-sm font-light">
         Check out Shepp Arenvanya's guide to gardening in Palia!
       </p>

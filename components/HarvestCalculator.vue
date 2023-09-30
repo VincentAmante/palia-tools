@@ -118,20 +118,6 @@ function setCropOption(cropType: CropType, type: 'star' | 'base', option: Produc
     cropOptions.value[cropType].baseType = option
 }
 
-function getCropImage(cropType: CropType, string: ProduceOptions) {
-  if (crops && crops[cropType]) {
-    // get preserve or seed image if chosen
-    if (string === 'preserve')
-      return crops[cropType]?.preserveImage
-
-    else if (string === 'seed')
-      return crops[cropType]?.seedImage
-
-    else
-      return crops[cropType]?.image
-  }
-}
-
 watchEffect(() => {
   if (
     baseChanceStarSeed.value < 0)
@@ -140,17 +126,6 @@ watchEffect(() => {
   else if (baseChanceStarSeed.value > 100)
     baseChanceStarSeed.value = 100
 })
-
-function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmount: number, gold: number) {
-  if (type === 'star' && produceAmount > 0)
-    return `${(cropOptions.value[cropType].starType !== 'crop' ? `${cropOptions.value[cropType].starType}:` : '')} ${gold.toLocaleString()} Gold`
-  else if (type === 'base' && produceAmount > 0)
-    return `${(cropOptions.value[cropType].baseType !== 'crop' ? `${cropOptions.value[cropType].baseType}:` : '')} ${gold.toLocaleString()} Gold`
-  else if (produceAmount < 0)
-    return 'Crop was deducted for replanting'
-  else
-    return 'No produce'
-}
 </script>
 
 <template>
@@ -166,18 +141,21 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           </div>
           <div class="tabs w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0">
             <button
+              name="approximator-display-tab"
               class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'display' ? 'tab-active' : ''"
               @click="setTab('display')"
             >
               <font-awesome-icon :icon="['fas', 'table']" />
             </button>
             <button
+              name="approximator-options-tab"
               class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'options' ? 'tab-active' : ''"
               @click="setTab('options')"
             >
               <font-awesome-icon :icon="['fas', 'sliders']" />
             </button>
             <button
+              name="approximator-info-tab"
               class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'info' ? 'tab-active' : ''"
               @click="setTab('info')"
             >
@@ -191,7 +169,11 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           <div class="font-bold flex gap-1 items-center text-xl">
             {{ Math.max(processedYields.totalResult.day, days) }} Days:
             <div class="flex gap-1 items-center">
-              <img src="/gold.webp" class="max-h-[1rem]">{{
+              <nuxt-img
+                width="1rem"
+                height="1rem"
+                src="/gold.webp" class="max-h-[1rem]"
+              />{{
                 processedYields.totalResult.totalGold.toLocaleString() }}
             </div>
           </div>

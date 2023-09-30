@@ -5,6 +5,7 @@
         class="w-3 h-3"
         format="webp"
         src="/ui/separator-start.svg"
+        aria-hidden
       />
     </div>
     <div class="divider m-0 before:bg-misc after:bg-misc w-full px-[2px]" />
@@ -13,6 +14,7 @@
         class="w-3 h-3"
         format="webp"
         src="/ui/separator-end.svg"
+        aria-hidden
       />
     </div>
   </div>

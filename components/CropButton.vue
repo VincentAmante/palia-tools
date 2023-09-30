@@ -66,6 +66,7 @@ const bonus = computed(() => {
       v-if="!(crop.type === CropType.None && isTakingScreenshot)"
       class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
       :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
+      :name="`select ${crop.type}`"
     >
       <font-awesome-icon
         v-if="bonus.icon !== ''"
@@ -80,6 +81,7 @@ const bonus = computed(() => {
         v-if="(crop && crop.image != null && crop.image !== '')" width="42px"
         height="42px" class="absolute -z-10 max-w-[34px]"
         :src="crop.image" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
+        :alt="crop.type"
       />
       <font-awesome-icon
         v-else class="absolute -z-10 max-w-[45px] text-warning text-3xl "

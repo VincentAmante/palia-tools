@@ -193,7 +193,8 @@ function trimLayout(): PlotStatus[][] {
           Pick a pre-determined size here, or make a custom one
         </p>
         <select
-          v-model="selectedNewLayout" class="select select-bordered select-sm w-full max-w-xs"
+          v-model="selectedNewLayout"
+          name="layout-select" class="select select-bordered select-sm w-full max-w-xs"
           @change="onLayoutSelect()"
         >
           <option value="select" disabled selected>

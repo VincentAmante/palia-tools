@@ -5,12 +5,16 @@ const { width: screenWidth } = useWindowSize()
 <template>
   <div>
     <header class="drawer drawer-end z-50">
-      <input id="my-drawer-3" type="checkbox" class="drawer-toggle">
+      <input id="menu" type="checkbox" class="drawer-toggle">
       <div class="drawer-content flex flex-col">
         <div class="w-full navbar py-4 sm:px-12 lg:px-24">
           <div class="flex-1 mx-2">
             <NuxtLink to="/" class="flex gap-2 items-center">
-              <nuxt-img format="webp" src="/logo.webp" class="max-w-[3rem]" />
+              <nuxt-img
+                format="webp" src="/logo.webp"
+                width="48px" height="48px" alt="Palia Garden Planner Logo"
+                class="max-w-[3rem]"
+              />
               <div class="flex flex-col gap-0 leading-tight">
                 <h1 class="text-xl font-bold text-left lg:text-2xl leading-tight">
                   Palia Garden Planner
@@ -69,14 +73,17 @@ const { width: screenWidth } = useWindowSize()
             </div>
           </div>
           <div class="flex-none lg:hidden">
-            <label for="my-drawer-3" class="btn btn-square btn-ghost">
+            <label
+
+              for="menu" class="btn btn-square btn-ghost"
+            >
               <font-awesome-icon :icon="['fas', 'bars']" class="text-xl" />
             </label>
           </div>
         </div>
       </div>
       <div class="drawer-side">
-        <label for="my-drawer-3" class="drawer-overlay" />
+        <label for="menu" class="drawer-overlay" />
         <ul class="menu p-4 w-80 h-full bg-base-200 gap-2">
           <li class="text-lg font-bold normal-case">
             <NuxtLink to="/roadmap">
