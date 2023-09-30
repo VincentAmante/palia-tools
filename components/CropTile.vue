@@ -120,7 +120,7 @@ const border = computed(() => {
 <template>
   <div
     draggable="false"
-    class="border-misc-saturated relative select-none min-w-[3rem] sm:min-w-[3.25rem] bg-secondary lg:min-w-[3rem] xl:min-w-[3.25rem] 2xl:min-w-[4rem]  aspect-square cursor-pointer hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
+    class="border-misc-saturated relative select-none min-w-[3rem] sm:min-w-[3.25rem] bg-secondary lg:min-w-[3rem]   aspect-square cursor-pointer hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
              border,
              borderRadius,
