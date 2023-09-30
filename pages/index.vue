@@ -225,7 +225,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
     <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
     <div class="flex flex-col w-full justify-center items-center">
       <section
-        id="display" ref="display" class="sm:px-1 lg:px-24 py-4 font-['Merriweather'] w-full max-w-[1680px]"
+        id="display" ref="display" class="sm:px-1 lg:px-16 py-4 font-['Merriweather'] w-full max-w-[1680px]"
         :class="(isTakingScreenshot.get) ? 'px-4' : ''"
       >
         <div class="flex flex-col bg-accent md:rounded-lg">
@@ -314,14 +314,14 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
               Over max plot count
             </p>
           </div>
-          <div class="flex flex-col lg:justify-around md:flex-row lg:gap-4 pb-4" :class="(gardenTilesAreWide) ? 'md:flex-col' : ''">
+          <div class="grid lg:grid-cols-2 md:flex-row md:gap-4 pb-4" :class="(gardenTilesAreWide) ? 'md:flex-col' : ''">
             <div class="">
               <GardenDisplay
                 ref="gardenDisplay"
                 :garden-tiles="gardenTiles as Plot[][]"
                 :garden-tiles-are-wide="gardenTilesAreWide"
                 :hovered-bonus="hoveredBonus as Bonus"
-                class="opacity-100 mx-auto"
+                class="opacity-100"
                 @right-click="handleRightClick"
                 @mouseover="handleHover"
                 @select-tile="selectTile"
@@ -340,8 +340,8 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             />
           </div>
 
-          <div class="w-full bg-primary rounded-b-lg py-4 grid md:grid-cols-9 gap-y-6 gap-x-4 lg:gap-6">
-            <div class="md:col-span-4 px-1">
+          <div class="w-full bg-primary rounded-b-lg py-4 grid md:grid-cols-10 gap-y-6 gap-x-4 lg:gap-6">
+            <div class="md:col-span-5 px-1">
               <StatsDisplay
                 ref="statDisplay"
                 v-model:hovered-bonus="hoveredBonus"
