@@ -15,9 +15,9 @@ defineExpose({
 <template>
   <dialog ref="modal" class="modal">
     <div class="modal-box flex flex-col gap-2">
-      <h3 class="text-lg">
+      <h2 class="text-lg">
         <slot name="header" />
-      </h3>
+      </h2>
       <div class="modal-body">
         <slot name="body" />
       </div>

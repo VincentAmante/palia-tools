@@ -5,6 +5,7 @@
         class="w-3 h-3"
         format="webp"
         src="/ui/separator-start.svg"
+        alt="Separator Start"
         aria-hidden
       />
     </div>
@@ -14,6 +15,7 @@
         class="w-3 h-3"
         format="webp"
         src="/ui/separator-end.svg"
+        alt="Separator End"
         aria-hidden
       />
     </div>

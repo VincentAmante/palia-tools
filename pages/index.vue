@@ -265,10 +265,10 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                     />
                     <button
                       v-else
+                      id="crop-eraser"
                       class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
                       :class="(selectedItem === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
                       :in-picture-mode="isTakingScreenshot.get"
-                      name="select crop eraser"
                       @click="selectedItem = 'crop-erase'"
                     >
                       <font-awesome-icon
@@ -297,9 +297,9 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                         />
                         <button
                           v-else
+                          id="fertiliser-eraser"
                           class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
                           :class="(selectedItem === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
-                          name="select fertiliser eraser"
                           @click="selectedItem = 'fertiliser-erase'"
                         >
                           <font-awesome-icon

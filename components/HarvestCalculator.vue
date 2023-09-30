@@ -134,28 +134,28 @@ watchEffect(() => {
       <div class="flex flex-col gap-1">
         <div class="w-full md:bg-misc sm:rounded-lg sm:rounded-b-none p-2 sm:px-6 flex flex-col md:flex-row justify-between items-center text-misc md:text-accent">
           <div class="divider my-1 before:bg-accent after:bg-accent" />
-          <div class="text-2xl md:text-2xl py-4 flex items-center flex-wrap gap-1">
+          <h2 class="text-2xl md:text-2xl py-4 flex items-center flex-wrap gap-1">
             Harvest Approximations <span
               class="text-xs font-normal"
             >(WIP)</span>
-          </div>
+          </h2>
           <div class="tabs w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0">
             <button
-              name="approximator-display-tab"
+              id="approximator-display-tab"
               class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'display' ? 'tab-active' : ''"
               @click="setTab('display')"
             >
               <font-awesome-icon :icon="['fas', 'table']" />
             </button>
             <button
-              name="approximator-options-tab"
+              id="approximator-options-tab"
               class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'options' ? 'tab-active' : ''"
               @click="setTab('options')"
             >
               <font-awesome-icon :icon="['fas', 'sliders']" />
             </button>
             <button
-              name="approximator-info-tab"
+              id="approximator-info-tab"
               class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'info' ? 'tab-active' : ''"
               @click="setTab('info')"
             >
@@ -173,6 +173,7 @@ watchEffect(() => {
                 width="1rem"
                 height="1rem"
                 src="/gold.webp" class="max-h-[1rem]"
+                alt="Gold" format="webp"
               />{{
                 processedYields.totalResult.totalGold.toLocaleString() }}
             </div>
@@ -184,6 +185,9 @@ watchEffect(() => {
               src="/gold.webp"
               class="max-h-[1rem]"
               format="webp"
+              alt="Gold"
+              width="1rem"
+              height="1rem"
             />{{
               (Math.round(processedYields.totalResult.totalGold
                 / processedYields.totalResult.day)).toLocaleString() }}</span>
