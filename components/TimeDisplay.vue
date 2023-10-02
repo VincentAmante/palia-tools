@@ -61,11 +61,11 @@ watch(hour, () => {
 
 <template>
   <div class="grid md:col-span-2 gap-2 px-4">
-    <div class="flex text-misc bg-accent rounded-md items-center justify-between px-4 py-2">
+    <div class="flex text-misc bg-accent rounded-md items-center justify-between px-3 py-2">
       <p class="">
         Game Time
       </p>
-      <p class="font-bold text-2xl">
+      <p class="font-bold text-xl">
         {{ timeFormatted }}
       </p>
     </div>

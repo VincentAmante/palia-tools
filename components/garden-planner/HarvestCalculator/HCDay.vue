@@ -144,7 +144,10 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
         </td>
         <td class="">
           <p class="flex gap-1 font-bold items-center pr-1">
-            <nuxt-img format="webp" src="/gold.webp" class="max-h-[1.5rem]" />{{
+            <nuxt-img
+              format="webp" src="/gold.webp" class="max-h-[1.5rem]"
+              width="1rem" height="1rem" alt="Gold"
+            />{{
               harvest.totalGold.toLocaleString() }}
           </p>
         </td>

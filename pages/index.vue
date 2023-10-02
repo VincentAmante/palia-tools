@@ -323,7 +323,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
               Over max plot count
             </p>
           </div>
-          <div class="grid lg:grid-cols-2 md:flex-row md:gap-4 pb-4" :class="(gardenTilesAreWide) ? 'md:flex-col' : ''">
+          <div class="grid lg:grid-cols-2 md:gap-4 pb-4 lg:px-2" :class="(gardenTilesAreWide) ? 'md:flex-col' : ''">
             <div class="">
               <GardenDisplay
                 ref="gardenDisplay"

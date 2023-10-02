@@ -120,7 +120,7 @@ const border = computed(() => {
 <template>
   <div
     draggable="false"
-    class="border-misc-saturated relative select-none min-w-[3rem] sm:min-w-[3.25rem] bg-secondary lg:min-w-[3rem]   aspect-square cursor-pointer hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
+    class="border-misc-saturated relative select-none min-w-[3rem]  bg-secondary aspect-square cursor-pointer hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
              border,
              borderRadius,
@@ -138,7 +138,7 @@ const border = computed(() => {
         {{ code as string || ' ' }}
       </div>
     </div>
-    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.6rem] py-[0.5px] flex w-full gap-[0.8px] px-[2px] md:px-[1.8px]">
+    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] py-[0.5px] flex w-full gap-[0.8px] px-[2px] md:px-[1.8px]">
       <li v-show="bonuses?.includes(Bonus.QualityIncrease)">
         <font-awesome-icon class="text-quality-increase" :icon="['fas', 'star']" />
       </li>
