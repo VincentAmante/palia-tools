@@ -207,7 +207,7 @@ class Plot {
           this.placeCropsOnPlot(this._adjacentPlots.south._adjacentPlots.east, 0, 0, row, column, crop, id)
         }
         else {
-          throw new Error('Invalid placement')
+          throw new Error(`Cannot place plant of type: ${crop.type} using this tile`)
         }
       }
     }

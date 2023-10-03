@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
 import { CropCode } from '@/assets/scripts/garden-planner/imports'
 import PGPModal from '@/components/PGPModal.vue'
 

@@ -181,8 +181,8 @@ watchEffect(() => {
           </div>
         </div>
       </div>
-      <div class="flex flex-col gap-2 px-4 py-2">
-        <div class="bg-accent text-misc rounded-md flex justify-center gap-1 py-2">
+      <div class="px-4 py-2">
+        <div class="bg-accent text-misc rounded-md flex flex-col md:flex-row items-center justify-center md:gap-1 py-2">
           <div class="font-bold flex gap-1 items-center text-lg">
             {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} Days:
             <div class="flex gap-1 items-center">
@@ -196,7 +196,7 @@ watchEffect(() => {
             </div>
           </div>
           <div class="divider divider-horizontal after:bg-misc before:bg-misc" />
-          <p v-if="processedYields?.totalResult.totalGold !== 0" class="flex gap-1 items-center text-lg">
+          <p v-if="processedYields?.totalResult.totalGold !== 0" class="flex gap-1 items-center md:text-lg">
             Average:
             <span class="flex gap-1 items-center"><nuxt-img
               src="/gold.webp"
@@ -451,7 +451,7 @@ watchEffect(() => {
               </p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-2 pr-2">
+            <div class="grid xl:grid-cols-2 gap-2 pr-2 w-fit">
               <template v-for="(crop, type) in crops" :key="type">
                 <div
                   v-if="crops[type]"

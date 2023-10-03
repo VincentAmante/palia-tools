@@ -1,13 +1,9 @@
-<script setup lang="ts">
-const { width: screenWidth } = useWindowSize()
-</script>
-
 <template>
   <div>
     <header class="drawer drawer-end z-50">
       <input id="menu" type="checkbox" class="drawer-toggle">
       <div class="drawer-content flex flex-col">
-        <div class="w-full navbar py-4 sm:px-12 lg:px-24">
+        <div class="w-full navbar py-4 sm:px-12 lg:px-22">
           <div class="flex-1 mx-2">
             <NuxtLink to="/" class="flex gap-2 items-center">
               <nuxt-img
@@ -135,6 +131,5 @@ const { width: screenWidth } = useWindowSize()
       </div>
     </header>
     <AppDivider />
-    <div class="px-2 md:px-8 lg:px-16 flex flex-col items-center" />
   </div>
 </template>

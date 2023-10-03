@@ -390,7 +390,7 @@ const crops = {
     },
   ),
   [CropType.None]: null,
-}
+} as const
 
 function getCropFromCode(code: CropCode): Crop | null {
   switch (code) {
