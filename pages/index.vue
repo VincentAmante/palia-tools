@@ -106,7 +106,14 @@ function setCrop(type: CropType) {
   selectedItem.value = crops[type]
 }
 
-const plotStatTotal = computed(() => ({ ...garden.value.calculateStats() } as PlotStat))
+const plotStat = computed(() => ({ ...garden.value.calculateStats() } as PlotStat))
+const fertiliserCount = computed(() => {
+  let count = 0
+  for (const fertiliser in plotStat.value.fertiliserCount)
+    count += plotStat.value.fertiliserCount[fertiliser as FertiliserType]
+
+  return count
+})
 
 function downloadURI(uri: string, name: string) {
   const link = document.createElement('a')
@@ -163,7 +170,7 @@ function saveAsImage() {
   if (!gardenTilesAreWide.value)
     displayWidth += ((statDisplay.value?.getStatsDisplay() as HTMLElement).clientWidth)
 
-  display.value.style.width = '1680px'
+  display.value.style.width = '1440px'
   gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
     classList.add(`w-${displayWidth}`)
   })
@@ -236,7 +243,8 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             :class="(isTakingScreenshot.get) ? 'flex' : 'hidden'"
           >
             <nuxt-img
-              format="webp" src="/logo.webp" class="max-w-[3rem]"
+              format="png" src="/logo.webp"
+              class="max-w-[3rem]"
               alt="Palia Garden Planner Logo"
             />
             <div class="text-left pb-4 flex flex-col">
@@ -253,42 +261,44 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
 
           <div id="planner" class="relative py-4 pb-1">
             <div class="crop-buttons px-4 w-full flex flex-col md:flex-row ">
-              <div class="md:basis-2/3">
+              <div
+                v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
+                class="md:basis-2/3"
+              >
                 <h3 class="font-semibold text-palia-blue">
                   Crops
                 </h3>
                 <div class="flex flex-wrap gap-2 py-2">
-                  <div v-for="(count, index) in plotStatTotal.cropTypeCount" :key="index">
+                  <button
+                    id="crop-eraser"
+                    aria-label="Select Crop Eraser"
+                    class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+                    :class="(selectedItem === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                    :in-picture-mode="isTakingScreenshot.get"
+                    @click="selectedItem = 'crop-erase'"
+                  >
+                    <font-awesome-icon
+                      class="absolute -z-10 max-w-[45px] text-success text-3xl "
+                      :icon="['fas', 'eraser']"
+                    />
+                  </button>
+                  <template v-for="(count, index) in plotStat.cropTypeCount" :key="index">
                     <CropButton
-                      v-if="(index && index !== CropType.None && index !== null)"
+                      v-if="(index !== CropType.None)"
                       :crop="getCropFromType(index) as Crop"
                       :is-selected="(selectedItem instanceof Crop) && selectedItem !== null && index === selectedItem.type"
                       :count="count" @click="setCrop(index)"
                     />
-                    <button
-                      v-else
-                      id="crop-eraser"
-                      aria-label="Select Crop Eraser"
-                      class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
-                      :class="(selectedItem === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
-                      :in-picture-mode="isTakingScreenshot.get"
-                      @click="selectedItem = 'crop-erase'"
-                    >
-                      <font-awesome-icon
-                        class="absolute -z-10 max-w-[45px] text-success text-3xl "
-                        :icon="['fas', 'eraser']"
-                      />
-                    </button>
-                  </div>
+                  </template>
                 </div>
               </div>
               <div class="flex flex-wrap lg:justify-end w-full md:basis-1/3">
-                <div>
+                <div v-if="!(isTakingScreenshot.get && fertiliserCount <= 0)">
                   <h3 class="font-semibold text-palia-blue">
                     Fertilisers per Day
                   </h3>
                   <div class="flex flex-wrap gap-2 py-2">
-                    <div v-for="(count, index) in plotStatTotal.fertiliserCount" :key="index">
+                    <div v-for="(count, index) in plotStat.fertiliserCount" :key="index">
                       <div>
                         <FertiliserButton
                           v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
@@ -343,7 +353,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
               v-model:hovered-bonus="hoveredBonus"
               class="md:hidden bg-primary mt-4"
               :garden-tiles-are-wide="gardenTilesAreWide"
-              :plot-stat-total="plotStatTotal"
+              :plot-stat-total="plotStat"
             />
             <HarvestCalculator
               class=""
@@ -352,13 +362,15 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
           </div>
 
           <div class="w-full bg-primary rounded-b-lg py-4 grid md:grid-cols-10 gap-y-6 gap-x-4 lg:gap-6">
-            <div class="md:col-span-5 px-1">
+            <div
+              class="md:col-span-5 px-1"
+            >
               <StatsDisplay
                 ref="statDisplay"
                 v-model:hovered-bonus="hoveredBonus"
                 class="hidden md:block"
                 :garden-tiles-are-wide="gardenTilesAreWide"
-                :plot-stat-total="plotStatTotal"
+                :plot-stat-total="plotStat"
               />
             </div>
             <div class="grid gap-3 md:gap-2 md:col-span-3 px-4">

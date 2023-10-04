@@ -9,6 +9,7 @@ import type { ICalculateValueResult, ISimulateYieldResult } from '@/assets/scrip
 import { CropType, Garden, crops } from '@/assets/scripts/garden-planner/imports'
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/garden'
 import AppDividerAlt from '@/components/AppDividerAlt.vue'
+import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
 
 const props = defineProps({
   layout: {
@@ -17,14 +18,7 @@ const props = defineProps({
   },
 })
 
-// TODO: Convert these to one object
-// const postLevel25 = ref(false)
-// const allStarSeeds = ref(true)
-// const includeReplant = ref(true)
-// const includeReplantCost = ref(true)
-// const baseChanceStarSeed = ref(66)
-// const baseChanceNormalSeed = ref(0)
-// const days = ref<number>(0)
+const isTakingScreenshot = useTakingScreenshot()
 
 const options = ref({
   postLevel25: false,
@@ -154,7 +148,10 @@ watchEffect(() => {
               class="text-xs font-normal"
             >(WIP)</span>
           </h2>
-          <div class="tabs w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0">
+          <div
+            v-if="!isTakingScreenshot.get"
+            class="tabs w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0"
+          >
             <button
               id="approximator-display-tab"
               aria-label="Display Tab"
@@ -191,6 +188,7 @@ watchEffect(() => {
                 width="1rem"
                 height="1rem"
                 src="/gold.webp" class="max-h-[1rem]"
+                :srcset="undefined"
                 alt="Gold" format="webp"
               />{{
                 processedYields?.totalResult.totalGold.toLocaleString() }}
@@ -206,14 +204,14 @@ watchEffect(() => {
               alt="Gold"
               width="1rem"
               height="1rem"
+              :srcset="undefined"
             />{{
               (Math.round(processedYields.totalResult.totalGold
-                / processedYields.totalResult.day)).toLocaleString() }}</span>
-            / day
+                / processedYields.totalResult.day)).toLocaleString() }}</span>/ day
           </p>
         </div>
       </div>
-      <div v-show="activeTab === 'display'" class="flex flex-col px-4">
+      <div v-show="(isTakingScreenshot.get) || activeTab === 'display'" class="flex flex-col px-4">
         <HCTags
           :post-level25="options.postLevel25"
           :all-star-seeds="options.allStarSeeds"
@@ -222,7 +220,7 @@ watchEffect(() => {
           :base-chance-star-seed="options.baseChanceStarSeed"
           :base-chance-normal-seed="options.baseChanceNormalSeed"
         />
-        <div class="tabs gap-2 pt-1">
+        <div v-if="!isTakingScreenshot.get" class="tabs gap-2 pt-1">
           <div
             class="tab btn btn-sm rounded-md normal-case"
             :class="activeDisplayTab === 'overview' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
@@ -231,7 +229,7 @@ watchEffect(() => {
             Overall
           </div>
           <div
-            class="tab btn btn-sm rounded-md normal-case"
+            class="tab btn btn-sm rounded-md normal-case whitespace-nowrap"
             :class="activeDisplayTab === 'day' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setDisplayTab('day')"
           >
@@ -240,7 +238,7 @@ watchEffect(() => {
         </div>
         <div class="py-2">
           <div
-            v-if="activeDisplayTab === 'overview'"
+            v-if="(isTakingScreenshot.get) || activeDisplayTab === 'overview'"
             class="flex flex-col gap-2"
           >
             <LazyHCTotal
@@ -250,7 +248,7 @@ watchEffect(() => {
             />
           </div>
           <div
-            v-if="activeDisplayTab === 'day'"
+            v-if="!(isTakingScreenshot.get) && activeDisplayTab === 'day'"
             class="isolate overflow-hidden overflow-y-scroll max-h-44 pb-4"
           >
             <div class="py-2">
@@ -266,7 +264,7 @@ watchEffect(() => {
           </div>
         </div>
       </div>
-      <div v-if="activeTab === 'options'" class="flex flex-col gap-2 px-4 max-h-80 ">
+      <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'" class="flex flex-col gap-2 px-4 max-h-80 ">
         <div class="tabs gap-2">
           <div
             class="tab btn btn-sm rounded-md normal-case"
@@ -462,6 +460,7 @@ watchEffect(() => {
                     <nuxt-img
                       format="webp"
                       class="w-[3.15rem] object-contain p-1 py-1 aspect-square"
+                      :srcset="undefined"
                       width="3.5rem"
                       height="3.5rem"
                       :alt="crop?.type"
@@ -537,7 +536,7 @@ watchEffect(() => {
           </div>
         </div>
       </div>
-      <div v-if="activeTab === 'info'" class="overflow-hidden overflow-y-scroll">
+      <div v-if="!(isTakingScreenshot.get) && activeTab === 'info'" class="overflow-hidden overflow-y-scroll">
         <LazyHCInfo />
       </div>
     </div>

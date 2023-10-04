@@ -30,6 +30,7 @@ defineProps({
         :src="imgSrc"
         width="36px"
         class="object-contain aspect-square"
+        :srcset="undefined"
       />
       <p
         class="absolute top-0 right-0 text-xs p-[1px] px-[6px] text-center align-middle rounded-lg text-accent"
