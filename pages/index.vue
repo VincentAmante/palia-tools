@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useClipboard, useMousePressed, useUrlSearchParams } from '@vueuse/core'
+import { useMousePressed, useUrlSearchParams } from '@vueuse/core'
 import domtoimage from 'dom-to-image-more'
 import { computed, onMounted, ref } from 'vue'
 import uniqid from 'uniqid'
@@ -10,6 +10,10 @@ import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
 import LayoutCreator from '@/components/LayoutCreator.vue'
 import type { Plot, PlotStat } from '@/assets/scripts/garden-planner/imports'
 import { Bonus, Crop, CropType, Fertiliser, FertiliserType, Garden, crops, fertilisers, getCropFromType } from '@/assets/scripts/garden-planner/imports'
+import { useSaveCode } from '~/stores/useSaveCode'
+import SaveModal from '@/components/garden-planner/SaveModal.vue'
+import LoadModal from '@/components/garden-planner/LoadModal.vue'
+import ExportModal from '@/components/garden-planner/ExportModal.vue'
 
 useHead({
   link: [
@@ -113,12 +117,23 @@ function downloadURI(uri: string, name: string) {
   document.body.removeChild(link)
 }
 
-const saveCode = ref('')
-const loadCode = ref('')
-function saveLayoutAsCode() {
-  saveCode.value = garden.value.saveLayout()
+const saveModal = ref<InstanceType<typeof SaveModal> | null>(null)
+
+function openSaveModal() {
+  saveLayout()
+  saveModal.value?.openModal()
 }
 
+const loadModal = ref<InstanceType<typeof LoadModal> | null>(null)
+function openLoadModal() {
+  loadModal.value?.openModal()
+}
+
+const saveCode = useSaveCode()
+const loadCode = ref('')
+function saveLayout() {
+  saveCode.set(garden.value.saveLayout())
+}
 function loadLayoutFromCode(code: string) {
   garden.value.loadLayout(code)
   gardenTiles.value = garden.value.plots
@@ -126,12 +141,6 @@ function loadLayoutFromCode(code: string) {
 }
 
 const urlParams = useUrlSearchParams('history')
-
-const { copy } = useClipboard()
-
-async function paste() {
-  loadCode.value = await navigator.clipboard.readText()
-}
 
 function clearAllPlots() {
   garden.value.clearAllPlots()
@@ -143,6 +152,10 @@ const display = ref(null as unknown as HTMLElement)
 const statDisplay = ref<InstanceType<typeof StatsDisplay> | null>()
 const gardenDisplay = ref<InstanceType<typeof GardenDisplay> | null>()
 
+const exportModal = ref<InstanceType<typeof ExportModal> | null>(null)
+function openExportModal() {
+  exportModal.value?.openModal()
+}
 const isTakingScreenshot = useTakingScreenshot()
 function saveAsImage() {
   isTakingScreenshot.set(true)
@@ -150,7 +163,7 @@ function saveAsImage() {
   if (!gardenTilesAreWide.value)
     displayWidth += ((statDisplay.value?.getStatsDisplay() as HTMLElement).clientWidth)
 
-  display.value.style.width = '1440px'
+  display.value.style.width = '1680px'
   gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
     classList.add(`w-${displayWidth}`)
   })
@@ -169,20 +182,6 @@ function saveAsImage() {
     })
     isTakingScreenshot.set(false)
   })
-}
-
-const saveLink = ref('')
-const useMarkdown = ref(false)
-function saveLayoutAsLink() {
-  saveLink.value = `https://palia-garden-planner.vercel.app?layout=${garden.value.saveLayout()}`
-
-  if (useMarkdown.value)
-    saveLink.value = `[[Palia Garden Plan]](${saveLink.value})`
-}
-
-const activeTab = ref('load')
-function setActiveTab(tab: string) {
-  activeTab.value = tab
 }
 
 const hoveredBonus = ref(Bonus.None)
@@ -223,6 +222,9 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
   <main class="flex flex-col py-2">
     <GuideCard />
     <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
+    <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
+    <SaveModal ref="saveModal" @save-layout="saveLayout()" />
+    <ExportModal ref="exportModal" @download-image="saveAsImage()" />
     <div class="flex flex-col w-full justify-center items-center">
       <section
         id="display" ref="display" class="lg:px-14 py-4 font-['Merriweather'] w-full max-w-[1680px]"
@@ -372,13 +374,22 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                 </button>
               </div>
               <div class="grid grid-cols-3 gap-3 items-center ">
-                <button class="btn btn-accent">
+                <button
+                  class="btn btn-accent"
+                  @click="() => openSaveModal()"
+                >
                   Save
                 </button>
-                <button class="btn btn-accent">
+                <button
+                  class="btn btn-accent"
+                  @click="openLoadModal()"
+                >
                   Load
                 </button>
-                <button class="btn btn-accent">
+                <button
+                  class="btn btn-accent"
+                  @click="openExportModal()"
+                >
                   Export
                 </button>
               </div>
@@ -389,127 +400,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
       </section>
     </div>
 
-    <section id="save-load-export" class="flex flex-col gap-2 px-4 lg:px-16 max-w-4xl py-4 pb-12">
-      <h2 class="text-2xl font-bold">
-        Save/Load
-      </h2>
-      <p>
-        Save your layout as a code to share with others, load a layout from a code, or export it as an image for instant
-        sharing
-      </p>
-
-      <p class="text-xs">
-        Note: Clipboard buttons may not function as intended, if so please manually copy/paste the code
-      </p>
-      <div class="">
-        <div class="tabs tabs-boxed font-bold text-2xl rounded-b-none p-2">
-          <div class="tab tab-lg" :class="activeTab === 'load' ? 'tab-active' : ''" @click="setActiveTab('load')">
-            Load
-          </div>
-          <div class="tab tab-lg" :class="activeTab === 'save' ? 'tab-active' : ''" @click="setActiveTab('save')">
-            Save
-          </div>
-          <p class="tab tab-lg" :class="activeTab === 'export' ? 'tab-active' : ''" @click="setActiveTab('export')">
-            Export
-          </p>
-        </div>
-        <div class="flex flex-col gap-4 py-4 px-4 bg-base-200 rounded-b-lg">
-          <div v-show="activeTab === 'load'" class="flex flex-col gap-2 w-full">
-            <h3 class="font-semibold text-lg">
-              Load Code
-            </h3>
-            <p class="text-sm">
-              Paste the layout code into the text-box then hit 'Load', if the layout-code is valid you
-              will
-              see it in the garden above
-            </p>
-            <div class="join w-full">
-              <button class="btn btn-accent join-item text-white" @click="loadLayoutFromCode(loadCode)">
-                Load
-              </button>
-              <button class="btn bg-base-100 join-item text-lg" @click="paste()">
-                <font-awesome-icon :icon="['fas', 'paste']" />
-              </button>
-              <input
-                v-model="loadCode" type="text"
-                class="join-item bg-white bg-opacity-60 flex items-center justify-center px-2 py-1 w-full max-w-lg"
-              >
-            </div>
-            <div class="flex items-center gap-1">
-              Support Versions: <span class="text-sm font-bold badge badge-primary">v0.1</span> <span class="text-sm font-bold badge badge-secondary">v0.2</span>
-            </div>
-          </div>
-
-          <div v-show="activeTab === 'save'" class="flex flex-col gap-2 w-full">
-            <div class="pb-1">
-              <h3 class="font-semibold text-lg">
-                As Code
-              </h3>
-              <p class="text-sm">
-                For later sharing/editing/loading, simply copy to clipboard
-              </p>
-              <div class="join w-full">
-                <button class="btn btn-accent join-item text-white" @click="saveLayoutAsCode()">
-                  Get Code
-                </button>
-                <button class="btn bg-base-100 join-item text-lg" @click="copy(saveCode)">
-                  <font-awesome-icon :icon="['fas', 'copy']" />
-                </button>
-                <input
-                  v-model="saveCode" type="text"
-                  class="join-item bg-white bg-opacity-60 flex items-center justify-center px-2 py-1 w-full max-w-lg"
-                >
-              </div>
-            </div>
-            <div class="pb-1">
-              <h3 class="font-semibold text-lg">
-                As Link
-              </h3>
-              <p class="text-sm">
-                Same as code, but converted to a shareable link
-              </p>
-              <div class="join w-full">
-                <button class="btn btn-accent join-item text-white" @click="saveLayoutAsLink()">
-                  Get Link
-                </button>
-                <button class="btn bg-base-100 join-item text-lg" @click="copy(saveLink)">
-                  <font-awesome-icon :icon="['fas', 'copy']" />
-                </button>
-                <input
-                  v-model="saveLink" type="text"
-                  class="join-item bg-white bg-opacity-60 flex items-center justify-center px-2 py-1 w-full max-w-lg"
-                >
-              </div>
-              <label class="flex gap-2 py-2 text-xs items-center font-semibold">
-                <input v-model="useMarkdown" type="checkbox" class="toggle toggle-sm">
-                <div class="join-item">Mask link with Markdown</div>
-              </label>
-            </div>
-          </div>
-          <div v-show="activeTab === 'export'" class="flex flex-col gap-2 w-full">
-            <div class="pb-1">
-              <h3 class="font-semibold text-lg">
-                As Image
-              </h3>
-              <p class="text-sm">
-                Converts your layout into an easily-shareable image and downloads it.
-                Good for those whose screens cannot fit the entire garden.
-              </p>
-              <button class="btn btn-accent text-white my-2" @click="saveAsImage()">
-                Download Image
-              </button>
-              <div class="flex flex-col gap-2">
-                <p class="text-xs max-w-lg">
-                  <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-warning" />
-                  Page will slow down based on garden size while capturing the image
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <div class="px-4 md:px-8 lg:px-16">
+    <div class="px-4 md:px-8 lg:px-14">
       <CreditsSection />
     </div>
   </main>

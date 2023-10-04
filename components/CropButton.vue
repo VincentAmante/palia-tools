@@ -78,9 +78,11 @@ const bonus = computed(() => {
         </p>
       </div>
       <nuxt-img
-        v-if="(crop && crop.image != null && crop.image !== '')" width="42px"
+        v-if="(crop && crop.image != null && crop.image !== '')"
+        width="42px"
         height="42px" class="absolute -z-10 max-w-[34px]"
-        :src="crop.image" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
+        :src="crop.image"
+        :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
         :alt="crop.type"
       />
       <font-awesome-icon

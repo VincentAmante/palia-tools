@@ -41,14 +41,14 @@ interface ICropConversions {
 }
 
 interface IProductImages {
-  preserve: string;
-  seed: string;
+  preserve: string
+  seed: string
 }
 
 interface ICropMetadata {
-  cropCode: CropCode;
-  cropTooltip: string;
-  cropBackgroundColor: string;
+  cropCode: CropCode
+  cropTooltip: string
+  cropBackgroundColor: string
 }
 
 class Crop {
@@ -58,7 +58,8 @@ class Crop {
     preserve: string
     seed: string
   }
-  private _metadata: ICropMetadata;
+
+  private _metadata: ICropMetadata
 
   constructor(
     public readonly type: CropType,
@@ -74,12 +75,12 @@ class Crop {
     },
     metadata: ICropMetadata = {
       cropCode: CropCode.None,
-      cropTooltip: "Remove Crop",
+      cropTooltip: 'Remove Crop',
       cropBackgroundColor: '',
-    }
+    },
   ) {
-    this._images = images;
-    this._metadata = metadata;
+    this._images = images
+    this._metadata = metadata
 
     this._produceInfo = {
       ...produceInfoOptions,
@@ -87,12 +88,12 @@ class Crop {
       isReharvestable: produceInfoOptions.isReharvestable || false,
       reharvestCooldown: produceInfoOptions.reharvestCooldown || 0,
       reharvestLimit: produceInfoOptions.reharvestLimit || 0,
-    };
+    }
 
     this._goldValues = {
       ...goldValuesOptions,
       preserveStar: goldValuesOptions.preserveStar || goldValuesOptions.preserve * 1.5, // We want to assume the same 1.5x rule if not proivided
-    };
+    }
   }
 
   get produceInfo(): IProduceInfo {
@@ -112,15 +113,15 @@ class Crop {
   }
 
   get cropCode(): CropCode {
-    return this._metadata.cropCode;
+    return this._metadata.cropCode
   }
 
   get cropTooltip(): string {
-    return this._metadata.cropTooltip;
+    return this._metadata.cropTooltip
   }
 
   get cropBackgroundColor(): string {
-    return this._metadata.cropBackgroundColor;
+    return this._metadata.cropBackgroundColor
   }
 
   // Assumes player harvests on the day it is harvestable

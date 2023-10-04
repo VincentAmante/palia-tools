@@ -8,6 +8,7 @@ import OptionCard from './garden-planner/HarvestCalculator/OptionCard.vue'
 import type { ICalculateValueResult, ISimulateYieldResult } from '@/assets/scripts/garden-planner/imports'
 import { CropType, Garden, crops } from '@/assets/scripts/garden-planner/imports'
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/garden'
+import AppDividerAlt from '@/components/AppDividerAlt.vue'
 
 const props = defineProps({
   layout: {
@@ -147,7 +148,7 @@ watchEffect(() => {
     <div class="bg-primary md:rounded-lg ">
       <div class="flex flex-col gap-1">
         <div class="w-full md:bg-misc sm:rounded-lg sm:rounded-b-none p-2 sm:px-6 flex flex-col md:flex-row justify-between items-center text-misc md:text-accent">
-          <div class="divider my-1 before:bg-accent after:bg-accent" />
+          <AppDividerAlt class="w-full sm:hidden" />
           <h2 class="text-xl py-2 flex items-center flex-wrap gap-1">
             Harvest Approximations <span
               class="text-xs font-normal"

@@ -19,7 +19,6 @@ defineExpose({
         <h2 class="text-xl ">
           <slot name="header" />
         </h2>
-
         <form method="dialog" class="">
           <button aria-label="close modal" class="btn btn-square btn-ghost btn-sm">
             <font-awesome-icon :icon="['fas', 'x']" class="text-xl" />
