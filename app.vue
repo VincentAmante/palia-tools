@@ -24,6 +24,9 @@ useHead({
       content: '9aAZNWLR6mEsKgyPLuQphHNC73YjhWXF5z6CMbJTyZA',
     },
   ],
+  htmlAttrs: {
+    lang: 'en',
+  },
 })
 </script>
 

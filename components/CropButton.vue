@@ -21,7 +21,7 @@ const props = defineProps({
 
 const { get: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
 const tooltip = computed(() => {
-  return props.crop.cropTooltip;
+  return props.crop.cropTooltip
 })
 
 const bonus = computed(() => {
@@ -29,56 +29,60 @@ const bonus = computed(() => {
     case Bonus.WaterRetain:
       return {
         icon: 'droplet',
-        colour: 'text-sky-500',
+        colour: 'text-water-retain',
       }
     case Bonus.QualityIncrease:
       return {
         icon: 'star',
-        colour: 'text-yellow-600',
+        colour: 'text-quality-increase',
       }
     case Bonus.HarvestIncrease:
       return {
         icon: 'wheat-awn',
-        colour: 'text-green-800',
+        colour: 'text-harvest-boost',
       }
     case Bonus.WeedPrevention:
       return {
         icon: 'shield',
-        colour: 'text-rose-500',
+        colour: 'text-weed-prevention',
       }
     case Bonus.SpeedIncrease:
       return {
         icon: 'forward-fast',
-        colour: 'text-orange-500',
+        colour: 'text-growth-boost',
       }
     default:
       return {
         icon: '',
-        colour: 'text-gray-500',
+        colour: 'text-misc',
       }
   }
 })
 </script>
 
 <template>
-  <div class="md:tooltip md:tooltip-right tooltip-accent" :data-tip="tooltip">
+  <div v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)" class="md:tooltip md:tooltip-top lg:tooltip-right tooltip-info" :data-tip="tooltip">
     <button
-      v-if="!(crop.type === CropType.None && isTakingScreenshot)"
-      class="relative bg-base-200 rounded-lg md:btn-lg w-14 md:w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
-      :class="(isSelected && !isTakingScreenshot) ? 'bg-slate-100' : ''"
+      class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+      :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
+      :name="`select ${crop.type}`"
     >
       <font-awesome-icon
         v-if="bonus.icon !== ''"
         class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black" :icon="['fas', bonus.icon]" :class="bonus.colour"
       />
-      <div v-if="crop.type !== CropType.None" class="flex flex-col absolute bottom-0 right-0 py-[0.2rem] pr-[0.4rem]">
-        <p class="text-sm leading-none font-bold text-neutral-700">
+      <div class="flex flex-col absolute bottom-0 right-0 py-[0.1rem] pr-[0.2rem]">
+        <p class="text-xs leading-none font-bold text-neutral-700">
           {{ count }}
         </p>
       </div>
       <nuxt-img
-        v-if="(crop && crop.image != null && crop.image !== '')" class="absolute -z-10 max-w-[42px]"
-        :src="crop.image" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
+        v-if="(crop && crop.image != null && crop.image !== '')"
+        class="absolute -z-10 max-w-[34px]"
+        :src="crop.image"
+        :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
+        :alt="crop.type"
+        :srcset="undefined"
       />
       <font-awesome-icon
         v-else class="absolute -z-10 max-w-[45px] text-warning text-3xl "

@@ -6,6 +6,8 @@ import {
   faArrowUpRightFromSquare,
   faBars,
   faCaretDown,
+  faChevronLeft,
+  faChevronRight,
   faCircleInfo,
   faCircleQuestion,
   faCopy,
@@ -22,14 +24,17 @@ import {
   faRecycle,
   faSeedling,
   faShield,
+  faSliders,
   faSquarePlus,
   faStar,
+  faTable,
   faTableCellsLarge,
   faTools,
   faTrash,
   faTriangleExclamation,
   faTurnDown,
   faWheatAwn,
+  faX,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
@@ -64,6 +69,11 @@ library.add(
   faGift,
   faMap,
   faGithub,
+  faTable,
+  faSliders,
+  faX,
+  faChevronLeft,
+  faChevronRight,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS

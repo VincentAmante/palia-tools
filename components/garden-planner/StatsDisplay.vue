@@ -32,14 +32,13 @@ defineExpose({
 </script>
 
 <template>
-  <div class="my-2 px-2 w-fit">
+  <div class="px-1 pt-4 md:pt-0 md:px-2 w-full">
     <div
-      ref="statsDisplay" class="flex flex-wrap gap-2 w-fit px-4 mt-4 cursor-help"
-      :class="(gardenTilesAreWide) ? '' : 'lg:grid lg:grid-cols-2'"
+      ref="statsDisplay" class="flex gap-1 lg:gap-3 xl:gap-4 w-full  md:px-4 cursor-help justify-center"
     >
       <CoverageStat
         :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Quality Increase']" class="text-amber-600"
+        :covered="plotStatTotal.cropBonusCoverage['Quality Increase']" class="text-quality-increase"
         @mouseover="updateHoveredBonus(Bonus.QualityIncrease)" @mouseleave="updateHoveredBonus(Bonus.None)"
       >
         <template #icon>
@@ -52,19 +51,19 @@ defineExpose({
 
       <CoverageStat
         :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Harvest Increase']" class="text-green-600"
+        :covered="plotStatTotal.cropBonusCoverage['Harvest Increase']" class="text-harvest-boost"
         @mouseover="updateHoveredBonus(Bonus.HarvestIncrease)" @mouseleave="updateHoveredBonus(Bonus.None)"
       >
         <template #icon>
           <font-awesome-icon :icon="['fas', 'wheat-awn']" />
         </template>
         <template #title>
-          Harvest Increase
+          Harvest Boost
         </template>
       </CoverageStat>
       <CoverageStat
         :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Water Retain']" class="text-sky-500"
+        :covered="plotStatTotal.cropBonusCoverage['Water Retain']" class="text-water-retain"
         @mouseover="updateHoveredBonus(Bonus.WaterRetain)" @mouseleave="updateHoveredBonus(Bonus.None)"
       >
         <template #icon>
@@ -76,7 +75,7 @@ defineExpose({
       </CoverageStat>
       <CoverageStat
         :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Speed Increase']" class="text-orange-400"
+        :covered="plotStatTotal.cropBonusCoverage['Speed Increase']" class="text-growth-boost"
         @mouseover="updateHoveredBonus(Bonus.SpeedIncrease)" @mouseleave="updateHoveredBonus(Bonus.None)"
       >
         <template #icon>
@@ -89,7 +88,7 @@ defineExpose({
 
       <CoverageStat
         :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Weed Prevention']" class="text-rose-400"
+        :covered="plotStatTotal.cropBonusCoverage['Weed Prevention']" class="text-weed-prevention"
         @mouseover="updateHoveredBonus(Bonus.WeedPrevention)" @mouseleave="updateHoveredBonus(Bonus.None)"
       >
         <template #icon>

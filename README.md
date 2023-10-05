@@ -6,11 +6,13 @@ Made on Nuxt and Vue, hosted on Vercel.
 
 [Link to Website](https://palia-garden-planner.vercel.app)
 
-## Is this Open-Source?
+## License
 
-Technically no, as I've been hoping for an all-clear from the Palia Team.
-As it hasn't arrived yet and I'm still waiting,
-I've decided to at least make the code itself publicly available for viewing for full transparency and to allow critiques/suggestions/issues/etc.
+This project is licensed under the [MIT License](https://github.com/VincentAmante/palia-tools/blob/main/LICENSE.md). **Note:** The license specified above applies exclusively to the source code, configuration files, and documentation created and maintained within this repository.
+
+### Assets and Intellectual Property
+
+This project may contain assets, media files, or intellectual property that are owned by other companies or individuals (such as Singularity 6). These assets are not covered by the open-source license mentioned above. I do not claim ownership or rights over these assets.
 
 ## Why is this called Palia Tools?
 

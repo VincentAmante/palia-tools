@@ -1,0 +1,49 @@
+<script setup lang="ts">
+defineProps({
+  tooltip: {
+    type: String,
+    default: '',
+  },
+  imgSrc: {
+    type: String,
+    default: '',
+  },
+  star: {
+    type: Boolean,
+    default: false,
+  },
+  amount: {
+    type: Number,
+    default: 0,
+  },
+})
+</script>
+
+<template>
+  <div
+    :data-tip="tooltip"
+    class="tooltip tooltip-top flex items-center justify-center"
+  >
+    <div class="relative h-full aspect-square p-1 flex flex-col items-center justify-center">
+      <nuxt-img
+        v-if="imgSrc"
+        :src="imgSrc"
+        width="36px"
+        class="object-contain aspect-square"
+        :srcset="undefined"
+      />
+      <p
+        class="absolute top-0 right-0 text-xs p-[1px] px-[6px] text-center align-middle rounded-lg text-accent"
+        :class="(amount < 0) ? 'bg-error bg-opacity-70' : 'bg-neutral bg-opacity-40'"
+      >
+        {{ amount }}
+      </p>
+      <p class="absolute bottom-0 right-1">
+        <slot name="icon" />
+      </p>
+      <p class="absolute bottom-1 left-1">
+        <font-awesome-icon v-if="star" class="text-quality-increase text-sm" :icon="['fas', 'star']" />
+      </p>
+    </div>
+  </div>
+</template>

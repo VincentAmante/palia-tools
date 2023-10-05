@@ -53,21 +53,25 @@ function handleHover(rowIndex: number, index: number, plot: Plot) {
 </script>
 
 <template>
-  <div :class="(gardenTilesAreWide && !isTakingScreenshot) ? 'overflow-x-auto py-2' : ''">
+  <div
+    class="h-full flex flex-col justify-center max-w-[100vw]"
+    :class="(gardenTilesAreWide && !isTakingScreenshot) ? 'overflow-x-auto' : ''"
+  >
     <div
-      class="rounded-xl md:w-fit p-2 bg-base-300" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
+      class="rounded-xl sm:w-fit sm:mx-auto px-3 lg:px-1 bg-accent" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
       @contextmenu.prevent.self=""
     >
-      <div ref="plotsDisplay" class="w-full overflow-auto lg:overflow-auto flex flex-col gap-3 p-3">
-        <div v-for="(plotRow, plotRowIndex) in gardenTiles" :key="plotRowIndex" class="plotRow flex gap-3">
-          <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="plot flex flex-col gap-1 relative">
-            <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="plotTileRow flex cols-3 gap-1">
+      <div ref="plotsDisplay" class="w-full overflow-auto grid gap-2">
+        <div v-for="(plotRow, plotRowIndex) in gardenTiles" :key="plotRowIndex" class="plotRow flex gap-2">
+          <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="plot flex flex-col gap-0 relative">
+            <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="plotTileRow flex cols-3 gap-0">
               <div v-for="(tile, index) in row" :key="index" class="plotTile">
                 <CropTile
                   :tile="tile as Tile" :is-disabled="!plot.isActive" :bonus-hovered="hoveredBonus"
+                  :index="(1 + rowIndex) + (index + (rowIndex * 2))"
                   :is-alt="(plotRowIndex + plotIndex) % 2 === 0"
-                  @click="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
-                  @contextmenu="((e: MouseEvent) => handleRightClick(event, rowIndex, index, plot as Plot))"
+                  @click.left="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
+                  @click.right="((e: MouseEvent) => handleRightClick(event, rowIndex, index, plot as Plot))"
                   @mouseover="handleHover(rowIndex, index, plot as Plot)"
                 />
               </div>

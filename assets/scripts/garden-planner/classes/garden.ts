@@ -9,7 +9,7 @@ import { parseSave } from '../save-handler'
 import FertiliserType from '../enums/fertiliser'
 import FertiliserCode from '../enums/fertilisercode'
 import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliser-list'
-import type { CalculateValueOptions, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo } from '../utils/garden-helpers'
+import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo, ISimulateYieldResult } from '../utils/garden-helpers'
 import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
 
 import Plot from './plot'
@@ -459,10 +459,7 @@ class Garden {
    */
   calculateValue(
     options: CalculateValueOptions,
-    harvestInfo: {
-      harvests: IHarvestInfo[]
-      harvestTotal: IHarvestInfo
-    },
+    harvestInfo: ISimulateYieldResult,
   ) {
     const result: {
       day: number
@@ -562,6 +559,9 @@ class Garden {
       if (crop == null)
         continue
 
+      if (baseProduce === 0 && starProduce === 0)
+        continue
+
       const baseRemainder = totalResult.crops[cropType as CropType].base.cropRemainder
       const starRemainder = totalResult.crops[cropType as CropType].star.cropRemainder
 
@@ -589,15 +589,13 @@ class Garden {
       totalResult.crops[cropType as CropType].star.produce += convertedStarUnits
 
       totalResult.crops[cropType as CropType].star.cropRemainder = newStarRemainder
-      if (crop.type === CropType.SpicyPepper)
-        console.log('After:', totalResult.crops[cropType as CropType].star.cropRemainder)
 
       totalResult.totalGold += baseGoldValue + starGoldValue
     }
     return {
       result,
       totalResult,
-    }
+    } as ICalculateValueResult
   }
 
   /**
@@ -678,9 +676,13 @@ function calculateCropResult(
   let newRemainder = 0
 
   const cropsCombined = produce + remainder
-
-  if (crop?.type === CropType.SpicyPepper)
-    console.log('cropsCombined: ', cropsCombined)
+  if (produce === 0 && remainder === 0) {
+    return {
+      convertedUnits,
+      goldValue,
+      newRemainder,
+    }
+  }
 
   switch (option) {
     case 'crop':
