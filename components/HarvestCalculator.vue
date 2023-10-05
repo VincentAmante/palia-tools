@@ -247,21 +247,14 @@ watchEffect(() => {
               :crop-options="cropOptions as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>"
             />
           </div>
-          <div
-            v-if="!(isTakingScreenshot.get) && activeDisplayTab === 'day'"
-            class="isolate overflow-hidden overflow-y-scroll max-h-44 pb-4"
-          >
-            <div class="py-2">
-              <div class="overflow-hidden">
-                <LazyHCDay
-                  v-if="harvestData"
-                  :processed-yields="processedYields as ICalculateValueResult"
-                  :harvest-data="harvestData as ISimulateYieldResult"
-                  :crop-options="cropOptions as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>"
-                />
-              </div>
-            </div>
-          </div>
+
+          <LazyHCDay
+            v-if="!(isTakingScreenshot.get) && activeDisplayTab === 'day' && harvestData"
+            class=" pb-4"
+            :processed-yields="processedYields as ICalculateValueResult"
+            :harvest-data="harvestData as ISimulateYieldResult"
+            :crop-options="cropOptions as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>"
+          />
         </div>
       </div>
       <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'" class="flex flex-col gap-2 px-4 max-h-80 ">

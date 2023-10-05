@@ -72,15 +72,6 @@ const borderRadius = computed(() => {
 const border = computed(() => {
   let style = ''
 
-  // if (props.index === 1)
-  //   style += 'border-t border-l'
-  // if (props.index === 3)
-  //   style += 'border-t border-r'
-  // if (props.index === 7)
-  //   style += 'border-b border-l'
-  // if (props.index === 9)
-  //   style += 'border-b border-r'
-
   switch (props.index) {
     case 1:
       style += 'border-t border-l border-t-[1px]'
@@ -120,7 +111,7 @@ const border = computed(() => {
 <template>
   <div
     draggable="false"
-    class="border-misc-saturated relative select-none min-w-[3rem]  bg-secondary aspect-square cursor-pointer hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
+    class="border-misc-saturated relative select-none min-w-[3rem] bg-secondary hover:bg-primary aspect-square cursor-pointer hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
              border,
              borderRadius,

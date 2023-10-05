@@ -6,6 +6,8 @@ import {
   faArrowUpRightFromSquare,
   faBars,
   faCaretDown,
+  faChevronLeft,
+  faChevronRight,
   faCircleInfo,
   faCircleQuestion,
   faCopy,
@@ -70,6 +72,8 @@ library.add(
   faTable,
   faSliders,
   faX,
+  faChevronLeft,
+  faChevronRight,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS
