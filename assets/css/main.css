@@ -4,7 +4,7 @@
 
 @layer components {
   .bg-gradient {
-    
+    background: linear-gradient(180deg, #3A4A6B 43.75%, #467386 100%);
   }
 }
 

@@ -109,14 +109,14 @@ const paginationButtons = computed<PaginationButton[]>(() => {
 
 <template>
   <div class="isolate overflow-hidden">
-    <div class="py-2 grid gap-[2px]">
+    <div class="grid gap-[2px]">
       <div class="overflow-hidden max-h-40 overflow-y-scroll pr-2 rounded-md rounded-b-none bg-accent">
         <table class="table px-4 bg-accent text-misc rounded-none">
           <tbody class="h-full">
             <tr
               v-for="(harvest, index) of yieldsPage"
               :key="index"
-              class=" !border-b-0"
+              class="!border-b-0"
             >
               <td class="flex gap-0 items-end flex-wrap w-full max-w-md py-2">
                 <div class="flex flex-col w-full">
@@ -210,7 +210,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
                 </div>
               </td>
               <td class="">
-                <p class="flex gap-1 font-bold items-center pr-1">
+                <p class="flex gap-1 font-bold items-center pr-1 justify-end">
                   <nuxt-img
                     format="webp" src="/gold.webp" class="max-h-[1.5rem]"
                     width="1rem" height="1rem" alt="Gold"
