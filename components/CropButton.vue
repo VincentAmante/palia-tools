@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
+import { useDragAndDrop } from '@/stores/useDragAndDrop'
 import { Bonus, Crop, CropType } from '@/assets/scripts/garden-planner/imports'
 
 const props = defineProps({
@@ -58,14 +59,23 @@ const bonus = computed(() => {
       }
   }
 })
+
+const dragHandler = useDragAndDrop()
 </script>
 
 <template>
-  <div v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)" class="md:tooltip md:tooltip-top lg:tooltip-right tooltip-info" :data-tip="tooltip">
+  <div
+    v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)"
+    class="md:tooltip md:tooltip-top tooltip-info"
+    :data-tip="tooltip"
+  >
     <button
+      draggable="true"
       class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
       :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
       :name="`select ${crop.type}`"
+      @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)"
+      @dragend="(e: DragEvent) => dragHandler.stopDrag()"
     >
       <font-awesome-icon
         v-if="bonus.icon !== ''"
@@ -79,6 +89,7 @@ const bonus = computed(() => {
       <nuxt-img
         v-if="(crop && crop.image != null && crop.image !== '')"
         class="absolute -z-10 max-w-[34px]"
+        draggable="false"
         :src="crop.image"
         :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
         :alt="crop.type"

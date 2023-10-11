@@ -138,11 +138,20 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div class="collapse collapse-arrow rounded-none md:rounded-lg w-full h-fit max-h-[30rem] md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:px-2 z-50 overflow-visible">
-    <div class="bg-primary md:rounded-lg ">
+  <div class="collapse collapse-arrow rounded-none md:rounded-lg w-full h-fit md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:px-2 z-50 overflow-visible md:max-w-2xl transition-all">
+    <div
+      class="bg-primary md:rounded-lg"
+      :class="isTakingScreenshot.get ? 'rounded-lg' : ''"
+    >
       <div class="flex flex-col gap-1">
-        <div class="w-full md:bg-misc sm:rounded-lg sm:rounded-b-none p-2 sm:px-6 flex flex-col md:flex-row justify-between items-center text-misc md:text-accent">
-          <AppDividerAlt class="w-full sm:hidden" />
+        <div
+          class="w-full md:bg-misc sm:rounded-lg sm:rounded-b-none p-2 sm:px-6 flex flex-col md:flex-row justify-between items-center md:text-accent"
+          :class="isTakingScreenshot.get ? 'bg-misc px-6 rounded-lg rounded-b-none' : 'text-misc '"
+        >
+          <AppDividerAlt
+            class="w-full sm:hidden"
+            :class="isTakingScreenshot.get ? 'hidden' : ''"
+          />
           <h2 class="text-xl py-2 flex items-center flex-wrap gap-1">
             Harvest Approximations <span
               class="text-xs font-normal"
@@ -257,7 +266,7 @@ watchEffect(() => {
           />
         </div>
       </div>
-      <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'" class="flex flex-col gap-2 px-4 max-h-80 ">
+      <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'" class="flex flex-col gap-2 px-4 max-h-96 transition-all ">
         <div class="tabs gap-2">
           <div
             class="tab btn btn-sm rounded-md normal-case"
@@ -274,7 +283,7 @@ watchEffect(() => {
             Crop
           </div>
         </div>
-        <div class="max-h-72 overflow-y-scroll">
+        <div class="max-h-80 overflow-y-scroll">
           <div
             v-if="activeOptionTab === 'main'"
             class="grid gap-2 pr-2 pb-4"

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { PropType } from 'vue'
-import type { Crop } from '@/assets/scripts/garden-planner/imports'
-import { Bonus, Tile, getCodeFromCrop } from '@/assets/scripts/garden-planner/imports'
+import { Bonus, Crop, Fertiliser, Tile, getCodeFromCrop } from '@/assets/scripts/garden-planner/imports'
+
+import { useSelectedItem } from '@/stores/useSelectedItem'
 
 const props = defineProps({
   tile: Tile,
@@ -24,7 +25,7 @@ const props = defineProps({
     default: 0,
   },
 })
-
+const selectedItem = useSelectedItem()
 const code = computed(() => {
   if (props.tile?.crop === null)
     return ' '
@@ -110,20 +111,28 @@ const border = computed(() => {
 
 <template>
   <div
-    draggable="false"
-    class="border-misc-saturated relative select-none min-w-[3rem] bg-secondary hover:bg-primary aspect-square cursor-pointer hover:bg-orange-200 flex flex-col overflow-hidden isolate items-center justify-center"
+    class="border-misc-saturated relative select-none min-w-[3.15rem] hover:bg-primary aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
              border,
              borderRadius,
+             (tile?.isHovered ? 'bg-primary' : ' bg-secondary'),
     ]"
   >
     <div class="absolute w-full h-full bg-opacity-20 -z-10" :class="bgColour" />
     <div class="lg:text-3xl font-bold uppercase select-none">
       <nuxt-img
-        v-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px"
+        v-if="(selectedItem.val instanceof Crop && tile?.isHovered)"
+        format="webp"
+        draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[40px] 2xl:max-w-[44px] opacity-50"
+        :src="selectedItem.val.image"
+        :srcset="undefined"
+      />
+      <nuxt-img
+        v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px"
         format="webp"
         draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[40px] 2xl:max-w-[44px]"
         :src="tile?.crop?.image"
+        :srcset="undefined"
       />
       <div v-else>
         {{ code as string || ' ' }}
@@ -148,10 +157,18 @@ const border = computed(() => {
     </ul>
     <div class="absolute bottom-0 right-0 p-[2px]">
       <nuxt-img
-        v-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0"
+        v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)"
+        :src="selectedItem.val.image"
+        format="webp"
+        draggable="false" class="select-none max-w-[20px] opacity-50"
+        :srcset="undefined"
+      />
+      <nuxt-img
+        v-else-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0"
         format="webp"
         draggable="false" class="select-none max-w-[20px]"
         :src="tile?.fertiliser?.image"
+        :srcset="undefined"
       />
     </div>
     <div

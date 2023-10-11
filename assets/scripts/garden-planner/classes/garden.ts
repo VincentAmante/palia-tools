@@ -321,7 +321,7 @@ class Garden {
     }
 
     // Reduce growth time by 1 to account for speed boost
-    for (let day = minGrowthTime - 1; day <= maxGrowthTime; day++) {
+    for (let day = 1; day <= maxGrowthTime; day++) {
       const harvest: IHarvestInfo = {
         day,
         crops: getCropMap(),
@@ -355,7 +355,7 @@ class Garden {
               : options.baseChanceOverride ?? 0
 
         const { base, withBonus } = crop.produceInfo
-        const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day)
+        const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day, tile.bonuses.includes(Bonus.SpeedIncrease))
 
         if (isHarvestable) {
           let finalStarChance = baseStarChance

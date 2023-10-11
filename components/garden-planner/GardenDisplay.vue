@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import type { Plot, Tile } from '@/assets/scripts/garden-planner/imports'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
+import { useDragAndDrop } from '@/stores/useDragAndDrop'
 
 defineProps({
   gardenTiles: {
@@ -17,7 +17,7 @@ defineProps({
     default: false,
   },
 })
-const emit = defineEmits(['selectTile', 'rightClick', 'mouseover', 'updateGardenTiles'])
+const emit = defineEmits(['selectTile', 'rightClick', 'mouseover', 'updateGardenTiles', 'mouseup'])
 
 const plotsDisplay = ref<HTMLDivElement | null>(null)
 function getPlotsDisplay() {
@@ -34,7 +34,7 @@ defineExpose({
   getPlotsDisplay,
   modifyPlotsDisplayClassList,
 })
-const { get: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
+const isTakingScreenshot = useTakingScreenshot()
 
 function selectTile(event: MouseEvent, rowIndex: number, index: number, plot: Plot) {
   if (plot.isActive)
@@ -50,15 +50,26 @@ function handleHover(rowIndex: number, index: number, plot: Plot) {
   if (plot.isActive)
     emit('mouseover', rowIndex, index, plot)
 }
+
+function handleMouseUp(rowIndex: number, index: number, plot: Plot) {
+  if (plot.isActive)
+    emit('mouseup', rowIndex, index, plot)
+}
+
+const dragHandler = useDragAndDrop()
+function handleDragEnter(row: number, col: number, plot: Plot) {
+  dragHandler.onTileEnter(row, col, plot)
+}
 </script>
 
 <template>
   <div
-    class="h-full flex flex-col justify-center max-w-[100vw]"
-    :class="(gardenTilesAreWide && !isTakingScreenshot) ? 'overflow-x-auto' : ''"
+    class="h-full flex flex-col justify-center"
+    :class="[(isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[100vw]']"
   >
     <div
-      class="rounded-xl sm:w-fit sm:mx-auto px-3 lg:px-1 bg-accent" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
+      class="rounded-xl sm:w-fit sm:mx-auto px-3 lg:px-1 bg-accent"
+      :class="(isTakingScreenshot.get) ? 'w-fit mx-auto px-1' : 'w-full'"
       @contextmenu.prevent.self=""
     >
       <div ref="plotsDisplay" class="w-full overflow-auto grid gap-2">
@@ -73,6 +84,8 @@ function handleHover(rowIndex: number, index: number, plot: Plot) {
                   @click.left="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
                   @click.right="((e: MouseEvent) => handleRightClick(event, rowIndex, index, plot as Plot))"
                   @mouseover="handleHover(rowIndex, index, plot as Plot)"
+                  @mouseup="(handleMouseUp(rowIndex, index, plot as Plot))"
+                  @dragenter="(e: DragEvent) => handleDragEnter(rowIndex, index, plot as Plot)"
                 />
               </div>
             </div>

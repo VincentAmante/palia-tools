@@ -35,6 +35,8 @@ const crops = {
       cropsPerSeed: 3,
       seedsPerConversion: 2,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 30,
+      preserveProcessMinutes: 27,
     },
     {
       preserve: '/jars/tomato.png',
@@ -69,6 +71,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 84,
+      preserveProcessMinutes: 54,
     },
     {
       preserve: '/jars/potato.png',
@@ -104,6 +108,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 0,
+      seedProcessMinutes: 42,
+      preserveProcessMinutes: 0,
     },
     {
       preserve: '',
@@ -138,6 +144,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 0,
+      seedProcessMinutes: 42,
+      preserveProcessMinutes: 0,
     },
     {
       preserve: '',
@@ -171,6 +179,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 18,
+      preserveProcessMinutes: 27,
     },
     {
       preserve: '/jars/carrot.png',
@@ -204,6 +214,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 24,
+      preserveProcessMinutes: 36,
     },
     {
       preserve: '/jars/onion.png',
@@ -237,6 +249,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 3,
       cropsPerPreserve: 0,
+      seedProcessMinutes: 36,
+      preserveProcessMinutes: 0,
     },
     {
       preserve: '',
@@ -273,6 +287,8 @@ const crops = {
       cropsPerSeed: 4,
       seedsPerConversion: 2,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 81,
+      preserveProcessMinutes: 47.25,
     },
     {
       preserve: '/jars/blueberry.png',
@@ -309,6 +325,8 @@ const crops = {
       cropsPerSeed: 10,
       seedsPerConversion: 1,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 142,
+      preserveProcessMinutes: 76,
     },
     {
       preserve: '/jars/apple.png',
@@ -342,6 +360,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 48,
+      preserveProcessMinutes: 48,
     },
     {
       preserve: '/jars/corn.webp',
@@ -378,6 +398,8 @@ const crops = {
       cropsPerSeed: 4,
       seedsPerConversion: 2,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 100,
+      preserveProcessMinutes: 38.5,
     },
     {
       preserve: '/jars/spicy-pepper.webp',

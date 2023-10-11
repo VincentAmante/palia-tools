@@ -3,7 +3,6 @@ import { useMousePressed, useUrlSearchParams } from '@vueuse/core'
 import domtoimage from 'dom-to-image-more'
 import { computed, onMounted, ref } from 'vue'
 import uniqid from 'uniqid'
-import TimeDisplay from '@/components/TimeDisplay.vue'
 import StatsDisplay from '@/components/garden-planner/StatsDisplay.vue'
 import GardenDisplay from '@/components/garden-planner/GardenDisplay.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
@@ -14,6 +13,8 @@ import { useSaveCode } from '~/stores/useSaveCode'
 import SaveModal from '@/components/garden-planner/SaveModal.vue'
 import LoadModal from '@/components/garden-planner/LoadModal.vue'
 import ExportModal from '@/components/garden-planner/ExportModal.vue'
+import { useDragAndDrop } from '@/stores/useDragAndDrop'
+import { useSelectedItem } from '@/stores/useSelectedItem'
 
 useHead({
   link: [
@@ -24,24 +25,35 @@ useHead({
   ],
 })
 
-const selectedItem = ref<Crop | Fertiliser | null | 'crop-erase' | 'fertiliser-erase'>('crop-erase')
+const selectedItem = useSelectedItem()
 const garden = ref(new Garden())
 const gardenTiles = ref(garden.value.plots)
+const dragHandler = useDragAndDrop()
+dragHandler.setGarden(garden.value as Garden)
+
+function resetHover() {
+  for (const row of gardenTiles.value) {
+    for (const plot of row)
+      plot.resetTileHover()
+  }
+}
 
 function selectTile(event: MouseEvent, row: number, col: number, plot: Plot) {
   if (event.button !== 2) {
-    if (selectedItem.value === 'crop-erase') {
+    resetHover()
+
+    if (selectedItem.val === 'crop-erase') {
       plot.setTile(row, col, null)
     }
-    else if (selectedItem.value === 'fertiliser-erase') {
+    else if (selectedItem.val === 'fertiliser-erase') {
       plot.removeFertiliserFromTile(row, col)
     }
     else {
-      if (selectedItem.value instanceof Crop) {
-        plot.setTile(row, col, selectedItem.value as Crop)
+      if (selectedItem.val instanceof Crop) {
+        plot.setTile(row, col, selectedItem.val as Crop)
       }
-      else if (selectedItem.value instanceof Fertiliser) {
-        plot.addFertiliserToTile(row, col, selectedItem.value as Fertiliser, {
+      else if (selectedItem.val instanceof Fertiliser) {
+        plot.addFertiliserToTile(row, col, selectedItem.val as Fertiliser, {
           removeSameId: true,
         })
       }
@@ -58,9 +70,13 @@ const gardenTilesAreWide = computed(() => {
 // Drag click to select multiple tiles
 const rightClickIsDown = ref(false)
 const { pressed } = useMousePressed()
+
 function handleHover(row: number, col: number, plot: Plot) {
+  resetHover()
+  plot.onTileHover(row, col, selectedItem.val as Crop | Fertiliser | null | string)
+
   if (pressed.value && !rightClickIsDown.value) {
-    switch (selectedItem.value) {
+    switch (selectedItem.val) {
       case 'crop-erase':
         plot.setTile(row, col, null)
         break
@@ -68,11 +84,12 @@ function handleHover(row: number, col: number, plot: Plot) {
         plot.removeFertiliserFromTile(row, col)
         break
       default:
-        if (selectedItem.value instanceof Crop) {
-          plot.setTile(row, col, selectedItem.value as Crop)
+        if (selectedItem.val instanceof Crop) {
+          if (plot.getTile(row, col)?.crop?.type !== selectedItem.val.type)
+            plot.setTile(row, col, selectedItem.val as Crop)
         }
-        else if (selectedItem.value instanceof Fertiliser) {
-          plot.addFertiliserToTile(row, col, selectedItem.value as Fertiliser, {
+        else if (selectedItem.val instanceof Fertiliser) {
+          plot.addFertiliserToTile(row, col, selectedItem.val as Fertiliser, {
             removeSameId: true,
           })
         }
@@ -83,7 +100,7 @@ function handleHover(row: number, col: number, plot: Plot) {
   }
 
   else if (pressed.value && rightClickIsDown.value) {
-    switch (selectedItem.value) {
+    switch (selectedItem.val) {
       case 'crop-erase':
         plot.setTile(row, col, null)
         break
@@ -91,9 +108,9 @@ function handleHover(row: number, col: number, plot: Plot) {
         plot.removeFertiliserFromTile(row, col)
         break
       default:
-        if (selectedItem.value instanceof Crop)
+        if (selectedItem.val instanceof Crop)
           plot.setTile(row, col, null)
-        else if (selectedItem.value instanceof Fertiliser)
+        else if (selectedItem.val instanceof Fertiliser)
           plot.removeFertiliserFromTile(row, col)
         break
     }
@@ -103,7 +120,7 @@ function handleHover(row: number, col: number, plot: Plot) {
 }
 
 function setCrop(type: CropType) {
-  selectedItem.value = crops[type]
+  selectedItem.select(crops[type])
 }
 
 const plotStat = computed(() => ({ ...garden.value.calculateStats() } as PlotStat))
@@ -170,7 +187,8 @@ function saveAsImage() {
   if (!gardenTilesAreWide.value)
     displayWidth += ((statDisplay.value?.getStatsDisplay() as HTMLElement).clientWidth)
 
-  display.value.style.width = '1440px'
+  displayWidth = Math.max(displayWidth, 1440)
+  display.value.style.width = `${displayWidth}px`
   gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
     classList.add(`w-${displayWidth}`)
   })
@@ -216,12 +234,17 @@ function openNewLayoutModal() {
 
 function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plot) {
   // event.preventDefault()
-  if (selectedItem.value === 'crop-erase' || selectedItem.value instanceof Crop)
+  if (selectedItem.val === 'crop-erase' || selectedItem.val instanceof Crop)
     plot.setTile(row, col, null)
-  else if (selectedItem.value === 'fertiliser-erase' || selectedItem.value instanceof Fertiliser)
+  else if (selectedItem.val === 'fertiliser-erase' || selectedItem.val instanceof Fertiliser)
     plot.removeFertiliserFromTile(row, col)
 
   garden.value.calculateBonuses()
+}
+
+function handleMouseLeave() {
+  resetHover()
+  useDragAndDrop().clearTileCoords()
 }
 </script>
 
@@ -232,33 +255,14 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
     <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
     <SaveModal ref="saveModal" @save-layout="saveLayout()" />
     <ExportModal ref="exportModal" @download-image="saveAsImage()" />
+
     <div class="flex flex-col w-full justify-center items-center">
       <section
-        id="display" ref="display" class="lg:px-14 py-4 font-['Merriweather'] w-full max-w-[1680px]"
-        :class="(isTakingScreenshot.get) ? 'px-4' : ''"
+        id="display" ref="display" class="lg:px-14 py-4 font-['Merriweather'] w-full"
+        :class="[(isTakingScreenshot.get) ? 'px-16' : '',
+                 (isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[1680px]']"
       >
         <div class="flex flex-col bg-accent lg:rounded-lg">
-          <div
-            id="watermark" class="px-2 md:px-0 text-left gap-2 items-start w-fit leadiing-1"
-            :class="(isTakingScreenshot.get) ? 'flex' : 'hidden'"
-          >
-            <nuxt-img
-              format="png" src="/logo.webp"
-              class="max-w-[3rem]"
-              alt="Palia Garden Planner Logo"
-            />
-            <div class="text-left pb-4 flex flex-col">
-              <NuxtLink to="/" class="flex items-center gap-1 justify-start">
-                <p class="text-lg font-bold opacity-80 w-full">
-                  Palia Garden Planner
-                </p>
-              </NuxtLink>
-              <p class="w-full opacity-75 text-xs">
-                https://palia-garden-planner.vercel.app
-              </p>
-            </div>
-          </div>
-
           <div id="planner" class="relative py-4 pb-1">
             <div class="crop-buttons px-4 w-full flex flex-col md:flex-row ">
               <div
@@ -273,9 +277,9 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                     id="crop-eraser"
                     aria-label="Select Crop Eraser"
                     class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
-                    :class="(selectedItem === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                    :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
                     :in-picture-mode="isTakingScreenshot.get"
-                    @click="selectedItem = 'crop-erase'"
+                    @click="selectedItem.select('crop-erase')"
                   >
                     <font-awesome-icon
                       class="absolute -z-10 max-w-[45px] text-success text-3xl "
@@ -286,7 +290,7 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                     <CropButton
                       v-if="(index !== CropType.None)"
                       :crop="getCropFromType(index) as Crop"
-                      :is-selected="(selectedItem instanceof Crop) && selectedItem !== null && index === selectedItem.type"
+                      :is-selected="(selectedItem.val instanceof Crop) && selectedItem.val !== null && index === selectedItem.val.type"
                       :count="count" @click="setCrop(index)"
                     />
                   </template>
@@ -302,19 +306,19 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                       <div>
                         <FertiliserButton
                           v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
-                          :is-selected="(selectedItem instanceof Fertiliser)
-                            && selectedItem
+                          :is-selected="(selectedItem.val instanceof Fertiliser)
+                            && selectedItem.val
                               !== null
-                            && index === selectedItem.type" :count="count"
-                          @click="selectedItem = fertilisers[index]"
+                            && index === selectedItem.val.type" :count="count"
+                          @click="selectedItem.select(fertilisers[index])"
                         />
                         <button
                           v-else
                           id="fertiliser-eraser"
                           aria-label="Select Fertiliser Eraser"
                           class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
-                          :class="(selectedItem === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
-                          @click="selectedItem = 'fertiliser-erase'"
+                          :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                          @click="selectedItem.select('fertiliser-erase')"
                         >
                           <font-awesome-icon
                             class="absolute -z-10 max-w-[42px] text-warning text-3xl "
@@ -329,51 +333,109 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
             </div>
           </div>
 
-          <div v-if="garden.activePlotCount > 9" class="py-1 md:px-8 lg:px-12">
+          <StatsDisplay
+            v-if="(!isTakingScreenshot.get && gardenTilesAreWide)"
+            ref="statDisplay"
+            v-model:hovered-bonus="hoveredBonus"
+            class="bg-primary py-2 pt-4 h-fit mx-auto my-2 hidden sm:flex sm:rounded-lg w-full max-w-2xl"
+            :garden-tiles-are-wide="gardenTilesAreWide"
+            :plot-stat-total="plotStat"
+          />
+          <div
+            v-if="garden.activePlotCount > 9" class="py-1 md:px-8 lg:px-12"
+          >
             <p class="text-warning items-center flex gap-2">
               <font-awesome-icon :icon="['fas', 'exclamation-triangle']" />
               Over max plot count
             </p>
           </div>
-          <div class="grid lg:grid-cols-2 md:gap-4 pb-4 lg:px-2" :class="(gardenTilesAreWide) ? 'md:flex-col' : ''">
-            <div class="">
+          <div
+            class="grid md:gap-4 pb-4 lg:px-2"
+            :class="[
+              (gardenTilesAreWide) ? 'md:flex-col ' : 'lg:grid-cols-2',
+              (isTakingScreenshot.get && !gardenTilesAreWide) ? 'px-4 grid-cols-2 gap-4' : '',
+              (isTakingScreenshot.get && gardenTilesAreWide) ? 'px-4 gap-4' : '',
+            ]"
+          >
+            <div :class="(isTakingScreenshot.get) ? '' : 'overflow-x-auto'">
               <GardenDisplay
                 ref="gardenDisplay"
                 :garden-tiles="gardenTiles as Plot[][]"
                 :garden-tiles-are-wide="gardenTilesAreWide"
                 :hovered-bonus="hoveredBonus as Bonus"
                 class="opacity-100"
+                draggable="false"
                 @right-click="handleRightClick"
                 @mouseover="handleHover"
                 @select-tile="selectTile"
+                @mouseleave="handleMouseLeave"
               />
             </div>
-            <StatsDisplay
-              ref="statDisplay"
-              v-model:hovered-bonus="hoveredBonus"
-              class="md:hidden bg-primary mt-4"
-              :garden-tiles-are-wide="gardenTilesAreWide"
-              :plot-stat-total="plotStat"
-            />
-            <HarvestCalculator
-              class=""
-              :layout="garden as Garden"
-            />
+            <div :class="(gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2' : 'grid' ">
+              <StatsDisplay
+                ref="statDisplay"
+                v-model:hovered-bonus="hoveredBonus"
+                class="bg-primary py-2 pt-4 h-fit"
+                :class="[(gardenTilesAreWide && !isTakingScreenshot.get)
+                           ? 'sm:rounded-lg w-full max-w-2xl'
+                           : 'md:mt-0 md:hidden',
+                         (isTakingScreenshot.get || gardenTilesAreWide) ? 'sm:hidden' : 'flex',
+                ]"
+                :garden-tiles-are-wide="gardenTilesAreWide"
+                :plot-stat-total="plotStat"
+              />
+              <HarvestCalculator
+                class=""
+                :layout="garden as Garden"
+              />
+            </div>
           </div>
 
-          <div class="w-full bg-primary rounded-b-lg py-4 grid md:grid-cols-10 gap-y-6 gap-x-4 lg:gap-6">
+          <div
+            class="w-full bg-primary rounded-b-lg py-4 grid md:grid-cols-10 gap-y-6 gap-x-4 lg:gap-6"
+            :class="(isTakingScreenshot.get) ? 'px-4 grid-cols-10 gap-6' : ''"
+          >
             <div
               class="md:col-span-5 px-1"
+              :class="(isTakingScreenshot.get) ? 'col-span-5' : ''"
             >
               <StatsDisplay
                 ref="statDisplay"
                 v-model:hovered-bonus="hoveredBonus"
-                class="hidden md:block"
+                class="md:block md:pt-0 md:px-2 w-full"
+                :class="(isTakingScreenshot.get) ? 'pt-0 px-2' : 'hidden px-1 pt-4'"
                 :garden-tiles-are-wide="gardenTilesAreWide"
                 :plot-stat-total="plotStat"
               />
             </div>
-            <div class="grid gap-3 md:gap-2 md:col-span-3 px-4">
+            <div
+              v-show="isTakingScreenshot.get"
+              id="watermark"
+              class="col-span-5 px-4 flex justify-end items-start"
+            >
+              <div class="flex flex-row-reverse p-2 text-right gap-2 leading-1 items-center rounded-md bg-accent">
+                <nuxt-img
+                  format="png" src="/logo.webp"
+                  class="max-w-[3rem]"
+                  alt="Palia Garden Planner Logo"
+                  :srcset="undefined"
+                />
+                <div class="text-right grid justify-end text-misc items-end">
+                  <NuxtLink to="/" class="flex items-center gap-1 justify-start">
+                    <p class="text-lg font-bold w-full">
+                      Palia Garden Planner
+                    </p>
+                  </NuxtLink>
+                  <p class="w-full text-sm font-black">
+                    https://palia-garden-planner.vercel.app
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="grid gap-3 px-4 md:gap-2 md:col-span-3"
+              :class="(isTakingScreenshot.get) ? 'hidden' : ''"
+            >
               <div class="grid grid-cols-2 gap-3 items-center">
                 <button class="btn btn-warning" @click="clearAllPlots()">
                   <p>Clear Plot</p>
@@ -406,7 +468,9 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                 </button>
               </div>
             </div>
-            <TimeDisplay />
+            <TimeDisplay
+              :class="(isTakingScreenshot.get) ? 'hidden' : ''"
+            />
           </div>
         </div>
       </section>

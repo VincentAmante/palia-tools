@@ -137,6 +137,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
                       >
                         <template #icon>
                           <font-awesome-icon
+                            v-if="crop.star.produce < 0"
                             class="text-error text-sm"
                             :icon="['fas', 'seedling']"
                           />
