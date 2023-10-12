@@ -258,7 +258,7 @@ function handleMouseLeave() {
 
     <div class="flex flex-col w-full justify-center items-center">
       <section
-        id="display" ref="display" class="lg:px-14 py-4 font-['Merriweather'] w-full"
+        id="display" ref="display" class="lg:px-6 xl:px-14 py-4 font-['Merriweather'] w-full"
         :class="[(isTakingScreenshot.get) ? 'px-16' : '',
                  (isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[1680px]']"
       >
@@ -334,10 +334,11 @@ function handleMouseLeave() {
           </div>
 
           <StatsDisplay
-            v-if="(!isTakingScreenshot.get && gardenTilesAreWide)"
+            v-if="(!isTakingScreenshot.get)"
             ref="statDisplay"
             v-model:hovered-bonus="hoveredBonus"
-            class="bg-primary py-2 pt-4 h-fit mx-auto my-2 hidden sm:flex sm:rounded-lg w-full max-w-2xl"
+            class="bg-primary py-2 pt-4 h-fit mx-auto my-2 sm:rounded-lg w-full max-w-lg"
+            :class="[(gardenTilesAreWide) ? 'hidden sm:flex' : 'hidden md:flex lg:hidden']"
             :garden-tiles-are-wide="gardenTilesAreWide"
             :plot-stat-total="plotStat"
           />
@@ -350,7 +351,7 @@ function handleMouseLeave() {
             </p>
           </div>
           <div
-            class="grid md:gap-4 pb-4 lg:px-2"
+            class="grid md:gap-4 sm:pb-4 lg:px-2"
             :class="[
               (gardenTilesAreWide) ? 'md:flex-col ' : 'lg:grid-cols-2',
               (isTakingScreenshot.get && !gardenTilesAreWide) ? 'px-4 grid-cols-2 gap-4' : '',
@@ -379,7 +380,7 @@ function handleMouseLeave() {
                 :class="[(gardenTilesAreWide && !isTakingScreenshot.get)
                            ? 'sm:rounded-lg w-full max-w-2xl'
                            : 'md:mt-0 md:hidden',
-                         (isTakingScreenshot.get || gardenTilesAreWide) ? 'sm:hidden' : 'flex',
+                         (isTakingScreenshot.get || gardenTilesAreWide) ? 'hidden' : 'flex',
                 ]"
                 :garden-tiles-are-wide="gardenTilesAreWide"
                 :plot-stat-total="plotStat"
@@ -392,7 +393,7 @@ function handleMouseLeave() {
           </div>
 
           <div
-            class="w-full bg-primary rounded-b-lg py-4 grid md:grid-cols-10 gap-y-6 gap-x-4 lg:gap-6"
+            class="w-full bg-primary rounded-b-lg py-4 grid md:grid-cols-5 md:px-10 lg:grid-cols-10 gap-y-6 gap-0"
             :class="(isTakingScreenshot.get) ? 'px-4 grid-cols-10 gap-6' : ''"
           >
             <div
@@ -402,7 +403,7 @@ function handleMouseLeave() {
               <StatsDisplay
                 ref="statDisplay"
                 v-model:hovered-bonus="hoveredBonus"
-                class="md:block md:pt-0 md:px-2 w-full"
+                class="lg:block md:pt-0 md:px-2 w-full"
                 :class="(isTakingScreenshot.get) ? 'pt-0 px-2' : 'hidden px-1 pt-4'"
                 :garden-tiles-are-wide="gardenTilesAreWide"
                 :plot-stat-total="plotStat"
@@ -413,55 +414,55 @@ function handleMouseLeave() {
               id="watermark"
               class="col-span-5 px-4 flex justify-end items-start"
             >
-              <div class="flex flex-row-reverse p-2 text-right gap-2 leading-1 items-center rounded-md bg-accent">
+              <div class="flex flex-row-reverse p-2 text-right gap-2 leading-1 items-center rounded-md">
                 <nuxt-img
                   format="png" src="/logo.webp"
-                  class="max-w-[3rem]"
+                  class="max-w-[6rem]"
                   alt="Palia Garden Planner Logo"
                   :srcset="undefined"
                 />
                 <div class="text-right grid justify-end text-misc items-end">
                   <NuxtLink to="/" class="flex items-center gap-1 justify-start">
-                    <p class="text-lg font-bold w-full">
+                    <p class="text-2xl font-bold w-full">
                       Palia Garden Planner
                     </p>
                   </NuxtLink>
-                  <p class="w-full text-sm font-black">
+                  <p class="w-full font-black p-2 bg-accent text-misc py-1 rounded-md">
                     https://palia-garden-planner.vercel.app
                   </p>
                 </div>
               </div>
             </div>
             <div
-              class="grid gap-3 px-4 md:gap-2 md:col-span-3"
+              class="grid gap-1 px-4 md:gap-2 md:col-span-3"
               :class="(isTakingScreenshot.get) ? 'hidden' : ''"
             >
               <div class="grid grid-cols-2 gap-3 items-center">
-                <button class="btn btn-warning" @click="clearAllPlots()">
-                  <p>Clear Plot</p>
-                </button>
                 <button
-                  class="btn " :class="(isTakingScreenshot.get) ? 'hidden' : ''"
+                  class="btn h-full leading-6" :class="(isTakingScreenshot.get) ? 'hidden' : ''"
                   @click="openNewLayoutModal()"
                 >
                   New Layout
                 </button>
+                <button class="btn btn-error h-full leading-6" @click="clearAllPlots()">
+                  <p>Clear Plot</p>
+                </button>
               </div>
               <div class="grid grid-cols-3 gap-3 items-center ">
                 <button
-                  class="btn btn-accent"
+                  class="btn h-full btn-accent"
                   @click="() => openSaveModal()"
                 >
                   Save
                 </button>
                 <button
-                  class="btn btn-accent"
+                  class="btn h-full btn-accent"
                   @click="openLoadModal()"
                 >
                   Load
                 </button>
                 <button
-                  class="btn btn-accent"
+                  class="btn h-full btn-accent"
                   @click="openExportModal()"
                 >
                   Export

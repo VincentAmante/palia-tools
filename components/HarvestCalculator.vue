@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
+import { useStorage } from '@vueuse/core'
 import LazyHCInfo from './garden-planner/HarvestCalculator/HCInfo.vue'
 import HCTags from './garden-planner/HarvestCalculator/HCTags.vue'
 import LazyHCTotal from './garden-planner/HarvestCalculator/HCTotal.vue'
@@ -20,14 +21,14 @@ const props = defineProps({
 
 const isTakingScreenshot = useTakingScreenshot()
 
-const options = ref({
-  postLevel25: false,
-  allStarSeeds: true,
-  includeReplant: true,
-  includeReplantCost: true,
-  baseChanceStarSeed: 66,
-  baseChanceNormalSeed: 0,
+const options = useStorage('approximator-options', {
   days: 0,
+  postLevel25: true,
+  allStarSeeds: false,
+  includeReplant: true,
+  includeReplantCost: false,
+  baseChanceStarSeed: 66,
+  baseChanceNormalSeed: 33,
 })
 
 const harvestData = computed<ISimulateYieldResult>(() => {
@@ -41,56 +42,13 @@ const harvestData = computed<ISimulateYieldResult>(() => {
 
 type ProduceOptions = 'crop' | 'seed' | 'preserve'
 
-const cropOptions = ref({
-  [CropType.Tomato]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.Potato]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.Wheat]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.Rice]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.Cotton]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.Onion]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.Carrot]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.Blueberry]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.Apple]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.Corn]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.SpicyPepper]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-  [CropType.None]: {
-    starType: 'crop' as ProduceOptions,
-    baseType: 'crop' as ProduceOptions,
-  },
-})
+const cropOptions = ref(Object.values(CropType).reduce((acc, cropType) => {
+  acc[cropType] = {
+    starType: 'crop',
+    baseType: 'crop',
+  }
+  return acc
+}, {} as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>))
 
 function calculateGoldValue() {
   if (harvestData.value) {
@@ -138,9 +96,9 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div class="collapse collapse-arrow rounded-none md:rounded-lg w-full h-fit md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:px-2 z-50 overflow-visible md:max-w-2xl transition-all">
+  <div class="collapse collapse-arrow rounded-none md:rounded-lg w-full md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:px-2 z-50 overflow-visible md:max-w-2xl transition-all">
     <div
-      class="bg-primary md:rounded-lg"
+      class="bg-primary md:rounded-lg pb-2"
       :class="isTakingScreenshot.get ? 'rounded-lg' : ''"
     >
       <div class="flex flex-col gap-1">
@@ -159,12 +117,12 @@ watchEffect(() => {
           </h2>
           <div
             v-if="!isTakingScreenshot.get"
-            class="tabs w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0"
+            class="tabs w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0 py-1 gap-2"
           >
             <button
               id="approximator-display-tab"
               aria-label="Display Tab"
-              class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'display' ? 'tab-active' : ''"
+              class="tab px-0 text-2xl" :class="activeTab === 'display' ? 'tab-active' : ''"
               @click="setTab('display')"
             >
               <font-awesome-icon :icon="['fas', 'table']" />
@@ -172,7 +130,7 @@ watchEffect(() => {
             <button
               id="approximator-options-tab"
               aria-label="Options Tab"
-              class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'options' ? 'tab-active' : ''"
+              class="tab px-0 text-2xl " :class="activeTab === 'options' ? 'tab-active' : ''"
               @click="setTab('options')"
             >
               <font-awesome-icon :icon="['fas', 'sliders']" />
@@ -180,7 +138,7 @@ watchEffect(() => {
             <button
               id="approximator-info-tab"
               aria-label="Info Tab"
-              class="tab px-1 text-xl md:text-2xl" :class="activeTab === 'info' ? 'tab-active' : ''"
+              class="tab px-0 text-2xl " :class="activeTab === 'info' ? 'tab-active' : ''"
               @click="setTab('info')"
             >
               <font-awesome-icon :icon="['fas', 'info-circle']" />
@@ -189,35 +147,49 @@ watchEffect(() => {
         </div>
       </div>
       <div class="px-4 py-2">
-        <div class="bg-accent text-misc rounded-md flex flex-col md:flex-row items-center justify-center md:gap-1 py-2">
-          <div class="font-bold flex gap-1 items-center text-lg">
-            {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} Days:
-            <div class="flex gap-1 items-center">
-              <nuxt-img
-                width="1rem"
-                height="1rem"
-                src="/gold.webp" class="max-h-[1rem]"
-                :srcset="undefined"
-                alt="Gold" format="webp"
-              />{{
-                processedYields?.totalResult.totalGold.toLocaleString() }}
+        <div class="bg-accent text-misc rounded-md font-semibold flex flex-col xl:flex-row items-center justify-center md:gap-1 py-2">
+          <div
+            class="tooltip tooltip-top"
+            data-tip="The last harvest before approximations are made"
+          >
+            <div class="flex gap-1 items-center ">
+              Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
+              <div class="flex gap-1 items-center">
+                <nuxt-img
+                  width="1rem"
+                  height="1rem"
+                  src="/gold.webp" class="max-h-[1rem]"
+                  :srcset="undefined"
+                  alt="Gold" format="webp"
+                />{{
+                  processedYields?.totalResult.totalGold.toLocaleString() }}
+              </div>
             </div>
           </div>
-          <div class="divider divider-horizontal after:bg-misc before:bg-misc" />
-          <p v-if="processedYields?.totalResult.totalGold !== 0" class="flex gap-1 items-center md:text-lg">
-            Average:
-            <span class="flex gap-1 items-center"><nuxt-img
-              src="/gold.webp"
-              class="max-h-[1rem]"
-              format="webp"
-              alt="Gold"
-              width="1rem"
-              height="1rem"
-              :srcset="undefined"
-            />{{
-              (Math.round(processedYields.totalResult.totalGold
-                / processedYields.totalResult.day)).toLocaleString() }}</span>/ day
-          </p>
+          <div
+            v-show="processedYields?.totalResult.totalGold !== 0"
+            class="divider divider-horizontal after:bg-misc before:bg-misc"
+          />
+          <div
+            v-show="processedYields?.totalResult.totalGold !== 0"
+            class="tooltip tooltip-top"
+            data-tip="Raw average is without processing time"
+          >
+            <p class="flex gap-1 items-center">
+              Raw Average:
+              <span class="flex gap-1 items-center"><nuxt-img
+                src="/gold.webp"
+                class="max-h-[1rem]"
+                format="webp"
+                alt="Gold"
+                width="1rem"
+                height="1rem"
+                :srcset="undefined"
+              />{{
+                (Math.round(processedYields.totalResult.totalGold
+                  / processedYields.totalResult.day)).toLocaleString() }}</span>/ day
+            </p>
+          </div>
         </div>
       </div>
       <div v-show="(isTakingScreenshot.get) || activeTab === 'display'" class="flex flex-col px-4">
@@ -259,7 +231,7 @@ watchEffect(() => {
 
           <LazyHCDay
             v-if="!(isTakingScreenshot.get) && activeDisplayTab === 'day' && harvestData"
-            class=" pb-4"
+            class="pb-4"
             :processed-yields="processedYields as ICalculateValueResult"
             :harvest-data="harvestData as ISimulateYieldResult"
             :crop-options="cropOptions as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>"
@@ -283,7 +255,7 @@ watchEffect(() => {
             Crop
           </div>
         </div>
-        <div class="max-h-80 overflow-y-scroll">
+        <div class="max-h-96 overflow-y-scroll">
           <div
             v-if="activeOptionTab === 'main'"
             class="grid gap-2 pr-2 pb-4"

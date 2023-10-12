@@ -17,9 +17,15 @@ module.exports = {
       'misc-saturated': '#bfa178',
       'misc-secondary': '#00000025',
       'growth-boost': '#ED915E',
-      'quality-increase': '#E0AA4A',
+      'quality-increase': {
+        DEFAULT: '#E0AA4A',
+        dark: '#C68A1F',
+      },
       'weed-prevention': '#D86046',
-      'harvest-boost': '#97AF51',
+      'harvest-boost': {
+        DEFAULT: '#97AF51',
+        dark: '#708E18',
+      },
       'water-retain': '#73ABBD',
       'white': '#FFF',
     },

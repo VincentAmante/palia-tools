@@ -52,14 +52,12 @@ const {
   currentPage,
   currentPageSize,
   pageCount,
-  isFirstPage,
-  isLastPage,
   prev,
   next,
 } = useOffsetPagination({
   total: yieldsTotal,
   page: 1,
-  pageSize: 2,
+  pageSize: 3,
 })
 
 const yieldsPage = computed(() => {
@@ -110,7 +108,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
 <template>
   <div class="isolate overflow-hidden">
     <div class="grid gap-[2px]">
-      <div class="overflow-hidden max-h-40 overflow-y-scroll pr-2 rounded-md rounded-b-none bg-accent">
+      <div class="overflow-hidden h-56 overflow-y-scroll pr-2 rounded-md rounded-b-none bg-accent">
         <table class="table px-4 bg-accent text-misc rounded-none">
           <tbody class="h-full">
             <tr

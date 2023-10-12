@@ -279,15 +279,7 @@ class Garden {
       }
     }
 
-    let minGrowthTime = 0
-    if (individualCrops.size > 0) {
-      minGrowthTime = Math.min(
-        ...Array.from(individualCrops.values()).map(
-          tile => tile.crop?.produceInfo.growthTime ?? 0,
-        ),
-      )
-    }
-    else {
+    if (individualCrops.size <= 0) {
       return {
         harvests: [] as IHarvestInfo[],
         harvestTotal: {
@@ -355,7 +347,10 @@ class Garden {
               : options.baseChanceOverride ?? 0
 
         const { base, withBonus } = crop.produceInfo
-        const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day, tile.bonuses.includes(Bonus.SpeedIncrease))
+
+        // * Uncomment when speedboost behaviour is properly implemented
+        // const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day, tile.bonuses.includes(Bonus.SpeedIncrease))
+        const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day)
 
         if (isHarvestable) {
           let finalStarChance = baseStarChance
