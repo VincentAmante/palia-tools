@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="flex gap-1 py-[0.1rem] text-sm flex-wrap">
+  <div class="flex gap-1 py-[0.3rem] text-sm flex-wrap">
     <p class="py-[0.1rem] px-3 rounded-lg text-center flex items-center bg-weed-prevention text-xs">
       {{ (postLevel25) ? 'Lvl. 25+' : 'Pre-lvl. 25' }}
     </p>

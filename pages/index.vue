@@ -262,7 +262,14 @@ function handleMouseLeave() {
         :class="[(isTakingScreenshot.get) ? 'px-16' : '',
                  (isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[1680px]']"
       >
-        <div class="flex flex-col bg-accent lg:rounded-lg">
+        <div class="flex flex-col bg-accent lg:rounded-lg  relative">
+          <!-- <button
+            class="absolute right-2 m-1 btn z-10 btn-sm px-4 btn-accent text-sm"
+            @click="() => console.log('hey')"
+          >
+            Instructions
+            <font-awesome-icon :icon="['fas', 'question-circle']" class="text-xl" />
+          </button> -->
           <div class="flex flex-col lg:px-2">
             <div id="planner" class="relative py-4 pb-1">
               <div class="crop-buttons px-4 w-full flex flex-col md:flex-row ">
@@ -391,11 +398,11 @@ function handleMouseLeave() {
             </div>
           </div>
           <div
-            class="w-full bg-primary rounded-b-lg py-3 grid md:grid-cols-5 px-4 lg:grid-cols-4 gap-y-6 gap-0"
+            class="w-full bg-primary rounded-b-lg py-3 grid md:grid-cols-5 px-0 md:px-4 lg:grid-cols-4 gap-y-6 gap-0"
             :class="(isTakingScreenshot.get) ? 'grid-cols-10 gap-6' : ''"
           >
             <div
-              class="md:col-span-5 lg:col-span-2 flex justify-center lg:justify-start"
+              class="hidden sm:flex md:col-span-5 lg:col-span-2 justify-center lg:justify-start w-full"
               :class="(isTakingScreenshot.get) ? 'col-span-5' : ''"
             >
               <StatsDisplay
@@ -432,7 +439,7 @@ function handleMouseLeave() {
               </div>
             </div>
             <div
-              class="grid gap-1 px-4 md:gap-2 md:col-span-3 lg:col-span-1"
+              class="grid gap-1 px-4 md:px-0 xl:px-4 md:gap-2 md:col-span-3 lg:col-span-1"
               :class="(isTakingScreenshot.get) ? 'hidden' : ''"
             >
               <div class="grid grid-cols-2 gap-3 items-center">

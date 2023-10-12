@@ -111,7 +111,7 @@ const border = computed(() => {
 
 <template>
   <div
-    class="border-misc-saturated relative select-none min-w-[3.2rem] hover:bg-primary aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
+    class="border-misc-saturated relative select-none min-w-[3rem] xl:min-w-[3.2rem] hover:bg-primary aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
              border,
              borderRadius,
@@ -138,7 +138,7 @@ const border = computed(() => {
         {{ code as string || ' ' }}
       </div>
     </div>
-    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] py-[1px] flex w-full gap-[1.3px] justify-center">
+    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] xl:py-[1px] flex w-full gap-[0.6px] xl:gap-[1.3px] justify-center">
       <li v-show="bonuses?.includes(Bonus.HarvestIncrease)">
         <font-awesome-icon class="text-harvest-boost-dark" :icon="['fas', 'wheat-awn']" />
       </li>
