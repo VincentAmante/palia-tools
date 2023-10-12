@@ -45,7 +45,7 @@ const percentString = computed(() => {
         </div>
       </div>
     </div>
-    <div class="capitalise font-extrabold max-w-[8ch] text-misc text-xs  h-12 text-center break-words align-top flex items-start pt-[2px]">
+    <div class="capitalise font-extrabold max-w-[8ch] text-misc text-xs h-fit text-center break-words align-top flex items-start pt-[2px]">
       <slot name="title">
         Title missing
       </slot>

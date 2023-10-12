@@ -60,16 +60,16 @@ watch(hour, () => {
 </script>
 
 <template>
-  <div class="grid md:col-span-2 gap-2 px-4">
-    <div class="flex text-misc bg-accent rounded-md items-center justify-between px-3 py-2">
+  <div class="grid gap-2 px-4">
+    <div class="flex text-misc bg-accent rounded-md items-center justify-between px-3 py-2 md:py-0">
       <p class="">
         Game Time
       </p>
-      <p class="font-bold text-xl">
+      <p class="font-bold text-lg">
         {{ timeFormatted }}
       </p>
     </div>
-    <div class="flex text-misc bg-accent rounded-md items-center justify-between px-4 py-2">
+    <div class="flex text-misc bg-accent rounded-md items-center justify-between px-4 py-2 md:py-0">
       <p>6 AM Alarm</p>
       <input
         v-model="dayAlert"

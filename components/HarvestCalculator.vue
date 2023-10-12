@@ -96,21 +96,21 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div class="collapse collapse-arrow rounded-none md:rounded-lg w-full md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:px-2 z-50 overflow-visible md:max-w-2xl transition-all">
+  <div class="collapse collapse-arrow rounded-none md:rounded-lg w-full lg:h-fit md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:px-2 z-50 overflow-visible md:max-w-3xl transition-all">
     <div
-      class="bg-primary md:rounded-lg pb-2"
+      class="bg-primary md:rounded-lg"
       :class="isTakingScreenshot.get ? 'rounded-lg' : ''"
     >
       <div class="flex flex-col gap-1">
         <div
-          class="w-full md:bg-misc sm:rounded-lg sm:rounded-b-none p-2 sm:px-6 flex flex-col md:flex-row justify-between items-center md:text-accent"
+          class="w-full md:bg-misc sm:rounded-lg sm:rounded-b-none p-1 sm:px-6 flex flex-col md:flex-row justify-between items-center md:text-accent"
           :class="isTakingScreenshot.get ? 'bg-misc px-6 rounded-lg rounded-b-none' : 'text-misc '"
         >
           <AppDividerAlt
             class="w-full sm:hidden"
             :class="isTakingScreenshot.get ? 'hidden' : ''"
           />
-          <h2 class="text-xl py-2 flex items-center flex-wrap gap-1">
+          <h2 class="text-2xl py-1 flex items-center flex-wrap gap-1">
             Harvest Approximations <span
               class="text-xs font-normal"
             >(WIP)</span>
@@ -207,7 +207,7 @@ watchEffect(() => {
             :class="activeDisplayTab === 'overview' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setDisplayTab('overview')"
           >
-            Overall
+            Overview
           </div>
           <div
             class="tab btn btn-sm rounded-md normal-case whitespace-nowrap"
@@ -217,10 +217,10 @@ watchEffect(() => {
             Day-by-day
           </div>
         </div>
-        <div class="py-2">
+        <div class="pt-2">
           <div
             v-if="(isTakingScreenshot.get) || activeDisplayTab === 'overview'"
-            class="flex flex-col gap-2"
+            class="flex flex-col gap-2 pb-3"
           >
             <LazyHCTotal
               :processed-yields="processedYields as ICalculateValueResult"
@@ -414,15 +414,10 @@ watchEffect(() => {
             v-if="activeOptionTab === 'crop'"
             class="grid gap-1 pb-4"
           >
-            <div class="flex flex-col text-misc ">
-              <p class="text-sm">
-                Choose as to what form you wish to sell the crop
-              </p>
-              <p class="text-xs">
-                <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
-                Conversion time is not yet accounted for with seeds and preserves
-              </p>
-            </div>
+            <p class="text-xs text-misc">
+              <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
+              Conversion time is not yet accounted for with seeds and preserves
+            </p>
 
             <div class="grid xl:grid-cols-2 gap-2 pr-2 w-fit">
               <template v-for="(crop, type) in crops" :key="type">

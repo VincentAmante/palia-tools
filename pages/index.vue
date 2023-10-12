@@ -64,7 +64,7 @@ function selectTile(event: MouseEvent, row: number, col: number, plot: Plot) {
 
 // To dynamically react to the size of the garden, regardless of screen size
 const gardenTilesAreWide = computed(() => {
-  return gardenTiles.value[0].length >= 4
+  return gardenTiles.value[0].length > 3
 })
 
 // Drag click to select multiple tiles
@@ -258,153 +258,151 @@ function handleMouseLeave() {
 
     <div class="flex flex-col w-full justify-center items-center">
       <section
-        id="display" ref="display" class="lg:px-6 xl:px-14 py-4 font-['Merriweather'] w-full"
+        id="display" ref="display" class="lg:px-12 xl:px-14 py-4 font-['Merriweather'] w-full"
         :class="[(isTakingScreenshot.get) ? 'px-16' : '',
                  (isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[1680px]']"
       >
         <div class="flex flex-col bg-accent lg:rounded-lg">
-          <div id="planner" class="relative py-4 pb-1">
-            <div class="crop-buttons px-4 w-full flex flex-col md:flex-row ">
-              <div
-                v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
-                class="md:basis-2/3"
-              >
-                <h3 class="font-semibold text-palia-blue">
-                  Crops
-                </h3>
-                <div class="flex flex-wrap gap-2 py-2">
-                  <button
-                    id="crop-eraser"
-                    aria-label="Select Crop Eraser"
-                    class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
-                    :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
-                    :in-picture-mode="isTakingScreenshot.get"
-                    @click="selectedItem.select('crop-erase')"
-                  >
-                    <font-awesome-icon
-                      class="absolute -z-10 max-w-[45px] text-success text-3xl "
-                      :icon="['fas', 'eraser']"
-                    />
-                  </button>
-                  <template v-for="(count, index) in plotStat.cropTypeCount" :key="index">
-                    <CropButton
-                      v-if="(index !== CropType.None)"
-                      :crop="getCropFromType(index) as Crop"
-                      :is-selected="(selectedItem.val instanceof Crop) && selectedItem.val !== null && index === selectedItem.val.type"
-                      :count="count" @click="setCrop(index)"
-                    />
-                  </template>
-                </div>
-              </div>
-              <div class="flex flex-wrap lg:justify-end w-full md:basis-1/3">
-                <div v-if="!(isTakingScreenshot.get && fertiliserCount <= 0)">
+          <div class="flex flex-col lg:px-2">
+            <div id="planner" class="relative py-4 pb-1">
+              <div class="crop-buttons px-4 w-full flex flex-col md:flex-row ">
+                <div
+                  v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
+                  class="md:basis-2/3"
+                >
                   <h3 class="font-semibold text-palia-blue">
-                    Fertilisers per Day
+                    Crops
                   </h3>
                   <div class="flex flex-wrap gap-2 py-2">
-                    <div v-for="(count, index) in plotStat.fertiliserCount" :key="index">
-                      <div>
-                        <FertiliserButton
-                          v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
-                          :is-selected="(selectedItem.val instanceof Fertiliser)
-                            && selectedItem.val
-                              !== null
-                            && index === selectedItem.val.type" :count="count"
-                          @click="selectedItem.select(fertilisers[index])"
-                        />
-                        <button
-                          v-else
-                          id="fertiliser-eraser"
-                          aria-label="Select Fertiliser Eraser"
-                          class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
-                          :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
-                          @click="selectedItem.select('fertiliser-erase')"
-                        >
-                          <font-awesome-icon
-                            class="absolute -z-10 max-w-[42px] text-warning text-3xl "
-                            :icon="['fas', 'eraser']"
+                    <button
+                      id="crop-eraser"
+                      aria-label="Select Crop Eraser"
+                      class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+                      :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                      :in-picture-mode="isTakingScreenshot.get"
+                      @click="selectedItem.select('crop-erase')"
+                    >
+                      <font-awesome-icon
+                        class="absolute -z-10 max-w-[45px] text-success text-3xl "
+                        :icon="['fas', 'eraser']"
+                      />
+                    </button>
+                    <template v-for="(count, index) in plotStat.cropTypeCount" :key="index">
+                      <CropButton
+                        v-if="(index !== CropType.None)"
+                        :crop="getCropFromType(index) as Crop"
+                        :is-selected="(selectedItem.val instanceof Crop) && selectedItem.val !== null && index === selectedItem.val.type"
+                        :count="count" @click="setCrop(index)"
+                      />
+                    </template>
+                  </div>
+                </div>
+                <div class="flex flex-wrap lg:justify-end w-full md:basis-1/3">
+                  <div v-if="!(isTakingScreenshot.get && fertiliserCount <= 0)">
+                    <h3 class="font-semibold text-palia-blue">
+                      Fertilisers per Day
+                    </h3>
+                    <div class="flex flex-wrap gap-2 py-2">
+                      <div v-for="(count, index) in plotStat.fertiliserCount" :key="index">
+                        <div>
+                          <FertiliserButton
+                            v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
+                            :is-selected="(selectedItem.val instanceof Fertiliser)
+                              && selectedItem.val
+                                !== null
+                              && index === selectedItem.val.type" :count="count"
+                            @click="selectedItem.select(fertilisers[index])"
                           />
-                        </button>
+                          <button
+                            v-else
+                            id="fertiliser-eraser"
+                            aria-label="Select Fertiliser Eraser"
+                            class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+                            :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                            @click="selectedItem.select('fertiliser-erase')"
+                          >
+                            <font-awesome-icon
+                              class="absolute -z-10 max-w-[42px] text-warning text-3xl "
+                              :icon="['fas', 'eraser']"
+                            />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <StatsDisplay
-            v-if="(!isTakingScreenshot.get)"
-            ref="statDisplay"
-            v-model:hovered-bonus="hoveredBonus"
-            class="bg-primary py-2 pt-4 h-fit mx-auto my-2 sm:rounded-lg w-full max-w-lg"
-            :class="[(gardenTilesAreWide) ? 'hidden sm:flex' : 'hidden md:flex lg:hidden']"
-            :garden-tiles-are-wide="gardenTilesAreWide"
-            :plot-stat-total="plotStat"
-          />
-          <div
-            v-if="garden.activePlotCount > 9" class="py-1 md:px-8 lg:px-12"
-          >
-            <p class="text-warning items-center flex gap-2">
-              <font-awesome-icon :icon="['fas', 'exclamation-triangle']" />
-              Over max plot count
-            </p>
-          </div>
-          <div
-            class="grid md:gap-4 sm:pb-4 lg:px-2"
-            :class="[
-              (gardenTilesAreWide) ? 'md:flex-col ' : 'lg:grid-cols-2',
-              (isTakingScreenshot.get && !gardenTilesAreWide) ? 'px-4 grid-cols-2 gap-4' : '',
-              (isTakingScreenshot.get && gardenTilesAreWide) ? 'px-4 gap-4' : '',
-            ]"
-          >
-            <div :class="(isTakingScreenshot.get) ? '' : 'overflow-x-auto'">
-              <GardenDisplay
-                ref="gardenDisplay"
-                :garden-tiles="gardenTiles as Plot[][]"
-                :garden-tiles-are-wide="gardenTilesAreWide"
-                :hovered-bonus="hoveredBonus as Bonus"
-                class="opacity-100"
-                draggable="false"
-                @right-click="handleRightClick"
-                @mouseover="handleHover"
-                @select-tile="selectTile"
-                @mouseleave="handleMouseLeave"
-              />
+            <AppDivider class="mx-4 mb-2" />
+
+            <div
+              v-if="garden.activePlotCount > 9" class="py-1 md:px-8 lg:px-12"
+            >
+              <p class="text-warning items-center flex gap-2">
+                <font-awesome-icon :icon="['fas', 'exclamation-triangle']" />
+                Over max plot count
+              </p>
             </div>
-            <div :class="(gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2' : 'grid' ">
-              <StatsDisplay
-                ref="statDisplay"
-                v-model:hovered-bonus="hoveredBonus"
-                class="bg-primary py-2 pt-4 h-fit"
-                :class="[(gardenTilesAreWide && !isTakingScreenshot.get)
-                           ? 'sm:rounded-lg w-full max-w-2xl'
-                           : 'md:mt-0 md:hidden',
-                         (isTakingScreenshot.get || gardenTilesAreWide) ? 'hidden' : 'flex',
-                ]"
-                :garden-tiles-are-wide="gardenTilesAreWide"
-                :plot-stat-total="plotStat"
-              />
-              <HarvestCalculator
-                class=""
-                :layout="garden as Garden"
-              />
+            <div
+              class="flex flex-col justify-between md:pb-4 lg:px-2"
+              :class="[
+                (gardenTilesAreWide) ? 'md:gap-2' : 'lg:flex-row md:gap-0',
+                (isTakingScreenshot.get && !gardenTilesAreWide) ? 'px-4 grid-cols-2 gap-4' : '',
+                (isTakingScreenshot.get && gardenTilesAreWide) ? 'px-4 gap-4' : '',
+              ]"
+            >
+              <div
+                class="w-full"
+                :class="[
+                  (isTakingScreenshot.get) ? '' : 'overflow-x-auto',
+                  (gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2' : 'grid']"
+              >
+                <GardenDisplay
+                  ref="gardenDisplay"
+                  :garden-tiles="gardenTiles as Plot[][]"
+                  :garden-tiles-are-wide="gardenTilesAreWide"
+                  :hovered-bonus="hoveredBonus as Bonus"
+                  class="opacity-100"
+                  draggable="false"
+                  @right-click="handleRightClick"
+                  @mouseover="handleHover"
+                  @select-tile="selectTile"
+                  @mouseleave="handleMouseLeave"
+                />
+              </div>
+              <div
+                class="w-full"
+                :class="(gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2' : 'grid' "
+              >
+                <StatsDisplay
+                  ref="statDisplay"
+                  v-model:hovered-bonus="hoveredBonus"
+                  class="bg-primary py-2 pt-4 h-fit md:mt-0 md:hidden w-full"
+                  :class="[(isTakingScreenshot.get) ? 'hidden' : 'flex']"
+                  :garden-tiles-are-wide="gardenTilesAreWide"
+                  :plot-stat-total="plotStat"
+                />
+                <HarvestCalculator
+                  class="w-full"
+                  :layout="garden as Garden"
+                />
+              </div>
             </div>
           </div>
-
           <div
-            class="w-full bg-primary rounded-b-lg py-4 grid md:grid-cols-5 md:px-10 lg:grid-cols-10 gap-y-6 gap-0"
-            :class="(isTakingScreenshot.get) ? 'px-4 grid-cols-10 gap-6' : ''"
+            class="w-full bg-primary rounded-b-lg py-3 grid md:grid-cols-5 px-4 lg:grid-cols-4 gap-y-6 gap-0"
+            :class="(isTakingScreenshot.get) ? 'grid-cols-10 gap-6' : ''"
           >
             <div
-              class="md:col-span-5 px-1"
+              class="md:col-span-5 lg:col-span-2 flex justify-center lg:justify-start"
               :class="(isTakingScreenshot.get) ? 'col-span-5' : ''"
             >
               <StatsDisplay
                 ref="statDisplay"
                 v-model:hovered-bonus="hoveredBonus"
-                class="lg:block md:pt-0 md:px-2 w-full"
-                :class="(isTakingScreenshot.get) ? 'pt-0 px-2' : 'hidden px-1 pt-4'"
+                class="lg:flex md:pt-0 lg:w-fit  max-w-md"
+                :class="(isTakingScreenshot.get) ? 'pt-0 px-2' : 'px-1 pt-4'"
                 :garden-tiles-are-wide="gardenTilesAreWide"
                 :plot-stat-total="plotStat"
               />
@@ -434,7 +432,7 @@ function handleMouseLeave() {
               </div>
             </div>
             <div
-              class="grid gap-1 px-4 md:gap-2 md:col-span-3"
+              class="grid gap-1 px-4 md:gap-2 md:col-span-3 lg:col-span-1"
               :class="(isTakingScreenshot.get) ? 'hidden' : ''"
             >
               <div class="grid grid-cols-2 gap-3 items-center">
@@ -470,6 +468,7 @@ function handleMouseLeave() {
               </div>
             </div>
             <TimeDisplay
+              class=" md:col-span-2 lg:col-span-1"
               :class="(isTakingScreenshot.get) ? 'hidden' : ''"
             />
           </div>

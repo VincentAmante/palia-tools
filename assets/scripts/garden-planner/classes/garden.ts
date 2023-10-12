@@ -299,6 +299,7 @@ class Garden {
         return tile.crop.totalGrowTime
       }),
     )
+
     if (options.days && options.days > 0)
       maxGrowthTime = options.days
 

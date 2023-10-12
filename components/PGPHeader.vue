@@ -130,6 +130,6 @@
         </ul>
       </div>
     </header>
-    <AppDivider />
+    <AppDivider class="mx-2 sm:mx-12 lg:mx-22" />
   </div>
 </template>

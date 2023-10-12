@@ -64,11 +64,11 @@ function handleDragEnter(row: number, col: number, plot: Plot) {
 
 <template>
   <div
-    class="h-full flex flex-col justify-center"
+    class="h-full flex flex-col items-center"
     :class="[(isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[100vw]']"
   >
     <div
-      class="rounded-xl w-fit my-4 md:my-0 mx-auto px-3 lg:px-1 bg-accent"
+      class="rounded-xl w-fit my-4 md:my-0 mx-auto lg:ml-0 lg:mr-auto px-3 lg:px-2 bg-accent"
       :class="(isTakingScreenshot.get) ? 'w-fit mx-auto px-1' : ''"
       @contextmenu.prevent.self=""
     >
