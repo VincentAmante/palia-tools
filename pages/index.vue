@@ -356,7 +356,7 @@ function handleMouseLeave() {
                 class="w-full"
                 :class="[
                   (isTakingScreenshot.get) ? '' : 'overflow-x-auto',
-                  (gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2' : 'grid']"
+                  (gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2 py-2' : 'grid']"
               >
                 <GardenDisplay
                   ref="gardenDisplay"
