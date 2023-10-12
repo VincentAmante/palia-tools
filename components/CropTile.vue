@@ -111,7 +111,7 @@ const border = computed(() => {
 
 <template>
   <div
-    class="border-misc-saturated relative select-none min-w-[3.15rem] hover:bg-primary aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
+    class="border-misc-saturated relative select-none min-w-[3.2rem] hover:bg-primary aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
              border,
              borderRadius,
@@ -138,12 +138,15 @@ const border = computed(() => {
         {{ code as string || ' ' }}
       </div>
     </div>
-    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] py-[0.5px] flex w-full gap-[0.8px] px-[2px] md:px-[1.8px]">
-      <li v-show="bonuses?.includes(Bonus.QualityIncrease)">
-        <font-awesome-icon class="text-quality-increase" :icon="['fas', 'star']" />
-      </li>
+    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] py-[1px] flex w-full gap-[1.3px] justify-center">
       <li v-show="bonuses?.includes(Bonus.HarvestIncrease)">
-        <font-awesome-icon class="text-harvest-boost" :icon="['fas', 'wheat-awn']" />
+        <font-awesome-icon class="text-harvest-boost-dark" :icon="['fas', 'wheat-awn']" />
+      </li>
+      <li v-show="bonuses?.includes(Bonus.SpeedIncrease)">
+        <font-awesome-icon class="text-growth-boost" :icon="['fas', 'forward-fast']" />
+      </li>
+      <li v-show="bonuses?.includes(Bonus.QualityIncrease)">
+        <font-awesome-icon class="text-quality-increase-dark" :icon="['fas', 'star']" />
       </li>
       <li v-show="bonuses?.includes(Bonus.WaterRetain)">
         <font-awesome-icon class="text-water-retain" :icon="['fas', 'droplet']" />
@@ -151,22 +154,19 @@ const border = computed(() => {
       <li v-show="bonuses?.includes(Bonus.WeedPrevention)">
         <font-awesome-icon class=" text-weed-prevention" :icon="['fas', 'shield']" />
       </li>
-      <li v-show="bonuses?.includes(Bonus.SpeedIncrease)">
-        <font-awesome-icon class="text-growth-boost" :icon="['fas', 'forward-fast']" />
-      </li>
     </ul>
     <div class="absolute bottom-0 right-0 p-[2px]">
       <nuxt-img
         v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)"
         :src="selectedItem.val.image"
         format="webp"
-        draggable="false" class="select-none max-w-[20px] opacity-50"
+        draggable="false" class="select-none max-w-[16px] opacity-50"
         :srcset="undefined"
       />
       <nuxt-img
         v-else-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0"
         format="webp"
-        draggable="false" class="select-none max-w-[20px]"
+        draggable="false" class="select-none max-w-[16px]"
         :src="tile?.fertiliser?.image"
         :srcset="undefined"
       />

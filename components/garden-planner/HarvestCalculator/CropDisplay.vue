@@ -41,7 +41,7 @@ defineProps({
       <p class="absolute bottom-0 right-1">
         <slot name="icon" />
       </p>
-      <p class="absolute bottom-1 left-1">
+      <p class="absolute bottom-0 left-0">
         <font-awesome-icon v-if="star" class="text-quality-increase text-sm" :icon="['fas', 'star']" />
       </p>
     </div>

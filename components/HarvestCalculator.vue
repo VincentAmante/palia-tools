@@ -255,7 +255,8 @@ watchEffect(() => {
             Crop
           </div>
         </div>
-        <div class="max-h-96 overflow-y-scroll">
+        <!-- box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset; -->
+        <div class="max-h-96 overflow-y-scroll ">
           <div
             v-if="activeOptionTab === 'main'"
             class="grid gap-2 pr-2 pb-4"
@@ -419,7 +420,7 @@ watchEffect(() => {
               Conversion time is not yet accounted for with seeds and preserves
             </p>
 
-            <div class="grid xl:grid-cols-2 gap-2 pr-2 w-fit">
+            <div class="grid xl:grid-cols-2 gap-2 pr-2">
               <template v-for="(crop, type) in crops" :key="type">
                 <div
                   v-if="crops[type]"
