@@ -81,7 +81,7 @@ const dragHandler = useDragAndDrop()
         v-if="bonus.icon !== ''"
         class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black" :icon="['fas', bonus.icon]" :class="bonus.colour"
       />
-      <p class="absolute bottom-0 right-0 py-[0.1rem] pr-[0.2rem] text-xs leading-none font-bold text-neutral-700">
+      <p class="absolute bottom-0 right-0 py-[0.2rem] pr-[0.2rem] text-xs leading-none font-bold text-neutral-700">
         {{ count }}
       </p>
       <nuxt-img
