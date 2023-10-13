@@ -164,6 +164,7 @@ watchEffect(() => {
                   height="16"
                   src="/gold.webp" class="max-h-[1rem]"
                   :srcset="undefined"
+                  placeholder
                   alt="Gold" format="webp"
                 />{{
                   processedYields?.totalResult.totalGold.toLocaleString() }}

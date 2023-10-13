@@ -98,6 +98,7 @@ const bonus = computed(() => {
         :class="(fertiliser.type === fertiliser.type) ? 'opacity-100' : 'opacity-90'"
         :alt="fertiliser.type"
         :srcset="undefined"
+        placeholder
       />
       <font-awesome-icon
         v-else class="absolute -z-10 max-w-[34px] text-warning text-3xl "

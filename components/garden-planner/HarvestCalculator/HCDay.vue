@@ -221,6 +221,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
                     width="1rem"
                     height="1rem"
                     alt="Gold"
+                    placeholder
                   />{{
                     harvest.totalGold.toLocaleString() }}
                 </p>

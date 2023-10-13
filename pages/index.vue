@@ -434,6 +434,7 @@ function handleMouseLeave() {
                   class="max-w-[6rem]"
                   alt="Palia Garden Planner Logo"
                   :srcset="undefined"
+                  placeholder
                 />
                 <div class="text-right grid justify-end text-misc items-end">
                   <NuxtLink to="/" class="flex items-center gap-1 justify-start">
