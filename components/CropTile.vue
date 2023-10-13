@@ -126,6 +126,7 @@ const border = computed(() => {
         draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[40px] 2xl:max-w-[44px] opacity-50"
         :src="selectedItem.val.image"
         :srcset="undefined"
+        placeholder
       />
       <nuxt-img
         v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px"
@@ -133,6 +134,7 @@ const border = computed(() => {
         draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[40px] 2xl:max-w-[44px]"
         :src="tile?.crop?.image"
         :srcset="undefined"
+        placeholder
       />
       <div v-else>
         {{ code as string || ' ' }}
@@ -162,6 +164,7 @@ const border = computed(() => {
         format="webp"
         draggable="false" class="select-none max-w-[16px] opacity-50"
         :srcset="undefined"
+        placeholder
       />
       <nuxt-img
         v-else-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0"
@@ -169,6 +172,7 @@ const border = computed(() => {
         draggable="false" class="select-none max-w-[16px]"
         :src="tile?.fertiliser?.image"
         :srcset="undefined"
+        placeholder
       />
     </div>
     <div
