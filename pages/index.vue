@@ -296,7 +296,7 @@ function handleMouseLeave() {
                       @click="selectedItem.select('crop-erase')"
                     >
                       <font-awesome-icon
-                        class="absolute -z-10 max-w-[45px] text-success text-3xl "
+                        class="absolute -z-10 max-w-[45px] text-success text-2xl "
                         :icon="['fas', 'eraser']"
                       />
                     </button>
@@ -335,7 +335,7 @@ function handleMouseLeave() {
                             @click="selectedItem.select('fertiliser-erase')"
                           >
                             <font-awesome-icon
-                              class="absolute -z-10 max-w-[42px] text-warning text-3xl "
+                              class="absolute -z-10 max-w-[42px] text-warning text-2xl "
                               :icon="['fas', 'eraser']"
                             />
                           </button>

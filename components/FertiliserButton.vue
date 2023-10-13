@@ -87,11 +87,9 @@ const bonus = computed(() => {
         v-if="bonus.icon !== ''"
         class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black" :icon="['fas', bonus.icon]" :class="bonus.colour"
       />
-      <div class="flex flex-col absolute bottom-0 right-0 py-[0.1rem] pr-[0.2rem]">
-        <p class="text-xs leading-none font-bold text-neutral-700">
-          {{ count }}
-        </p>
-      </div>
+      <p class="absolute bottom-0 right-0 py-[0.1rem] pr-[0.2rem] text-xs leading-none font-bold text-neutral-700">
+        {{ count }}
+      </p>
       <nuxt-img
         v-if="(fertiliser && fertiliser.image != null && fertiliser.image !== '')"
         width="34px"
