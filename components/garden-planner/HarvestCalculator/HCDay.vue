@@ -111,6 +111,10 @@ const paginationButtons = computed<PaginationButton[]>(() => {
       <div class="overflow-hidden h-56 overflow-y-scroll pr-2 rounded-md rounded-b-none bg-accent">
         <table class="table px-4 bg-accent text-misc rounded-none">
           <tbody class="h-full">
+            <th class="sr-only">
+              <td>Harvest Day</td>
+              <td>Gold</td>
+            </th>
             <tr
               v-for="(harvest, index) of yieldsPage"
               :key="index"
@@ -211,8 +215,12 @@ const paginationButtons = computed<PaginationButton[]>(() => {
               <td class="">
                 <p class="flex gap-1 font-bold items-center pr-1 justify-end">
                   <nuxt-img
-                    format="webp" src="/gold.webp" class="max-h-[1.5rem]"
-                    width="1rem" height="1rem" alt="Gold"
+                    format="webp"
+                    src="/gold.webp"
+                    class="max-h-[1.5rem]"
+                    width="1rem"
+                    height="1rem"
+                    alt="Gold"
                   />{{
                     harvest.totalGold.toLocaleString() }}
                 </p>

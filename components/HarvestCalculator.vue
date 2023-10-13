@@ -159,8 +159,8 @@ watchEffect(() => {
               Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
               <div class="flex gap-1 items-center">
                 <nuxt-img
-                  width="1rem"
-                  height="1rem"
+                  width="16"
+                  height="16"
                   src="/gold.webp" class="max-h-[1rem]"
                   :srcset="undefined"
                   alt="Gold" format="webp"
@@ -185,8 +185,8 @@ watchEffect(() => {
                 class="max-h-[1rem]"
                 format="webp"
                 alt="Gold"
-                width="1rem"
-                height="1rem"
+                width="16"
+                height="16"
                 :srcset="undefined"
               />{{
                 (Math.round(processedYields.totalResult.totalGold
