@@ -5,10 +5,12 @@ useHead({
 </script>
 
 <template>
-  <div class="-z-10 bg-gradient fixed w-full h-full" />
-  <div class="flex flex-col max-w-[1440px] mx-auto">
-    <PGPHeader />
-    <NuxtPage />
-    <PGPFooter />
+  <div>
+    <div class="-z-10 bg-gradient fixed w-full h-full" />
+    <div class="flex flex-col max-w-[1440px] mx-auto">
+      <PGPHeader />
+      <NuxtPage />
+      <PGPFooter />
+    </div>
   </div>
 </template>

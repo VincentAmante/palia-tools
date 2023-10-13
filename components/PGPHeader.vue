@@ -36,7 +36,7 @@
                   </NuxtLink>
                 </li>
                 <li>
-                  <NuxtLink>
+                  <NuxtLink to="/credits">
                     Credits
                   </NuxtLink>
                 </li>

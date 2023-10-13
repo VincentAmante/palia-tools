@@ -41,14 +41,14 @@ defineExpose({
     >
       <CoverageStat
         :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Quality Increase']" class="text-quality-increase"
-        @mouseover="updateHoveredBonus(Bonus.QualityIncrease)" @mouseleave="updateHoveredBonus(Bonus.None)"
+        :covered="plotStatTotal.cropBonusCoverage['Speed Increase']" class="text-growth-boost"
+        @mouseover="updateHoveredBonus(Bonus.SpeedIncrease)" @mouseleave="updateHoveredBonus(Bonus.None)"
       >
         <template #icon>
-          <font-awesome-icon :icon="['fas', 'star']" />
+          <font-awesome-icon :icon="['fas', 'forward-fast']" />
         </template>
         <template #title>
-          Quality Increase
+          Growth Boost
         </template>
       </CoverageStat>
 
@@ -64,6 +64,20 @@ defineExpose({
           Harvest Boost
         </template>
       </CoverageStat>
+
+      <CoverageStat
+        :total-crops="plotStatTotal.cropCount"
+        :covered="plotStatTotal.cropBonusCoverage['Quality Increase']" class="text-quality-increase"
+        @mouseover="updateHoveredBonus(Bonus.QualityIncrease)" @mouseleave="updateHoveredBonus(Bonus.None)"
+      >
+        <template #icon>
+          <font-awesome-icon :icon="['fas', 'star']" />
+        </template>
+        <template #title>
+          Quality Increase
+        </template>
+      </CoverageStat>
+
       <CoverageStat
         :total-crops="plotStatTotal.cropCount"
         :covered="plotStatTotal.cropBonusCoverage['Water Retain']" class="text-water-retain"
@@ -76,19 +90,6 @@ defineExpose({
           Water Retain
         </template>
       </CoverageStat>
-      <CoverageStat
-        :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Speed Increase']" class="text-growth-boost"
-        @mouseover="updateHoveredBonus(Bonus.SpeedIncrease)" @mouseleave="updateHoveredBonus(Bonus.None)"
-      >
-        <template #icon>
-          <font-awesome-icon :icon="['fas', 'forward-fast']" />
-        </template>
-        <template #title>
-          Growth Boost
-        </template>
-      </CoverageStat>
-
       <CoverageStat
         :total-crops="plotStatTotal.cropCount"
         :covered="plotStatTotal.cropBonusCoverage['Weed Prevention']" class="text-weed-prevention"

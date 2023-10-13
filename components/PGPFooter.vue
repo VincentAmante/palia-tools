@@ -1,5 +1,5 @@
 <template>
-  <footer class="px-4 lg:px-14">
+  <footer v-once class="px-4 lg:px-14">
     <div class="flex flex-col lg:flex-row gap-2 items-start justify-between text-center sm:text-left w-full font-normal p-4 rounded-lg bg-palia-blue mb-4 bg-opacity-50">
       <div class="grid text-sm">
         <p class="max-w-md">

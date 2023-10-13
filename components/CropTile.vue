@@ -139,11 +139,11 @@ const border = computed(() => {
       </div>
     </div>
     <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] xl:py-[1px] flex w-full gap-[0.6px] xl:gap-[1.3px] justify-center">
-      <li v-show="bonuses?.includes(Bonus.HarvestIncrease)">
-        <font-awesome-icon class="text-harvest-boost-dark" :icon="['fas', 'wheat-awn']" />
-      </li>
       <li v-show="bonuses?.includes(Bonus.SpeedIncrease)">
         <font-awesome-icon class="text-growth-boost" :icon="['fas', 'forward-fast']" />
+      </li>
+      <li v-show="bonuses?.includes(Bonus.HarvestIncrease)">
+        <font-awesome-icon class="text-harvest-boost-dark" :icon="['fas', 'wheat-awn']" />
       </li>
       <li v-show="bonuses?.includes(Bonus.QualityIncrease)">
         <font-awesome-icon class="text-quality-increase-dark" :icon="['fas', 'star']" />

@@ -1,5 +1,12 @@
 <script setup lang="ts">
 useHead({
+  title: 'Changelogs | Palia Garden Planner',
+  meta: [
+    {
+      name: 'description',
+      content: 'A log of changes made to the Palia Garden Planner',
+    },
+  ],
   link: [
     {
       rel: 'canonical',
@@ -10,7 +17,7 @@ useHead({
 </script>
 
 <template>
-  <main class="flex flex-col px-4 py-2 lg:px-14 gap-2 text-justify">
+  <main v-once class="flex flex-col px-4 py-2 lg:px-14 gap-2 text-justify">
     <NuxtLink to="/" class="flex items-center gap-2 btn w-fit btn-sm btn-ghost">
       <font-awesome-icon :icon="['fas', 'arrow-left']" class="" />
       <p class="">

@@ -37,6 +37,7 @@ const harvestData = computed<ISimulateYieldResult>(() => {
     starChanceOverride: (options.value.baseChanceStarSeed / 100),
     baseChanceOverride: (options.value.baseChanceNormalSeed / 100),
     includeReplantCost: (options.value.includeReplantCost && options.value.includeReplant),
+    level: 0,
   })
 })
 
@@ -96,7 +97,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <section class="collapse collapse-arrow rounded-none md:rounded-lg w-full lg:h-fit md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:px-2 z-50 overflow-visible md:max-w-3xl transition-all">
+  <section class="collapse collapse-arrow rounded-none md:rounded-lg w-full lg:h-fit md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:pl-2 xl:px-2 z-50 overflow-visible md:max-w-3xl transition-all">
     <h2 class="sr-only">
       Harvest Approximations
     </h2>
@@ -259,10 +260,10 @@ watchEffect(() => {
           </div>
         </div>
         <!-- box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset; -->
-        <div class="max-h-96 overflow-y-scroll ">
+        <div class="max-h-96 overflow-y-scroll mb-4 rounded-lg rounded-r-none border border-misc border-opacity-50 p-2">
           <div
             v-if="activeOptionTab === 'main'"
-            class="grid gap-2 pr-2 pb-4"
+            class="grid gap-2 pr-2 pb-4 xl:grid-cols-2"
           >
             <OptionCard label="days" name="Days">
               <template #input>
@@ -416,20 +417,20 @@ watchEffect(() => {
           </div>
           <div
             v-if="activeOptionTab === 'crop'"
-            class="grid gap-1 pb-4"
+            class="grid gap-1 pb-2"
           >
             <p class="text-xs text-misc">
               <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
               Conversion time is not yet accounted for with seeds and preserves
             </p>
 
-            <div class="grid xl:grid-cols-2 gap-2 pr-2">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2 pr-2">
               <template v-for="(crop, type) in crops" :key="type">
                 <div
                   v-if="crops[type]"
                   class="grid grid-cols-3 gap-2 items-center justify-start py-2 p-1 rounded-lg bg-accent text-misc h-fit"
                 >
-                  <div class="flex flex-col items-center justify-center pl-1 aspect-square">
+                  <div class="flex flex-col items-center justify-center pl-1 xl:aspect-square">
                     <nuxt-img
                       format="webp"
                       class="w-[3.15rem] object-contain p-1 py-1 aspect-square"

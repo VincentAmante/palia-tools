@@ -273,7 +273,7 @@ function handleMouseLeave() {
             Instructions
             <font-awesome-icon :icon="['fas', 'question-circle']" class="text-xl" />
           </button> -->
-          <div class="flex flex-col lg:px-2">
+          <div class="flex flex-col xl:px-2">
             <div id="planner" class="relative py-4 pb-1">
               <section class="crop-buttons px-4 w-full flex flex-col md:flex-row ">
                 <h2 class="sr-only">
@@ -407,12 +407,12 @@ function handleMouseLeave() {
             </div>
           </div>
           <div
-            class="w-full bg-primary rounded-b-lg py-3 grid md:grid-cols-5 px-0 md:px-4 lg:grid-cols-4 gap-y-6 gap-0"
-            :class="(isTakingScreenshot.get) ? 'grid-cols-10 gap-6' : ''"
+            class="w-full bg-primary rounded-b-lg py-3 grid px-0 md:px-4 lg:px-1 lg:pl-4 gap-y-6 gap-0"
+            :class="(isTakingScreenshot.get) ? 'grid-cols-10 gap-6 px-1' : 'md:grid-cols-5  lg:grid-cols-12 xl:grid-cols-12 '"
           >
             <div
-              class="hidden sm:flex md:col-span-5 lg:col-span-2 justify-center lg:justify-start w-full"
-              :class="(isTakingScreenshot.get) ? 'col-span-5' : ''"
+              class="hidden md:flex lg:justify-start w-full "
+              :class="(isTakingScreenshot.get) ? 'col-span-5 justify-start' : 'justify-center md:col-span-5 xl:col-span-5 '"
             >
               <StatsDisplay
                 ref="statDisplay"
@@ -441,14 +441,14 @@ function handleMouseLeave() {
                       Palia Garden Planner
                     </p>
                   </NuxtLink>
-                  <p class="w-full font-black p-2 bg-accent text-misc py-1 rounded-md">
+                  <p class="w-full font-black p-2 bg-accent text-misc py-1 rounded-md flex-nowrap ws-nowrap">
                     https://palia-garden-planner.vercel.app
                   </p>
                 </div>
               </div>
             </div>
             <div
-              class="grid gap-1 px-4 md:px-0 xl:px-4 md:gap-2 md:col-span-3 lg:col-span-1"
+              class="grid gap-1 px-4 md:px-0 lg:pl-4 md:gap-2 md:col-span-3 lg:col-span-4 xl:col-span-4 "
               :class="(isTakingScreenshot.get) ? 'hidden' : ''"
             >
               <div class="grid grid-cols-2 gap-3 items-center">
@@ -484,7 +484,7 @@ function handleMouseLeave() {
               </div>
             </div>
             <TimeDisplay
-              class=" md:col-span-2 lg:col-span-1"
+              class=" md:col-span-2 lg:col-span-3 xl:col-span-3"
               :class="(isTakingScreenshot.get) ? 'hidden' : ''"
             />
           </div>
