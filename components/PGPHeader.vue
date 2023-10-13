@@ -3,7 +3,7 @@
     <header class="drawer drawer-end z-50">
       <input id="menu" type="checkbox" class="drawer-toggle">
       <div class="drawer-content flex flex-col">
-        <div class="w-full navbar py-4 sm:px-12 lg:px-22">
+        <div class="w-full navbar py-3 sm:px-12 lg:px-22">
           <div class="flex-1 mx-2">
             <NuxtLink to="/" class="flex gap-2 items-center">
               <nuxt-img
@@ -24,19 +24,24 @@
           </div>
           <div class="flex items-center">
             <div class="flex-none hidden lg:block">
-              <ul class="menu menu-horizontal gap-2 items-center">
-                <li class="text-lg">
+              <ul class="menu menu-horizontal gap-1 items-center text-base">
+                <li>
                   <NuxtLink to="/roadmap">
                     Roadmap
                   </NuxtLink>
                 </li>
-                <li class="text-lg">
+                <li>
                   <NuxtLink to="/changelogs">
                     Changelogs
                   </NuxtLink>
                 </li>
+                <li>
+                  <NuxtLink>
+                    Credits
+                  </NuxtLink>
+                </li>
                 <li class="dropdown dropdown-hover dropdown-bottom dropdown-end">
-                  <label tabindex="0" class="text-lg">
+                  <label tabindex="0">
                     <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xl" />
                     External Tools
                   </label>

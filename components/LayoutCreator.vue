@@ -174,9 +174,9 @@ function trimLayout(): PlotStatus[][] {
     </template>
     <template #body>
       <div class="flex flex-col gap-1 bg-palia-dark-blue rounded-md p-2 ">
-        <h4 class="font-bold">
+        <h3 class="font-bold">
           Dimensions
-        </h4>
+        </h3>
         <select
           v-model="selectedNewLayout"
           name="layout-select" class="select select-bordered select-sm w-full max-w-xs"

@@ -250,6 +250,9 @@ function handleMouseLeave() {
 
 <template>
   <main class="flex flex-col py-2">
+    <h1 class="sr-only">
+      Garden Planner
+    </h1>
     <GuideCard />
     <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
     <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
@@ -272,15 +275,18 @@ function handleMouseLeave() {
           </button> -->
           <div class="flex flex-col lg:px-2">
             <div id="planner" class="relative py-4 pb-1">
-              <div class="crop-buttons px-4 w-full flex flex-col md:flex-row ">
-                <div
+              <section class="crop-buttons px-4 w-full flex flex-col md:flex-row ">
+                <h2 class="sr-only">
+                  Crop Buttons
+                </h2>
+                <section
                   v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
                   class="md:basis-2/3"
                 >
                   <h3 class="font-semibold text-palia-blue">
                     Crops
                   </h3>
-                  <div class="flex flex-wrap gap-2 py-2">
+                  <div class="flex flex-wrap gap-2 pt-2">
                     <button
                       id="crop-eraser"
                       aria-label="Select Crop Eraser"
@@ -303,13 +309,13 @@ function handleMouseLeave() {
                       />
                     </template>
                   </div>
-                </div>
-                <div class="flex flex-wrap lg:justify-end w-full md:basis-1/3">
+                </section>
+                <section class="flex flex-wrap lg:justify-end w-full md:basis-1/3">
                   <div v-if="!(isTakingScreenshot.get && fertiliserCount <= 0)">
                     <h3 class="font-semibold text-palia-blue">
                       Fertilisers per Day
                     </h3>
-                    <div class="flex flex-wrap gap-2 py-2">
+                    <div class="flex flex-wrap gap-2 pt-2">
                       <div v-for="(count, index) in plotStat.fertiliserCount" :key="index">
                         <div>
                           <FertiliserButton
@@ -337,11 +343,11 @@ function handleMouseLeave() {
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                </section>
+              </section>
             </div>
 
-            <AppDivider class="mx-4 mb-2" />
+            <AppDivider class="mx-4 my-6 mt-4" />
 
             <div
               v-if="garden.activePlotCount > 9" class="py-1 md:px-8 lg:px-12"
@@ -352,19 +358,22 @@ function handleMouseLeave() {
               </p>
             </div>
             <div
-              class="flex flex-col justify-between md:pb-4 lg:px-2"
+              class="flex flex-col justify-between pb-6 lg:px-2"
               :class="[
                 (gardenTilesAreWide) ? 'md:gap-2' : 'lg:flex-row md:gap-0',
-                (isTakingScreenshot.get && !gardenTilesAreWide) ? 'px-4 grid-cols-2 gap-4' : '',
+                (isTakingScreenshot.get && !gardenTilesAreWide) ? 'px-4 gap-4' : '',
                 (isTakingScreenshot.get && gardenTilesAreWide) ? 'px-4 gap-4' : '',
               ]"
             >
-              <div
-                class="w-full"
+              <section
+                class="w-full lg:basis-3/6 xl:basis-3/6"
                 :class="[
                   (isTakingScreenshot.get) ? '' : 'overflow-x-auto',
                   (gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2 py-2' : 'grid']"
               >
+                <h2 class="sr-only">
+                  Garden Display
+                </h2>
                 <GardenDisplay
                   ref="gardenDisplay"
                   :garden-tiles="gardenTiles as Plot[][]"
@@ -377,9 +386,9 @@ function handleMouseLeave() {
                   @select-tile="selectTile"
                   @mouseleave="handleMouseLeave"
                 />
-              </div>
+              </section>
               <div
-                class="w-full"
+                class="w-full lg:basis-3/6 xl:basis-2/3"
                 :class="(gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2' : 'grid' "
               >
                 <StatsDisplay
@@ -481,10 +490,6 @@ function handleMouseLeave() {
           </div>
         </div>
       </section>
-    </div>
-
-    <div class="px-4 md:px-8 lg:px-14">
-      <CreditsSection />
     </div>
   </main>
 </template>

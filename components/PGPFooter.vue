@@ -9,7 +9,7 @@
           This tool is fan-made and not affliated in any way with Singularity 6 or Palia.
         </p>
       </div>
-      <div class="flex flex-col w-full items-center lg:w-fit lg:items-end">
+      <div class="flex flex-col w-full items-center lg:w-fit lg:items-end gap-1">
         <div class="flex items-center gap-1">
           Developed by
           <NuxtLink

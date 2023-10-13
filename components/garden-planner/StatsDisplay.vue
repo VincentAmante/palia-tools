@@ -33,6 +33,9 @@ defineExpose({
 
 <template>
   <div class="">
+    <h2 class="sr-only">
+      Crop Bonus Statistics
+    </h2>
     <div
       ref="statsDisplay" class="flex gap-1 lg:gap-3 xl:gap-4 w-full cursor-help justify-center"
     >

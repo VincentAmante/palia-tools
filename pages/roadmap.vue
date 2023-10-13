@@ -17,28 +17,6 @@ useHead({
         Return
       </p>
     </NuxtLink>
-    <div class="card max-w-xl bg-base-300">
-      <div class="card-body">
-        <h2 class="card-title">
-          <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="" />
-          Notice
-        </h2>
-        <div class="flex flex-col gap-1">
-          <p>
-            Open-Sourcing of the project will proceed soon!
-            Project is public but licensing the code will be added shortly.
-          </p>
-          <NuxtLink
-            to="https://github.com/VincentAmante/palia-tools"
-            target="_blank"
-            class="btn btn-sm btn-primary w-fit"
-          >
-            <font-awesome-icon :icon="['fab', 'github']" class="" />
-            Link to Github
-          </NuxtLink>
-        </div>
-      </div>
-    </div>
     <section class="pb-2">
       <div class="py-4">
         <h1 class="text-2xl font-bold md:text-3xl">
@@ -48,25 +26,23 @@ useHead({
           Last Updated: September 9, 2023
         </p>
       </div>
-      <div class="flex flex-col gap-2 text-justify text-sm max-w-3xl md:text-base leading-10">
-        <p class="leading-6">
-          <span class="font-bold">Update (September 9):</span>
-          Hey all! I'm facing delays for various reasons this past week, and will work at a slower pace for health/personal reasons.
-          I'm updating the roadmap but I'm not sure if I'll be able to meet the deadlines I've set for myself.
-        </p>
-        <div class="divider max-w-xs" />
-        <p class="text-sm text-justify">
+      <div class="flex flex-col gap-2 text-justify max-w-3xl md:text-base leading-10">
+        <div class="card card-compact bg-palia-dark-blue">
+          <div class="card-body">
+            <p class="leading-6 text-sm">
+              <span class="font-bold text-base">Update (October 13):</span>
+              I've been working slower than before on the Garden Planner. I'm busy on other things,
+              and my hands are recovering from issues I've been having for a while.
+              Planner work will continue at a slightly slower pace,
+              no more dates are provided as I've realised I am unlikely to meet them.
+            </p>
+          </div>
+        </div>
+        <p class="text-justify">
           Hey everyone! The Palia Garden Planner started out as a fun little tool for quickly sharing garden
           layouts
           w/ crop bonuses.
           The first experimental release, however, was met with a lot more enthusiasm and support than I expected.
-        </p>
-        <p class="text-sm">
-          As such, I've decided to raise the scope of what the planner will accomplish.
-          There's a lot to do and there's a lot of requested features that I want to implement.
-          This roadmap exists so you can now what's likely to come up next and what's planned for the future.
-          I'll follow it as closely as I can, but some features may be prioritised as there's a lot of factors I
-          may not have considered.
         </p>
       </div>
     </section>

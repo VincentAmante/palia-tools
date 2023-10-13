@@ -48,7 +48,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-2 bg-accent p-1 rounded-md min-h-16 overflow-visible">
+  <div class="flex flex-wrap gap-2 bg-accent p-1 rounded-md min-h-16 overflow-visible px-3">
     <template v-for="(crop, cropType) of processedYields.totalResult.crops" :key="cropType">
       <CropDisplay
         v-if="(crop.star.produce !== 0)"

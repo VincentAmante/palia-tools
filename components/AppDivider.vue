@@ -10,7 +10,7 @@
         :srcset="undefined"
       />
     </div>
-    <div class="divider m-0 before:bg-misc after:bg-misc w-full px-[2px]" />
+    <div class="divider m-0 before:bg-misc after:bg-misc before:h-[.5px] after:h-[.5px] w-full px-[2px]" />
     <div class="absolute right-0">
       <nuxt-img
         class="w-3 h-3"

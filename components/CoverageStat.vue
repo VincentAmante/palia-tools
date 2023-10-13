@@ -29,13 +29,17 @@ const percentString = computed(() => {
 </script>
 
 <template>
-  <div class="coverage-stat flex flex-col items-center justify-center gap-[1px] group">
+  <div class="coverage-stat flex flex-col items-center  gap-[1px] group relative">
     <div
-      class="radial-progress bg-accent group-hover:bg-white group-hover:bg-opacity-80 transition-all border-4 border-solid border-white border-opacity-0"
+      class="radial-progress bg-accent absolute top-0 text-primary group-hover:bg-white group-hover:bg-opacity-80 transition-all border-4 border-solid border-white border-opacity-0"
+      :style="['--value:100', '--size: clamp(8px, 3.7rem, 17vw)']"
+    />
+    <div
+      class="radial-progress transition-all border-4 border-solid border-white border-opacity-0"
       :style="[percent, '--size: clamp(8px, 3.7rem, 17vw)']"
     >
-      <div class="relative flex flex-col text-center items-center justify-center gap-[2px]">
-        <div class="pt-2 text-sm lg:text-lg flex flex-col items-center justify-center">
+      <div class="relative flex flex-col gap-[0px] pt-1">
+        <div class="text flex flex-col items-center justify-center">
           <slot name="icon" />
         </div>
         <div class="text-sm font-bold text-center flex flex-col items-center justify-center">
@@ -45,7 +49,7 @@ const percentString = computed(() => {
         </div>
       </div>
     </div>
-    <div class="capitalise font-extrabold max-w-[8ch] text-misc text-xs h-fit text-center break-words align-top flex items-start pt-[2px]">
+    <div class="capitalise font-bold max-w-[8ch] text-misc text-xs h-fit text-center break-words align-top flex items-start pt-[2px]">
       <slot name="title">
         Title missing
       </slot>

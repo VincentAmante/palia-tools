@@ -96,7 +96,10 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div class="collapse collapse-arrow rounded-none md:rounded-lg w-full lg:h-fit md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:px-2 z-50 overflow-visible md:max-w-3xl transition-all">
+  <section class="collapse collapse-arrow rounded-none md:rounded-lg w-full lg:h-fit md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:px-2 z-50 overflow-visible md:max-w-3xl transition-all">
+    <h2 class="sr-only">
+      Harvest Approximations
+    </h2>
     <div
       class="bg-primary md:rounded-lg"
       :class="isTakingScreenshot.get ? 'rounded-lg' : ''"
@@ -510,5 +513,5 @@ watchEffect(() => {
         <LazyHCInfo />
       </div>
     </div>
-  </div>
+  </section>
 </template>
