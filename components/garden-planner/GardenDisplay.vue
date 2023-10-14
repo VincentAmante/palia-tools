@@ -69,7 +69,7 @@ function handleDragEnter(row: number, col: number, plot: Plot) {
   >
     <div
       class="rounded-xl w-fit my-4 md:my-0 mx-auto lg:ml-0 lg:mr-auto px-3 lg:px-2 bg-accent"
-      :class="(isTakingScreenshot.get) ? 'w-fit mx-auto px-1' : ''"
+      :class="(isTakingScreenshot.get) ? 'w-fit mx-auto px-1 mt-0' : ''"
       @contextmenu.prevent.self=""
     >
       <div ref="plotsDisplay" class="w-full overflow-auto grid gap-2">

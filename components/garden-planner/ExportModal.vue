@@ -29,14 +29,23 @@ function downloadImage() {
           <p class="card-title">
             As Image
           </p>
+
           <div class="card-actions">
             <button
-              class="btn btn-sm normal-case btn-ghost"
+              class="btn normal-case btn-outline"
               @click="downloadImage()"
             >
               Export as Image
             </button>
           </div>
+
+          <p>
+            Export your garden as a landscape PNG image.
+          </p>
+          <p class="text-warning">
+            <font-awesome-icon icon="exclamation-triangle" class="mr-1" />
+            App may freeze for a few seconds while it generates the image.
+          </p>
         </div>
       </div>
     </template>

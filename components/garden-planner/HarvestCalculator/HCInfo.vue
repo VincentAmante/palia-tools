@@ -1,5 +1,5 @@
 <template>
-  <div v-once class="flex flex-col gap-2 py-4 px-2 text-neutral max-h-80">
+  <div v-once class="flex flex-col gap-2 py-4 px-2 text-neutral">
     <div class="px-2 grid gap-2">
       <div class="bg-accent p-3 rounded-md">
         <h3 class="font-bold text-lg uppercase">
@@ -52,9 +52,9 @@
     </div>
     <div class="px-2  pb-3">
       <div class="bg-accent grid gap-2 p-3 rounded-md">
-        <h5 class="font-bold">
+        <h3 class="font-bold text-lg">
           Assumptions (8/9/2023)
-        </h5>
+        </h3>
         <ul class="list-inside list-disc text-sm grid gap-1">
           <li class="font-semibold">
             <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />

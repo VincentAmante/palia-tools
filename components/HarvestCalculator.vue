@@ -97,18 +97,15 @@ watchEffect(() => {
 </script>
 
 <template>
-  <section class="collapse collapse-arrow rounded-none md:rounded-lg w-full lg:h-fit md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:pl-2 xl:px-2 z-50 overflow-visible md:max-w-3xl transition-all">
-    <h2 class="sr-only">
-      Harvest Approximations
-    </h2>
+  <section class="collapse collapse-arrow rounded-none md:rounded-lg w-full lg:h-fit md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible md:max-w-3xl transition-all">
     <div
       class="bg-primary md:rounded-lg"
-      :class="isTakingScreenshot.get ? 'rounded-lg' : ''"
+      :class="isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0'"
     >
       <div class="flex flex-col gap-1">
         <div
           class="w-full md:bg-misc sm:rounded-lg sm:rounded-b-none p-1 sm:px-6 flex flex-col md:flex-row justify-between items-center md:text-accent"
-          :class="isTakingScreenshot.get ? 'bg-misc px-6 rounded-lg rounded-b-none' : 'text-misc '"
+          :class="isTakingScreenshot.get ? 'bg-misc px-6 rounded-lg rounded-b-none' : 'text-misc gap-2'"
         >
           <AppDividerAlt
             class="w-full sm:hidden"
@@ -150,7 +147,10 @@ watchEffect(() => {
           </div>
         </div>
       </div>
-      <div class="px-4 py-2">
+      <div
+        v-show="(activeTab !== 'info' || isTakingScreenshot.get)"
+        class="px-4 py-2"
+      >
         <div class="bg-accent text-misc rounded-md font-semibold flex flex-col xl:flex-row items-center justify-center md:gap-1 py-2">
           <div
             class="tooltip tooltip-top"
@@ -261,10 +261,10 @@ watchEffect(() => {
           </div>
         </div>
         <!-- box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset; -->
-        <div class="max-h-96 overflow-y-scroll mb-4 rounded-lg rounded-r-none border border-misc border-opacity-50 p-2">
+        <div class=" max-h-[19.75rem] overflow-y-scroll mb-4 rounded-lg rounded-r-none border border-misc border-opacity-50 p-2">
           <div
             v-if="activeOptionTab === 'main'"
-            class="grid gap-2 pr-2 pb-4 xl:grid-cols-2"
+            class="grid gap-2 pr-2 pb-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
           >
             <OptionCard label="days" name="Days">
               <template #input>
@@ -341,9 +341,7 @@ watchEffect(() => {
               </template>
               <template #labels>
                 <p>
-                  Until base chance is confirmed, this setting will adjust the likelihood of crop quality when
-                  using
-                  star seeds
+                  Chance of getting a star crop from a star seed
                 </p>
               </template>
             </OptionCard>
@@ -369,7 +367,7 @@ watchEffect(() => {
               </template>
               <template #labels>
                 <p>
-                  Same as above, but for normal seeds
+                  Chance of getting a star crop from a normal seed
                 </p>
               </template>
             </OptionCard>
@@ -380,11 +378,13 @@ watchEffect(() => {
               </template>
               <template #labels>
                 <p>
-                  Assumes that everytime a crop is harvested and there's leftover days,
-                  the player will re-plant
+                  Replants the crops after harvest until the last day
                 </p>
-                <p class="font-bold">
-                  If toggled off, bonuses will still be calculated but the
+                <p
+                  v-show="!options.includeReplant"
+                  class="font-bold"
+                >
+                  Off: Bonuses will still be calculated but the
                   harvest days will be inaccurate
                 </p>
               </template>
@@ -450,7 +450,7 @@ watchEffect(() => {
                       <p class="text-xs">
                         Star
                       </p>
-                      <div class="join">
+                      <div class="join rounded-md">
                         <button
                           class="join-item btn btn-xs btn-primary"
                           :class="{ 'btn-active': cropOptions[type].starType === 'crop' }"
@@ -512,7 +512,7 @@ watchEffect(() => {
         </div>
       </div>
       <div v-if="!(isTakingScreenshot.get) && activeTab === 'info'" class="overflow-hidden overflow-y-scroll">
-        <LazyHCInfo />
+        <LazyHCInfo class="max-h-[26.5rem]" />
       </div>
     </div>
   </section>

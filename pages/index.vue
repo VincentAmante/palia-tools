@@ -275,7 +275,7 @@ function handleMouseLeave() {
           </button> -->
           <div class="flex flex-col xl:px-2">
             <div id="planner" class="relative py-4 pb-1">
-              <section class="crop-buttons px-4 w-full flex flex-col md:flex-row ">
+              <section class="crop-buttons px-4 w-full flex flex-col md:flex-row gap-2">
                 <h2 class="sr-only">
                   Crop Buttons
                 </h2>
@@ -358,17 +358,17 @@ function handleMouseLeave() {
               </p>
             </div>
             <div
-              class="flex flex-col justify-between pb-6 lg:px-2"
+              class="flex justify-between md:pb-6 lg:px-2 "
               :class="[
-                (gardenTilesAreWide) ? 'md:gap-2' : 'lg:flex-row md:gap-0',
-                (isTakingScreenshot.get && !gardenTilesAreWide) ? 'px-4 gap-4' : '',
-                (isTakingScreenshot.get && gardenTilesAreWide) ? 'px-4 gap-4' : '',
+                (!isTakingScreenshot.get && gardenTilesAreWide) ? 'md:gap-2' : 'lg:flex-row md:gap-0 flex-col',
+                (isTakingScreenshot.get && !gardenTilesAreWide) ? 'px-4 gap-4 !flex-row' : '',
+                (isTakingScreenshot.get && gardenTilesAreWide) ? 'px-4 gap-4 ' : '',
               ]"
             >
               <section
-                class="w-full lg:basis-3/6 xl:basis-3/6"
+                class=""
                 :class="[
-                  (isTakingScreenshot.get) ? '' : 'overflow-x-auto',
+                  (isTakingScreenshot.get) ? '' : 'w-full lg:basis-3/6 xl:basis-3/6 overflow-x-auto',
                   (gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2 py-2' : 'grid']"
               >
                 <h2 class="sr-only">
@@ -388,8 +388,8 @@ function handleMouseLeave() {
                 />
               </section>
               <div
-                class="w-full lg:basis-3/6 xl:basis-2/3"
-                :class="(gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2' : 'grid' "
+                class="w-full flex flex-col md:flex-row md:justify-end lg:basis-3/6 xl:basis-2/3"
+                :class="(gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2' : '' "
               >
                 <StatsDisplay
                   ref="statDisplay"
@@ -411,8 +411,8 @@ function handleMouseLeave() {
             :class="(isTakingScreenshot.get) ? 'grid-cols-10 gap-6 px-1' : 'md:grid-cols-5  lg:grid-cols-12 xl:grid-cols-12 '"
           >
             <div
-              class="hidden md:flex lg:justify-start w-full "
-              :class="(isTakingScreenshot.get) ? 'col-span-5 justify-start' : 'justify-center md:col-span-5 xl:col-span-5 '"
+              class="md:flex lg:justify-start w-full "
+              :class="(isTakingScreenshot.get) ? 'col-span-5 justify-start' : 'hidden justify-center md:col-span-5 xl:col-span-5 '"
             >
               <StatsDisplay
                 ref="statDisplay"
@@ -426,9 +426,9 @@ function handleMouseLeave() {
             <div
               v-show="isTakingScreenshot.get"
               id="watermark"
-              class="col-span-5 px-4 flex justify-end items-start"
+              class="col-span-5 px-4 flex justify-end items-start w-full "
             >
-              <div class="flex flex-row-reverse p-2 text-right gap-2 leading-1 items-center rounded-md">
+              <div class="flex flex-row-reverse p-2 text-right gap-2 leading-1 items-center rounded-md w-full">
                 <nuxt-img
                   format="png" src="/logo.webp"
                   class="max-w-[6rem]"
@@ -436,13 +436,13 @@ function handleMouseLeave() {
                   :srcset="undefined"
                   placeholder
                 />
-                <div class="text-right grid justify-end text-misc items-end">
+                <div class="text-right flex flex-col justify-end text-misc items-end w-full flex-nowrap ws-nowrap">
                   <NuxtLink to="/" class="flex items-center gap-1 justify-start">
                     <p class="text-2xl font-bold w-full">
                       Palia Garden Planner
                     </p>
                   </NuxtLink>
-                  <p class="w-full font-black p-2 bg-accent text-misc py-1 rounded-md flex-nowrap ws-nowrap">
+                  <p class="font-black p-2 bg-accent text-misc py-1 rounded-md flex-nowrap ws-nowrap w-fit">
                     https://palia-garden-planner.vercel.app
                   </p>
                 </div>

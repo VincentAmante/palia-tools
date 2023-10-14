@@ -37,7 +37,7 @@ defineExpose({
       Crop Bonus Statistics
     </h2>
     <div
-      ref="statsDisplay" class="flex gap-1 lg:gap-3 xl:gap-4 w-full cursor-help justify-center"
+      ref="statsDisplay" class="flex gap-[0.35rem] lg:gap-3 xl:gap-4 w-full cursor-help justify-center"
     >
       <CoverageStat
         :total-crops="plotStatTotal.cropCount"

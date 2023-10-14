@@ -45,7 +45,7 @@ async function paste() {
               class="btn btn-sm normal-case btn-ghost"
               @click="paste()"
             >
-              Paste
+              Paste Code
             </button>
           </div>
         </div>

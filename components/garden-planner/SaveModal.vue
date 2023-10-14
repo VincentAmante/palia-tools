@@ -60,13 +60,17 @@ const useMarkdown = ref(false)
               :class="(text === ((useMarkdown) ? saveCode.linkMarkdown : saveCode.link)) ? 'btn-disabled font-lights' : ''"
               @click="copy((useMarkdown) ? saveCode.linkMarkdown : saveCode.link)"
             >
-              {{ (text === saveCode.link) ? 'Copied!' : 'Copy' }}
+              {{ (text === ((useMarkdown) ? saveCode.linkMarkdown : saveCode.link)) ? 'Copied!' : 'Copy' }}
               <font-awesome-icon :icon="['fas', 'copy']" />
             </button>
             <label class="grid gap-2 py-2 text-xs items-center font-semibold">
               <input v-model="useMarkdown" type="checkbox" class="toggle toggle-sm rounded-sm">
               <div class="font-normal">Markdown Syntax</div>
             </label>
+            <p class="text-warning text-xs">
+              <font-awesome-icon icon="exclamation-triangle" class="mr-1" />
+              Planner links may get filtered by Reddit's site-wide filters, I'm working on resolving this.
+            </p>
           </div>
         </div>
       </div>

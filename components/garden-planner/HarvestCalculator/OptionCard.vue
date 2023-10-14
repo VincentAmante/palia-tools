@@ -9,10 +9,10 @@ defineProps({
 <template>
   <label
     :for="label"
-    class="rounded-md p-2 px-3 bg-accent text-misc"
+    class="rounded-md p-2 px-3 bg-accent text-misc flex flex-col justify-start"
     :class="(disabled) ? 'opacity-50' : ''"
   >
-    <div class="grid gap-1">
+    <div class="flex flex-col items-center text-center gap-1">
       <p class="py-1 font-bold">
         {{ name }}
       </p>
