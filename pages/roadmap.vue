@@ -119,7 +119,7 @@ useHead({
               </p>
               <p>
                 This will allow you to plan out the major buildings in Palia,
-                allowing you to plan out your house's exterior.
+                letting you experiment with different layouts before you build.
               </p>
               <p class="text-warning">
                 <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="mr-1" />
