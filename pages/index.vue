@@ -442,7 +442,7 @@ function handleMouseLeave() {
                       Palia Garden Planner
                     </p>
                   </NuxtLink>
-                  <p class="font-black p-2 bg-accent text-misc py-1 rounded-md flex-nowrap ws-nowrap w-9">
+                  <p class="font-black p-2 bg-accent text-misc py-1 rounded-md flex-nowrap ws-nowrap w-96">
                     https://palia-garden-planner.vercel.app
                   </p>
                 </div>

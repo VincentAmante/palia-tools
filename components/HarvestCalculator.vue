@@ -118,7 +118,7 @@ watchEffect(() => {
           </h2>
           <div
             v-if="!isTakingScreenshot.get"
-            class="tabs w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0 py-1 gap-2"
+            class="tabs w-full justify-evenly md:w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0 py-1 md:gap-2 max-w-[22rem]"
           >
             <button
               id="approximator-display-tab"
