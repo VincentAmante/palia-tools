@@ -4,7 +4,7 @@
       <p class="card-title ">
         <slot name="title" />
       </p>
-      <div class="h-full font-light">
+      <div class="h-full font-light flex flex-col gap-1">
         <slot name="description" />
       </div>
     </div>
