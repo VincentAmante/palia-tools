@@ -81,8 +81,12 @@ const paginationButtons = computed<PaginationButton[]>(() => {
   const maxButtons = 5
   const maxPages = pageCount.value
 
-  if (currentPage.value <= (maxButtons)) {
+  if (currentPage.value < (maxButtons)) {
     for (let i = 1; i <= Math.min(maxPages, maxButtons); i++)
+      buttons.push(i)
+  }
+  else if (currentPage.value > (maxPages - (maxButtons - 1))) {
+    for (let i = maxPages - (maxButtons - 1); i <= maxPages; i++)
       buttons.push(i)
   }
   else {

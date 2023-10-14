@@ -9,7 +9,7 @@ defineProps({
 
 <template>
   <articles class="collapse collapse-arrow max-w-3xl py-1 bg-palia-dark-blue text-accent rounded-md  border-[1px] border-opacity-50 border-accent">
-    <input type="radio" name="changelog" :checked="checked">
+    <input type="checkbox" name="changelog" :checked="checked">
     <h2 class="collapse-title text-xl">
       <slot name="title" required>
         Title missing

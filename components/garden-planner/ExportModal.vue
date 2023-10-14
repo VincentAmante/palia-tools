@@ -46,6 +46,9 @@ function downloadImage() {
             <font-awesome-icon icon="exclamation-triangle" class="mr-1" />
             App may freeze for a few seconds while it generates the image.
           </p>
+          <p class="text-warning">
+            Does not work on firefox
+          </p>
         </div>
       </div>
     </template>

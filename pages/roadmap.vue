@@ -60,13 +60,13 @@ useHead({
       </div>
     </section>
     <div class="divider max-w-xs" />
-    <div class="flex flex-col items-center w-full gap-6">
-      <section class="pb-2 flex flex-col gap-4  items-center w-full">
+    <div class="flex flex-col w-full gap-6">
+      <section class="pb-2 flex flex-col gap-4  w-full">
         <h2 class="text-2xl font-normal">
           Main Goals
         </h2>
 
-        <div class="flex flex-row flex-wrap gap-4 justify-center w-full">
+        <div class="flex flex-row flex-wrap gap-4  w-full">
           <RoadmapCard>
             <template #title>
               Presets
@@ -129,7 +129,7 @@ useHead({
           </RoadmapCard>
         </div>
       </section>
-      <section class="pb-2 flex flex-col gap-4 text-center items-center ">
+      <section class="pb-2 flex flex-col gap-4">
         <div class="grid gap-1">
           <h2 class="text-2xl font-normal">
             Other Goals
@@ -140,7 +140,7 @@ useHead({
           </p>
         </div>
 
-        <div class="flex flex-row flex-wrap gap-4 justify-center w-full">
+        <div class="flex flex-row flex-wrap gap-4 w-full">
           <RoadmapCard>
             <template #title>
               More Export Options
@@ -164,7 +164,7 @@ useHead({
             </template>
             <template #description>
               <p>
-                Instead of a code, the planner will instead store layouts in a database.
+                Instead of just the code, the planner could store layouts in a database.
                 This allows for concise links to be generated, which can be shared with others.
               </p>
               <p>

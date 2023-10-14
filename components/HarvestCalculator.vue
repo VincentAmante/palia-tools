@@ -209,14 +209,14 @@ watchEffect(() => {
         <div v-if="!isTakingScreenshot.get" class="tabs gap-2 pt-1">
           <div
             class="tab btn btn-sm rounded-md normal-case"
-            :class="activeDisplayTab === 'overview' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
+            :class="activeDisplayTab === 'overview' ? 'tab-active btn-accent' : 'btn-ghost text-misc'"
             @click="setDisplayTab('overview')"
           >
             Overview
           </div>
           <div
             class="tab btn btn-sm rounded-md normal-case whitespace-nowrap"
-            :class="activeDisplayTab === 'day' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
+            :class="activeDisplayTab === 'day' ? 'tab-active btn-accent' : 'btn-ghost text-misc '"
             @click="setDisplayTab('day')"
           >
             Day-by-day
