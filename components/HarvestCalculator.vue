@@ -100,7 +100,7 @@ watchEffect(() => {
   <section class="collapse collapse-arrow rounded-none md:rounded-lg w-full lg:h-fit md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible md:max-w-3xl transition-all">
     <div
       class="bg-primary md:rounded-lg"
-      :class="isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0'"
+      :class="isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0 pb-6 lg:pb-0'"
     >
       <div class="flex flex-col gap-1">
         <div
