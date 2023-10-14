@@ -29,59 +29,61 @@ useHead({
         Credits
       </h1>
     </div>
-    <section class="bg-palia-dark-blue border border-palia-blue p-4 pb-8 rounded-md w-full flex flex-col items-center gap-4">
-      <h2 class="text-2xl">
-        Contributors
-      </h2>
-      <p>
-        Thank you to the following people for their direct assistance to the project!
-      </p>
-      <div class="flex flex-row flex-wrap gap-4 justify-center">
-        <CreditName>
-          <template #name>
-            Arenvanya
-          </template>
-          <template #for>
-            Information
-          </template>
-        </CreditName>
-        <CreditName>
-          <template #name>
-            st3fannl
-          </template>
-          <template #for>
-            Assets
-          </template>
-        </CreditName>
-        <CreditName>
-          <template #name>
-            Mctalian
-          </template>
-          <template #for>
-            Code Contribution
-          </template>
-        </CreditName>
-        <CreditName>
-          <template #name>
-            frnkers
-          </template>
-          <template #for>
-            UI Rework
-          </template>
-        </CreditName>
-        <CreditName>
-          <template #name>
-            nella
-          </template>
-          <template #for>
-            UI Testing
-          </template>
-        </CreditName>
+    <section class="bg-palia-blue bg-opacity-40 sm:p-4 rounded-md">
+      <div class="sm:border sm:border-misc p-4 pb-8 rounded-md w-full flex flex-col items-center gap-4">
+        <h2 class="text-2xl">
+          Contributors
+        </h2>
+        <p>
+          Thank you to the following people for their direct assistance to the project!
+        </p>
+        <div class="flex flex-row flex-wrap gap-4 justify-center">
+          <CreditName>
+            <template #name>
+              Arenvanya
+            </template>
+            <template #for>
+              Information
+            </template>
+          </CreditName>
+          <CreditName>
+            <template #name>
+              st3fannl
+            </template>
+            <template #for>
+              Assets
+            </template>
+          </CreditName>
+          <CreditName>
+            <template #name>
+              Mctalian
+            </template>
+            <template #for>
+              Code Contribution
+            </template>
+          </CreditName>
+          <CreditName>
+            <template #name>
+              frnkers
+            </template>
+            <template #for>
+              UI Rework
+            </template>
+          </CreditName>
+          <CreditName>
+            <template #name>
+              nella
+            </template>
+            <template #for>
+              UI Testing
+            </template>
+          </CreditName>
+        </div>
+        <p class="max-w-4xl text-center">
+          Huge thanks to the Palia Team and Singularity 6 for developing the game, Palia's Commmunity Teams for various assistance with the planner, and players who provided information through discussions online,
+          and everyone for using the planner and providing feedback!
+        </p>
       </div>
-      <p class="max-w-4xl text-center">
-        Huge thanks to the Palia Team and Singularity 6 for developing the game, Palia's Commmunity Teams for various assistance with the planner, and players of the game for discussion of the game,
-        and everyone for using the planner and providing feedback!
-      </p>
     </section>
   </main>
 </template>
