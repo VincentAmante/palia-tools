@@ -123,14 +123,14 @@ const border = computed(() => {
       <nuxt-img
         v-if="(selectedItem.val instanceof Crop && tile?.isHovered)"
         format="webp"
-        draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[38px] 2xl:max-w-[40px] opacity-50"
+        draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[36px] 2xl:max-w-[38px] opacity-50"
         :src="selectedItem.val.image"
         :srcset="undefined"
       />
       <nuxt-img
         v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px"
         format="webp"
-        draggable="false" class="select-none p-1 max-w-[36px] md:max-w-[38px] 2xl:max-w-[40px]"
+        draggable="false" class="select-none p-1 max-w-[36px] md:max-w-[36px] 2xl:max-w-[38px]"
         :src="tile?.crop?.image"
         :srcset="undefined"
       />
