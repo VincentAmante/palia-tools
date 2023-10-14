@@ -21,14 +21,15 @@ const props = defineProps({
 
 const isTakingScreenshot = useTakingScreenshot()
 
-const options = useStorage('approximator-options', {
+const options = useStorage('approximator-options-OCT1023', {
   days: 0,
-  postLevel25: true,
-  allStarSeeds: false,
+  postLevel25: false,
+  allStarSeeds: true,
   includeReplant: true,
-  includeReplantCost: false,
+  includeReplantCost: true,
   baseChanceStarSeed: 66,
   baseChanceNormalSeed: 33,
+  useGrowthBoost: false,
 })
 
 const harvestData = computed<ISimulateYieldResult>(() => {
@@ -97,7 +98,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <section class="collapse collapse-arrow rounded-none lg:rounded-lg w-full lg:h-fit lg:pt-4 lg:py-0 lg:mx-0 lg:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible lg:max-w-3xl transition-all">
+  <section class="collapse collapse-arrow rounded-none lg:rounded-lg w-full lg:h-fit lg:py-0 lg:mx-0 lg:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible lg:max-w-3xl transition-all">
     <div
       class="bg-primary lg:rounded-lg"
       :class="isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0 pb-6 lg:pb-0'"
@@ -205,6 +206,7 @@ watchEffect(() => {
           :include-replant-cost="options.includeReplantCost"
           :base-chance-star-seed="options.baseChanceStarSeed"
           :base-chance-normal-seed="options.baseChanceNormalSeed"
+          :use-growth-boost="options.useGrowthBoost"
         />
         <div v-if="!isTakingScreenshot.get" class="tabs gap-2 pt-1">
           <div
@@ -400,6 +402,17 @@ watchEffect(() => {
               <template #labels>
                 <p>
                   Accounts for the cost of re-planting
+                </p>
+              </template>
+            </OptionCard>
+
+            <OptionCard label="useGrowthBoost" name="Use Growth Boost">
+              <template #input>
+                <input v-model="options.useGrowthBoost" class="toggle rounded-md" type="checkbox">
+              </template>
+              <template #labels>
+                <p>
+                  Factors in growth boost when simulating yields, does not account for any RNG and is theoretical
                 </p>
               </template>
             </OptionCard>

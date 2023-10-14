@@ -111,7 +111,7 @@ const border = computed(() => {
 
 <template>
   <div
-    class="border-misc-saturated relative select-none min-w-[3rem] xl:min-w-[3.2rem] hover:bg-primary aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
+    class="border-misc-saturated relative select-none min-w-[3rem] xl:min-w-[3.25rem] hover:bg-primary aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
              border,
              borderRadius,
@@ -123,14 +123,14 @@ const border = computed(() => {
       <nuxt-img
         v-if="(selectedItem.val instanceof Crop && tile?.isHovered)"
         format="webp"
-        draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[40px] 2xl:max-w-[44px] opacity-50"
+        draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[38px] 2xl:max-w-[40px] opacity-50"
         :src="selectedItem.val.image"
         :srcset="undefined"
       />
       <nuxt-img
         v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px"
         format="webp"
-        draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[40px] 2xl:max-w-[44px]"
+        draggable="false" class="select-none p-1 max-w-[36px] md:max-w-[38px] 2xl:max-w-[40px]"
         :src="tile?.crop?.image"
         :srcset="undefined"
       />
@@ -138,7 +138,7 @@ const border = computed(() => {
         {{ code as string || ' ' }}
       </div>
     </div>
-    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] xl:py-[1px] flex w-full gap-[0.6px] xl:gap-[1.3px] justify-center">
+    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] xl:py-[1px] flex w-full gap-[0.6px] xl:gap-[1.3px] justify-center ">
       <li v-show="bonuses?.includes(Bonus.SpeedIncrease)">
         <font-awesome-icon class="text-growth-boost" :icon="['fas', 'forward-fast']" />
       </li>
@@ -152,7 +152,7 @@ const border = computed(() => {
         <font-awesome-icon class="text-water-retain" :icon="['fas', 'droplet']" />
       </li>
       <li v-show="bonuses?.includes(Bonus.WeedPrevention)">
-        <font-awesome-icon class=" text-weed-prevention" :icon="['fas', 'shield']" />
+        <font-awesome-icon class="text-weed-prevention" :icon="['fas', 'shield']" />
       </li>
     </ul>
     <div class="absolute bottom-0 right-0 p-[2px]">

@@ -156,9 +156,15 @@ class Crop {
     }
   }
 
-  get totalGrowTime(): number {
-    const { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
-    return growthTime + reharvestCooldown * reharvestLimit
+  getTotalGrowTime(hasGrowthBoost: boolean = false): number {
+    let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+
+    if (hasGrowthBoost) {
+      growthTime = Math.ceil((growthTime / 3) * 2)
+      reharvestCooldown = Math.ceil((reharvestCooldown / 3) * 2)
+    }
+
+    return growthTime + (reharvestCooldown * reharvestLimit)
   }
 
   calculateGoldValue(

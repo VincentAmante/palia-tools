@@ -8,6 +8,7 @@ export interface ICalculateYieldOptions {
   starChanceOverride?: number
   baseChanceOverride?: number
   includeReplantCost?: boolean
+  useGrowthBoost?: boolean
   level: number
 }
 

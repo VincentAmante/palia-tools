@@ -290,13 +290,17 @@ class Garden {
       }
     }
 
+    const useGrowthBoost = options.useGrowthBoost
     // max growth time is the maximum growth time of all crops, and then reharvest cooldown multiplied by rehavest limit
     let maxGrowthTime = Math.max(
       ...Array.from(individualCrops.values()).map((tile) => {
         if (tile.crop?.produceInfo == null)
           return 0
 
-        return tile.crop.totalGrowTime
+        return tile.crop.getTotalGrowTime(
+          (useGrowthBoost ?? false)
+          && tile.bonuses.includes(Bonus.SpeedIncrease),
+        )
       }),
     )
 
@@ -337,7 +341,9 @@ class Garden {
         )
           continue
 
-        if (day > crop.totalGrowTime && !options.includeReplant)
+        const hasGrowthBoost = (useGrowthBoost ?? false) && tile.bonuses.includes(Bonus.SpeedIncrease)
+
+        if (day > crop.getTotalGrowTime(hasGrowthBoost))
           continue
 
         const baseStarChance
@@ -348,10 +354,7 @@ class Garden {
               : options.baseChanceOverride ?? 0
 
         const { base, withBonus } = crop.produceInfo
-
-        // * Uncomment when speedboost behaviour is properly implemented
-        // const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day, tile.bonuses.includes(Bonus.SpeedIncrease))
-        const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day)
+        const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day, hasGrowthBoost)
 
         if (isHarvestable) {
           let finalStarChance = baseStarChance
@@ -437,6 +440,7 @@ class Garden {
           = seedsRemainder[cropType as CropType].star
       }
     }
+
     return {
       harvests,
       harvestTotal,

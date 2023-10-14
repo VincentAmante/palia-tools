@@ -40,7 +40,7 @@ const {
 } = useWebNotification(
   {
     title: '6:00 AM in Palia',
-    body: 'Time to Harvest!',
+    body: 'Check your garden!',
     icon: '/logo.webp',
     requestPermissions: false,
   },
