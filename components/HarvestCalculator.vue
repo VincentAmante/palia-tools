@@ -97,14 +97,14 @@ watchEffect(() => {
 </script>
 
 <template>
-  <section class="collapse collapse-arrow rounded-none md:rounded-lg w-full lg:h-fit md:mx-auto md:py-4 lg:py-0 lg:mx-0 md:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible md:max-w-3xl transition-all">
+  <section class="collapse collapse-arrow rounded-none lg:rounded-lg w-full lg:h-fit lg:pt-4 lg:py-0 lg:mx-0 lg:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible lg:max-w-3xl transition-all">
     <div
-      class="bg-primary md:rounded-lg"
+      class="bg-primary lg:rounded-lg"
       :class="isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0 pb-6 lg:pb-0'"
     >
       <div class="flex flex-col gap-1">
         <div
-          class="w-full md:bg-misc sm:rounded-lg sm:rounded-b-none p-1 sm:px-6 flex flex-col md:flex-row justify-between items-center md:text-accent"
+          class="w-full lg:bg-misc lg:rounded-lg lg:rounded-b-none p-1 sm:px-6 flex flex-col lg:flex-row justify-between items-center lg:text-accent"
           :class="isTakingScreenshot.get ? 'bg-misc px-6 rounded-lg rounded-b-none' : 'text-misc gap-2'"
         >
           <AppDividerAlt
@@ -118,7 +118,7 @@ watchEffect(() => {
           </h2>
           <div
             v-if="!isTakingScreenshot.get"
-            class="tabs w-full justify-evenly md:w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0 py-1 md:gap-2 max-w-[22rem]"
+            class="tabs w-full justify-evenly lg:w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0 py-1 md:gap-2 max-w-[22rem]"
           >
             <button
               id="approximator-display-tab"

@@ -358,7 +358,7 @@ function handleMouseLeave() {
               </p>
             </div>
             <div
-              class="flex justify-between md:pb-6 lg:px-2 "
+              class="flex justify-between lg:pb-6 lg:px-2 "
               :class="[
                 (!isTakingScreenshot.get && gardenTilesAreWide) ? 'md:gap-2' : 'lg:flex-row md:gap-0 flex-col',
                 (isTakingScreenshot.get && !gardenTilesAreWide) ? 'px-4 gap-4 !flex-row' : '',
@@ -388,13 +388,13 @@ function handleMouseLeave() {
                 />
               </section>
               <div
-                class="w-full flex flex-col md:flex-row md:justify-end lg:basis-3/6 xl:basis-2/3"
-                :class="(gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2' : '' "
+                class="w-full  flex flex-col lg:flex-row lg:justify-end lg:basis-3/6 xl:basis-2/3"
+                :class="(gardenTilesAreWide) ? 'flex flex-col items-center lg:gap-2' : 'pt-4 lg:pt-0' "
               >
                 <StatsDisplay
                   ref="statDisplay"
                   v-model:hovered-bonus="hoveredBonus"
-                  class="bg-primary py-2 pt-4 h-fit md:mt-0 md:hidden w-full"
+                  class="bg-primary py-2 pt-4 h-fit lg:mt-0 lg:hidden w-full"
                   :class="[(isTakingScreenshot.get) ? 'hidden' : 'flex']"
                   :garden-tiles-are-wide="gardenTilesAreWide"
                   :plot-stat-total="plotStat"
@@ -411,7 +411,7 @@ function handleMouseLeave() {
             :class="(isTakingScreenshot.get) ? 'grid-cols-10 gap-6 px-1' : 'md:grid-cols-5  lg:grid-cols-12 xl:grid-cols-12 '"
           >
             <div
-              class="md:flex lg:justify-start w-full "
+              class="lg:flex lg:justify-start w-full "
               :class="(isTakingScreenshot.get) ? 'col-span-5 justify-start' : 'hidden justify-center md:col-span-5 xl:col-span-5 '"
             >
               <StatsDisplay
