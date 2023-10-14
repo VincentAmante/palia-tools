@@ -486,7 +486,7 @@ function handleMouseLeave() {
             </div>
             <TimeDisplay
               class=" md:col-span-2 lg:col-span-3 xl:col-span-3"
-              :class="(isTakingScreenshot.get) ? 'hidden' : ''"
+              :class="(isTakingScreenshot.get) ? 'hidden' : 'hidden md:grid'"
             />
           </div>
         </div>

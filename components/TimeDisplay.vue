@@ -69,8 +69,20 @@ watch(hour, () => {
         {{ timeFormatted }}
       </p>
     </div>
-    <div class="flex text-misc bg-accent rounded-md items-center justify-between px-4 py-2 md:py-0">
-      <p>6 AM Alarm</p>
+
+    <div
+      class="flex tooltip tooltip-top text-misc bg-accent rounded-md items-center justify-between px-4 py-2 md:py-0"
+    >
+      <div
+        class="flex items-center gap-1  tooltip tooltip-top"
+        data-tip="Experimental, may not work on all platforms"
+      >
+        <p>6 AM Alarm</p>
+        <font-awesome-icon
+          :icon="['fas', 'info-circle']"
+          class="text-misc"
+        />
+      </div>
       <input
         v-model="dayAlert"
         aria-label="Toggle 6 AM alarm"
