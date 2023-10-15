@@ -140,7 +140,7 @@ class Crop {
     }
 
     const totalGrowthTime = this.getTotalGrowTime(hasGrowthBoost)
-    console.log('totalGrowthTime', totalGrowthTime)
+    // console.log('totalGrowthTime', totalGrowthTime)
 
     const onLastHarvest = (day % totalGrowthTime) === 0
     const doReplant = onLastHarvest
@@ -187,7 +187,7 @@ class Crop {
       harvestableDays.push(lastHarvestDay + newReharvestCooldown - leftover)
       lastHarvestDay = harvestableDays[harvestableDays.length - 1]
       leftover = harvestableDays[harvestableDays.length - 1] - lastHarvestDay
-      console.log('leftover', leftover)
+      // console.log('leftover', leftover)
     }
 
     return harvestableDays.reduce((acc, cur) => (acc) + (cur - acc), 0)

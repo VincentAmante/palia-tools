@@ -49,6 +49,7 @@ useHead({
             </ul>
             <li>Moved Credits to its own dedicated page</li>
             <li>Renamed approximations data to more accurately reflect the lack of crafter timings</li>
+            <li>HOTFIX — Fixed issue with tomatoes when under growth boost</li>
           </template>
           <template #default>
             <p class="py-4 text-sm text-warning">
