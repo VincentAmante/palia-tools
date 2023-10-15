@@ -473,13 +473,6 @@ function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plo
                   class="join-item bg-white bg-opacity-60 flex items-center justify-center px-2 py-1 w-full max-w-lg"
                 >
               </div>
-              <p class="text-xs">
-                <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-warning" />
-                There's reports that the link is being blocked by Reddit's site-wide filters.
-              </p>
-              <p class="text-xs">
-                Consider sharing just the save-code on Reddit until this is resolved.
-              </p>
               <label class="flex gap-2 py-2 text-xs items-center font-semibold">
                 <input v-model="useMarkdown" type="checkbox" class="toggle toggle-sm">
                 <div class="join-item">Mask link with Markdown</div>
