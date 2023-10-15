@@ -48,10 +48,18 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
-              st3fannl
+              frnkers
             </template>
             <template #for>
-              Assets
+              UI Rework
+            </template>
+          </CreditName>
+          <CreditName>
+            <template #name>
+              Gazar
+            </template>
+            <template #for>
+              Information
             </template>
           </CreditName>
           <CreditName>
@@ -64,14 +72,6 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
-              frnkers
-            </template>
-            <template #for>
-              UI Rework
-            </template>
-          </CreditName>
-          <CreditName>
-            <template #name>
               nella
             </template>
             <template #for>
@@ -80,10 +80,10 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
-              Gazar
+              st3fannl
             </template>
             <template #for>
-              Information
+              Assets
             </template>
           </CreditName>
         </div>
