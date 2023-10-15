@@ -60,7 +60,7 @@ useHead({
               The rework is designed by an amazing friend of mine, <span class="font-bold">frnkers</span>, and was translated to code by yours truly.
               This change allows me to comfortably add new features, and plan out future ones without worrying about the messiness of the UI.
             </p>
-            <AppDividerAlt class="max-w-xs" />
+            <div class="divider my-0 w-full mx-auto max-w-[16rem] lg:max-w-sm" />
             <p>
               I've also added a couple new features, an in-game timer and growth boost support.
               Growth boost support is a toggle in the options menu as it's still bugged (and may work differently with fertilisers which is still untested),
@@ -71,7 +71,7 @@ useHead({
               I've initially added a 6 AM alarm (for harvests) but it was proving to be buggy due to how web notifications work.
               The alarm feature will be kept on the shelf until I find a better system for alarms.
             </p>
-            <AppDividerAlt class="max-w-xs" />
+            <div class="divider my-0 w-full mx-auto max-w-[16rem] lg:max-w-sm" />
             <p>
               Overall, this update is late as I've taken a break.
               Health reasons and being busy with other stuff meant I couldn't follow my initial roadmap.

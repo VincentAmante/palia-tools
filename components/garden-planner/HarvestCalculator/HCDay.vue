@@ -71,10 +71,6 @@ function getIndex(index: number) {
   return lastIndex.value + index
 }
 
-// gets a button for each page, with a maximum of 5 buttons
-// if there are more than 5 pages, the buttons will be
-// [1] ... [4] [5] [6] ... [10]
-// with 5 being the current page
 type PaginationButton = number | '...'
 const paginationButtons = computed<PaginationButton[]>(() => {
   const buttons: PaginationButton[] = []
@@ -112,7 +108,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
 <template>
   <div class="isolate overflow-hidden">
     <div class="grid gap-[2px]">
-      <div class="overflow-hidden h-56 overflow-y-scroll pr-2 rounded-md rounded-b-none bg-accent">
+      <div class="overflow-hidden min-h-16 pr-2 rounded-md rounded-b-none bg-accent">
         <table class="table px-4 bg-accent text-misc rounded-none">
           <tbody class="h-full">
             <th class="sr-only">
