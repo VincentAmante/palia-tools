@@ -51,6 +51,9 @@ useHead({
             <li>Renamed approximations data to more accurately reflect the lack of crafter timings</li>
           </template>
           <template #default>
+            <p class="p-4">
+              Note: UI using custom layouts is not final, and will be changed soon.
+            </p>
             <p>
               This change is a major UI rework, with the aim of reducing scrolling and making the planner more compact.
               The initial design of the planner was added as an after-thought, and was not meant to be a long-term solution.
