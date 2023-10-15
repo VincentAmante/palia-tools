@@ -10,6 +10,7 @@ class Tile {
   private _id: string = uniqid()
   private _hasStarSeed: boolean = false
   private _fertiliser: Fertiliser | null = null
+  private _isHovered: boolean = false
 
   constructor(crop: Crop | null) {
     this._crop = crop
@@ -21,6 +22,14 @@ class Tile {
 
   get id(): string {
     return this._id
+  }
+
+  get isHovered(): boolean {
+    return this._isHovered
+  }
+
+  set isHovered(isHovered: boolean) {
+    this._isHovered = isHovered
   }
 
   get crop(): Crop | null {

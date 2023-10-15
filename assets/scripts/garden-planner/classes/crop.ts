@@ -1,16 +1,7 @@
 import type Bonus from '../enums/bonus'
 import type CropType from '../enums/crops'
 import type CropSize from '../enums/crop-size'
-
-interface IProduceInfo {
-  base: number
-  // NOTE: withBonus is an override, I'm not sure if all crops follow the (1.5x) rule
-  withBonus: number
-  growthTime: number
-  isReharvestable: boolean
-  reharvestCooldown: number
-  reharvestLimit: number // Amount of times the crop can be reharvested
-}
+import { CropCode } from '../imports'
 
 interface IProduceInfoOptions {
   base: number
@@ -21,15 +12,14 @@ interface IProduceInfoOptions {
   reharvestLimit?: number
 }
 
-interface IGoldValues {
-  crop: number
-  cropStar: number
-  seed: number
-  seedStar: number
-  preserve: number
-  preserveStar: number
-  hasPreserve: boolean
+interface IProduceInfo extends IProduceInfoOptions {
+  // NOTE: withBonus is an override, I'm not sure if all crops follow the (1.5x) rule
+  withBonus: number
+  isReharvestable: boolean
+  reharvestCooldown: number
+  reharvestLimit: number // Amount of times the crop can be reharvested
 }
+
 interface IGoldValuesOptions {
   crop: number
   cropStar: number
@@ -40,95 +30,72 @@ interface IGoldValuesOptions {
   hasPreserve: boolean
 }
 
+interface IGoldValues extends IGoldValuesOptions {
+  preserveStar: number
+}
+
 interface ICropConversions {
   cropsPerSeed: number
   seedsPerConversion: number
   cropsPerPreserve: number
+  seedProcessMinutes: number
+  preserveProcessMinutes: number
+}
+
+interface IProductImages {
+  preserve: string
+  seed: string
+}
+
+interface ICropMetadata {
+  cropCode: CropCode
+  cropTooltip: string
+  cropBackgroundColor: string
 }
 
 class Crop {
-  private _type: CropType
-  private _cropBonus: Bonus
-  private _image: string
   private _produceInfo: IProduceInfo
   private _goldValues: IGoldValues
-  private _conversionInfo: ICropConversions
-  private _size: CropSize
   private _images: {
     preserve: string
     seed: string
   }
 
+  private _metadata: ICropMetadata
+
   constructor(
-    type: CropType,
-    cropBonus: Bonus,
-    size: CropSize,
-    image: string,
-    produceInfo: IProduceInfo | IProduceInfoOptions,
-    goldValues: IGoldValues | IGoldValuesOptions,
-    conversionInfo: ICropConversions, // How much of each crop is required to make a seed/preserve
-    images: {
-      preserve: string
-      seed: string
-    } = {
+    public readonly type: CropType,
+    public readonly cropBonus: Bonus,
+    public readonly size: CropSize,
+    public readonly image: string,
+    produceInfoOptions: IProduceInfoOptions,
+    goldValuesOptions: IGoldValuesOptions,
+    public readonly conversionInfo: ICropConversions, // How much of each crop is required to make a seed/preserve
+    images: IProductImages = {
       preserve: '',
       seed: '',
     },
+    metadata: ICropMetadata = {
+      cropCode: CropCode.None,
+      cropTooltip: 'Remove Crop',
+      cropBackgroundColor: '',
+    },
   ) {
-    this._type = type
-    this._cropBonus = cropBonus
-    this._size = size
-    this._image = image
     this._images = images
+    this._metadata = metadata
 
-    if ((produceInfo as IProduceInfoOptions).base) {
-      const produceInfoOptions = produceInfo as IProduceInfoOptions
-      this._produceInfo = {
-        base: produceInfoOptions.base,
-        withBonus: produceInfoOptions.withBonus || produceInfoOptions.base * 1.5,
-        growthTime: produceInfoOptions.growthTime,
-        isReharvestable: produceInfoOptions.isReharvestable || false,
-        reharvestCooldown: produceInfoOptions.reharvestCooldown || 0,
-        reharvestLimit: produceInfoOptions.reharvestLimit || 0,
-      }
-    }
-    else {
-      this._produceInfo = produceInfo as IProduceInfo
+    this._produceInfo = {
+      ...produceInfoOptions,
+      withBonus: produceInfoOptions.withBonus || produceInfoOptions.base * 1.5,
+      isReharvestable: produceInfoOptions.isReharvestable || false,
+      reharvestCooldown: produceInfoOptions.reharvestCooldown || 0,
+      reharvestLimit: produceInfoOptions.reharvestLimit || 0,
     }
 
-    if ((goldValues as IGoldValuesOptions).crop) {
-      const goldValuesOptions = goldValues as IGoldValuesOptions
-      this._goldValues = {
-        crop: goldValuesOptions.crop,
-        cropStar: goldValuesOptions.cropStar,
-        seed: goldValuesOptions.seed,
-        seedStar: goldValuesOptions.seedStar,
-        preserve: goldValuesOptions.preserve,
-        preserveStar: goldValuesOptions.preserveStar || goldValuesOptions.preserve,
-        hasPreserve: goldValuesOptions.hasPreserve,
-      }
+    this._goldValues = {
+      ...goldValuesOptions,
+      preserveStar: goldValuesOptions.preserveStar || goldValuesOptions.preserve * 1.5, // We want to assume the same 1.5x rule if not proivided
     }
-    else {
-      this._goldValues = goldValues as IGoldValues
-    }
-
-    this._conversionInfo = conversionInfo
-  }
-
-  get type(): string {
-    return this._type
-  }
-
-  get size(): CropSize {
-    return this._size
-  }
-
-  get image(): string {
-    return this._image
-  }
-
-  get cropBonus(): string {
-    return this._cropBonus
   }
 
   get produceInfo(): IProduceInfo {
@@ -139,10 +106,6 @@ class Crop {
     return this._goldValues
   }
 
-  get conversionInfo(): ICropConversions {
-    return this._conversionInfo
-  }
-
   get preserveImage(): string {
     return this._images.preserve
   }
@@ -151,9 +114,27 @@ class Crop {
     return this._images.seed
   }
 
+  get cropCode(): CropCode {
+    return this._metadata.cropCode
+  }
+
+  get cropTooltip(): string {
+    return this._metadata.cropTooltip
+  }
+
+  get cropBackgroundColor(): string {
+    return this._metadata.cropBackgroundColor
+  }
+
   // Assumes player harvests on the day it is harvestable
-  isHarvestableOnDay(day: number) {
-    const { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+  isHarvestableOnDay(day: number, hasGrowthBoost: boolean = false) {
+    let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+
+    if (hasGrowthBoost) {
+      growthTime = Math.ceil((growthTime / 3) * 2)
+      reharvestCooldown = Math.ceil((reharvestCooldown / 3) * 2)
+    }
+
     const totalGrowthTime = growthTime + (reharvestCooldown * reharvestLimit)
     const onLastHarvest = (day % totalGrowthTime) === 0
     const doReplant = onLastHarvest
@@ -175,9 +156,15 @@ class Crop {
     }
   }
 
-  get totalGrowTime(): number {
-    const { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
-    return growthTime + reharvestCooldown * reharvestLimit
+  getTotalGrowTime(hasGrowthBoost: boolean = false): number {
+    let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+
+    if (hasGrowthBoost) {
+      growthTime = Math.ceil((growthTime / 3) * 2)
+      reharvestCooldown = Math.ceil((reharvestCooldown / 3) * 2)
+    }
+
+    return growthTime + (reharvestCooldown * reharvestLimit)
   }
 
   calculateGoldValue(
@@ -186,7 +173,7 @@ class Crop {
     isStar: boolean = false,
   ) {
     const goldValues = this._goldValues
-    const { cropsPerSeed, seedsPerConversion, cropsPerPreserve } = this._conversionInfo
+    const { cropsPerSeed, seedsPerConversion, cropsPerPreserve } = this.conversionInfo
 
     let goldValue = 0
     let remainder = 0
@@ -230,9 +217,10 @@ class Crop {
     count: number
     remainder: number
   } {
-    const { cropsPerSeed, seedsPerConversion } = this._conversionInfo
+    const { cropsPerSeed, seedsPerConversion } = this.conversionInfo
     const cropsNotConverted = cropsCount % cropsPerSeed
     const processCount = ((cropsCount - cropsNotConverted) / cropsPerSeed) * seedsPerConversion
+
     return {
       count: processCount,
       remainder: cropsNotConverted,
@@ -243,7 +231,7 @@ class Crop {
     count: number
     remainder: number
   } {
-    const { cropsPerPreserve } = this._conversionInfo
+    const { cropsPerPreserve } = this.conversionInfo
     const cropsNotConverted = cropsCount % cropsPerPreserve
     const processCount = (cropsCount - cropsNotConverted) / cropsPerPreserve
     return {

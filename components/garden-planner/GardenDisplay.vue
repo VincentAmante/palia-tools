@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import type { Plot, Tile } from '@/assets/scripts/garden-planner/imports'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
+import { useDragAndDrop } from '@/stores/useDragAndDrop'
 
 defineProps({
   gardenTiles: {
@@ -17,7 +17,7 @@ defineProps({
     default: false,
   },
 })
-const emit = defineEmits(['selectTile', 'rightClick', 'mouseover', 'updateGardenTiles'])
+const emit = defineEmits(['selectTile', 'rightClick', 'mouseover', 'updateGardenTiles', 'mouseup'])
 
 const plotsDisplay = ref<HTMLDivElement | null>(null)
 function getPlotsDisplay() {
@@ -34,7 +34,7 @@ defineExpose({
   getPlotsDisplay,
   modifyPlotsDisplayClassList,
 })
-const { get: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
+const isTakingScreenshot = useTakingScreenshot()
 
 function selectTile(event: MouseEvent, rowIndex: number, index: number, plot: Plot) {
   if (plot.isActive)
@@ -50,25 +50,42 @@ function handleHover(rowIndex: number, index: number, plot: Plot) {
   if (plot.isActive)
     emit('mouseover', rowIndex, index, plot)
 }
+
+function handleMouseUp(rowIndex: number, index: number, plot: Plot) {
+  if (plot.isActive)
+    emit('mouseup', rowIndex, index, plot)
+}
+
+const dragHandler = useDragAndDrop()
+function handleDragEnter(row: number, col: number, plot: Plot) {
+  dragHandler.onTileEnter(row, col, plot)
+}
 </script>
 
 <template>
-  <div :class="(gardenTilesAreWide && !isTakingScreenshot) ? 'overflow-x-auto py-2' : ''">
+  <div
+    class="h-full flex flex-col items-center"
+    :class="[(isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[100vw]']"
+  >
     <div
-      class="rounded-xl md:w-fit p-2 bg-base-300" :class="(isTakingScreenshot) ? 'w-fit' : 'w-full'"
+      class="rounded-xl  my-4 md:my-0 mx-auto lg:ml-0 lg:mr-auto px-3 lg:px-2 bg-accent"
+      :class="(isTakingScreenshot.get) ? 'w-fit mx-auto px-1 mt-0' : 'w-full sm:w-fit'"
       @contextmenu.prevent.self=""
     >
-      <div ref="plotsDisplay" class="w-full overflow-auto lg:overflow-auto flex flex-col gap-3 p-3">
-        <div v-for="(plotRow, plotRowIndex) in gardenTiles" :key="plotRowIndex" class="plotRow flex gap-3">
-          <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="plot flex flex-col gap-1 relative">
-            <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="plotTileRow flex cols-3 gap-1">
+      <div ref="plotsDisplay" class="w-full overflow-auto grid gap-2">
+        <div v-for="(plotRow, plotRowIndex) in gardenTiles" :key="plotRowIndex" class="plotRow flex gap-2">
+          <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="plot flex flex-col gap-0 relative">
+            <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="plotTileRow flex cols-3 gap-0">
               <div v-for="(tile, index) in row" :key="index" class="plotTile">
                 <CropTile
                   :tile="tile as Tile" :is-disabled="!plot.isActive" :bonus-hovered="hoveredBonus"
+                  :index="(1 + rowIndex) + (index + (rowIndex * 2))"
                   :is-alt="(plotRowIndex + plotIndex) % 2 === 0"
-                  @click="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
-                  @contextmenu="((e: MouseEvent) => handleRightClick(event, rowIndex, index, plot as Plot))"
+                  @click.left="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
+                  @click.right="((e: MouseEvent) => handleRightClick(event, rowIndex, index, plot as Plot))"
                   @mouseover="handleHover(rowIndex, index, plot as Plot)"
+                  @mouseup="(handleMouseUp(rowIndex, index, plot as Plot))"
+                  @dragenter="(e: DragEvent) => handleDragEnter(rowIndex, index, plot as Plot)"
                 />
               </div>
             </div>

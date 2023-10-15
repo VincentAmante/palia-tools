@@ -35,10 +35,17 @@ const crops = {
       cropsPerSeed: 3,
       seedsPerConversion: 2,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 30,
+      preserveProcessMinutes: 27,
     },
     {
       preserve: '/jars/tomato.png',
       seed: '/seeds/tomato.png',
+    },
+    {
+      cropCode: CropCode.Tomato,
+      cropTooltip: 'Tomato: Water Retention',
+      cropBackgroundColor: 'bg-water-retain',
     },
   ),
 
@@ -64,10 +71,17 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 84,
+      preserveProcessMinutes: 54,
     },
     {
       preserve: '/jars/potato.png',
       seed: '/seeds/potato.png',
+    },
+    {
+      cropCode: CropCode.Potato,
+      cropTooltip: 'Potato: Water Retention',
+      cropBackgroundColor: 'bg-water-retain',
     },
   ),
 
@@ -94,10 +108,17 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 0,
+      seedProcessMinutes: 42,
+      preserveProcessMinutes: 0,
     },
     {
       preserve: '',
       seed: '/seeds/rice.png',
+    },
+    {
+      cropCode: CropCode.Rice,
+      cropTooltip: 'Rice: Harvest Increase',
+      cropBackgroundColor: 'bg-harvest-boost',
     },
   ),
 
@@ -123,13 +144,19 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 0,
+      seedProcessMinutes: 42,
+      preserveProcessMinutes: 0,
     },
     {
       preserve: '',
       seed: '/seeds/wheat.png',
     },
+    {
+      cropCode: CropCode.Wheat,
+      cropTooltip: 'Wheat: Harvest Increase',
+      cropBackgroundColor: 'bg-harvest-boost',
+    },
   ),
-
   [CropType.Carrot]: new Crop(
     CropType.Carrot,
     Bonus.WeedPrevention,
@@ -152,10 +179,17 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 18,
+      preserveProcessMinutes: 27,
     },
     {
       preserve: '/jars/carrot.png',
       seed: '/seeds/carrot.png',
+    },
+    {
+      cropCode: CropCode.Carrot,
+      cropTooltip: 'Carrot: Weed Prevention',
+      cropBackgroundColor: 'bg-weed-prevention',
     },
   ),
   [CropType.Onion]: new Crop(
@@ -180,10 +214,17 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 24,
+      preserveProcessMinutes: 36,
     },
     {
       preserve: '/jars/onion.png',
       seed: '/seeds/onion.png',
+    },
+    {
+      cropCode: CropCode.Onion,
+      cropTooltip: 'Onion: Weed Prevention',
+      cropBackgroundColor: 'bg-weed-prevention',
     },
   ),
   [CropType.Cotton]: new Crop(
@@ -208,10 +249,17 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 3,
       cropsPerPreserve: 0,
+      seedProcessMinutes: 36,
+      preserveProcessMinutes: 0,
     },
     {
       preserve: '',
       seed: '/seeds/cotton.png',
+    },
+    {
+      cropCode: CropCode.Cotton,
+      cropTooltip: 'Cotton: Quality Increase',
+      cropBackgroundColor: 'bg-quality-increase',
     },
   ),
   [CropType.Blueberry]: new Crop(
@@ -220,7 +268,7 @@ const crops = {
     CropSize.Bush,
     '/crops/blueberry.webp',
     {
-      base: 4,
+      base: 6,
       growthTime: 9,
       isReharvestable: true,
       reharvestCooldown: 3,
@@ -239,10 +287,17 @@ const crops = {
       cropsPerSeed: 4,
       seedsPerConversion: 2,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 81,
+      preserveProcessMinutes: 47.25,
     },
     {
       preserve: '/jars/blueberry.png',
       seed: '/seeds/blueberry.png',
+    },
+    {
+      cropCode: CropCode.Blueberry,
+      cropTooltip: 'Berry Bush: Speed Increase. 2x2, needs 2 of a bonus for the buff to activate',
+      cropBackgroundColor: 'bg-growth-boost',
     },
   ),
   [CropType.Apple]: new Crop(
@@ -270,14 +325,94 @@ const crops = {
       cropsPerSeed: 10,
       seedsPerConversion: 1,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 142,
+      preserveProcessMinutes: 76,
     },
     {
       preserve: '/jars/apple.png',
       seed: '/seeds/apple.png',
     },
+    {
+      cropCode: CropCode.Apple,
+      cropTooltip: 'Apple Tree: Speed Increase. 3x3, needs 3 of a bonus for the buff to activate',
+      cropBackgroundColor: 'bg-growth-boost',
+    },
+  ),
+  [CropType.Corn]: new Crop(
+    CropType.Corn,
+    Bonus.HarvestIncrease,
+    CropSize.Single,
+    '/crops/corn.webp',
+    {
+      base: 2,
+      growthTime: 5,
+    },
+    {
+      crop: 40,
+      cropStar: 60,
+      seed: 15,
+      seedStar: 22,
+      hasPreserve: true,
+      preserve: 60,
+      preserveStar: 90,
+    },
+    {
+      cropsPerSeed: 1,
+      seedsPerConversion: 4,
+      cropsPerPreserve: 1,
+      seedProcessMinutes: 48,
+      preserveProcessMinutes: 48,
+    },
+    {
+      preserve: '/jars/corn.webp',
+      seed: '/seeds/corn.webp',
+    },
+    {
+      cropCode: CropCode.Corn,
+      cropTooltip: 'Corn: Harvest Increase',
+      cropBackgroundColor: 'bg-harvest-boost',
+    },
+  ),
+  [CropType.SpicyPepper]: new Crop(
+    CropType.SpicyPepper,
+    Bonus.QualityIncrease,
+    CropSize.Bush,
+    '/crops/spicy-pepper.webp',
+    {
+      base: 6,
+      growthTime: 6,
+      isReharvestable: true,
+      reharvestCooldown: 3,
+      reharvestLimit: 3,
+    },
+    {
+      crop: 32,
+      cropStar: 48,
+      seed: 85,
+      seedStar: 127,
+      hasPreserve: true,
+      preserve: 48,
+      preserveStar: 72,
+    },
+    {
+      cropsPerSeed: 4,
+      seedsPerConversion: 2,
+      cropsPerPreserve: 1,
+      seedProcessMinutes: 100,
+      preserveProcessMinutes: 38.5,
+    },
+    {
+      preserve: '/jars/spicy-pepper.webp',
+      seed: '/seeds/spicy-pepper.webp',
+    },
+    {
+      cropCode: CropCode.SpicyPepper,
+      cropTooltip: 'Spicy Pepper: Quality Increase. 2x2, needs 2 of a bonus for the buff to activate',
+      cropBackgroundColor: 'bg-quality-increase',
+    },
   ),
   [CropType.None]: null,
-}
+} as const
 
 function getCropFromCode(code: CropCode): Crop | null {
   switch (code) {
@@ -299,34 +434,17 @@ function getCropFromCode(code: CropCode): Crop | null {
       return crops[CropType.Blueberry]
     case CropCode.Apple:
       return crops[CropType.Apple]
+    case CropCode.Corn:
+      return crops[CropType.Corn]
+    case CropCode.SpicyPepper:
+      return crops[CropType.SpicyPepper]
     default:
       return crops[CropType.None]
   }
 }
 
 function getCodeFromCrop(crop: Crop): CropCode {
-  switch (crop.type) {
-    case CropType.Tomato:
-      return CropCode.Tomato
-    case CropType.Potato:
-      return CropCode.Potato
-    case CropType.Rice:
-      return CropCode.Rice
-    case CropType.Wheat:
-      return CropCode.Wheat
-    case CropType.Carrot:
-      return CropCode.Carrot
-    case CropType.Onion:
-      return CropCode.Onion
-    case CropType.Cotton:
-      return CropCode.Cotton
-    case CropType.Blueberry:
-      return CropCode.Blueberry
-    case CropType.Apple:
-      return CropCode.Apple
-    default:
-      return CropCode.None
-  }
+  return crop.cropCode
 }
 
 function getCropFromType(type: CropType): Crop | null {

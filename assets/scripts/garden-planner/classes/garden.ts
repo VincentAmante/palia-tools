@@ -9,7 +9,7 @@ import { parseSave } from '../save-handler'
 import FertiliserType from '../enums/fertiliser'
 import FertiliserCode from '../enums/fertilisercode'
 import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliser-list'
-import type { CalculateValueOptions, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo } from '../utils/garden-helpers'
+import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo, ISimulateYieldResult } from '../utils/garden-helpers'
 import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
 
 import Plot from './plot'
@@ -279,15 +279,7 @@ class Garden {
       }
     }
 
-    let minGrowthTime = 0
-    if (individualCrops.size > 0) {
-      minGrowthTime = Math.min(
-        ...Array.from(individualCrops.values()).map(
-          tile => tile.crop?.produceInfo.growthTime ?? 0,
-        ),
-      )
-    }
-    else {
+    if (individualCrops.size <= 0) {
       return {
         harvests: [] as IHarvestInfo[],
         harvestTotal: {
@@ -298,15 +290,20 @@ class Garden {
       }
     }
 
+    const useGrowthBoost = options.useGrowthBoost
     // max growth time is the maximum growth time of all crops, and then reharvest cooldown multiplied by rehavest limit
     let maxGrowthTime = Math.max(
       ...Array.from(individualCrops.values()).map((tile) => {
         if (tile.crop?.produceInfo == null)
           return 0
 
-        return tile.crop.totalGrowTime
+        return tile.crop.getTotalGrowTime(
+          (useGrowthBoost ?? false)
+          && tile.bonuses.includes(Bonus.SpeedIncrease),
+        )
       }),
     )
+
     if (options.days && options.days > 0)
       maxGrowthTime = options.days
 
@@ -321,7 +318,7 @@ class Garden {
     }
 
     // Reduce growth time by 1 to account for speed boost
-    for (let day = minGrowthTime - 1; day <= maxGrowthTime; day++) {
+    for (let day = 1; day <= maxGrowthTime; day++) {
       const harvest: IHarvestInfo = {
         day,
         crops: getCropMap(),
@@ -344,7 +341,9 @@ class Garden {
         )
           continue
 
-        if (day > crop.totalGrowTime && !options.includeReplant)
+        const hasGrowthBoost = (useGrowthBoost ?? false) && tile.bonuses.includes(Bonus.SpeedIncrease)
+
+        if (day > crop.getTotalGrowTime(hasGrowthBoost))
           continue
 
         const baseStarChance
@@ -355,7 +354,7 @@ class Garden {
               : options.baseChanceOverride ?? 0
 
         const { base, withBonus } = crop.produceInfo
-        const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day)
+        const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day, hasGrowthBoost)
 
         if (isHarvestable) {
           let finalStarChance = baseStarChance
@@ -441,6 +440,7 @@ class Garden {
           = seedsRemainder[cropType as CropType].star
       }
     }
+
     return {
       harvests,
       harvestTotal,
@@ -459,10 +459,7 @@ class Garden {
    */
   calculateValue(
     options: CalculateValueOptions,
-    harvestInfo: {
-      harvests: IHarvestInfo[]
-      harvestTotal: IHarvestInfo
-    },
+    harvestInfo: ISimulateYieldResult,
   ) {
     const result: {
       day: number
@@ -522,6 +519,7 @@ class Garden {
         dayResult.crops[cropType as CropType].base.gold += baseGoldValue
         dayResult.crops[cropType as CropType].base.produce += convertedBaseUnits
         dayResult.crops[cropType as CropType].base.cropRemainder = newBaseRemainder
+        remainders[cropType as CropType].base = newBaseRemainder
 
         const { goldValue: starGoldValue, newRemainder: newStarRemainder, convertedUnits: convertedStarUnits } = calculateCropResult(
           crop,
@@ -530,9 +528,11 @@ class Garden {
           starOption,
           true,
         )
+
         dayResult.crops[cropType as CropType].star.gold += starGoldValue
         dayResult.crops[cropType as CropType].star.produce += convertedStarUnits
         dayResult.crops[cropType as CropType].star.cropRemainder = newStarRemainder
+        remainders[cropType as CropType].star = newStarRemainder
         dayResult.totalGold += baseGoldValue + starGoldValue
       }
 
@@ -559,6 +559,9 @@ class Garden {
       if (crop == null)
         continue
 
+      if (baseProduce === 0 && starProduce === 0)
+        continue
+
       const baseRemainder = totalResult.crops[cropType as CropType].base.cropRemainder
       const starRemainder = totalResult.crops[cropType as CropType].star.cropRemainder
 
@@ -581,8 +584,10 @@ class Garden {
         starOption,
         true,
       )
+
       totalResult.crops[cropType as CropType].star.gold += starGoldValue
       totalResult.crops[cropType as CropType].star.produce += convertedStarUnits
+
       totalResult.crops[cropType as CropType].star.cropRemainder = newStarRemainder
 
       totalResult.totalGold += baseGoldValue + starGoldValue
@@ -590,7 +595,7 @@ class Garden {
     return {
       result,
       totalResult,
-    }
+    } as ICalculateValueResult
   }
 
   /**
@@ -670,6 +675,15 @@ function calculateCropResult(
   let goldValue = 0
   let newRemainder = 0
 
+  const cropsCombined = produce + remainder
+  if (produce === 0 && remainder === 0) {
+    return {
+      convertedUnits,
+      goldValue,
+      newRemainder,
+    }
+  }
+
   switch (option) {
     case 'crop':
       newRemainder = remainder
@@ -677,14 +691,14 @@ function calculateCropResult(
       goldValue = crop?.calculateGoldValue(produce, option, isStar).goldValue ?? 0
       break
     case 'seed':
-      convertedUnits = crop?.convertCropToSeed(produce + remainder)?.count ?? 0
-      newRemainder = crop?.convertCropToSeed(produce + remainder)?.remainder ?? 0
-      goldValue = crop?.calculateGoldValue(produce + remainder, option, isStar).goldValue ?? 0
+      convertedUnits = crop?.convertCropToSeed(cropsCombined)?.count ?? 0
+      newRemainder = crop?.convertCropToSeed(cropsCombined)?.remainder ?? 0
+      goldValue = crop?.calculateGoldValue(cropsCombined, option, isStar).goldValue ?? 0
       break
     case 'preserve':
-      convertedUnits = crop?.convertCropToPreserve(produce + remainder)?.count ?? 0
-      newRemainder = crop?.convertCropToPreserve(produce + remainder)?.remainder ?? 0
-      goldValue = crop?.calculateGoldValue(produce + remainder, option, isStar).goldValue ?? 0
+      convertedUnits = crop?.convertCropToPreserve(cropsCombined)?.count ?? 0
+      newRemainder = crop?.convertCropToPreserve(cropsCombined)?.remainder ?? 0
+      goldValue = crop?.calculateGoldValue(cropsCombined, option, isStar).goldValue ?? 0
       break
   }
 

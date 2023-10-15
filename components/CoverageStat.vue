@@ -29,23 +29,27 @@ const percentString = computed(() => {
 </script>
 
 <template>
-  <div class="coverage-stat flex flex-col items-center justify-center gap-2 group">
+  <div class="coverage-stat flex flex-col items-center  gap-[1px] group relative">
     <div
-      class="radial-progress bg-white bg-opacity-20 group-hover:bg-opacity-60 transition-all border-4 border-solid  border-white border-opacity-0"
-      :style="[percent, '--size: clamp(8px, 4.35rem, 18vw)']"
+      class="radial-progress bg-accent absolute top-0 text-primary group-hover:bg-white group-hover:bg-opacity-80 transition-all border-4 border-solid border-white border-opacity-0"
+      :style="['--value:100', '--size: clamp(8px, 3.7rem, 17vw)']"
+    />
+    <div
+      class="radial-progress transition-all border-4 border-solid border-white border-opacity-0"
+      :style="[percent, '--size: clamp(8px, 3.7rem, 17vw)']"
     >
-      <div class="relative flex flex-col text-center items-center justify-center">
-        <div class="pt-2 md:pt-3 text-lg lg:text-xl flex flex-col items-center justify-center te">
+      <div class="relative flex flex-col gap-[0px] pt-1">
+        <div class="text flex flex-col items-center justify-center">
           <slot name="icon" />
         </div>
-        <div class="text font-semibold text-center flex flex-col items-center justify-center">
-          <p class="flex items-center text-sm gap-[1px]">
-            {{ percentString }}<span class="text-xs">%</span>
+        <div class="text-sm font-bold text-center flex flex-col items-center justify-center">
+          <p class="flex items-center gap-[1px]">
+            {{ percentString }}
           </p>
         </div>
       </div>
     </div>
-    <div class="uppercase font-semibold max-w-[12ch] text-xs  h-12 text-center break-words align-top flex items-start">
+    <div class="capitalise font-bold max-w-[8ch] text-misc text-xs h-fit text-center break-words align-top flex items-start pt-[2px]">
       <slot name="title">
         Title missing
       </slot>

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
+import { useDragAndDrop } from '@/stores/useDragAndDrop'
 import { Bonus, Crop, CropType } from '@/assets/scripts/garden-planner/imports'
 
 const props = defineProps({
@@ -21,30 +22,7 @@ const props = defineProps({
 
 const { get: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
 const tooltip = computed(() => {
-  switch (props.crop.type) {
-    case CropType.Tomato:
-      return 'Tomato: Water Retention'
-    case CropType.Potato:
-      return 'Potato: Water Retention'
-    case CropType.Rice:
-      return 'Rice: Harvest Increase'
-    case CropType.Wheat:
-      return 'Wheat: Harvest Increase'
-    case CropType.Onion:
-      return 'Onion: Weed Prevention'
-    case CropType.Carrot:
-      return 'Carrot: Weed Prevention'
-    case CropType.Cotton:
-      return 'Cotton: Quality Increase'
-    case CropType.Apple:
-      return 'Apple Tree: Speed Increase. 3x3, needs 3 of a bonus for the buff to activate'
-    case CropType.Blueberry:
-      return 'Berry Bush: Speed Increase. 2x2, needs 2 of a bonus for the buff to activate'
-    case CropType.None:
-      return 'Remove Crop'
-    default:
-      return ''
-  }
+  return props.crop.cropTooltip
 })
 
 const bonus = computed(() => {
@@ -52,56 +30,70 @@ const bonus = computed(() => {
     case Bonus.WaterRetain:
       return {
         icon: 'droplet',
-        colour: 'text-sky-500',
+        colour: 'text-water-retain',
       }
     case Bonus.QualityIncrease:
       return {
         icon: 'star',
-        colour: 'text-yellow-600',
+        colour: 'text-quality-increase',
       }
     case Bonus.HarvestIncrease:
       return {
         icon: 'wheat-awn',
-        colour: 'text-green-800',
+        colour: 'text-harvest-boost',
       }
     case Bonus.WeedPrevention:
       return {
         icon: 'shield',
-        colour: 'text-rose-500',
+        colour: 'text-weed-prevention',
       }
     case Bonus.SpeedIncrease:
       return {
         icon: 'forward-fast',
-        colour: 'text-orange-500',
+        colour: 'text-growth-boost',
       }
     default:
       return {
         icon: '',
-        colour: 'text-gray-500',
+        colour: 'text-misc',
       }
   }
 })
+
+const dragHandler = useDragAndDrop()
 </script>
 
 <template>
-  <div class="md:tooltip md:tooltip-right tooltip-accent" :data-tip="tooltip">
+  <div
+    v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)"
+    class="md:tooltip md:tooltip-top tooltip-info"
+    :data-tip="tooltip"
+  >
     <button
-      v-if="!(crop.type === CropType.None && isTakingScreenshot)"
-      class="relative bg-base-200 rounded-lg md:btn-lg w-14 md:w-16 aspect-square flex flex-col items-center justify-center isolate hover:bg-slate-200"
-      :class="(isSelected && !isTakingScreenshot) ? 'bg-slate-100' : ''"
+      draggable="true"
+      class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+      :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
+      :name="`select ${crop.type}`"
+      @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)"
+      @dragend="(e: DragEvent) => dragHandler.stopDrag()"
     >
       <font-awesome-icon
         v-if="bonus.icon !== ''"
         class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black" :icon="['fas', bonus.icon]" :class="bonus.colour"
       />
-      <div v-if="crop.type !== CropType.None" class="flex flex-col absolute bottom-0 right-0 py-[0.2rem] pr-[0.4rem]">
-        <p class="text-sm leading-none font-bold text-neutral-700">
-          {{ count }}
-        </p>
-      </div>
+      <p class="absolute bottom-0 right-0 py-[0.2rem] pr-[0.2rem] text-xs leading-none font-bold text-neutral-700">
+        {{ count }}
+      </p>
       <nuxt-img
-        v-if="(crop && crop.image != null && crop.image !== '')" class="absolute -z-10 max-w-[42px]"
-        :src="crop.image" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
+        v-if="(crop && crop.image != null && crop.image !== '')"
+        v-once
+        class="absolute -z-10 max-w-[34px]"
+        draggable="false"
+        :src="crop.image"
+        :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
+        :alt="crop.type"
+        :srcset="undefined"
+        placeholder
       />
       <font-awesome-icon
         v-else class="absolute -z-10 max-w-[45px] text-warning text-3xl "
