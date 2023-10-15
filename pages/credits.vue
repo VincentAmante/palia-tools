@@ -56,7 +56,7 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
-              Gazar
+              gazar
             </template>
             <template #for>
               Information
