@@ -47,7 +47,7 @@ function downloadImage() {
             App may freeze for a few seconds while it generates the image.
           </p>
           <p class="text-warning">
-            Does not work on firefox
+            Known to break on some platforms
           </p>
         </div>
       </div>
