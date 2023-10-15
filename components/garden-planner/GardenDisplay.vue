@@ -68,8 +68,8 @@ function handleDragEnter(row: number, col: number, plot: Plot) {
     :class="[(isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[100vw]']"
   >
     <div
-      class="rounded-xl  my-4 md:my-0 mx-auto lg:ml-0 lg:mr-auto px-3 lg:px-2 bg-accent"
-      :class="(isTakingScreenshot.get) ? 'w-fit mx-auto px-1 mt-0' : 'w-full sm:w-fit'"
+      class="rounded-xl  my-4 md:my-0  lg:ml-0 lg:mr-auto px-3 lg:px-2 bg-accent"
+      :class="(isTakingScreenshot.get) ? 'w-fit  px-1 mt-0' : 'w-full sm:w-fit'"
       @contextmenu.prevent.self=""
     >
       <div ref="plotsDisplay" class="w-full overflow-auto grid gap-2">

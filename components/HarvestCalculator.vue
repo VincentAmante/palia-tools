@@ -98,7 +98,9 @@ watchEffect(() => {
 </script>
 
 <template>
-  <section class="collapse collapse-arrow rounded-none lg:rounded-lg w-full lg:h-fit lg:py-0 lg:mx-0 lg:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible lg:max-w-[47rem] transition-all">
+  <section
+    class="collapse collapse-arrow rounded-none lg:rounded-lg w-full lg:h-fit lg:py-0 lg:mx-0 lg:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible lg:max-w-[47rem] transition-all"
+  >
     <div
       class="bg-primary lg:rounded-lg"
       :class="isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0 pb-6 lg:pb-0'"

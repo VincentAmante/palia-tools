@@ -181,7 +181,7 @@ function openExportModal() {
   exportModal.value?.openModal()
 }
 const isTakingScreenshot = useTakingScreenshot()
-function saveAsImage() {
+async function saveAsImage() {
   isTakingScreenshot.set(true)
   let displayWidth = ((gardenDisplay.value?.getPlotsDisplay() as HTMLElement).clientWidth) + 200
   if (!gardenTilesAreWide.value)
@@ -194,19 +194,27 @@ function saveAsImage() {
   })
   const htmlContent = display.value as HTMLElement
 
-  domtoimage.toBlob(
+  domtoimage.toJpeg(
     htmlContent, {
       copyDefaultStyles: false,
     },
-  ).then((blob: Blob) => {
-    const url = window.URL.createObjectURL(blob)
-    downloadURI(url, `PaliaGardenPlan-${uniqid()}.png`)
-    display.value.style.width = ''
-    gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
-      classList.remove(`w-${displayWidth}`)
-    })
-    isTakingScreenshot.set(false)
-  })
+  ).then(
+    domtoimage.toBlob(
+      htmlContent, {
+        copyDefaultStyles: false,
+      },
+    ).then(
+      (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob)
+        downloadURI(url, `PaliaGardenPlan-${uniqid()}.png`)
+        display.value.style.width = ''
+        gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
+          classList.remove(`w-${displayWidth}`)
+        })
+        isTakingScreenshot.set(false)
+      },
+    ),
+  )
 }
 
 const hoveredBonus = ref(Bonus.None)
@@ -257,7 +265,7 @@ function handleMouseLeave() {
     <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
     <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
     <SaveModal ref="saveModal" @save-layout="saveLayout()" />
-    <ExportModal ref="exportModal" @download-image="saveAsImage()" />
+    <ExportModal ref="exportModal" @download-image="async () => await saveAsImage()" />
 
     <div class="flex flex-col w-full justify-center items-center">
       <section
@@ -275,7 +283,10 @@ function handleMouseLeave() {
           </button> -->
           <div class="flex flex-col xl:px-2">
             <div id="planner" class="relative py-4 pb-1">
-              <section class="crop-buttons px-4 w-full flex flex-col md:flex-row gap-2">
+              <section
+                class="crop-buttons px-4 w-full flex md:flex-row gap-2"
+                :class="[(isTakingScreenshot.get) ? '' : 'flex-col']"
+              >
                 <h2 class="sr-only">
                   Crop Buttons
                 </h2>
@@ -316,31 +327,28 @@ function handleMouseLeave() {
                       Fertilisers per Day
                     </h3>
                     <div class="flex flex-wrap gap-2 pt-2">
-                      <div v-for="(count, index) in plotStat.fertiliserCount" :key="index">
-                        <div>
-                          <FertiliserButton
-                            v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
-                            :is-selected="(selectedItem.val instanceof Fertiliser)
-                              && selectedItem.val
-                                !== null
-                              && index === selectedItem.val.type" :count="count"
-                            @click="selectedItem.select(fertilisers[index])"
-                          />
-                          <button
-                            v-else
-                            id="fertiliser-eraser"
-                            aria-label="Select Fertiliser Eraser"
-                            class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
-                            :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
-                            @click="selectedItem.select('fertiliser-erase')"
-                          >
-                            <font-awesome-icon
-                              class="absolute -z-10 max-w-[42px] text-warning text-2xl "
-                              :icon="['fas', 'eraser']"
-                            />
-                          </button>
-                        </div>
-                      </div>
+                      <button
+                        id="fertiliser-eraser"
+                        aria-label="Select Fertiliser Eraser"
+                        class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+                        :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                        @click="selectedItem.select('fertiliser-erase')"
+                      >
+                        <font-awesome-icon
+                          class="absolute -z-10 max-w-[42px] text-warning text-2xl "
+                          :icon="['fas', 'eraser']"
+                        />
+                      </button>
+                      <template v-for="(count, index) in plotStat.fertiliserCount" :key="index">
+                        <FertiliserButton
+                          v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
+                          :is-selected="(selectedItem.val instanceof Fertiliser)
+                            && selectedItem.val
+                              !== null
+                            && index === selectedItem.val.type" :count="count"
+                          @click="selectedItem.select(fertilisers[index])"
+                        />
+                      </template>
                     </div>
                   </div>
                 </section>
@@ -366,9 +374,8 @@ function handleMouseLeave() {
               ]"
             >
               <section
-                class=""
                 :class="[
-                  (isTakingScreenshot.get) ? '' : 'w-full lg:basis-3/6 xl:basis-3/6 overflow-x-auto',
+                  (isTakingScreenshot.get) ? 'w-full basis-3/6 mx-auto' : 'w-full lg:basis-3/6 xl:basis-3/6 overflow-x-auto',
                   (gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2 py-2' : 'grid']"
               >
                 <h2 class="sr-only">
@@ -388,8 +395,8 @@ function handleMouseLeave() {
                 />
               </section>
               <div
-                class="w-full  flex flex-col lg:flex-row lg:justify-end lg:basis-3/6 xl:basis-2/3"
-                :class="(gardenTilesAreWide) ? 'flex flex-col items-center lg:gap-2' : 'pt-4 lg:pt-0' "
+                class="w-full flex flex-col lg:flex-row lg:justify-end lg:basis-3/6 xl:basis-2/3"
+                :class="[(gardenTilesAreWide) ? 'flex flex-col items-center lg:gap-2' : 'pt-4 lg:pt-0']"
               >
                 <StatsDisplay
                   ref="statDisplay"

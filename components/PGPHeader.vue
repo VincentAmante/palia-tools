@@ -136,21 +136,30 @@
               </p>
               <ul>
                 <li class="text-sm">
-                  <NuxtLink to="https://palia.anniebananie.io" class="flex items-center flex-wrap" rel="noopener">
+                  <NuxtLink
+                    to="https://palia.anniebananie.io" class="flex items-center flex-wrap" rel="noopener"
+                    target="_blank"
+                  >
                     <font-awesome-icon :icon="['fas', 'gift']" class="text-xl" />
                     Gift Tracker
                     <span class="text-xs">(anniebananie)</span>
                   </NuxtLink>
                 </li>
                 <li class="text-sm">
-                  <NuxtLink to="https://palia.th.gl/" class="flex items-center flex-wrap" rel="noopener">
+                  <NuxtLink
+                    to="https://palia.th.gl/" class="flex items-center flex-wrap" rel="noopener"
+                    target="_blank"
+                  >
                     <font-awesome-icon :icon="['fas', 'map']" class="text-xl" />
                     Interactive Map
                     <span class="text-xs">(The Hidden Gaming Lair)</span>
                   </NuxtLink>
                 </li>
                 <li class="text-sm">
-                  <NuxtLink to="https://paliapedia.com/" class="flex" rel="noopener">
+                  <NuxtLink
+                    to="https://paliapedia.com/" class="flex" rel="noopener"
+                    target="_blank"
+                  >
                     <nuxt-img
                       src="/externals/paliapedia.svg" width="18px" height="18px"
                       class="max-w-[1.5rem] inline-block text-lg"

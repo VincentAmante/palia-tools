@@ -343,7 +343,7 @@ class Garden {
 
         const hasGrowthBoost = (useGrowthBoost ?? false) && tile.bonuses.includes(Bonus.SpeedIncrease)
 
-        if (day > crop.getTotalGrowTime(hasGrowthBoost))
+        if (day > crop.getTotalGrowTime(hasGrowthBoost) && !options.includeReplant)
           continue
 
         const baseStarChance
@@ -397,7 +397,6 @@ class Garden {
 
           if (seeds.star > 0) {
             const seedsToProduce = Math.max(0, (seeds.star - seedsRemainder[cropType].star))
-
             if (seedsToProduce > 0) {
               const cropsConsumed = Math.max(Math.ceil((cropsPerSeed / seedsPerConversion) * seedsToProduce), cropsPerSeed)
               harvest.crops[cropType].star -= cropsConsumed
