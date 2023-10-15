@@ -360,7 +360,7 @@ function handleMouseLeave() {
             <div
               class="flex justify-between lg:pb-6 lg:px-2 "
               :class="[
-                (!isTakingScreenshot.get && gardenTilesAreWide) ? 'md:gap-2' : 'lg:flex-row md:gap-0 flex-col',
+                (!isTakingScreenshot.get && gardenTilesAreWide) ? 'md:gap-2 flex-col lg:mx-auto' : 'lg:flex-row md:gap-0 flex-col',
                 (isTakingScreenshot.get && !gardenTilesAreWide) ? 'px-4 gap-4 !flex-row' : '',
                 (isTakingScreenshot.get && gardenTilesAreWide) ? 'px-4 gap-4 ' : '',
               ]"
