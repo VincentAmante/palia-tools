@@ -35,7 +35,7 @@ useHead({
           Contributors
         </h2>
         <p>
-          Thank you to the following people for their direct assistance to the project!
+          Thank you to the following people for their assistance to the project!
         </p>
         <div class="flex flex-row flex-wrap gap-4 justify-center">
           <CreditName>
