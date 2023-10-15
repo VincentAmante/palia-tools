@@ -78,6 +78,14 @@ useHead({
               UI Testing
             </template>
           </CreditName>
+          <CreditName>
+            <template #name>
+              Gazar
+            </template>
+            <template #for>
+              Information
+            </template>
+          </CreditName>
         </div>
         <p class="max-w-4xl text-center">
           Huge thanks to the Palia Team and Singularity 6 for developing the game, Palia's Commmunity Teams for various assistance with the planner, and players who provided information through discussions online,

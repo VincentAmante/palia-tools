@@ -98,7 +98,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <section class="collapse collapse-arrow rounded-none lg:rounded-lg w-full lg:h-fit lg:py-0 lg:mx-0 lg:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible lg:max-w-3xl transition-all">
+  <section class="collapse collapse-arrow rounded-none lg:rounded-lg w-full lg:h-fit lg:py-0 lg:mx-0 lg:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible lg:max-w-[47rem] transition-all">
     <div
       class="bg-primary lg:rounded-lg"
       :class="isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0 pb-6 lg:pb-0'"
@@ -413,6 +413,17 @@ watchEffect(() => {
               <template #labels>
                 <p>
                   Factors in growth boost when simulating yields, does not account for any RNG and is theoretical
+                </p>
+                <p class="text-warning py-1">
+                  <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
+                  Likely bugged as of 0.169
+                  <NuxtLink
+                    class="text-misc pl-1 underline"
+                    to="https://docs.google.com/document/d/1f4MQHjEC1RCNpDUz1I3eg2tioD_6yBmW0XWsVxUOJ1Y/edit" target="_blank"
+                  >
+                    <font-awesome-icon class="text-sm" :icon="['fas', 'arrow-up-right-from-square']" />
+                    (Source)
+                  </NuxtLink>
                 </p>
               </template>
             </OptionCard>

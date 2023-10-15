@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { useStorage } from '@vueuse/core'
 
 dayjs.extend(utc)
 
@@ -33,44 +32,43 @@ setInterval(() => {
   timeFormatted.value = `${hourFormatted.value}:${minuteFormatted.value} ${meridiem.value}`
 }, INTERVAL_MS)
 
-const {
-  show,
-  permissionGranted,
-  ensurePermissions,
-} = useWebNotification(
-  {
-    title: '6:00 AM in Palia',
-    body: 'Check your garden!',
-    icon: '/logo.webp',
-    requestPermissions: false,
-  },
-)
+// const {
+//   show,
+//   permissionGranted,
+//   ensurePermissions,
+// } = useWebNotification(
+//   {
+//     title: '6:00 AM in Palia',
+//     body: 'Check your garden!',
+//     icon: '/logo.webp',
+//     requestPermissions: false,
+//   },
+// )
 
-const dayAlert = useStorage('dayAlert', false)
+// const dayAlert = useStorage('dayAlert', false)
 
-watch(dayAlert, () => {
-  if (dayAlert.value && !permissionGranted.value)
-    ensurePermissions()
-})
+// watch(dayAlert, () => {
+//   if (dayAlert.value && !permissionGranted.value)
+//     ensurePermissions()
+// })
 
-watch(hour, () => {
-  if (hour.value === 6 && dayAlert.value)
-    show()
-})
+// watch(hour, () => {
+//   if (hour.value === 6 && dayAlert.value)
+//     show()
+// })
 </script>
 
 <template>
-  <div class="grid gap-2 px-4">
-    <div class="flex text-misc bg-accent rounded-md items-center justify-between px-3 py-2 md:py-0">
-      <p class="">
-        Game Time
-      </p>
-      <p class="font-bold text-lg">
+  <div class="gap-2 px-4">
+    <div class="flex flex-col items-center justify-center text-misc bg-accent rounded-md w-full px-3 py-2 md:py-0">
+      <p class="font-bold text-3xl">
         {{ timeFormatted }}
       </p>
+      <p class="">
+        Palian Time
+      </p>
     </div>
-
-    <div
+    <!-- <div
       class="flex tooltip tooltip-top text-misc bg-accent rounded-md items-center justify-between px-4 py-2 md:py-0"
     >
       <div
@@ -88,6 +86,6 @@ watch(hour, () => {
         aria-label="Toggle 6 AM alarm"
         name="reminder-toggle" type="checkbox" class="toggle toggle-info"
       >
-    </div>
+    </div> -->
   </div>
 </template>
