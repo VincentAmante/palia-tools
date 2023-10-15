@@ -17,7 +17,7 @@ useHead({
 </script>
 
 <template>
-  <main v-once class="flex flex-col px-4 py-2 lg:px-14 gap-2 text-justify">
+  <main v-once class="flex flex-col px-2 sm:px-4 py-2 lg:px-14 gap-2 text-justify">
     <NuxtLink to="/" class="flex items-center gap-2 btn w-fit btn-sm btn-ghost">
       <font-awesome-icon :icon="['fas', 'arrow-left']" class="" />
       <p class="">
@@ -33,6 +33,57 @@ useHead({
 
       <div class="grid gap-2">
         <ChangelogItem checked>
+          <template #title>
+            October 15, 2023 — UI Rework
+          </template>
+          <template #summary>
+            <li><span class="italic">UI Rework —</span> Reworked the UI to be more compact and reduce scrolling</li>
+            <li><span class="italic">Palia Clock —</span>Adds an in-game timer for convenience</li>
+            <li><span class="italic">Mechanic —</span> Added growth boost support (options)</li>
+            <li>UX Improvements:</li>
+            <ul class=" list-disc list-inside pl-3">
+              <li>You can drag crops/fertilisers to their tile</li>
+              <li>You can now click on the save codes to copy to clipboard</li>
+              <li><span class="italic">(Desktop) —</span> Hovering over a tile now previews the crop/fertiliser being placed</li>
+              <li>Main options now save automatically per browser</li>
+            </ul>
+            <li>Moved Credits to its own dedicated page</li>
+            <li>Renamed approximations data to more accurately reflect the lack of crafter timings</li>
+          </template>
+          <template #default>
+            <p>
+              This change is a major UI rework, with the aim of reducing scrolling and making the planner more compact.
+              The initial design of the planner was added as an after-thought, and was not meant to be a long-term solution.
+              Adding new features, and planning out future ones was proving to be a hassle with the current design, so I prioritised its re-work.
+            </p>
+            <p>
+              The rework is designed by an amazing friend of mine, <span class="font-bold">frnkers</span>, and was translated to code by yours truly.
+              This change allows me to comfortably add new features, and plan out future ones without worrying about the messiness of the UI.
+            </p>
+            <AppDividerAlt class="max-w-xs" />
+            <p>
+              I've also added a couple new features, an in-game timer and growth boost support.
+              Growth boost support is a toggle in the options menu as it's still bugged (and may work differently with fertilisers which is still untested),
+              a lot of thanks to <span class="font-bold">gazar</span> for providing information regarding this mechanic.
+            </p>
+            <p>
+              The in-game timer is a small nifty addition that mimics the in-game clock.
+              I've initially added a 6 AM alarm (for harvests) but it was proving to be buggy due to how web notifications work.
+              The alarm feature will be kept on the shelf until I find a better system for alarms.
+            </p>
+            <AppDividerAlt class="max-w-xs" />
+            <p>
+              Overall, this update is late as I've taken a break.
+              Health reasons and being busy with other stuff meant I couldn't follow my initial roadmap.
+              I'm still working on the planner, but it'll be at a slower pace now and I'll be developing the planner
+              at a more comfortable pace.
+            </p>
+            <p>
+              If you ever want to contribute to the project's development, just know that the website is open-source and can be accessed in the footer below!
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
           <template #title>
             September 21, 2023 (Hotfix)
           </template>
