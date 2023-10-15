@@ -79,7 +79,7 @@ const dragHandler = useDragAndDrop()
 
 <template>
   <div
-    v-if="!(fertiliser.type === FertiliserType.None) && (!isTakingScreenshot && count === 0)"
+    v-if="!(fertiliser.type === FertiliserType.None) && !(isTakingScreenshot && count === 0)"
     class="md:tooltip md:tooltip-left tooltip-info" :data-tip="tooltip"
   >
     <button
