@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
 import { CropCode } from '@/assets/scripts/garden-planner/imports'
+import PGPModal from '@/components/PGPModal.vue'
 
 const emit = defineEmits(['createNewLayout'])
-const createLayoutDialog = ref<HTMLDialogElement | null>(null)
+
+const modal = ref<InstanceType<typeof PGPModal> | null>(null)
+// const createLayoutDialog = ref<HTMLDialogElement | null>(null)
 function openModal() {
-  createLayoutDialog.value?.showModal()
+  modal.value?.showModal()
 }
 defineExpose({
   openModal,
@@ -15,7 +17,7 @@ const selectedNewLayout = ref('3x3')
 const prevSelectedNewLayout = ref('3x3')
 function createNewLayout() {
   emit('createNewLayout', layoutToCode(trimLayout()))
-  createLayoutDialog.value?.close()
+  modal.value?.hideModal()
 }
 
 enum PlotStatus {
@@ -161,25 +163,27 @@ function trimLayout(): PlotStatus[][] {
         layout[row].splice(col, 1)
     }
   }
+
+  rowInput.value = layout.length
+  colInput.value = layout[0].length
   return layout
 }
 </script>
 
 <template>
-  <dialog id="create-layout" ref="createLayoutDialog" class="modal">
-    <form ref="createLayoutForm" method="dialog" class="modal-box flex flex-col gap-2" @submit.prevent="">
-      <h3 className="font-bold text-xl">
-        New Layout
-      </h3>
-      <div class="flex flex-col gap-1">
-        <h4 class="font-bold">
+  <PGPModal ref="modal">
+    <template #header>
+      New Layout
+    </template>
+    <template #body>
+      <div class="flex flex-col gap-1 bg-palia-dark-blue rounded-md p-2 ">
+        <h3 class="font-bold">
           Dimensions
-        </h4>
-        <p class="text-xs">
-          Pick a pre-determined size here, or make a custom one
-        </p>
+        </h3>
         <select
-          v-model="selectedNewLayout" class="select select-bordered select-sm w-full max-w-xs"
+          v-model="selectedNewLayout"
+          name="layout-select" class="select select-bordered select-sm w-full max-w-xs"
+          aria-label="Select Layout"
           @change="onLayoutSelect()"
         >
           <option value="select" disabled selected>
@@ -207,67 +211,103 @@ function trimLayout(): PlotStatus[][] {
             Custom Layout
           </option>
         </select>
+
+        <p class="text-xs">
+          Pick a pre-determined size here, or make a custom one
+        </p>
       </div>
-      <div class="flex flex-col gap-1">
-        <h4 class="font-bold">
-          Editor
-        </h4>
-        <div>
-          <div class="flex items-start flex-col bg-base-200 p-2 rounded-md w-fit">
-            <p class="flex gap-1 font-bold">
-              Active Plots: <span class="flex items-center align-middle gap-1">{{ activePlots
-              }}<span class="text-xs">/</span>{{ allowIllegalLayout ? 27 : 9 }}</span>
+      <div class="flex flex-col gap-2 bg-palia-dark-blue rounded-md p-2">
+        <div class=" py-2 flex flex-col gap-3">
+          <div class="w-full flex flex-col items-center">
+            <p class="text-sm">
+              Each tile represents a 3x3 garden, click to toggle
             </p>
-            <label v-show="selectedNewLayout === 'custom'" class="label w-fit flex flex-col items-start">
-              <span class="text-sm">Allow Illegal Layout</span>
-              <div class="flex gap-1 pt-1">
-                <input
-                  v-model="allowIllegalLayout" type="checkbox" name="allow-illegal-layout"
-                  class="toggle toggle-sm"
-                >
+            <div class=" flex flex-col gap-1 py-4 px-2 rounded-md w-fit">
+              <div v-for="(plotRow, plotRowIndex) of plotLayout" :key="plotRowIndex" class="flex gap-1">
+                <div
+                  v-for="(plot, index) of plotRow" :key="index"
+                  class="btn btn-square rounded-none btn-accent btn-xs cursor-pointer transition-all"
+                  :class="plot === PlotStatus.active ? 'border-misc-saturated' : 'bg-misc bg-opacity-70'" @click="togglePlot(plotRowIndex, index)"
+                />
               </div>
-              <span class="text-xs">3x the max count</span>
-            </label>
+            </div>
+
+            <p class="flex gap-1 font-bold">
+              <span class="flex items-center align-middle gap-1">
+                {{ activePlots }} Plots
+                out of
+                {{ allowIllegalLayout ? 27 : 9 }}
+              </span>
+            </p>
           </div>
-          <p class="text-sm">
-            Click on any plot-tile to determine if there is a plot there or not
-          </p>
-        </div>
-        <div class=" py-2 flex flex-col  gap-2">
-          <div :class="selectedNewLayout === 'custom' ? '' : 'hidden'" class="flex flex-col gap-2">
-            <label for="row-input" class="flex items-center justify-start gap-2">
-              <p class="select-none">Rows</p>
-              <div class="join">
-                <button class="join-item btn btn-sm btn-accent text-white" @click="rowInput--">-</button>
+          <div :class="selectedNewLayout === 'custom' ? '' : 'hidden'" class="flex flex-col gap-2 w-fit md:w-full">
+            <label for="row-input" class="items-center justify-start grid grid-cols-2 gap-2 w-fit">
+              <p class="select-none text-sm ">Rows</p>
+              <div class="join col-span-1 rounded-md">
+                <button
+                  class="join-item btn btn-sm btn-square btn-primary"
+                  @click="() => {
+                    if (rowInput <= 1)
+                      return
+                    rowInput--
+                    enforceLayoutLimits()
+                  }"
+                >-</button>
                 <input
                   v-model="rowInput" type="number" name="row-input"
-                  class="join-item input input-accent input-sm max-w-16 text-center" min="1" max="9" step="1"
+                  class="join-item input input-sm max-w-16 text-center input-primary" min="1" max="9" step="1"
                   :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()"
                 >
-                <button class="join-item btn btn-sm btn-accent text-white" @click="rowInput++">+</button>
+                <button
+                  class="join-item btn btn-sm btn-square btn-primary" @click="() => {
+                    if (rowInput >= MAX_ROWS)
+                      return
+                    rowInput++
+                  }"
+                >+</button>
               </div>
             </label>
-            <label for="col-input" class="flex items-center justify-start gap-2">
-              <p class="select-none">Columns</p>
-              <div class="join">
-                <button class="join-item btn btn-sm btn-accent text-white" @click="colInput--">-</button>
+            <label for="col-input" class="items-center justify-start grid grid-cols-2 gap-2 w-fit">
+              <p class="select-none text-sm">Columns</p>
+              <div class="join col-span-1 rounded-md">
+                <button
+                  class="join-item btn btn-sm btn-square btn-primary"
+                  @click="() => {
+                    if (colInput <= 1)
+                      return
+                    colInput--
+                    enforceLayoutLimits()
+                  }"
+                >-</button>
                 <input
                   v-model="colInput" type="number" name="col-input"
-                  class="join-item input input-accent input-sm max-w-16" min="1" max="9" step="1"
+                  class="join-item input input-sm input-primary max-w-16 text-center" min="1" max="9" step="1"
                   :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()"
                 >
-                <button class="join-item btn btn-sm btn-accent text-white" @click="colInput++">+</button>
+                <button
+                  class="join-item btn btn-sm btn-primary btn-square" @click="() => {
+                    if (colInput >= MAX_COLS)
+                      return
+                    colInput++
+                    enforceLayoutLimits()
+                  }"
+                >+</button>
               </div>
             </label>
           </div>
-          <div class=" flex flex-col gap-1 py-4 bg-base-300 px-2 rounded-md w-fit">
-            <div v-for="(plotRow, plotRowIndex) of plotLayout" :key="plotRowIndex" class="flex gap-1">
-              <div
-                v-for="(plot, index) of plotRow" :key="index"
-                class="aspect-square border-2 border-accent rounded w-6 cursor-pointer hover:bg-accent hover:bg-opacity-50 transition-all"
-                :class="plot === PlotStatus.active ? 'bg-accent' : ''" @click="togglePlot(plotRowIndex, index)"
-              />
-            </div>
+          <div v-if="selectedNewLayout === 'custom'" class="w-full flex flex-col gap-1  bg-misc-secondary px-2 rounded-md  py-2">
+            <label class="label flex items-start border-white w-fit gap-2">
+              <span class="text-sm">Allow Illegal Layout</span>
+              <div class="flex flex-col">
+                <input
+                  v-model="allowIllegalLayout" type="checkbox" name="allow-illegal-layout"
+                  class="toggle  rounded-sm"
+                >
+              </div>
+            </label>
+            <p class="text-xs opacity-40 font-thin">
+              Increase the maximum amount of overall plots from 9 to 27
+            </p>
           </div>
         </div>
       </div>
@@ -287,9 +327,6 @@ function trimLayout(): PlotStatus[][] {
           You'll need at least 1 plot active
         </p>
       </div>
-    </form>
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-  </dialog>
+    </template>
+  </PGPModal>
 </template>

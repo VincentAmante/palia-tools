@@ -8,6 +8,8 @@ export interface ICalculateYieldOptions {
   starChanceOverride?: number
   baseChanceOverride?: number
   includeReplantCost?: boolean
+  useGrowthBoost?: boolean
+  level: number
 }
 
 export type CalculateValueOptions = {
@@ -88,4 +90,14 @@ export interface IDayResult {
   day: number
   crops: Record<CropType, { base: ICropValue; star: ICropValue }>
   totalGold: number
+}
+
+export interface ICalculateValueResult {
+  result: IDayResult[]
+  totalResult: IDayResult
+}
+
+export interface ISimulateYieldResult {
+  harvests: IHarvestInfo[]
+  harvestTotal: IHarvestInfo
 }

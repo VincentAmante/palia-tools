@@ -35,6 +35,8 @@ const crops = {
       cropsPerSeed: 3,
       seedsPerConversion: 2,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 30,
+      preserveProcessMinutes: 27,
     },
     {
       preserve: '/jars/tomato.png',
@@ -43,7 +45,7 @@ const crops = {
     {
       cropCode: CropCode.Tomato,
       cropTooltip: 'Tomato: Water Retention',
-      cropBackgroundColor: 'bg-blue-700',
+      cropBackgroundColor: 'bg-water-retain',
     },
   ),
 
@@ -69,6 +71,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 84,
+      preserveProcessMinutes: 54,
     },
     {
       preserve: '/jars/potato.png',
@@ -77,7 +81,7 @@ const crops = {
     {
       cropCode: CropCode.Potato,
       cropTooltip: 'Potato: Water Retention',
-      cropBackgroundColor: 'bg-blue-800',
+      cropBackgroundColor: 'bg-water-retain',
     },
   ),
 
@@ -104,6 +108,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 0,
+      seedProcessMinutes: 42,
+      preserveProcessMinutes: 0,
     },
     {
       preserve: '',
@@ -112,7 +118,7 @@ const crops = {
     {
       cropCode: CropCode.Rice,
       cropTooltip: 'Rice: Harvest Increase',
-      cropBackgroundColor: 'bg-green-700',
+      cropBackgroundColor: 'bg-harvest-boost',
     },
   ),
 
@@ -138,6 +144,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 0,
+      seedProcessMinutes: 42,
+      preserveProcessMinutes: 0,
     },
     {
       preserve: '',
@@ -146,7 +154,7 @@ const crops = {
     {
       cropCode: CropCode.Wheat,
       cropTooltip: 'Wheat: Harvest Increase',
-      cropBackgroundColor: 'bg-green-800',
+      cropBackgroundColor: 'bg-harvest-boost',
     },
   ),
   [CropType.Carrot]: new Crop(
@@ -171,6 +179,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 18,
+      preserveProcessMinutes: 27,
     },
     {
       preserve: '/jars/carrot.png',
@@ -179,7 +189,7 @@ const crops = {
     {
       cropCode: CropCode.Carrot,
       cropTooltip: 'Carrot: Weed Prevention',
-      cropBackgroundColor: 'bg-fuchsia-800',
+      cropBackgroundColor: 'bg-weed-prevention',
     },
   ),
   [CropType.Onion]: new Crop(
@@ -204,6 +214,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 24,
+      preserveProcessMinutes: 36,
     },
     {
       preserve: '/jars/onion.png',
@@ -212,7 +224,7 @@ const crops = {
     {
       cropCode: CropCode.Onion,
       cropTooltip: 'Onion: Weed Prevention',
-      cropBackgroundColor: 'bg-fuchsia-700',
+      cropBackgroundColor: 'bg-weed-prevention',
     },
   ),
   [CropType.Cotton]: new Crop(
@@ -237,6 +249,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 3,
       cropsPerPreserve: 0,
+      seedProcessMinutes: 36,
+      preserveProcessMinutes: 0,
     },
     {
       preserve: '',
@@ -245,7 +259,7 @@ const crops = {
     {
       cropCode: CropCode.Cotton,
       cropTooltip: 'Cotton: Quality Increase',
-      cropBackgroundColor: 'bg-amber-600',
+      cropBackgroundColor: 'bg-quality-increase',
     },
   ),
   [CropType.Blueberry]: new Crop(
@@ -273,6 +287,8 @@ const crops = {
       cropsPerSeed: 4,
       seedsPerConversion: 2,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 81,
+      preserveProcessMinutes: 47.25,
     },
     {
       preserve: '/jars/blueberry.png',
@@ -281,7 +297,7 @@ const crops = {
     {
       cropCode: CropCode.Blueberry,
       cropTooltip: 'Berry Bush: Speed Increase. 2x2, needs 2 of a bonus for the buff to activate',
-      cropBackgroundColor: 'bg-orange-700',
+      cropBackgroundColor: 'bg-growth-boost',
     },
   ),
   [CropType.Apple]: new Crop(
@@ -309,6 +325,8 @@ const crops = {
       cropsPerSeed: 10,
       seedsPerConversion: 1,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 142,
+      preserveProcessMinutes: 76,
     },
     {
       preserve: '/jars/apple.png',
@@ -317,7 +335,7 @@ const crops = {
     {
       cropCode: CropCode.Apple,
       cropTooltip: 'Apple Tree: Speed Increase. 3x3, needs 3 of a bonus for the buff to activate',
-      cropBackgroundColor: 'bg-orange-700',
+      cropBackgroundColor: 'bg-growth-boost',
     },
   ),
   [CropType.Corn]: new Crop(
@@ -342,6 +360,8 @@ const crops = {
       cropsPerSeed: 1,
       seedsPerConversion: 4,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 48,
+      preserveProcessMinutes: 48,
     },
     {
       preserve: '/jars/corn.webp',
@@ -350,7 +370,7 @@ const crops = {
     {
       cropCode: CropCode.Corn,
       cropTooltip: 'Corn: Harvest Increase',
-      cropBackgroundColor: 'bg-green-800',
+      cropBackgroundColor: 'bg-harvest-boost',
     },
   ),
   [CropType.SpicyPepper]: new Crop(
@@ -378,6 +398,8 @@ const crops = {
       cropsPerSeed: 4,
       seedsPerConversion: 2,
       cropsPerPreserve: 1,
+      seedProcessMinutes: 100,
+      preserveProcessMinutes: 38.5,
     },
     {
       preserve: '/jars/spicy-pepper.webp',
@@ -386,11 +408,11 @@ const crops = {
     {
       cropCode: CropCode.SpicyPepper,
       cropTooltip: 'Spicy Pepper: Quality Increase. 2x2, needs 2 of a bonus for the buff to activate',
-      cropBackgroundColor: 'bg-amber-600',
+      cropBackgroundColor: 'bg-quality-increase',
     },
   ),
   [CropType.None]: null,
-}
+} as const
 
 function getCropFromCode(code: CropCode): Crop | null {
   switch (code) {
@@ -422,7 +444,7 @@ function getCropFromCode(code: CropCode): Crop | null {
 }
 
 function getCodeFromCrop(crop: Crop): CropCode {
-  return crop.cropCode;
+  return crop.cropCode
 }
 
 function getCropFromType(type: CropType): Crop | null {

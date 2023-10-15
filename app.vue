@@ -9,7 +9,7 @@ useServerSeoMeta({
   ogLocale: 'en_UK',
   title: 'Palia Garden Planner',
   description: 'A fan-made tool for planning out your garden. Displays crop and fertiliser bonuses, approximates harvest yield, and provides shareable save codes!',
-  themeColor: '#e4d8b4',
+  themeColor: '#97AF51',
   twitterTitle: 'Palia Garden Planner',
   twitterCard: 'summary',
   twitterDescription: 'A fan-made tool for planning out your garden. Displays crop and fertiliser bonuses, approximates harvest yield, and provides shareable save codes!',
@@ -24,6 +24,9 @@ useHead({
       content: '9aAZNWLR6mEsKgyPLuQphHNC73YjhWXF5z6CMbJTyZA',
     },
   ],
+  htmlAttrs: {
+    lang: 'en',
+  },
 })
 </script>
 

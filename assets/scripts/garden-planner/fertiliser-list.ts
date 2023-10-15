@@ -4,31 +4,30 @@ import FertiliserCode from './enums/fertilisercode'
 import Bonus from './enums/bonus'
 
 const fertilisers = {
-
-  [FertiliserType.QualityUp]: new Fertiliser(
-    FertiliserType.QualityUp,
-    Bonus.QualityIncrease,
-    '/fertilisers/quality-up.webp',
-  ),
   [FertiliserType.HarvestBoost]: new Fertiliser(
     FertiliserType.HarvestBoost,
     Bonus.HarvestIncrease,
     '/fertilisers/harvest-boost.webp',
-  ),
-  [FertiliserType.WeedBlock]: new Fertiliser(
-    FertiliserType.WeedBlock,
-    Bonus.WeedPrevention,
-    '/fertilisers/weed-block.webp',
   ),
   [FertiliserType.SpeedyGro]: new Fertiliser(
     FertiliserType.SpeedyGro,
     Bonus.SpeedIncrease,
     '/fertilisers/speedy-gro.webp',
   ),
+  [FertiliserType.QualityUp]: new Fertiliser(
+    FertiliserType.QualityUp,
+    Bonus.QualityIncrease,
+    '/fertilisers/quality-up.webp',
+  ),
   [FertiliserType.HydratePro]: new Fertiliser(
     FertiliserType.HydratePro,
     Bonus.WaterRetain,
     '/fertilisers/hydrate-pro.webp',
+  ),
+  [FertiliserType.WeedBlock]: new Fertiliser(
+    FertiliserType.WeedBlock,
+    Bonus.WeedPrevention,
+    '/fertilisers/weed-block.webp',
   ),
   [FertiliserType.None]: null,
 }
