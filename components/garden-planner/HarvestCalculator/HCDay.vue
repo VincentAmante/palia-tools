@@ -106,9 +106,9 @@ const paginationButtons = computed<PaginationButton[]>(() => {
 </script>
 
 <template>
-  <div class="isolate overflow-hidden">
+  <div class="isolate">
     <div class="grid gap-[2px]">
-      <div class="overflow-hidden min-h-16 pr-2 rounded-md rounded-b-none bg-accent">
+      <div class="min-h-16 pr-2 rounded-md rounded-b-none bg-accent">
         <table class="table px-4 bg-accent text-misc rounded-none">
           <tbody class="h-full">
             <th class="sr-only">
