@@ -384,8 +384,8 @@ function handleMouseLeave() {
             >
               <section
                 :class="[
-                  (isTakingScreenshot.get) ? 'w-full basis-3/6' : 'w-full lg:basis-3/6 xl:basis-3/6 overflow-x-auto',
-                  (gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2 py-2  mx-auto' : 'grid']"
+                  (isTakingScreenshot.get) ? 'w-fit basis-3/6 mx-auto' : 'w-full lg:basis-3/6 xl:basis-3/6 overflow-x-auto',
+                  (gardenTilesAreWide) ? 'flex flex-col items-center md:gap-2 py-2' : 'flex flex-col']"
               >
                 <h2 class="sr-only">
                   Garden Display
@@ -405,7 +405,8 @@ function handleMouseLeave() {
               </section>
               <div
                 class="w-full flex flex-col lg:flex-row lg:justify-end lg:basis-3/6 xl:basis-2/3"
-                :class="[(gardenTilesAreWide) ? 'flex flex-col items-center lg:gap-2' : 'pt-4 lg:pt-0']"
+                :class="[(gardenTilesAreWide) ? 'flex flex-col items-center lg:gap-2' : 'pt-4 lg:pt-0',
+                         (isTakingScreenshot.get) ? 'basis-2/3' : '']"
               >
                 <StatsDisplay
                   ref="statDisplay"

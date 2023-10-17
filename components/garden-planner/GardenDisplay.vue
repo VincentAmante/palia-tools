@@ -65,11 +65,12 @@ function handleDragEnter(row: number, col: number, plot: Plot) {
 <template>
   <div
     class="h-full flex flex-col items-center"
-    :class="[(isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[100vw]']"
+    :class="[(isTakingScreenshot.get && gardenTilesAreWide) ? 'max-w-[1680px]'
+      : isTakingScreenshot.get ? 'max-w-[1680px]' : 'max-w-[100vw]']"
   >
     <div
-      class="rounded-xl  my-4 md:my-0  lg:ml-0 lg:mr-auto px-3 lg:px-2 bg-accent"
-      :class="(isTakingScreenshot.get) ? 'w-fit  px-1 mt-0' : 'w-full sm:w-fit'"
+      class="rounded-xl  my-4 md:my-0  lg:ml-0 lg:mr-auto px-3 lg:px-2"
+      :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'"
       @contextmenu.prevent.self=""
     >
       <div ref="plotsDisplay" class="w-full overflow-auto grid gap-2">
