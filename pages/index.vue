@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useMousePressed, useUrlSearchParams } from '@vueuse/core'
-import { computed, onMounted, ref } from 'vue'
 import uniqid from 'uniqid'
 
 // import * as htmlToImage from 'html-to-image'
@@ -134,15 +133,6 @@ const fertiliserCount = computed(() => {
 
   return count
 })
-
-function downloadURI(uri: string, name: string) {
-  const link = document.createElement('a')
-  link.download = name
-  link.href = uri
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-}
 
 const saveModal = ref<InstanceType<typeof SaveModal> | null>(null)
 
@@ -303,78 +293,76 @@ function handleMouseLeave() {
             <font-awesome-icon :icon="['fas', 'question-circle']" class="text-xl" />
           </button> -->
           <div class="flex flex-col xl:px-2">
-            <div id="planner" class="relative py-4 pb-1">
+            <section
+              class="crop-buttons px-4 py-4 pb-1 relative w-full md:bas flex md:flex-row gap-2"
+              :class="[(isTakingScreenshot.get) ? 'flex-row w-full' : 'flex-col']"
+            >
+              <h2 class="sr-only">
+                Crop Buttons
+              </h2>
               <section
-                class="crop-buttons px-4 w-full flex md:flex-row gap-2"
-                :class="[(isTakingScreenshot.get) ? '' : 'flex-col']"
+                v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
+                class="flex flex-col w-full md:basis-2/3"
               >
-                <h2 class="sr-only">
-                  Crop Buttons
-                </h2>
-                <section
-                  v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
-                  class="md:basis-2/3"
-                >
+                <h3 class="font-semibold text-palia-blue">
+                  Crops
+                </h3>
+                <div class="flex flex-wrap   gap-2 pt-2 w-full">
+                  <button
+                    id="crop-eraser"
+                    aria-label="Select Crop Eraser"
+                    class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+                    :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                    :in-picture-mode="isTakingScreenshot.get"
+                    @click="selectedItem.select('crop-erase')"
+                  >
+                    <font-awesome-icon
+                      class="absolute -z-10 max-w-[45px] text-success text-2xl "
+                      :icon="['fas', 'eraser']"
+                    />
+                  </button>
+                  <template v-for="(count, index) in plotStat.cropTypeCount" :key="index">
+                    <CropButton
+                      v-if="(index !== CropType.None)"
+                      :crop="getCropFromType(index) as Crop"
+                      :is-selected="(selectedItem.val instanceof Crop) && selectedItem.val !== null && index === selectedItem.val.type"
+                      :count="count" @click="setCrop(index)"
+                    />
+                  </template>
+                </div>
+              </section>
+              <section class="flex flex-wrap lg:justify-end w-full md:basis-1/3">
+                <div v-if="!(isTakingScreenshot.get && fertiliserCount <= 0)">
                   <h3 class="font-semibold text-palia-blue">
-                    Crops
+                    Fertilisers per Day
                   </h3>
                   <div class="flex flex-wrap gap-2 pt-2">
                     <button
-                      id="crop-eraser"
-                      aria-label="Select Crop Eraser"
+                      id="fertiliser-eraser"
+                      aria-label="Select Fertiliser Eraser"
                       class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
-                      :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
-                      :in-picture-mode="isTakingScreenshot.get"
-                      @click="selectedItem.select('crop-erase')"
+                      :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+                      @click="selectedItem.select('fertiliser-erase')"
                     >
                       <font-awesome-icon
-                        class="absolute -z-10 max-w-[45px] text-success text-2xl "
+                        class="absolute -z-10 max-w-[42px] text-warning text-2xl "
                         :icon="['fas', 'eraser']"
                       />
                     </button>
-                    <template v-for="(count, index) in plotStat.cropTypeCount" :key="index">
-                      <CropButton
-                        v-if="(index !== CropType.None)"
-                        :crop="getCropFromType(index) as Crop"
-                        :is-selected="(selectedItem.val instanceof Crop) && selectedItem.val !== null && index === selectedItem.val.type"
-                        :count="count" @click="setCrop(index)"
+                    <template v-for="(count, index) in plotStat.fertiliserCount" :key="index">
+                      <FertiliserButton
+                        v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
+                        :is-selected="(selectedItem.val instanceof Fertiliser)
+                          && selectedItem.val
+                            !== null
+                          && index === selectedItem.val.type" :count="count"
+                        @click="selectedItem.select(fertilisers[index])"
                       />
                     </template>
                   </div>
-                </section>
-                <section class="flex flex-wrap lg:justify-end w-full md:basis-1/3">
-                  <div v-if="!(isTakingScreenshot.get && fertiliserCount <= 0)">
-                    <h3 class="font-semibold text-palia-blue">
-                      Fertilisers per Day
-                    </h3>
-                    <div class="flex flex-wrap gap-2 pt-2">
-                      <button
-                        id="fertiliser-eraser"
-                        aria-label="Select Fertiliser Eraser"
-                        class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
-                        :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
-                        @click="selectedItem.select('fertiliser-erase')"
-                      >
-                        <font-awesome-icon
-                          class="absolute -z-10 max-w-[42px] text-warning text-2xl "
-                          :icon="['fas', 'eraser']"
-                        />
-                      </button>
-                      <template v-for="(count, index) in plotStat.fertiliserCount" :key="index">
-                        <FertiliserButton
-                          v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
-                          :is-selected="(selectedItem.val instanceof Fertiliser)
-                            && selectedItem.val
-                              !== null
-                            && index === selectedItem.val.type" :count="count"
-                          @click="selectedItem.select(fertilisers[index])"
-                        />
-                      </template>
-                    </div>
-                  </div>
-                </section>
+                </div>
               </section>
-            </div>
+            </section>
 
             <AppDivider class="mx-4 my-6 mt-4" />
 
