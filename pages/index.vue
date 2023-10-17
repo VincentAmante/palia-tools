@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { useMousePressed, useUrlSearchParams } from '@vueuse/core'
-import domtoimage from 'dom-to-image-more'
 import { computed, onMounted, ref } from 'vue'
 import uniqid from 'uniqid'
+
+// import * as htmlToImage from 'html-to-image'
+import domtoimage from 'dom-to-image-more'
+import download from 'downloadjs'
 import StatsDisplay from '@/components/garden-planner/StatsDisplay.vue'
 import GardenDisplay from '@/components/garden-planner/GardenDisplay.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
@@ -199,22 +202,40 @@ async function saveAsImage() {
       copyDefaultStyles: false,
     },
   ).then(
-    domtoimage.toBlob(
-      htmlContent, {
-        copyDefaultStyles: false,
-      },
-    ).then(
-      (blob: Blob) => {
-        const url = window.URL.createObjectURL(blob)
-        downloadURI(url, `PaliaGardenPlan-${uniqid()}.png`)
-        display.value.style.width = ''
-        gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
-          classList.remove(`w-${displayWidth}`)
-        })
-        isTakingScreenshot.set(false)
-      },
-    ),
+    (dataUrl: string) => {
+      download(dataUrl, `PaliaGardenPlan-${uniqid()}.jpeg`)
+      display.value.style.width = ''
+      gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
+        classList.remove(`w-${displayWidth}`)
+      })
+      isTakingScreenshot.set(false)
+    },
+    // domtoimage.toBlob(
+    //   htmlContent, {
+    //     copyDefaultStyles: false,
+    //   },
+    // ).then(
+    //   (blob: Blob) => {
+    //     const url = window.URL.createObjectURL(blob)
+    //     downloadURI(url, `PaliaGardenPlan-${uniqid()}.png`)
+    //     display.value.style.width = ''
+    //     gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
+    //       classList.remove(`w-${displayWidth}`)
+    //     })
+    //     isTakingScreenshot.set(false)
+    //   },
+    // ),
   )
+
+  // htmlToImage.toPng(htmlContent)
+  //   .then((dataUrl) => {
+  //     downloadURI(dataUrl, `PaliaGardenPlan-${uniqid()}.png`)
+  //     display.value.style.width = ''
+  //     gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
+  //       classList.remove(`w-${displayWidth}`)
+  //     })
+  //     isTakingScreenshot.set(false)
+  //   })
 }
 
 const hoveredBonus = ref(Bonus.None)
