@@ -182,12 +182,9 @@ async function saveAsImage() {
 
   displayWidth = Math.max(displayWidth, 1440)
   display.value.style.width = `${displayWidth}px`
-  gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
-    classList.add(`w-${displayWidth}`)
-  })
   const htmlContent = display.value as HTMLElement
 
-  domtoimage.toJpeg(
+  domtoimage.toPng(
     htmlContent, {
       copyDefaultStyles: false,
     },
@@ -195,37 +192,9 @@ async function saveAsImage() {
     (dataUrl: string) => {
       download(dataUrl, `PaliaGardenPlan-${uniqid()}.jpeg`)
       display.value.style.width = ''
-      gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
-        classList.remove(`w-${displayWidth}`)
-      })
       isTakingScreenshot.set(false)
     },
-    // domtoimage.toBlob(
-    //   htmlContent, {
-    //     copyDefaultStyles: false,
-    //   },
-    // ).then(
-    //   (blob: Blob) => {
-    //     const url = window.URL.createObjectURL(blob)
-    //     downloadURI(url, `PaliaGardenPlan-${uniqid()}.png`)
-    //     display.value.style.width = ''
-    //     gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
-    //       classList.remove(`w-${displayWidth}`)
-    //     })
-    //     isTakingScreenshot.set(false)
-    //   },
-    // ),
   )
-
-  // htmlToImage.toPng(htmlContent)
-  //   .then((dataUrl) => {
-  //     downloadURI(dataUrl, `PaliaGardenPlan-${uniqid()}.png`)
-  //     display.value.style.width = ''
-  //     gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
-  //       classList.remove(`w-${displayWidth}`)
-  //     })
-  //     isTakingScreenshot.set(false)
-  //   })
 }
 
 const hoveredBonus = ref(Bonus.None)
