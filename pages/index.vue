@@ -253,7 +253,12 @@ function handleMouseLeave() {
         :class="[(isTakingScreenshot.get) ? 'px-16' : '',
                  (isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[1680px]']"
       >
-        <div id="display" ref="display" class="flex flex-col bg-accent lg:rounded-lg  relative">
+        <div
+          id="display"
+          ref="display"
+          class="flex flex-col bg-accent relative"
+          :class="[(isTakingScreenshot.get) ? 'rounded-none' : 'lg:rounded-lg ']"
+        >
           <!-- <button
             class="absolute right-2 m-1 btn z-10 btn-sm px-4 btn-accent text-sm"
             @click="() => console.log('hey')"
