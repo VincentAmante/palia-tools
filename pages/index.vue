@@ -180,7 +180,7 @@ async function saveAsImage() {
   if (!gardenTilesAreWide.value)
     displayWidth += ((statDisplay.value?.getStatsDisplay() as HTMLElement).clientWidth)
 
-  displayWidth = Math.max(displayWidth, 1440)
+  displayWidth = Math.max(displayWidth, 1316)
   display.value.style.width = `${displayWidth}px`
   const htmlContent = display.value as HTMLElement
 
@@ -249,11 +249,11 @@ function handleMouseLeave() {
 
     <div class="flex flex-col w-full justify-center items-center">
       <section
-        id="display" ref="display" class="lg:px-12 xl:px-14 py-4 font-['Merriweather'] w-full"
+        class="lg:px-12 xl:px-14 py-4 font-['Merriweather'] w-full"
         :class="[(isTakingScreenshot.get) ? 'px-16' : '',
                  (isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[1680px]']"
       >
-        <div class="flex flex-col bg-accent lg:rounded-lg  relative">
+        <div id="display" ref="display" class="flex flex-col bg-accent lg:rounded-lg  relative">
           <!-- <button
             class="absolute right-2 m-1 btn z-10 btn-sm px-4 btn-accent text-sm"
             @click="() => console.log('hey')"
