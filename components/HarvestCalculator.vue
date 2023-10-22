@@ -120,6 +120,56 @@ watchEffect(() => {
             >(WIP)</span>
           </h2>
           <div
+            v-show="(activeTab !== 'info' && !isTakingScreenshot.get)"
+            class="px-4 py-2 w-full lg:hidden"
+          >
+            <div class="bg-accent text-misc rounded-md font-semibold flex flex-col xl:flex-row items-center justify-center md:gap-1 py-2">
+              <div
+                class="tooltip tooltip-top"
+                data-tip="The last harvest before approximations are made"
+              >
+                <div class="flex gap-1 items-center ">
+                  Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
+                  <div class="flex gap-1 items-center">
+                    <nuxt-img
+                      width="16"
+                      height="16"
+                      src="/gold.webp" class="max-h-[1rem]"
+                      :srcset="undefined"
+                      placeholder
+                      alt="Gold" format="webp"
+                    />{{
+                      processedYields?.totalResult.totalGold.toLocaleString() }}
+                  </div>
+                </div>
+              </div>
+              <div
+                v-show="processedYields?.totalResult.totalGold !== 0"
+                class="divider divider-horizontal after:bg-misc before:bg-misc"
+              />
+              <div
+                v-show="processedYields?.totalResult.totalGold !== 0"
+                class="tooltip tooltip-top"
+                data-tip="Raw average is without processing time"
+              >
+                <p class="flex gap-1 items-center">
+                  Raw Average:
+                  <span class="flex gap-1 items-center"><nuxt-img
+                    src="/gold.webp"
+                    class="max-h-[1rem]"
+                    format="webp"
+                    alt="Gold"
+                    width="16"
+                    height="16"
+                    :srcset="undefined"
+                  />{{
+                    (Math.round(processedYields.totalResult.totalGold
+                      / processedYields.totalResult.day)).toLocaleString() }}</span>/ day
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
             v-if="!isTakingScreenshot.get"
             class="tabs w-full justify-evenly lg:w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0 py-1 md:gap-2 max-w-[22rem]"
           >
@@ -153,6 +203,7 @@ watchEffect(() => {
       <div
         v-show="(activeTab !== 'info' || isTakingScreenshot.get)"
         class="px-4 py-2"
+        :class="isTakingScreenshot.get ? '' : 'hidden lg:block'"
       >
         <div class="bg-accent text-misc rounded-md font-semibold flex flex-col xl:flex-row items-center justify-center md:gap-1 py-2">
           <div
