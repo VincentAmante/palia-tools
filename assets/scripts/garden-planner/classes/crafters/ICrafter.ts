@@ -1,5 +1,10 @@
 import type { Item, ItemType } from '../items/item'
 
+export interface InsertItemArgs {
+  day: number
+  item: Item
+}
+
 export interface ICrafter {
   readonly name: string
   hopperSlots: Item[]
@@ -16,5 +21,5 @@ export interface ICrafter {
   process(): void
 
   // returns true if the item was successfully inserted
-  insertItem(item: Item): boolean
+  insertItem(itemData: InsertItemArgs): boolean
 }
