@@ -102,20 +102,13 @@ function handleHover(row: number, col: number, plot: Plot) {
   }
 
   else if (pressed.value && rightClickIsDown.value) {
-    switch (selectedItem.val) {
-      case 'crop-erase':
-        plot.setTile(row, col, null)
-        break
-      case 'fertiliser-erase':
-        plot.removeFertiliserFromTile(row, col)
-        break
-      default:
-        if (selectedItem.val instanceof Crop)
-          plot.setTile(row, col, null)
-        else if (selectedItem.val instanceof Fertiliser)
-          plot.removeFertiliserFromTile(row, col)
-        break
-    }
+    const tile = plot.getTile(row, col)
+    if (tile.fertiliser)
+      plot.removeFertiliserFromTile(row, col)
+    else if (tile.crop)
+      plot.setTile(row, col, null)
+    else
+      return
 
     garden.value.calculateBonuses()
   }
@@ -184,7 +177,7 @@ async function saveAsImage() {
   display.value.style.width = `${displayWidth}px`
   const htmlContent = display.value as HTMLElement
 
-  domtoimage.toPng(
+  domtoimage.toJpeg(
     htmlContent, {
       copyDefaultStyles: false,
     },
@@ -192,6 +185,9 @@ async function saveAsImage() {
     (dataUrl: string) => {
       download(dataUrl, `PaliaGardenPlan-${uniqid()}.jpeg`)
       display.value.style.width = ''
+      gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
+        classList.remove(`w-${displayWidth}`)
+      })
       isTakingScreenshot.set(false)
     },
   )
@@ -221,11 +217,33 @@ function openNewLayoutModal() {
 }
 
 function handleRightClick(event: MouseEvent, row: number, col: number, plot: Plot) {
-  // event.preventDefault()
-  if (selectedItem.val === 'crop-erase' || selectedItem.val instanceof Crop)
-    plot.setTile(row, col, null)
-  else if (selectedItem.val === 'fertiliser-erase' || selectedItem.val instanceof Fertiliser)
+  if (!(plot.isActive))
+    return
+
+  const tile = plot.getTile(row, col)
+
+  if (tile?.fertiliser)
     plot.removeFertiliserFromTile(row, col)
+  else if (tile?.crop)
+    plot.setTile(row, col, null)
+  else
+    return
+
+  garden.value.calculateBonuses()
+}
+
+function handleMiddleClick(event: MouseEvent, row: number, col: number, plot: Plot) {
+  if (!(plot.isActive))
+    return
+
+  const tile = plot.getTile(row, col)
+
+  if (tile?.crop)
+    selectedItem.select(tile.crop)
+  else if (tile?.fertiliser)
+    selectedItem.select(tile.fertiliser)
+  else
+    return
 
   garden.value.calculateBonuses()
 }
@@ -372,6 +390,7 @@ function handleMouseLeave() {
                   class="opacity-100"
                   draggable="false"
                   @right-click="handleRightClick"
+                  @middle-click="handleMiddleClick"
                   @mouseover="handleHover"
                   @select-tile="selectTile"
                   @mouseleave="handleMouseLeave"

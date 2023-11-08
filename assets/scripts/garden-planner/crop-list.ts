@@ -82,6 +82,7 @@ const crops = {
       cropCode: CropCode.Potato,
       cropTooltip: 'Potato: Water Retention',
       cropBackgroundColor: 'bg-water-retain',
+      paliapediaName: 'potato',
     },
   ),
 
@@ -119,6 +120,7 @@ const crops = {
       cropCode: CropCode.Rice,
       cropTooltip: 'Rice: Harvest Increase',
       cropBackgroundColor: 'bg-harvest-boost',
+      paliapediaName: 'rice',
     },
   ),
 
@@ -155,6 +157,7 @@ const crops = {
       cropCode: CropCode.Wheat,
       cropTooltip: 'Wheat: Harvest Increase',
       cropBackgroundColor: 'bg-harvest-boost',
+      paliapediaName: 'wheat',
     },
   ),
   [CropType.Carrot]: new Crop(
@@ -190,6 +193,7 @@ const crops = {
       cropCode: CropCode.Carrot,
       cropTooltip: 'Carrot: Weed Prevention',
       cropBackgroundColor: 'bg-weed-prevention',
+      paliapediaName: 'carrot',
     },
   ),
   [CropType.Onion]: new Crop(
@@ -225,6 +229,7 @@ const crops = {
       cropCode: CropCode.Onion,
       cropTooltip: 'Onion: Weed Prevention',
       cropBackgroundColor: 'bg-weed-prevention',
+      paliapediaName: 'onion',
     },
   ),
   [CropType.Cotton]: new Crop(
@@ -260,6 +265,7 @@ const crops = {
       cropCode: CropCode.Cotton,
       cropTooltip: 'Cotton: Quality Increase',
       cropBackgroundColor: 'bg-quality-increase',
+      paliapediaName: 'cotton',
     },
   ),
   [CropType.Blueberry]: new Crop(
@@ -298,6 +304,7 @@ const crops = {
       cropCode: CropCode.Blueberry,
       cropTooltip: 'Berry Bush: Speed Increase. 2x2, needs 2 of a bonus for the buff to activate',
       cropBackgroundColor: 'bg-growth-boost',
+      paliapediaName: 'blueberry',
     },
   ),
   [CropType.Apple]: new Crop(
@@ -336,6 +343,7 @@ const crops = {
       cropCode: CropCode.Apple,
       cropTooltip: 'Apple Tree: Speed Increase. 3x3, needs 3 of a bonus for the buff to activate',
       cropBackgroundColor: 'bg-growth-boost',
+      paliapediaName: 'apple',
     },
   ),
   [CropType.Corn]: new Crop(
@@ -371,6 +379,7 @@ const crops = {
       cropCode: CropCode.Corn,
       cropTooltip: 'Corn: Harvest Increase',
       cropBackgroundColor: 'bg-harvest-boost',
+      paliapediaName: 'corn',
     },
   ),
   [CropType.SpicyPepper]: new Crop(
@@ -409,6 +418,7 @@ const crops = {
       cropCode: CropCode.SpicyPepper,
       cropTooltip: 'Spicy Pepper: Quality Increase. 2x2, needs 2 of a bonus for the buff to activate',
       cropBackgroundColor: 'bg-quality-increase',
+      paliapediaName: 'spicypepper',
     },
   ),
   [CropType.None]: null,

@@ -17,7 +17,7 @@ defineProps({
     default: false,
   },
 })
-const emit = defineEmits(['selectTile', 'rightClick', 'mouseover', 'updateGardenTiles', 'mouseup'])
+const emit = defineEmits(['selectTile', 'rightClick', 'mouseover', 'updateGardenTiles', 'mouseup', 'middleClick'])
 
 const plotsDisplay = ref<HTMLDivElement | null>(null)
 function getPlotsDisplay() {
@@ -44,6 +44,11 @@ function selectTile(event: MouseEvent, rowIndex: number, index: number, plot: Pl
 function handleRightClick(event: MouseEvent, rowIndex: number, index: number, plot: Plot) {
   if (plot.isActive)
     emit('rightClick', event, rowIndex, index, plot)
+}
+
+function handleMiddleClick(event: MouseEvent, rowIndex: number, index: number, plot: Plot) {
+  if (plot.isActive)
+    emit('middleClick', event, rowIndex, index, plot)
 }
 
 function handleHover(rowIndex: number, index: number, plot: Plot) {
@@ -87,6 +92,8 @@ function handleDragEnter(row: number, col: number, plot: Plot) {
                   @mouseover="handleHover(rowIndex, index, plot as Plot)"
                   @mouseup="(handleMouseUp(rowIndex, index, plot as Plot))"
                   @dragenter="(e: DragEvent) => handleDragEnter(rowIndex, index, plot as Plot)"
+                  @click.middle="((e: MouseEvent) => handleMiddleClick(event, rowIndex, index, plot as Plot))"
+                  @mousedown.middle.prevent.stop
                 />
               </div>
             </div>

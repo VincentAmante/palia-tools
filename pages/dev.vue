@@ -17,16 +17,22 @@ const crop = ref(new CropItem(
   CropType.Tomato,
 ))
 
-const cropCount = reactive({
-  count: crop.value.count,
-})
-
 function addTomato() {
   seeder.value.insertItem({
     item: crop.value as CropItem,
     day: 1,
   })
 }
+
+const settings = ref({
+  useStackLimit: true,
+  useHopperLimit: true,
+  includeNormalSeeds: true,
+})
+
+watchEffect(() => {
+  seeder.value.setSettings(settings.value)
+})
 
 function seederProcess() {
   seeder.value.process()
@@ -57,6 +63,15 @@ function seederProcess() {
           <button class="btn btn-primary" @click="seederProcess">
             Process
           </button>
+
+          <ul class="grid gap-1">
+            <template v-for="(setting, key) in settings" :key="key">
+              <li class="flex items-center gap-2">
+                <input v-model="settings[key]" type="checkbox" class="toggle rounded-sm">
+                {{ key }}
+              </li>
+            </template>
+          </ul>
         </section>
         <section class="bg-palia-dark-blue p-2 flex flex-col gap-2 rounded-md border-primary border">
           <div>

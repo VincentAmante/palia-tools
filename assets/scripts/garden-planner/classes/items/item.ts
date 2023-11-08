@@ -64,8 +64,9 @@ export class CropItem implements Item {
     this.cropType = cropType
   }
 
+  // for crops, equals mean the same crop type and star quality
   equals(item: Item): boolean {
-    return this.name === item.name && this.type === item.type && this.isStar === item.isStar
+    return this.name === item.name && this.isStar === item.isStar
   }
 
   get count(): number {
@@ -80,15 +81,52 @@ export class CropItem implements Item {
     this._count += count
   }
 
+  // Converts the count of this item into an array of stacks of this item based on the maxStack value.
   get inventoryStacks(): this[] {
-    throw new Error('Method not implemented.')
+    // throw new Error('Method not implemented.')
+
+    const stacks = []
+    let count = this.count
+    while (count > 0) {
+      const stack = new CropItem(
+        this.name,
+        this.type,
+        this.image,
+        this.price,
+        this.isStar,
+        this.maxStack,
+        Math.min(this.maxStack, count),
+        this.cropType,
+      )
+      count -= stack.count
+      stacks.push(stack)
+    }
+
+    return stacks as this[]
   }
 
+  // takes any number of identical items and combines them into stacks of this item
   combineIntoStacks(...items: this[]): this[] {
-    throw new Error('Method not implemented.')
+    items.forEach((item) => {
+      if (!this.equals(item))
+        throw new Error('Cannot combine different items')
+
+      this.add(item.count)
+    },
+    )
+
+    return this.inventoryStacks
   }
 
   combineToOneStack(...items: this[]): this {
-    throw new Error('Method not implemented.')
+    items.forEach((item) => {
+      if (!this.equals(item))
+        throw new Error('Cannot combine different items')
+
+      this.add(item.count)
+    },
+    )
+
+    return this
   }
 }

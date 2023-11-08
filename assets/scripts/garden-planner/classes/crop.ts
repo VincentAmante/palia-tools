@@ -126,6 +126,10 @@ class Crop {
     return this._metadata.cropBackgroundColor
   }
 
+  get paliapediaName(): string {
+    return this._metadata.paliapediaName || ''
+  }
+
   // Assumes player harvests on the day it is harvestable
   isHarvestableOnDay(day: number, hasGrowthBoost: boolean = false) {
     let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
@@ -150,7 +154,7 @@ class Crop {
     let lastHarvestDay = harvestableDays[harvestableDays.length - 1]
 
     for (let i = 0; i < reharvestLimit; i++) {
-      harvestableDays.push(lastHarvestDay + newReharvestCooldown - leftover)
+      harvestableDays.push(Math.max(lastHarvestDay + newReharvestCooldown - leftover, 1))
       lastHarvestDay = harvestableDays[harvestableDays.length - 1]
       leftover = harvestableDays[harvestableDays.length - 1] - lastHarvestDay
     }
@@ -167,6 +171,7 @@ class Crop {
     }
   }
 
+  // TODO: Re-do the growth boost logic
   getTotalGrowTime(hasGrowthBoost: boolean = false): number {
     let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
 
@@ -184,10 +189,9 @@ class Crop {
     let lastHarvestDay = harvestableDays[harvestableDays.length - 1]
 
     for (let i = 0; i < reharvestLimit; i++) {
-      harvestableDays.push(lastHarvestDay + newReharvestCooldown - leftover)
+      harvestableDays.push(Math.max(lastHarvestDay + newReharvestCooldown - leftover, 1))
       lastHarvestDay = harvestableDays[harvestableDays.length - 1]
       leftover = harvestableDays[harvestableDays.length - 1] - lastHarvestDay
-      // console.log('leftover', leftover)
     }
 
     return harvestableDays.reduce((acc, cur) => (acc) + (cur - acc), 0)

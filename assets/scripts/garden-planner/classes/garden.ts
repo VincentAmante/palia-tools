@@ -58,7 +58,7 @@ class Garden {
   }
 
   loadLayout(layout: string) {
-    const { version, dimensionInfo, cropInfo: cropsInfo } = parseSave(layout)
+    const { dimensionInfo, cropInfo: cropsInfo } = parseSave(layout)
 
     this._layout = []
     const dimensions = dimensionInfo.split('-').splice(1)
@@ -171,8 +171,10 @@ class Garden {
       [key: string]: Tile[]
     } = {}
 
+    const layoutFlat = this._layout.flat()
+
     // Calculate bonuses received
-    for (const plot of this._layout.flat()) {
+    for (const plot of layoutFlat) {
       if (!plot.isActive)
         continue
 
@@ -180,7 +182,7 @@ class Garden {
     }
 
     // Calculate bonuses
-    for (const plot of this._layout.flat()) {
+    for (const plot of layoutFlat) {
       if (!plot.isActive)
         continue
 
@@ -190,23 +192,17 @@ class Garden {
           continue
 
         if (tile.crop?.size === CropSize.Tree) {
-          if (tile.id in treeTiles)
-            treeTiles[tile.id].push(tile)
-          else
-            treeTiles[tile.id] = [tile]
-
+          (treeTiles[tile.id] = treeTiles[tile.id] || []).push(tile)
           if (treeTiles[tile.id].length === 9) {
-            const bonusesReceived = treeTiles[tile.id].map(tile => tile.bonusesReceived).flat()
-            const bonusCounts: {
-              [key: string]: number
-            } = {}
-
-            for (const bonus of bonusesReceived) {
-              if (bonus in bonusCounts)
-                bonusCounts[bonus]++
+            const bonusesReceived = treeTiles[tile.id].flatMap(tile => tile.bonusesReceived)
+            const bonusCounts = bonusesReceived.reduce((acc, bonus) => {
+              if (bonus in acc)
+                acc[bonus]++
               else
-                bonusCounts[bonus] = 1
-            }
+                acc[bonus] = 1
+
+              return acc
+            }, {} as Record<string, number>)
 
             for (const bonus in bonusCounts) {
               if (bonusCounts[bonus] >= 3) {
@@ -223,20 +219,15 @@ class Garden {
             bushTiles[tile.id] = [tile]
 
           if (bushTiles[tile.id].length === 4) {
-            const bonusesReceived = bushTiles[tile.id]
-              .map(tile => tile.bonusesReceived)
-              .flat()
-
-            const bonusCounts: {
-              [key: string]: number
-            } = {}
-
-            for (const bonus of bonusesReceived) {
-              if (bonus in bonusCounts)
-                bonusCounts[bonus]++
+            const bonusesReceived = bushTiles[tile.id].flatMap(tile => tile.bonusesReceived)
+            const bonusCounts = bonusesReceived.reduce((acc, bonus) => {
+              if (bonus in acc)
+                acc[bonus]++
               else
-                bonusCounts[bonus] = 1
-            }
+                acc[bonus] = 1
+
+              return acc
+            }, {} as Record<string, number>)
 
             for (const bonus in bonusCounts) {
               if (bonusCounts[bonus] >= 2) {
@@ -259,6 +250,8 @@ class Garden {
    * @returns
    */
   simulateYield(options: ICalculateYieldOptions) {
+    console.time('Simulate yield')
+    const layoutFlat = this._layout.flat()
     // Gets a list of all tiles, and excludes tiles that contain duplicates (i.e. 9 apples tiles should only return 1 tile)
     const individualCrops = new Map<string, Tile>()
 
@@ -269,15 +262,15 @@ class Garden {
       }
     } = getCropMap()
 
-    for (const plot of this._layout.flat()) {
+    layoutFlat.forEach((plot) => {
       if (!plot.isActive)
-        continue
+        return
 
-      for (const tile of plot.tiles.flat()) {
+      plot.tiles.flat().forEach((tile) => {
         if (tile.crop && tile.crop.type !== CropType.None)
           individualCrops.set(tile.id, tile)
-      }
-    }
+      })
+    })
 
     if (individualCrops.size <= 0) {
       return {
@@ -338,8 +331,7 @@ class Garden {
           crop?.produceInfo == null
           || crop?.type === CropType.None
           || crop?.produceInfo.growthTime === null
-        )
-          continue
+        ) continue
 
         const hasGrowthBoost = (useGrowthBoost ?? false) && tile.bonuses.includes(Bonus.SpeedIncrease)
 
