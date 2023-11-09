@@ -27,7 +27,7 @@ const text = ref({
   y: 10,
   text: 'Simple Text',
   fontSize: 16,
-  fontFamily: 'Calibri',
+  fontFamily: 'Mono',
   fill: 'white',
 })
 
@@ -37,171 +37,181 @@ const buildings = ref<Record<string, Building>>(
   },
 )
 
-const activeBuilding = ref<Building | null>(harvestHouse.value as Building)
-const editingBuilding = ref(false)
+const harvestHouses = computed(() => {
+  return Object.values(buildings.value).filter(building => building.type === BuildingType.HarvestHouse) as HarvestHouse[]
+})
 
-const closestBuilding = ref<Building | null>(null)
+const countedBuildings = computed(() => {
+  return Object.values(buildings.value).filter(building => (building.countsTowardsLimit && building.isPlaced)).length
+})
+
+const activeBuilding = ref<Building | null>(harvestHouse.value as Building)
+const isEditingBuilding = ref(false)
+
+const parentToSnap = ref<Building | null>(null)
 const sideToSnap = ref<Direction | null>(null)
-const extraIds = ref<string[]>([])
+
+function moveActiveBuilding(x: number, y: number) {
+  const snappedX = snapToCellSize(x)
+  const snappedY = snapToCellSize(y)
+  const building = activeBuilding.value
+
+  if (building)
+    building.updateCoords({ x: snappedX, y: snappedY })
+}
+
+function showBuildingColliding() {
+  if (activeBuilding.value === null)
+    return
+
+  activeBuilding.value.opacity = 0.5
+  activeBuilding.value.childrenIds.forEach((childId) => {
+    const child = buildings.value[childId]
+    if (child)
+      child.opacity = 0.5
+  })
+}
+
+function clearBuildingColliding() {
+  if (activeBuilding.value === null)
+    return
+
+  activeBuilding.value.opacity = 1
+  activeBuilding.value.childrenIds.forEach((childId) => {
+    const child = buildings.value[childId]
+    if (child)
+      child.opacity = 1
+  })
+}
+
+function clearSnapData() {
+  parentToSnap.value = null
+  sideToSnap.value = null
+}
+
+function onMouseMove() {
+  const stageObj = stage.value?.getStage() as Konva.Stage
+
+  if (!stageObj)
+    return
+
+  const mousePos = stageObj.getPointerPosition()
+  if (!mousePos)
+    return
+
+  text.value.text = `x: ${mousePos.x}, y: ${mousePos.y}`
+  moveActiveBuilding(mousePos.x, mousePos.y)
+
+  if (activeBuilding.value === null)
+    return
+
+  let hasCollision: boolean | Building = false
+  hasCollision = checkForCollisions(activeBuilding.value as Building, [activeBuilding.value.id, ...activeBuilding.value?.childrenIds])
+  activeBuilding.value.childrenIds.forEach((childId) => {
+    const child = buildings.value[childId]
+    if (child) {
+      const isColliding = checkForCollisions(child, [activeBuilding.value?.id || '', ...activeBuilding.value?.childrenIds || []])
+      if (isColliding)
+        hasCollision = isColliding
+    }
+  })
+
+  // Handle snapping to other buildings
+  if (hasCollision && activeBuilding.value.needsParent) {
+    const collidingBuilding = hasCollision as Building
+    const snappedX = snapToCellSize(mousePos.x)
+    const snappedY = snapToCellSize(mousePos.y)
+    const snapData = activeBuilding.value.trySnapToBuilding({
+      x: snappedX,
+      y: snappedY,
+    }, collidingBuilding)
+
+    if (snapData.snapped) {
+      sideToSnap.value = snapData.side
+      parentToSnap.value = collidingBuilding
+      const hasOtherCollisions = checkForCollisions(activeBuilding.value as Building, [...activeBuilding.value?.childrenIds as string[], collidingBuilding.id])
+      if (hasOtherCollisions)
+        showBuildingColliding()
+      else
+        clearBuildingColliding()
+    }
+    else {
+      clearSnapData()
+      showBuildingColliding()
+    }
+  }
+  else if (hasCollision) {
+    showBuildingColliding()
+  }
+  else {
+    clearSnapData()
+    clearBuildingColliding()
+  }
+}
 
 watch((stage), () => {
   if (typeof stage === 'object') {
     const stageObj = stage.value?.getStage() as Konva.Stage
 
     stageObj.on('mousemove', () => {
-      const mousePos = stageObj.getPointerPosition()
-      if (mousePos === null)
-        return
-      text.value.text = `${mousePos.x}, ${mousePos.y}`
-      const snappedX = snapToCellSize(mousePos.x)
-      const snappedY = snapToCellSize(mousePos.y)
-      if (activeBuilding.value === null)
-        return
-      if (activeBuilding.value.type === BuildingType.None)
-        return
-
-      const building = activeBuilding.value
-
-      extraIds.value = (building) ? [...building.childrenIds] : []
-
-      if (building)
-        building.updateCoords({ x: snappedX, y: snappedY })
-
-      // Check if building is colliding with other buildings
-      for (const buildingId in buildings.value) {
-        if (extraIds.value.includes(buildingId))
-          continue
-
-        const currBuilding = buildings.value[buildingId]
-        if (currBuilding.id === building.id)
-          continue
-
-        const isColliding = building.checkCollision(currBuilding, [
-          building.id,
-          ...extraIds.value,
-        ])
-
-        if (isColliding && mousePos && building.needsParent) {
-          const canSnap = building.trySnapToBuilding({
-            x: snappedX,
-            y: snappedY,
-          }, currBuilding)
-
-          if (canSnap && canSnap.side !== null) {
-            closestBuilding.value = currBuilding
-            sideToSnap.value = canSnap.side
-          }
-        }
-      }
+      onMouseMove()
     })
 
     stageObj.on('click', () => {
-      const buildingType = activeBuilding.value?.type
+      if (activeBuilding.value === null)
+        return
 
-      if (buildingType === BuildingType.None) {
+      if (activeBuilding.value.type === BuildingType.None) {
         const mousePos = stageObj.getPointerPosition()
+        const snappedX = snapToCellSize(mousePos?.x as number)
+        const snappedY = snapToCellSize(mousePos?.y as number)
 
-        for (const buildingToCheck in buildings.value) {
-          const currBuilding = buildings.value[buildingToCheck]
-          if (currBuilding.isPlaced === false)
-            continue
-          if (mousePos === null)
+        // Object.values(buildings.value).forEach((building) => )
+        for (const building of Object.values(buildings.value)) {
+          if (building.isPlaced === false)
             return
 
-          const snappedX = snapToCellSize(mousePos.x)
-          const snappedY = snapToCellSize(mousePos.y)
-
-          const mouseInBuilding = currBuilding.isPointInBuilding({
+          const isInside = building.isPointInBuilding({
             x: snappedX,
             y: snappedY,
           })
 
-          if (mouseInBuilding) {
-            if (currBuilding.parent !== null)
-              currBuilding.removeParent()
-
-            const copy = currBuilding.copy
-            buildings.value[copy.id] = copy as Building
-            closestBuilding.value = null
-            activeBuilding.value = buildings.value[copy.id] as Building
-            currBuilding.isPlaced = false
-            delete buildings.value[currBuilding.id]
-            editingBuilding.value = true
-
-            return
+          if (isInside) {
+            setActiveBuilding(building)
+            building.isPlaced = false
+            building.childrenIds.forEach((childId) => {
+              const child = buildings.value[childId]
+              if (child)
+                child.isPlaced = false
+            })
+            building.removeParent()
+            isEditingBuilding.value = true
           }
         }
       }
 
-      const buildingToPlace = (editingBuilding.value) ? (activeBuilding.value as Building) : (activeBuilding.value as Building).copy
-      if (sideToSnap.value !== null && closestBuilding.value !== null && buildingToPlace.needsParent) {
-        const parentBuildingId = closestBuilding.value.id
-        const parentBuilding = findBuildingById(parentBuildingId)
-
-        // Check if building is colliding with other buildings
-        for (const buildingId in buildings.value) {
-          if (extraIds.value.includes(buildingId))
-            continue
-          switch (buildingId) {
-            case parentBuildingId:
-            case buildingToPlace.id:
-            case activeBuilding.value?.id:
-              continue
-            default:
-              break
-          }
-
-          const currBuilding = buildings.value[buildingId]
-          if (currBuilding.id === buildingToPlace.id)
-            continue
-
-          const isColliding = buildingToPlace.checkCollision(currBuilding, [
-            ...extraIds.value,
-            parentBuildingId,
-          ])
-
-          console.log(parentBuilding)
-
-          if (isColliding) {
-            console.log(currBuilding.type, currBuilding.id, buildingToPlace.type, buildingToPlace.id)
-            console.log('colliding')
-            console.log(parentBuildingId === currBuilding.id)
-            return
-          }
-        }
-
-        if (closestBuilding.value) {
-          parentBuilding.addChild(buildingToPlace as Building, sideToSnap.value)
-          buildingToPlace.isPlaced = true
-          buildings.value[buildingToPlace.id] = (buildingToPlace as Building)
-        }
+      if (!activeBuilding.value.needsParent) {
+        placeBuilding()
       }
-      else if (!buildingToPlace.needsParent) {
-        buildingToPlace.isPlaced = true
-        buildings.value[buildingToPlace.id] = (buildingToPlace as Building)
-      }
-      else {
-        activeBuilding.value?.childrenIds.forEach((childId) => {
-          const child = findBuildingById(childId)
-          if (child)
-            child.removeParent()
-          delete buildings.value[childId]
-        })
-        setActiveBuilding(new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))
-      }
+      else if (parentToSnap.value !== null && sideToSnap.value !== null) {
+        const parent = buildings.value[parentToSnap.value.id]
+        const side = sideToSnap.value
+        const building = activeBuilding.value
 
-      if (editingBuilding.value) {
-        editingBuilding.value = false
-        setActiveBuilding(new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))
+        const hasOtherCollisions = checkForCollisions(building as Building, [...building.childrenIds, parent.id])
+
+        if (hasOtherCollisions)
+          return
+
+        parent.addChild(building as Building, side)
+        placeBuilding([parent.id])
       }
     })
 
     window.addEventListener('keydown', (e) => {
       if (activeBuilding.value === null)
         return
-
       const building = findBuildingById(activeBuilding.value.id)
-
       // convert above to switch statement
       switch (e.code) {
         case 'KeyQ':
@@ -225,35 +235,93 @@ watch((stage), () => {
         default:
           break
       }
+
+      onMouseMove()
     })
   }
 })
+
+function placeBuilding(excludeIds: string[] = []) {
+  const building = (activeBuilding.value as Building)
+  if (!building)
+    return
+
+  let hasCollision = checkForCollisions(building, [...new Set([...building.childrenIds, ...excludeIds])])
+  building.childrenIds.forEach((childId) => {
+    const child = buildings.value[childId]
+    if (child) {
+      const isColliding = checkForCollisions(child, [activeBuilding.value?.id || '', ...activeBuilding.value?.childrenIds || []])
+      if (isColliding)
+        hasCollision = isColliding
+    }
+  })
+  if (hasCollision)
+    return
+
+  buildings.value[building.id] = building
+  building.isPlaced = true
+
+  buildings.value[building.id] = building
+  building.childrenIds.forEach((childId) => {
+    const child = buildings.value[childId]
+    if (child)
+      child.isPlaced = true
+  })
+
+  if (isEditingBuilding.value) {
+    isEditingBuilding.value = false
+    setActiveBuilding(new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))
+  }
+  else {
+    setActiveBuilding(building.copy)
+  }
+}
+
+function checkForCollisions(buildingToPlace: Building, excludeIds: string[] = []): Building | false {
+  for (const building of Object.values(buildings.value)) {
+    if (excludeIds.includes(building.id))
+      continue
+
+    const currBuilding = building
+    if (currBuilding.id === buildingToPlace.id)
+      continue
+
+    const isColliding = buildingToPlace.checkCollision(currBuilding, [...buildingToPlace.childrenIds, ...excludeIds])
+
+    if (isColliding)
+      return currBuilding
+  }
+
+  return false
+}
 
 function findBuildingById(id: string) {
   return buildings.value[id]
 }
 
 function setActiveBuilding(building: Building) {
-  // remove unplaced buildings
+  clearUnplacedBuildings()
+  const newBuilding = building
+  activeBuilding.value = newBuilding as Building
+  buildings.value[newBuilding.id] = newBuilding as Building
+}
+
+function clearUnplacedBuildings() {
   for (const buildingId in buildings.value) {
     const currBuilding = buildings.value[buildingId]
-    if (building && currBuilding.id === building.id)
-      continue
-
     if (currBuilding.isPlaced === false)
       delete buildings.value[buildingId]
   }
-
-  const newBuilding = building.copy
-  buildings.value[newBuilding.id] = newBuilding as Building
-  activeBuilding.value = newBuilding as Building
-  extraIds.value = (activeBuilding.value) ? [...activeBuilding.value.childrenIds] : []
 }
 </script>
 
 <template>
   <section class="px-16">
     <div class="flex gap-2 flex-wrap py-1" />
+
+    <div>
+      <p>{{ countedBuildings }} / 30</p>
+    </div>
 
     <div class="flex gap-2 py-4">
       <button
@@ -308,6 +376,9 @@ function setActiveBuilding(building: Building) {
         <template v-for="building in buildings" :key="building.id">
           <v-image :config="building.image" />
           <!-- <v-rect :config="building.snapBox" /> -->
+        </template>
+        <template v-for="plotHarvestHouse in harvestHouses" :key="plotHarvestHouse.id">
+          <v-text :config="plotHarvestHouse.buildingCountText" />
         </template>
       </v-layer>
     </v-stage>

@@ -9,6 +9,8 @@ import { Building } from '../building'
 import type { GridSizing } from '../../types/ConfigOptions'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
+const FONT_SIZE = 16
+
 export class HarvestHouse extends Building {
   protected _type: BuildingType = BuildingType.HarvestHouse
   protected _needsParent: boolean = false
@@ -43,14 +45,23 @@ export class HarvestHouse extends Building {
   }
 
   get buildingCountText(): Konva.Text {
+    const text = `${this.countableBuildings} / 15`
+
     return new Konva.Text({
-      x: this._baseCoords.x - this._baseDimensions.width * 2,
-      y: this._baseCoords.y - this._baseDimensions.height,
-      text: `${this.countableBuildings} / 15`,
-      fontSize: 16,
+      x: this._baseCoords.x - (text.length / 2) * FONT_SIZE / 2,
+      y: this._baseCoords.y - (FONT_SIZE),
+      text,
+      fontSize: FONT_SIZE,
       fontVariant: 'bold',
       fontFamily: 'Merriweather',
       fill: '#2B3750',
+      padding: 5,
+      align: 'center',
+      verticalAlign: 'middle',
+      shadowColor: '#000',
+      shadowOpacity: 0.2,
+      shadowBlur: 5,
+      shadowOffset: { x: 1, y: 1 },
     })
   }
 
