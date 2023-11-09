@@ -38,6 +38,8 @@ export class HarvestHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
+        offsetWidth: 1,
+        offsetHeight: 2,
       },
       this._id,
       this._gridSizing,

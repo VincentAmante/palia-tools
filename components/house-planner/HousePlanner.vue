@@ -4,7 +4,7 @@ import { BuildingType } from 'assets/scripts/house-planner/enums/building-type'
 import HouseGrid from './HouseGrid.vue'
 import type { Building } from '@/assets/scripts/house-planner/classes/building'
 import type { Direction } from '@/assets/scripts/house-planner/imports'
-import { Hallway, HarvestHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
+import { Hallway, HarvestHouse, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
 
 import { useHousePlanConfig } from '@/stores/useHousePlanConfig'
 
@@ -42,6 +42,7 @@ const editingBuilding = ref(false)
 
 const closestBuilding = ref<Building | null>(null)
 const sideToSnap = ref<Direction | null>(null)
+const extraIds = ref<string[]>([])
 
 watch((stage), () => {
   if (typeof stage === 'object') {
@@ -51,41 +52,36 @@ watch((stage), () => {
       const mousePos = stageObj.getPointerPosition()
       if (mousePos === null)
         return
-
       text.value.text = `${mousePos.x}, ${mousePos.y}`
-
       const snappedX = snapToCellSize(mousePos.x)
       const snappedY = snapToCellSize(mousePos.y)
-
       if (activeBuilding.value === null)
         return
-
       if (activeBuilding.value.type === BuildingType.None)
         return
 
-      const building = findBuildingById(activeBuilding.value.id)
+      const building = activeBuilding.value
+
+      extraIds.value = (building) ? [...building.childrenIds] : []
+
       if (building)
         building.updateCoords({ x: snappedX, y: snappedY })
 
-      const extraIds: string[] = (building) ? [...building.childrenIds] : []
-
       // Check if building is colliding with other buildings
       for (const buildingId in buildings.value) {
+        if (extraIds.value.includes(buildingId))
+          continue
+
         const currBuilding = buildings.value[buildingId]
         if (currBuilding.id === building.id)
           continue
 
-        if (extraIds.includes(currBuilding.id))
-          continue
-
         const isColliding = building.checkCollision(currBuilding, [
           building.id,
-          ...extraIds,
+          ...extraIds.value,
         ])
 
-        if (isColliding && mousePos) {
-          console.log('colliding')
-
+        if (isColliding && mousePos && building.needsParent) {
           const canSnap = building.trySnapToBuilding({
             x: snappedX,
             y: snappedY,
@@ -100,14 +96,15 @@ watch((stage), () => {
     })
 
     stageObj.on('click', () => {
-      if (activeBuilding.value?.type === BuildingType.None) {
+      const buildingType = activeBuilding.value?.type
+
+      if (buildingType === BuildingType.None) {
         const mousePos = stageObj.getPointerPosition()
 
         for (const buildingToCheck in buildings.value) {
           const currBuilding = buildings.value[buildingToCheck]
           if (currBuilding.isPlaced === false)
             continue
-
           if (mousePos === null)
             return
 
@@ -123,28 +120,75 @@ watch((stage), () => {
             if (currBuilding.parent !== null)
               currBuilding.removeParent()
 
-            activeBuilding.value = currBuilding
-            editingBuilding.value = true
+            const copy = currBuilding.copy
+            buildings.value[copy.id] = copy as Building
+            closestBuilding.value = null
+            activeBuilding.value = buildings.value[copy.id] as Building
             currBuilding.isPlaced = false
+            delete buildings.value[currBuilding.id]
+            editingBuilding.value = true
+
+            return
+          }
+        }
+      }
+
+      const buildingToPlace = (editingBuilding.value) ? (activeBuilding.value as Building) : (activeBuilding.value as Building).copy
+      if (sideToSnap.value !== null && closestBuilding.value !== null && buildingToPlace.needsParent) {
+        const parentBuildingId = closestBuilding.value.id
+        const parentBuilding = findBuildingById(parentBuildingId)
+
+        // Check if building is colliding with other buildings
+        for (const buildingId in buildings.value) {
+          if (extraIds.value.includes(buildingId))
+            continue
+          switch (buildingId) {
+            case parentBuildingId:
+            case buildingToPlace.id:
+            case activeBuilding.value?.id:
+              continue
+            default:
+              break
+          }
+
+          const currBuilding = buildings.value[buildingId]
+          if (currBuilding.id === buildingToPlace.id)
+            continue
+
+          const isColliding = buildingToPlace.checkCollision(currBuilding, [
+            ...extraIds.value,
+            parentBuildingId,
+          ])
+
+          console.log(parentBuilding)
+
+          if (isColliding) {
+            console.log(currBuilding.type, currBuilding.id, buildingToPlace.type, buildingToPlace.id)
+            console.log('colliding')
+            console.log(parentBuildingId === currBuilding.id)
             return
           }
         }
 
-        return
-      }
-
-      const buildingToPlace = (editingBuilding.value) ? (activeBuilding.value as Building) : (activeBuilding.value as Building).copy
-
-      if (sideToSnap.value !== null && closestBuilding.value !== null) {
-        const parentBuildingId = closestBuilding.value.id
-        const parentBuilding = findBuildingById(parentBuildingId)
-
-        if (closestBuilding.value)
+        if (closestBuilding.value) {
           parentBuilding.addChild(buildingToPlace as Building, sideToSnap.value)
+          buildingToPlace.isPlaced = true
+          buildings.value[buildingToPlace.id] = (buildingToPlace as Building)
+        }
       }
-
-      buildingToPlace.isPlaced = true
-      buildings.value[buildingToPlace.id] = (buildingToPlace as Building)
+      else if (!buildingToPlace.needsParent) {
+        buildingToPlace.isPlaced = true
+        buildings.value[buildingToPlace.id] = (buildingToPlace as Building)
+      }
+      else {
+        activeBuilding.value?.childrenIds.forEach((childId) => {
+          const child = findBuildingById(childId)
+          if (child)
+            child.removeParent()
+          delete buildings.value[childId]
+        })
+        setActiveBuilding(new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))
+      }
 
       if (editingBuilding.value) {
         editingBuilding.value = false
@@ -166,7 +210,6 @@ watch((stage), () => {
         case 'KeyE':
           building.rotateBuilding(90)
           break
-
         case 'KeyW':
           building.updateCoords({ x: building.x, y: building.y - houseConfig.CELL_SIZE })
           break
@@ -204,6 +247,7 @@ function setActiveBuilding(building: Building) {
   const newBuilding = building.copy
   buildings.value[newBuilding.id] = newBuilding as Building
   activeBuilding.value = newBuilding as Building
+  extraIds.value = (activeBuilding.value) ? [...activeBuilding.value.childrenIds] : []
 }
 </script>
 
@@ -223,6 +267,12 @@ function setActiveBuilding(building: Building) {
         @click="setActiveBuilding(new Hallway({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))"
       >
         Hallway
+      </button>
+      <button
+        class="btn btn-accent"
+        @click="setActiveBuilding(new LargeHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))"
+      >
+        LargeHouse
       </button>
       <button
         class="btn btn-accent"
@@ -247,10 +297,17 @@ function setActiveBuilding(building: Building) {
     <v-stage ref="stage" :config="configKonva">
       <HouseGrid />
       <v-layer>
+        <template v-for="building in buildings" :key="building.id">
+          <template v-for="collisionBox in building.collisionBoxes" :key="collisionBox.id">
+            <v-rect :config="collisionBox.rect" />
+          </template>
+        </template>
+      </v-layer>
+      <v-layer>
         <v-text :config="text" />
         <template v-for="building in buildings" :key="building.id">
           <v-image :config="building.image" />
-          <v-rect :config="building.snapBox" />
+          <!-- <v-rect :config="building.snapBox" /> -->
         </template>
       </v-layer>
     </v-stage>
@@ -258,8 +315,13 @@ function setActiveBuilding(building: Building) {
     <div>
       <p>List of building ids</p>
       <ul>
-        <li v-for="building in buildings" :key="building.id">
-          {{ building.id }}
+        <li v-for="building in buildings" :key="building.id" class="grid">
+          <p>
+            {{ building.id }} - {{ building.type }}
+          </p>
+          <p v-if="building.type === BuildingType.HarvestHouse">
+            {{ building.childrenIds }}
+          </p>
         </li>
       </ul>
     </div>

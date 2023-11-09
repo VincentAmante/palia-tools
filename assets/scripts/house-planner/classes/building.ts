@@ -29,6 +29,7 @@ export abstract class Building {
   protected _image: BuildingImage
   protected _gridSizing: GridSizing
   protected _isPlaced: boolean = false
+  protected readonly countsTowardsLimit: boolean = true
 
   protected _openSlots: {
     North: boolean
@@ -92,9 +93,9 @@ export abstract class Building {
     const collisionBoxes = this._collisionBoxes
     const buildingCollisionBoxes = building._collisionBoxes
 
-    for (let i = 0; i < collisionBoxes.length; i++) {
-      for (let j = 0; j < buildingCollisionBoxes.length; j++) {
-        if (collisionBoxes[i].isIntersectingWith(buildingCollisionBoxes[j], excludeIds))
+    for (const collisionBox of collisionBoxes) {
+      for (const buildingCollisionBox of buildingCollisionBoxes) {
+        if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds))
           return true
       }
     }
@@ -128,6 +129,10 @@ export abstract class Building {
 
   get snapBox(): SnapBoxRect {
     return this._snapBox.rect
+  }
+
+  get collisionBoxes(): CollisionBox[] {
+    return this._collisionBoxes
   }
 
   get x(): number {
@@ -210,6 +215,7 @@ export abstract class Building {
       if (this._children[slotSide as Direction] !== null) {
         if (this._children[slotSide as Direction]!.id === this._parent?.id)
           return
+
         this._children[slotSide as Direction]!.snapToBuilding(this, slotSide as Direction)
       }
     }
@@ -313,7 +319,6 @@ export abstract class Building {
 
   getSnapCoords(direction: Direction): Coordinates {
     const newDirection = shiftDirectionByRotation(direction, this._baseRotation)
-
     switch (newDirection) {
       case Direction.North:
         return this._snapBox.getCoords(Direction.North)
@@ -386,16 +391,17 @@ export abstract class Building {
   get copy(): Building {
     const building = new (this.constructor as any)(this._gridSizing)
     building._baseCoords = { ...this._baseCoords }
-    building._baseRotation = this._baseRotation
+    building._baseRotation = Number.parseInt(this._baseRotation.toString())
     building._baseDimensions = { ...this._baseDimensions }
-    building._opacity = this._opacity
+    building._opacity = Number.parseInt(this._opacity.toString())
     building._snapBox = this._snapBox.copy
     building._collisionBoxes = this._collisionBoxes.map(collisionBox => collisionBox.copy)
     building._image = this._image.copy
     building._openSlots = { ...this._openSlots }
     building._children = { ...this._children }
     building._parent = this._parent
+    building._id = uniqid()
 
-    return building
+    return building as Building
   }
 }

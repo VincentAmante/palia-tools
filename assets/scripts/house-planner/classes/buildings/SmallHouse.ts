@@ -10,7 +10,7 @@ import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
 export class SmallHouse extends Building {
   protected _type: BuildingType = BuildingType.SmallHouse
-  protected _needsParent: boolean = false
+  protected _needsParent: boolean = true
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
   protected _baseRotation: number = 0
   protected _baseDimensions: Dimensions = { width: 7, height: 7 }

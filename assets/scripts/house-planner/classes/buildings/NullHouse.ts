@@ -13,7 +13,7 @@ export class NullHouse extends Building {
   protected _needsParent: boolean = false
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
   protected _baseRotation: number = 0
-  protected _baseDimensions: Dimensions = { width: 0, height: 0 }
+  protected _baseDimensions: Dimensions = { width: 5, height: 5 }
   protected _opacity: number = 0
 
   constructor(gridSizing: GridSizing) {

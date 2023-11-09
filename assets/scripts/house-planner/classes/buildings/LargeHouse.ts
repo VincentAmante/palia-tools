@@ -8,12 +8,12 @@ import { Building } from '../building'
 import type { GridSizing } from '../../types/ConfigOptions'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
-export class MediumHouse extends Building {
-  protected _type: BuildingType = BuildingType.MediumHouse
+export class LargeHouse extends Building {
+  protected _type: BuildingType = BuildingType.LargeHouse
   protected _needsParent: boolean = true
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
   protected _baseRotation: number = 0
-  protected _baseDimensions: Dimensions = { width: 9, height: 9 }
+  protected _baseDimensions: Dimensions = { width: 11, height: 11 }
   protected _opacity: number = 1
 
   constructor(gridSizing: GridSizing) {
@@ -38,8 +38,6 @@ export class MediumHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetHeight: 1,
-        offsetWidth: 1,
       },
       this._id,
       this._gridSizing,
@@ -50,7 +48,7 @@ export class MediumHouse extends Building {
     {
       ...this._baseCoords,
       ...this._baseDimensions,
-      imageSrc: '/buildings/medium-house.svg',
+      imageSrc: '/buildings/large-house.svg',
     },
     this._id,
     this._gridSizing,

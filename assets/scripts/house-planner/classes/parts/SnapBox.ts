@@ -54,6 +54,7 @@ export default class SnapBox {
       width: this._baseDimensions.width + this._offsetDimensions.width,
       height: this._baseDimensions.height + this._offsetDimensions.height,
       stroke: 'rgba(0, 0, 0, 10)',
+      dash: [10, 10],
       strokeWidth: 1,
       id: this._id,
       offsetX: toScale(offsetX + (width + offsetWidth) / 2, gridSizing),
