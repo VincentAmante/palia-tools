@@ -15,6 +15,7 @@ export class NullHouse extends Building {
   protected _baseRotation: number = 0
   protected _baseDimensions: Dimensions = { width: 5, height: 5 }
   protected _opacity: number = 0
+  countsTowardsLimit: boolean = false
 
   constructor(gridSizing: GridSizing) {
     super(gridSizing)

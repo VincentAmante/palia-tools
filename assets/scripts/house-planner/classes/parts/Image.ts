@@ -79,8 +79,17 @@ export default class BuildingImage {
       offsetY: this._rect.offsetY(),
       id: this._id,
       rotation: this._rotation,
+      opacity: this._rect.opacity(),
       image,
     }) as ImageType
+  }
+
+  get opacity(): number {
+    return this._rect.opacity()
+  }
+
+  set opacity(opacity: number) {
+    (typeof this._rect.opacity === 'function') ? this._rect.opacity(opacity) : this._rect.opacity = opacity
   }
 
   updateCoords({ x, y }: Coordinates) {

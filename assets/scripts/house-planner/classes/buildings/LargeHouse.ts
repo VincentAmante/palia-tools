@@ -26,8 +26,6 @@ export class LargeHouse extends Building {
       ...this._baseDimensions,
       offsetX: 0,
       offsetY: 0,
-      offsetWidth: 0,
-      offsetHeight: 0,
     },
     this._id,
     this._gridSizing,
@@ -38,6 +36,8 @@ export class LargeHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
+        offsetWidth: 1,
+        offsetHeight: 1,
       },
       this._id,
       this._gridSizing,

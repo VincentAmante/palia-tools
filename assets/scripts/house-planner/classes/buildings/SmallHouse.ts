@@ -38,6 +38,8 @@ export class SmallHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
+        offsetWidth: 1,
+        offsetHeight: 1,
       },
       this._id,
       this._gridSizing,

@@ -1,3 +1,4 @@
+import Konva from 'konva'
 import SnapBox from '../parts/SnapBox'
 
 import CollisionBox from '../parts/CollisionBox'
@@ -15,6 +16,7 @@ export class HarvestHouse extends Building {
   protected _baseRotation: number = 0
   protected _baseDimensions: Dimensions = { width: 11, height: 11 }
   protected _opacity: number = 1
+  countsTowardsLimit: boolean = true
 
   constructor(gridSizing: GridSizing) {
     super(gridSizing)
@@ -33,12 +35,31 @@ export class HarvestHouse extends Building {
     this._gridSizing,
   )
 
+  // gets all children buildings that count towards the limit
+  get countableBuildings(): number {
+    return this.childrenBuildings.filter(
+      building => building.countsTowardsLimit && building.isPlaced,
+    ).length + (this.isPlaced ? 1 : 0)
+  }
+
+  get buildingCountText(): Konva.Text {
+    return new Konva.Text({
+      x: this._baseCoords.x - this._baseDimensions.width * 2,
+      y: this._baseCoords.y - this._baseDimensions.height,
+      text: `${this.countableBuildings} / 15`,
+      fontSize: 16,
+      fontVariant: 'bold',
+      fontFamily: 'Merriweather',
+      fill: '#2B3750',
+    })
+  }
+
   protected _collisionBoxes: CollisionBox[] = [
     new CollisionBox(
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetWidth: 1,
+        offsetWidth: 2,
         offsetHeight: 2,
       },
       this._id,

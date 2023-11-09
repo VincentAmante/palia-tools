@@ -29,7 +29,7 @@ export abstract class Building {
   protected _image: BuildingImage
   protected _gridSizing: GridSizing
   protected _isPlaced: boolean = false
-  protected readonly countsTowardsLimit: boolean = true
+  readonly countsTowardsLimit: boolean = true
 
   protected _openSlots: {
     North: boolean
@@ -146,10 +146,10 @@ export abstract class Building {
   addChild(building: Building, direction: Direction) {
     if (building.id === this._id)
       return
-
     if (building.id === this._parent?.id)
       return
 
+    console.log('adding child', building.id, 'to', this._id)
     this._children[direction] = building
     building.parent = this
   }
@@ -171,6 +171,20 @@ export abstract class Building {
     }
 
     return childrenIds
+  }
+
+  get childrenBuildings(): Building[] {
+    // get all children buildings, including children of children
+    const children: Building[] = []
+
+    for (const child of Object.values(this._children)) {
+      if (child !== null) {
+        children.push(child)
+        children.push(...child.childrenBuildings)
+      }
+    }
+
+    return children
   }
 
   get children(): {
@@ -284,6 +298,8 @@ export abstract class Building {
     let closestSide: Direction | null = null
 
     for (const [side, isOpen] of Object.entries(building.openSlots)) {
+      if (building.children[side] !== null)
+        continue
       if (isOpen) {
         const coords = building.getSnapCoords(side as Direction)
         const distance = Math.sqrt((x - coords.x) ** 2 + (y - coords.y) ** 2)
@@ -386,6 +402,14 @@ export abstract class Building {
 
   set isPlaced(value: boolean) {
     this._isPlaced = value
+  }
+
+  get opacity(): number {
+    return this._opacity
+  }
+
+  set opacity(value: number) {
+    this._image.opacity = value
   }
 
   get copy(): Building {
