@@ -33,7 +33,7 @@ const text = ref({
 
 const buildings = ref<Record<string, Building>>(
   {
-    [harvestHouse.value.id]: harvestHouse.value as Building,
+    [harvestHouse.value.id]: (harvestHouse.value as HarvestHouse),
   },
 )
 
@@ -45,11 +45,13 @@ const countedBuildings = computed(() => {
   return Object.values(buildings.value).filter(building => (building.countsTowardsLimit && building.isPlaced)).length
 })
 
-const activeBuilding = ref<Building | null>(harvestHouse.value as Building)
+const activeBuilding = ref<Building | null>(harvestHouse.value as HarvestHouse)
 const isEditingBuilding = ref(false)
 
 const parentToSnap = ref<Building | null>(null)
 const sideToSnap = ref<Direction | null>(null)
+
+const useBuildingLimits = ref(true)
 
 function moveActiveBuilding(x: number, y: number) {
   const snappedX = snapToCellSize(x)
@@ -117,7 +119,10 @@ function onMouseMove() {
   })
 
   // Handle snapping to other buildings
-  if (hasCollision && activeBuilding.value.needsParent) {
+  if (hasCollision
+    && activeBuilding.value.needsParent
+    && hasCollision.id !== activeBuilding.value.id // Prevents snapping to itself
+  ) {
     const collidingBuilding = hasCollision as Building
     const snappedX = snapToCellSize(mousePos.x)
     const snappedY = snapToCellSize(mousePos.y)
@@ -126,7 +131,12 @@ function onMouseMove() {
       y: snappedY,
     }, collidingBuilding)
 
-    if (snapData.snapped) {
+    const topLevelBuilding = collidingBuilding.topLevelBuilding
+    const hasSpace = (!useBuildingLimits.value
+      || (topLevelBuilding.countableBuildings < houseConfig.MAX_CLUSTER_BUILDINGS && countedBuildings.value < houseConfig.MAX_BUILDINGS)
+      || !activeBuilding.value.countsTowardsLimit)
+
+    if (snapData.snapped && hasSpace) {
       sideToSnap.value = snapData.side
       parentToSnap.value = collidingBuilding
       const hasOtherCollisions = checkForCollisions(activeBuilding.value as Building, [...activeBuilding.value?.childrenIds as string[], collidingBuilding.id])
@@ -140,7 +150,8 @@ function onMouseMove() {
       showBuildingColliding()
     }
   }
-  else if (hasCollision) {
+  else if (hasCollision
+  || (countedBuildings.value >= houseConfig.MAX_BUILDINGS && useBuildingLimits.value)) {
     showBuildingColliding()
   }
   else {
@@ -191,20 +202,32 @@ watch((stage), () => {
       }
 
       if (!activeBuilding.value.needsParent) {
-        placeBuilding()
+        if (!useBuildingLimits.value
+          || (countedBuildings.value < houseConfig.MAX_BUILDINGS)
+          || !activeBuilding.value.countsTowardsLimit)
+          placeBuilding()
       }
       else if (parentToSnap.value !== null && sideToSnap.value !== null) {
         const parent = buildings.value[parentToSnap.value.id]
         const side = sideToSnap.value
         const building = activeBuilding.value
 
-        const hasOtherCollisions = checkForCollisions(building as Building, [...building.childrenIds, parent.id])
+        const excludeIds = [...building.childrenIds, parent.id]
+
+        const hasOtherCollisions = checkForCollisions(building as Building, excludeIds)
 
         if (hasOtherCollisions)
           return
 
-        parent.addChild(building as Building, side)
-        placeBuilding([parent.id])
+        const topLevelBuilding = parent.topLevelBuilding
+
+        if (
+          !useBuildingLimits.value
+          || (topLevelBuilding.countableBuildings < houseConfig.MAX_CLUSTER_BUILDINGS && countedBuildings.value < houseConfig.MAX_BUILDINGS)
+          || !building.countsTowardsLimit) {
+          if (placeBuilding(excludeIds))
+            parent.addChild(building as Building, side)
+        }
       }
     })
 
@@ -241,22 +264,23 @@ watch((stage), () => {
   }
 })
 
-function placeBuilding(excludeIds: string[] = []) {
+function placeBuilding(excludeIds: string[] = []): boolean {
   const building = (activeBuilding.value as Building)
   if (!building)
-    return
+    return false
 
   let hasCollision = checkForCollisions(building, [...new Set([...building.childrenIds, ...excludeIds])])
   building.childrenIds.forEach((childId) => {
     const child = buildings.value[childId]
     if (child) {
-      const isColliding = checkForCollisions(child, [activeBuilding.value?.id || '', ...activeBuilding.value?.childrenIds || []])
+      const excludeList = [...new Set([...child.childrenIds, ...excludeIds, activeBuilding.value?.id || '', ...activeBuilding.value?.childrenIds || []])]
+      const isColliding = checkForCollisions(child, excludeList)
       if (isColliding)
         hasCollision = isColliding
     }
   })
   if (hasCollision)
-    return
+    return false
 
   buildings.value[building.id] = building
   building.isPlaced = true
@@ -275,9 +299,11 @@ function placeBuilding(excludeIds: string[] = []) {
   else {
     setActiveBuilding(building.copy)
   }
+
+  return true
 }
 
-function checkForCollisions(buildingToPlace: Building, excludeIds: string[] = []): Building | false {
+function checkForCollisions(buildingToPlace: Building, excludeIds: string[] = [], isChild: boolean = false): Building | false {
   for (const building of Object.values(buildings.value)) {
     if (excludeIds.includes(building.id))
       continue
@@ -292,6 +318,9 @@ function checkForCollisions(buildingToPlace: Building, excludeIds: string[] = []
       return currBuilding
   }
 
+  if (buildingToPlace.isOutsideGrid(configKonva.value.width, configKonva.value.height))
+    return buildingToPlace
+
   return false
 }
 
@@ -304,6 +333,8 @@ function setActiveBuilding(building: Building) {
   const newBuilding = building
   activeBuilding.value = newBuilding as Building
   buildings.value[newBuilding.id] = newBuilding as Building
+
+  activeBuilding.value.removeParent()
 }
 
 function clearUnplacedBuildings() {
@@ -318,10 +349,6 @@ function clearUnplacedBuildings() {
 <template>
   <section class="px-16">
     <div class="flex gap-2 flex-wrap py-1" />
-
-    <div>
-      <p>{{ countedBuildings }} / 30</p>
-    </div>
 
     <div class="flex gap-2 py-4">
       <button
@@ -362,39 +389,57 @@ function clearUnplacedBuildings() {
       </button>
     </div>
 
-    <v-stage ref="stage" :config="configKonva">
-      <HouseGrid />
-      <v-layer>
-        <template v-for="building in buildings" :key="building.id">
-          <template v-for="collisionBox in building.collisionBoxes" :key="collisionBox.id">
-            <v-rect :config="collisionBox.rect" />
+    <section class="bg-neutral w-fit relative isolate">
+      <DevOnly>
+        <p class="absolute left-0 z-50 m-4 text-xs">
+          {{ text.text }}
+        </p>
+      </DevOnly>
+      <p class="absolute right-0 z-30 m-4 bg-palia-blue p-2 text-accent rounded-full px-4 bg-opacity-50">
+        {{ countedBuildings }} / 30
+      </p>
+      <v-stage ref="stage" class="relative isolate" :config="configKonva">
+        <HouseGrid />
+        <v-layer>
+          <template v-for="building in buildings" :key="building.id">
+            <template v-for="collisionBox in building.collisionBoxes" :key="collisionBox.id">
+              <v-rect :config="collisionBox.rect" />
+            </template>
           </template>
-        </template>
-      </v-layer>
-      <v-layer>
-        <v-text :config="text" />
-        <template v-for="building in buildings" :key="building.id">
-          <v-image :config="building.image" />
-          <!-- <v-rect :config="building.snapBox" /> -->
-        </template>
-        <template v-for="plotHarvestHouse in harvestHouses" :key="plotHarvestHouse.id">
-          <v-text :config="plotHarvestHouse.buildingCountText" />
-        </template>
-      </v-layer>
-    </v-stage>
-
+        </v-layer>
+        <v-layer>
+          <template v-for="building in buildings" :key="building.id">
+            <v-image :config="building.image" />
+            <!-- <DevOnly>
+              <v-rect :config="building.snapBox" />
+            </DevOnly> -->
+          </template>
+          <template v-for="plotHarvestHouse in harvestHouses" :key="plotHarvestHouse.id">
+            <v-text :config="plotHarvestHouse.buildingCountText" />
+          </template>
+        </v-layer>
+      </v-stage>
+    </section>
     <div>
-      <p>List of building ids</p>
-      <ul>
-        <li v-for="building in buildings" :key="building.id" class="grid">
-          <p>
-            {{ building.id }} - {{ building.type }}
-          </p>
-          <p v-if="building.type === BuildingType.HarvestHouse">
-            {{ building.childrenIds }}
-          </p>
-        </li>
-      </ul>
+      <p>Use Build Limits</p>
+      <input v-model="useBuildingLimits" type="checkbox" class="toggle">
     </div>
+    <DevOnly>
+      <div class=" bg-neutral p-4 rounded-md font-mono mb-4">
+        <p class="text-lg uppercase font-bold">
+          building ids
+        </p>
+        <ul>
+          <li v-for="building in buildings" :key="building.id" class="grid">
+            <p>
+              {{ building.id }} - {{ building.type }}
+            </p>
+            <p v-if="building.type === BuildingType.HarvestHouse">
+              {{ building.childrenIds }}
+            </p>
+          </li>
+        </ul>
+      </div>
+    </DevOnly>
   </section>
 </template>

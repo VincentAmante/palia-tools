@@ -15,6 +15,10 @@ export class LargeHouse extends Building {
   protected _baseRotation: number = 0
   protected _baseDimensions: Dimensions = { width: 11, height: 11 }
   protected _opacity: number = 1
+  price = {
+    base: 10000,
+    perExtraBuilding: 1250,
+  }
 
   constructor(gridSizing: GridSizing) {
     super(gridSizing)

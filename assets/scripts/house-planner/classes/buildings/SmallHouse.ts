@@ -15,6 +15,10 @@ export class SmallHouse extends Building {
   protected _baseRotation: number = 0
   protected _baseDimensions: Dimensions = { width: 7, height: 7 }
   protected _opacity: number = 1
+  price = {
+    base: 6000,
+    perExtraBuilding: 750,
+  }
 
   constructor(gridSizing: GridSizing) {
     super(gridSizing)

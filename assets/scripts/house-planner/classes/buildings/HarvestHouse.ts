@@ -9,7 +9,7 @@ import { Building } from '../building'
 import type { GridSizing } from '../../types/ConfigOptions'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
-const FONT_SIZE = 16
+const FONT_SIZE = 12
 
 export class HarvestHouse extends Building {
   protected _type: BuildingType = BuildingType.HarvestHouse
@@ -18,6 +18,11 @@ export class HarvestHouse extends Building {
   protected _baseRotation: number = 0
   protected _baseDimensions: Dimensions = { width: 11, height: 11 }
   protected _opacity: number = 1
+  price = {
+    base: 15000,
+    perExtraBuilding: 5000,
+  }
+
   countsTowardsLimit: boolean = true
 
   constructor(gridSizing: GridSizing) {
@@ -37,14 +42,8 @@ export class HarvestHouse extends Building {
     this._gridSizing,
   )
 
-  // gets all children buildings that count towards the limit
-  get countableBuildings(): number {
-    return this.childrenBuildings.filter(
-      building => building.countsTowardsLimit && building.isPlaced,
-    ).length + (this.isPlaced ? 1 : 0)
-  }
-
   get buildingCountText(): Konva.Text {
+    // TODO: Make the 15 a global constant
     const text = `${this.countableBuildings} / 15`
 
     return new Konva.Text({
@@ -58,10 +57,10 @@ export class HarvestHouse extends Building {
       padding: 5,
       align: 'center',
       verticalAlign: 'middle',
-      shadowColor: '#000',
-      shadowOpacity: 0.2,
-      shadowBlur: 5,
-      shadowOffset: { x: 1, y: 1 },
+      // shadowColor: '#000',
+      // shadowOpacity: 0.2,
+      // shadowBlur: 5,
+      // shadowOffset: { x: 1, y: 1 },
     })
   }
 

@@ -30,6 +30,10 @@ export abstract class Building {
   protected _gridSizing: GridSizing
   protected _isPlaced: boolean = false
   readonly countsTowardsLimit: boolean = true
+  readonly price = {
+    base: 0,
+    perExtraBuilding: 0,
+  }
 
   protected _openSlots: {
     North: boolean
@@ -99,8 +103,18 @@ export abstract class Building {
           return true
       }
     }
-
     return false
+  }
+
+  checkSnapBoxCollision(building: Building, excludeIds: string[]): boolean {
+    return this._snapBox.isIntersectingWith(building._snapBox, excludeIds)
+  }
+
+  // gets all children buildings that count towards the limit
+  get countableBuildings(): number {
+    return this.childrenBuildings.filter(
+      building => building.countsTowardsLimit && building.isPlaced,
+    ).length + (this.isPlaced ? 1 : 0)
   }
 
   get id(): string {
@@ -149,12 +163,14 @@ export abstract class Building {
     if (building.id === this._parent?.id)
       return
 
-    console.log('adding child', building.id, 'to', this._id)
+    console.log('adding child', building, direction)
+
     this._children[direction] = building
     building.parent = this
   }
 
   removeChild(direction: Direction) {
+    console.log('removing child', direction)
     this._children[direction]!.parent = null
     this._children[direction] = null
   }
@@ -198,6 +214,29 @@ export abstract class Building {
 
   get parent(): Building | null {
     return this._parent
+  }
+
+  isOutsideGrid(rightmostX: number, bottommostY: number): boolean {
+    // check if any of the collision boxes are outside the grid
+    for (const collisionBox of this._collisionBoxes) {
+      const { topLeft, bottomRight } = getCorners(collisionBox)
+
+      if (topLeft.x < 0 || topLeft.y < 0)
+        return true
+      else if (bottomRight.x > rightmostX || bottomRight.y > bottommostY)
+        return true
+    }
+
+    return false
+  }
+
+  get topLevelBuilding(): Building {
+    if (this._parent === null
+      || this._parent === undefined
+      || !this._needsParent)
+      return this as Building
+
+    return this._parent.topLevelBuilding || this as Building
   }
 
   set parent(building: Building | null) {
@@ -428,4 +467,16 @@ export abstract class Building {
 
     return building as Building
   }
+}
+
+function getCorners(collisionBox: CollisionBox) {
+  const x = typeof collisionBox.rect.x === 'function' ? collisionBox.rect.x() : collisionBox.rect.x
+  const y = typeof collisionBox.rect.y === 'function' ? collisionBox.rect.y() : collisionBox.rect.y
+  const width = typeof collisionBox.rect.width === 'function' ? collisionBox.rect.width() : collisionBox.rect.width
+  const height = typeof collisionBox.rect.height === 'function' ? collisionBox.rect.height() : collisionBox.rect.height
+
+  const topLeft = { x: x - width / 2, y: y - height / 2 }
+  const bottomRight = { x: x + width / 2, y: y + height / 2 }
+
+  return { topLeft, bottomRight }
 }

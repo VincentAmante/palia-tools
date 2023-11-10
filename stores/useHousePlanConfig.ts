@@ -21,6 +21,9 @@ export const useHousePlanConfig = defineStore('housePlanConfig', () => {
   const width = computed(() => WIDTH)
   const height = computed(() => HEIGHT)
 
+  const MAX_CLUSTER_BUILDINGS = 15
+  const MAX_BUILDINGS = 30
+
   return {
     CELL_SIZE,
     CELLS_IN_PLOT,
@@ -35,5 +38,7 @@ export const useHousePlanConfig = defineStore('housePlanConfig', () => {
     width,
     height,
     SIZE_MULTIPLIER,
+    MAX_CLUSTER_BUILDINGS,
+    MAX_BUILDINGS,
   }
 })

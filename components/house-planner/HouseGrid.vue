@@ -12,7 +12,7 @@ const configBackground = ref({
   width: stageConfig.width,
   height: stageConfig.height,
   fill: '#419257',
-  stroke: 'black',
+  stroke: 'white',
   strokeWidth: 1,
 })
 </script>
@@ -25,7 +25,7 @@ const configBackground = ref({
         :config="{
           points: [plot * (STAGE_WIDTH / 9), 0, plot * (STAGE_WIDTH / 9), STAGE_HEIGHT],
           stroke: 'white',
-          strokeWidth: 0.8,
+          strokeWidth: 1,
           opacity: 0.4,
         }"
       />
@@ -35,7 +35,7 @@ const configBackground = ref({
         :config="{
           points: [0, plot * (STAGE_HEIGHT / 5), STAGE_WIDTH, plot * (STAGE_HEIGHT / 5)],
           stroke: 'white',
-          strokeWidth: 0.8,
+          strokeWidth: 1,
           opacity: 0.4,
         }"
       />

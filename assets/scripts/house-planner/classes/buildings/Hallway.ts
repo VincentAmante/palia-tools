@@ -15,7 +15,6 @@ export class Hallway extends Building {
   protected _baseRotation: number = 0
   protected _baseDimensions: Dimensions = { width: 3, height: 3 }
   protected _opacity: number = 1
-  countsTowardsLimit: boolean = false
 
   constructor(gridSizing: GridSizing) {
     super(gridSizing)

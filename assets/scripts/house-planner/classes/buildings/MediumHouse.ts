@@ -15,6 +15,10 @@ export class MediumHouse extends Building {
   protected _baseRotation: number = 0
   protected _baseDimensions: Dimensions = { width: 9, height: 9 }
   protected _opacity: number = 1
+  price = {
+    base: 8000,
+    perExtraBuilding: 1000,
+  }
 
   constructor(gridSizing: GridSizing) {
     super(gridSizing)
