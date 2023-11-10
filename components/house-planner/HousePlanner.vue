@@ -438,19 +438,19 @@ function createNewBuilding(type: BuildingType) {
         class="btn btn-accent"
         @click="setActiveBuilding(createNewBuilding(BuildingType.LargeHouse))"
       >
-        LargeHouse
+        Large Room
       </button>
       <button
         class="btn btn-accent"
         @click="setActiveBuilding(createNewBuilding(BuildingType.MediumHouse))"
       >
-        Medium House
+        Medium Room
       </button>
       <button
         class="btn btn-accent"
         @click="setActiveBuilding(createNewBuilding(BuildingType.SmallHouse))"
       >
-        Small House
+        Small Room
       </button>
       <button
         class="btn btn-accent"
