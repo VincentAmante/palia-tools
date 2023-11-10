@@ -365,7 +365,7 @@ function clearUnplacedBuildings() {
       </button>
       <button
         class="btn btn-accent"
-        @click="setActiveBuilding(new LargeHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))"
+        @click="setActiveBuilding((new LargeHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })) as Building)"
       >
         LargeHouse
       </button>
