@@ -16,7 +16,11 @@ const configBackground = ref({
 </script>
 
 <template>
-  <v-layer>
+  <v-layer
+    :config="{
+      listening: false,
+    }"
+  >
     <v-rect :config="configBackground" />
     <template v-for="plot in 9" :key="plot">
       <v-line
@@ -25,6 +29,8 @@ const configBackground = ref({
           stroke: 'white',
           strokeWidth: 1,
           opacity: 0.4,
+          perfectDrawEnabled: false,
+          shadowForStrokeEnabled: false,
         }"
       />
     </template>
@@ -35,6 +41,8 @@ const configBackground = ref({
           stroke: 'white',
           strokeWidth: 1,
           opacity: 0.4,
+          perfectDrawEnabled: false,
+          shadowForStrokeEnabled: false,
         }"
       />
     </template>
@@ -47,6 +55,8 @@ const configBackground = ref({
             stroke: 'white',
             strokeWidth: (plotTile === 7) ? 0.3 : 0.1,
             opacity: 0.3,
+            perfectDrawEnabled: false,
+            shadowForStrokeEnabled: false,
           }"
         />
       </template>
@@ -60,6 +70,8 @@ const configBackground = ref({
             stroke: 'white',
             strokeWidth: (plotTile === 7) ? 0.3 : 0.1,
             opacity: 0.3,
+            perfectDrawEnabled: false,
+            shadowForStrokeEnabled: false,
           }"
         />
       </template>

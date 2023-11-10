@@ -48,8 +48,8 @@ export class Hallway extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetWidth: 0.5,
-        offsetHeight: 2,
+        offsetWidth: 0,
+        offsetHeight: 0,
       },
       this._id,
       this._gridSizing,

@@ -101,7 +101,6 @@ export abstract class Building {
   checkCollision(building: Building, excludeIds: string[]): boolean {
     const collisionBoxes = this._collisionBoxes
     const buildingCollisionBoxes = building._collisionBoxes
-
     for (const collisionBox of collisionBoxes) {
       for (const buildingCollisionBox of buildingCollisionBoxes) {
         if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds))
@@ -479,6 +478,7 @@ export abstract class Building {
   }
 
   set opacity(value: number) {
+    this._opacity = value
     this._image.opacity = value
   }
 

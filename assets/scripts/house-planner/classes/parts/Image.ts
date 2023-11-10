@@ -19,6 +19,7 @@ export default class BuildingImage {
   private _rotation: number = 0
   private _gridSizing: GridSizing
   private _imageSrc: string
+  private _opacity: number = 0.5
 
   constructor(
     {
@@ -47,6 +48,8 @@ export default class BuildingImage {
     this._offsetCoords = { x: toScale(offsetX, gridSizing), y: toScale(offsetY, gridSizing) }
     this._offsetDimensions = { width: toScale(offsetHeight, gridSizing), height: toScale(offsetHeight, gridSizing) }
 
+    this._opacity = 1
+
     const image = new Image()
     image.src = imageSrc
     this._imageSrc = imageSrc
@@ -56,9 +59,10 @@ export default class BuildingImage {
       width: this._baseDimensions.width + this._offsetDimensions.width,
       height: this._baseDimensions.height + this._offsetDimensions.height,
       id: this._id,
-      offsetX: toScale((width + offsetWidth) / 2, gridSizing),
-      offsetY: toScale((height + offsetHeight) / 2, gridSizing),
+      offsetX: (this._baseDimensions.width + this._offsetDimensions.width + this._offsetCoords.x) / 2,
+      offsetY: (this._baseDimensions.height + this._offsetDimensions.height + this._offsetCoords.y) / 2,
       rotation: this._rotation,
+      opacity: this.opacity,
       image,
     }) as ImageType
   }
@@ -69,38 +73,47 @@ export default class BuildingImage {
 
     const { x, y } = this._baseCoords
     const { width, height } = this._baseDimensions
+    const offsetX = (this._baseDimensions.width + this._offsetDimensions.width + this._offsetCoords.x) / 2
+    const offsetY = (this._baseDimensions.height + this._offsetDimensions.height + this._offsetCoords.y) / 2
 
     return new Konva.Image({
       x,
       y,
       width,
       height,
-      offsetX: this._rect.offsetX(),
-      offsetY: this._rect.offsetY(),
+      offsetX,
+      offsetY,
       id: this._id,
       rotation: this._rotation,
       opacity: this._rect.opacity(),
+      shadowDisabled: true,
+      perfectDrawEnabled: false,
       image,
     }) as ImageType
+
+    return this._rect as ImageType
   }
 
   get opacity(): number {
-    return this._rect.opacity()
+    return this._opacity
   }
 
   set opacity(opacity: number) {
-    (typeof this._rect.opacity === 'function') ? this._rect.opacity(opacity) : this._rect.opacity = opacity
+    this._rect.opacity(opacity)
+    this._opacity = opacity
   }
 
   updateCoords({ x, y }: Coordinates) {
     this._baseCoords = { x, y }
-    this._rect.x(x + this._offsetCoords.x)
-    this._rect.y(y + this._offsetCoords.y)
+
+    this._rect.x = x
+    this._rect.y = y
   }
 
   updateRotation(rotation: number) {
     this._rotation = rotation
-    this._rect.rotation(rotation)
+    // this._rect.rotation(rotation)
+    this._rect.rotation = rotation
   }
 
   get copy(): BuildingImage {
@@ -115,8 +128,8 @@ export default class BuildingImage {
       width,
       height,
       imageSrc: this._imageSrc,
-      offsetX: this._offsetCoords.x,
-      offsetY: this._offsetCoords.y,
+      offsetX: unscale(this._offsetCoords.x, this._gridSizing),
+      offsetY: unscale(this._offsetCoords.y, this._gridSizing),
       offsetWidth,
       offsetHeight,
     }, this._id, this._gridSizing)

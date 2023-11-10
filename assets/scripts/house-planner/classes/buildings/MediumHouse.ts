@@ -47,8 +47,8 @@ export class MediumHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetHeight: 2,
-        offsetWidth: 0.5,
+        offsetHeight: 0,
+        offsetWidth: 0,
       },
       this._id,
       this._gridSizing,

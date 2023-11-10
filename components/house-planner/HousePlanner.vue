@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type Konva from 'konva'
+import Konva from 'konva'
 import { BuildingType } from 'assets/scripts/house-planner/enums/building-type'
 import HouseGrid from './HouseGrid.vue'
 import type { Building } from '@/assets/scripts/house-planner/classes/building'
@@ -163,6 +163,7 @@ function onMouseMove() {
 
   const excludeIds = [...new Set([...activeBuilding.value.childrenIds, activeBuilding.value.id])]
   hasCollision = checkForCollisions(activeBuilding.value as Building, excludeIds)
+
   activeBuilding.value.childrenIds.forEach((childId) => {
     const child = buildings.value[childId]
     if (child) {
@@ -205,7 +206,7 @@ function onMouseMove() {
     }
   }
   else if (hasCollision
-  || (countedBuildings.value >= houseConfig.MAX_BUILDINGS && useBuildingLimits.value)) {
+    || (countedBuildings.value >= houseConfig.MAX_BUILDINGS && useBuildingLimits.value)) {
     showBuildingColliding()
   }
   else {
@@ -214,12 +215,57 @@ function onMouseMove() {
   }
 }
 
+// Debounce the mousemove event to prevent lag
+// function debounce(func, interval) {
+//   let lastCall = -1
+//   return function () {
+//     clearTimeout(lastCall)
+//     const args = arguments
+//     const self = this
+//     lastCall = setTimeout(() => {
+//       func.apply(self, args)
+//     }, interval)
+//   }
+// }
+
+type DebouncedFunction<T extends (...args: any[]) => void> = (
+  this: ThisParameterType<T>,
+  ...args: Parameters<T>
+) => void
+
+function debounce<T extends (...args: any[]) => void>(
+  func: T,
+  wait: number,
+  immediate = false,
+): DebouncedFunction<T> {
+  let timeout: ReturnType<typeof setTimeout> | null
+  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const context = this
+
+    const later = function () {
+      timeout = null
+      if (!immediate)
+        func.apply(context, args)
+    }
+    const callNow = immediate && !timeout
+
+    clearTimeout(timeout as ReturnType<typeof setTimeout>)
+    timeout = setTimeout(later, wait)
+
+    if (callNow)
+      func.apply(context, args)
+  }
+}
+
 watch((stage), () => {
   if (typeof stage === 'object') {
     const stageObj = stage.value?.getStage() as Konva.Stage
 
+    stageObj.cache()
+
     stageObj.on('mousemove', () => {
-      onMouseMove()
+      debounce(onMouseMove, 25)()
     })
 
     stageObj.on('click', () => {
@@ -356,13 +402,20 @@ function placeBuilding(excludeIds: string[] = []): boolean {
 }
 
 function checkForCollisions(buildingToPlace: Building, excludeIds: string[] = []): Building | false {
+  if (buildingToPlace.type === BuildingType.None)
+    return false
+
   for (const building of Object.values(buildings.value)) {
+    if (building.type === BuildingType.None)
+      continue
     if (excludeIds.includes(building.id))
       continue
 
     const currBuilding = building
     if (currBuilding.id === buildingToPlace.id)
       continue
+
+    console.log('running collision check', buildingToPlace.id)
 
     const isColliding = buildingToPlace.checkCollision(currBuilding, [...buildingToPlace.childrenIds, ...excludeIds])
 
@@ -415,52 +468,56 @@ function createNewBuilding(type: BuildingType) {
       return new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
   }
 }
+
+const stageContainer = ref<HTMLElement | null>(null)
+
+onMounted(() => {
+  Konva.pixelRatio = 1
+  // window.addEventListener('resize', fitStageIntoParentContainer)
+
+  // fitStageIntoParentContainer()
+})
+
+// function fitStageIntoParentContainer() {
+//   const container = stageContainer.value as HTMLElement
+//   const stageObj = (stage.value?.getStage() as Konva.Stage)
+//   // now we need to fit stage into parent container
+//   const containerWidth = container.offsetWidth
+
+//   // but we also make the full scene visible
+//   // so we need to scale all objects on canvas
+//   const scale = containerWidth / houseConfig.width
+
+//   stageObj.width(houseConfig.width * scale)
+//   stageObj.height(houseConfig.height * scale)
+//   stageObj.scale({ x: scale, y: scale })
+// }
 </script>
 
 <template>
-  <section class="px-16 flex flex-col gap-2">
-    <div class="flex gap-2 flex-wrap py-1" />
-
-    <div class="flex gap-2 py-2">
-      <button
-        class="btn btn-accent"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.HarvestHouse))"
-      >
+  <section class=" flex flex-col gap-2 p-4">
+    <div class="flex gap-2 py-2 flex-wrap">
+      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.HarvestHouse))">
         Harvest House
       </button>
-      <button
-        class="btn btn-accent"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))"
-      >
+      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))">
         Hallway
       </button>
-      <button
-        class="btn btn-accent"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.LargeHouse))"
-      >
+      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.LargeHouse))">
         Large Room
       </button>
-      <button
-        class="btn btn-accent"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.MediumHouse))"
-      >
+      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.MediumHouse))">
         Medium Room
       </button>
-      <button
-        class="btn btn-accent"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.SmallHouse))"
-      >
+      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.SmallHouse))">
         Small Room
       </button>
-      <button
-        class="btn btn-accent"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.None))"
-      >
+      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.None))">
         None
       </button>
     </div>
 
-    <section class="bg-neutral w-fit relative isolate overflow-hidden rounded-md outline outline-2 outline-primary">
+    <section ref="stageContainer" class="w-fit relative aspect-auto isolate overflow-hidden rounded-md outline outline-2 outline-primary">
       <DevOnly>
         <p class="absolute left-0 z-50 m-4 text-xs">
           {{ text.text }}
@@ -471,21 +528,26 @@ function createNewBuilding(type: BuildingType) {
       </p>
       <v-stage ref="stage" class="relative isolate" :config="configKonva">
         <HouseGrid />
-        <v-layer>
+        <v-layer
+          :config="{
+            listening: false,
+          }"
+        >
           <template v-for="building in buildings" :key="building.id">
-            <template v-if="showRoofCollisions">
+            <template v-if="showRoofCollisions && (building.type !== BuildingType.None)">
               <template v-for="collisionBox in building.collisionBoxes" :key="collisionBox.id">
-                <v-rect :config="collisionBox.rect" />
+                <v-rect v-if="!collisionBox.hide" :config="collisionBox.rect" />
               </template>
             </template>
           </template>
         </v-layer>
-        <v-layer>
+        <v-layer
+          :config="{
+            listening: false,
+          }"
+        >
           <template v-for="building in buildings" :key="building.id">
             <v-image :config="building.image" />
-            <!-- <DevOnly>
-              <v-rect :config="building.snapBox" />
-            </DevOnly> -->
           </template>
           <template v-for="plotHarvestHouse in harvestHouses" :key="plotHarvestHouse.id">
             <v-text :config="plotHarvestHouse.buildingCountText" />
@@ -493,15 +555,12 @@ function createNewBuilding(type: BuildingType) {
         </v-layer>
       </v-stage>
     </section>
+
     <div class="flex gap-2">
       <div class="p-2 px-4 bg-palia-dark-blue rounded-md w-fit">
         <p class="flex items-center gap-2 text-lg">
           <nuxt-img
-            width="16"
-            height="16"
-            src="/gold.webp" class="max-h-[1.5rem]"
-            :srcset="undefined"
-            placeholder
+            width="16" height="16" src="/gold.webp" class="max-h-[1.5rem]" :srcset="undefined" placeholder
             alt="Gold" format="webp"
           />
           {{ totalPrice.toLocaleString() }}
@@ -510,23 +569,15 @@ function createNewBuilding(type: BuildingType) {
       <div class="p-2 px-4 bg-palia-dark-blue rounded-md w-fit flex gap-4">
         <p class="flex items-center gap-2 text-lg">
           <nuxt-img
-            width="32"
-            height="32"
-            src="/items/sapwood-plank.png" class="max-h-[3rem] aspect-auto object-contain"
-            :srcset="undefined"
-            placeholder
-            alt="Gold" format="webp"
+            width="32" height="32" src="/items/sapwood-plank.png" class="max-h-[3rem] aspect-auto object-contain"
+            :srcset="undefined" placeholder alt="Gold" format="webp"
           />
           {{ totalMaterials.sapwoodPlanks.toLocaleString() }}
         </p>
         <p class="flex items-center gap-2 text-lg">
           <nuxt-img
-            width="32"
-            height="32"
-            src="/items/stone-brick.png" class="max-h-[3rem] aspect-auto object-contain"
-            :srcset="undefined"
-            placeholder
-            alt="Gold" format="webp"
+            width="32" height="32" src="/items/stone-brick.png" class="max-h-[3rem] aspect-auto object-contain"
+            :srcset="undefined" placeholder alt="Gold" format="webp"
           />
           {{ totalMaterials.stoneBricks.toLocaleString() }}
         </p>

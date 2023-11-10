@@ -22,6 +22,7 @@ export default class CollisionBox {
   private _rect: CollisionBoxRect
   private _rotation: number = 0
   private _gridSizing: GridSizing
+  readonly hide: boolean = false
 
   constructor(
     {
@@ -42,9 +43,11 @@ export default class CollisionBox {
     },
     id: string = uniqid(),
     gridSizing: GridSizing,
+    hide: boolean = false,
   ) {
     this._id = id
     this._gridSizing = gridSizing
+    this.hide = hide
 
     this._baseCoords = { x, y }
     this._baseDimensions = { width: toScale(width, gridSizing), height: toScale(height, gridSizing) }
@@ -60,13 +63,16 @@ export default class CollisionBox {
       stroke: '#3A4A6B',
       strokeWidth: 1,
       // opacity: 0.25,
+      shadowEnabled: false,
       id: this._id,
-      offsetX: (this._baseDimensions.width + this._offsetDimensions.width) / 2,
-      offsetY: (this._baseDimensions.height + this._offsetDimensions.height) / 2,
+      offsetX: ((this._baseDimensions.width + this._offsetDimensions.width) / 2) - (this._offsetCoords.x / 2),
+      offsetY: ((this._baseDimensions.height + this._offsetDimensions.height) / 2) - (this._offsetCoords.y / 2),
+      perfectDrawEnabled: false,
+      hitStrokeWidth: 0,
       rotation,
     }) as CollisionBoxRect
 
-    // console.log(this._rect)
+    this._rect.cache()
   }
 
   get rect(): CollisionBoxRect {
@@ -83,17 +89,10 @@ export default class CollisionBox {
     if (excludeIds.includes(box.rect.id))
       return false
 
-    const rect = getRectInfo(this._rect)
-    const boxRect = getRectInfo(box.rect)
-    const rectCorners: Corners = {
-      topLeft: { x: rect.x - rect.width / 2, y: rect.y - rect.height / 2 },
-      bottomRight: { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 },
-    }
-
-    const otherRectCorners: Corners = {
-      topLeft: { x: boxRect.x - boxRect.width / 2, y: boxRect.y - boxRect.height / 2 },
-      bottomRight: { x: boxRect.x + boxRect.width / 2, y: boxRect.y + boxRect.height / 2 },
-    }
+    const rect = getRectInfo(this._rect, this._offsetCoords)
+    const boxRect = getRectInfo(box.rect, box._offsetCoords)
+    const rectCorners = getCorners(this._rotation, rect)
+    const otherRectCorners = getCorners(typeof box.rect.rotation === 'function' ? box.rect.rotation() : box.rect.rotation, boxRect)
 
     if (rectCorners.topLeft.x > otherRectCorners.bottomRight.x || otherRectCorners.topLeft.x > rectCorners.bottomRight.x)
       return false
@@ -104,7 +103,7 @@ export default class CollisionBox {
   }
 
   isCoordInside({ x, y }: Coordinates): boolean {
-    const rect = getRectInfo(this._rect)
+    const rect = getRectInfo(this._rect, this._offsetCoords)
 
     const rectCorners: Corners = {
       topLeft: { x: (rect.x - rect.width / 2), y: (rect.y - rect.height / 2) },
@@ -122,7 +121,6 @@ export default class CollisionBox {
   updateRotation(rotation: number) {
     this._rotation = rotation
     this._rect.rotation = rotation
-
     // this._rect.rotation = (typeof this._rect.rotation === 'function') ? this.rect.rotation(rotation) : rotation
   }
 
@@ -132,16 +130,20 @@ export default class CollisionBox {
     const height = unscale(this._baseDimensions.height, this._gridSizing)
     const gridSizing = { ...this._gridSizing }
     const rotation = (typeof this._rect.rotation === 'function') ? this._rect.rotation() : this._rect.rotation
+    const offsetX = unscale(this._offsetCoords.x, gridSizing)
+    const offsetY = unscale(this._offsetCoords.y, gridSizing)
+    const offsetWidth = unscale(this._offsetDimensions.width, gridSizing)
+    const offsetHeight = unscale(this._offsetDimensions.height, gridSizing)
 
     return new CollisionBox({
       x,
       y,
       width,
       height,
-      offsetX: unscale(this._offsetCoords.x, gridSizing),
-      offsetY: unscale(this._offsetCoords.y, gridSizing),
-      offsetWidth: unscale(this._offsetDimensions.width, gridSizing),
-      offsetHeight: unscale(this._offsetDimensions.height, gridSizing),
+      offsetX,
+      offsetY,
+      offsetWidth,
+      offsetHeight,
       rotation,
     }, this._id, gridSizing)
   }
@@ -155,12 +157,67 @@ interface CollisionBoxRectInfo {
   id: string
 }
 
-function getRectInfo(rect: CollisionBoxRect): CollisionBoxRectInfo {
-  return {
-    x: (typeof rect.x === 'function') ? rect.x() : rect.x,
-    y: (typeof rect.y === 'function') ? rect.y() : rect.y,
+function getCorners(rotation: number, { x, y, width, height }: CollisionBoxRectInfo): Corners {
+  const topLeft = { x: 0, y: 0 }
+  const bottomRight = { x: 0, y: 0 }
+
+  const xDiff = width / 2
+  const yDiff = height / 2
+
+  switch (rotation) {
+    case 0:
+    case 180:
+      topLeft.x = x - xDiff
+      topLeft.y = y - yDiff
+      bottomRight.x = x + xDiff
+      bottomRight.y = y + yDiff
+      break
+    case 90:
+    case 270:
+      topLeft.x = x - yDiff
+      topLeft.y = y - xDiff
+      bottomRight.x = x + yDiff
+      bottomRight.y = y + xDiff
+      break
+  }
+
+  return { topLeft, bottomRight }
+}
+
+function getRectInfo(rect: CollisionBoxRect, offsetCoords: {
+  x: number
+  y: number
+} = { x: 0, y: 0 }): CollisionBoxRectInfo {
+  const x = (typeof rect.x === 'function') ? rect.x() : rect.x
+  const offsetX = offsetCoords.x
+  const y = (typeof rect.y === 'function') ? rect.y() : rect.y
+  const offsetY = offsetCoords.y
+  const rotation = (typeof rect.rotation === 'function') ? rect.rotation() : rect.rotation
+  const info = {
+    x: x + offsetX / 2,
+    y: y + offsetY / 2,
     width: (typeof rect.width === 'function') ? rect.width() : rect.width,
     height: (typeof rect.height === 'function') ? rect.height() : rect.height,
     id: rect.id,
   }
+  switch (rotation) {
+    case 0:
+      info.x = x + offsetX / 2
+      info.y = y + offsetY / 2
+      break
+    case 90:
+      info.x = x - offsetY / 2
+      info.y = y - offsetX / 2
+      break
+    case 180:
+      info.x = x - offsetX / 2
+      info.y = y - offsetY / 2
+      break
+    case 270:
+      info.x = x + offsetY / 2
+      info.y = y + offsetX / 2
+      break
+  }
+
+  return info
 }

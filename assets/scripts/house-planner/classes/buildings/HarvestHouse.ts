@@ -74,11 +74,24 @@ export class HarvestHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetWidth: 2,
-        offsetHeight: 0.5,
+        offsetWidth: 0,
+        offsetHeight: 0,
+        offsetY: 0,
       },
       this._id,
       this._gridSizing,
+    ),
+    new CollisionBox(
+      {
+        ...this._baseCoords,
+        width: 6,
+        height: 3,
+        offsetX: 0,
+        offsetY: 14,
+      },
+      `${this._id}porch`,
+      this._gridSizing,
+      true,
     ),
   ]
 
@@ -86,6 +99,8 @@ export class HarvestHouse extends Building {
     {
       ...this._baseCoords,
       ...this._baseDimensions,
+      height: 14,
+      offsetY: -3,
       imageSrc: '/buildings/harvest-house.svg',
     },
     this._id,

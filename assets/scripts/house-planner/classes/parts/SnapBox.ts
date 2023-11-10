@@ -61,10 +61,16 @@ export default class SnapBox {
       dash: [10, 10],
       strokeWidth: 1,
       id: this._id,
-      offsetX: toScale(offsetX + (width + offsetWidth) / 2, gridSizing),
-      offsetY: toScale(offsetY + (height + offsetHeight) / 2, gridSizing),
+
+      shadowEnabled: false,
+      offsetX: toScale((offsetX / 2) + (width + offsetWidth) / 2, gridSizing),
+      offsetY: toScale((offsetY / 2) + (height + offsetHeight) / 2, gridSizing),
+      perfectDrawEnabled: false,
       rotation,
+      hitStrokeWidth: 0,
     }) as SnapBoxRect
+
+    this._rect.cache()
   }
 
   get rect(): SnapBoxRect {
@@ -85,14 +91,14 @@ export default class SnapBox {
   getCoords(direction: Direction): Coordinates {
     const { x, y } = this._baseCoords
     const { width, height } = this._baseDimensions
-    const offsetX = this._offsetCoords.x
-    const offsetY = this._offsetCoords.y
+    const offsetX = this._offsetCoords.x / 2
+    const offsetY = this._offsetCoords.y / 2
 
     switch (direction) {
       case Direction.North:
         return {
           x: (x - offsetX),
-          y: (y - offsetY) - (height / 2),
+          y: (y - (height / 2)),
         }
       case Direction.East:
         return {
