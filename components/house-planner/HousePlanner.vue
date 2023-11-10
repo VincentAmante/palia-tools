@@ -344,6 +344,25 @@ function clearUnplacedBuildings() {
       delete buildings.value[buildingId]
   }
 }
+
+function createNewBuilding(type: BuildingType) {
+  switch (type) {
+    case BuildingType.HarvestHouse:
+      return new HarvestHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.Hallway:
+      return new Hallway({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.LargeHouse:
+      return new LargeHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.MediumHouse:
+      return new MediumHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.SmallHouse:
+      return new SmallHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.None:
+      return new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    default:
+      return new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+  }
+}
 </script>
 
 <template>
@@ -353,37 +372,37 @@ function clearUnplacedBuildings() {
     <div class="flex gap-2 py-4">
       <button
         class="btn btn-accent"
-        @click="setActiveBuilding(new HarvestHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.HarvestHouse))"
       >
         Harvest House
       </button>
       <button
         class="btn btn-accent"
-        @click="setActiveBuilding(new Hallway({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))"
       >
         Hallway
       </button>
       <button
         class="btn btn-accent"
-        @click="setActiveBuilding((new LargeHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })) as Building)"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.LargeHouse))"
       >
         LargeHouse
       </button>
       <button
         class="btn btn-accent"
-        @click="setActiveBuilding(new MediumHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.MediumHouse))"
       >
         Medium House
       </button>
       <button
         class="btn btn-accent"
-        @click="setActiveBuilding(new SmallHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.SmallHouse))"
       >
         Small House
       </button>
       <button
         class="btn btn-accent"
-        @click="setActiveBuilding(new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.None))"
       >
         None
       </button>
