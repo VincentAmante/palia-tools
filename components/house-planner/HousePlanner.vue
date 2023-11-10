@@ -45,6 +45,57 @@ const countedBuildings = computed(() => {
   return Object.values(buildings.value).filter(building => (building.countsTowardsLimit && building.isPlaced)).length
 })
 
+const totalPrice = computed(() => {
+  const buildingTypes: Record<BuildingType | string, {
+    count: number
+    price: number
+  }> = {
+    [BuildingType.None]: {
+      count: 0,
+      price: 0,
+    },
+  }
+
+  Object.values(buildings.value).forEach((building) => {
+    if (!building.isPlaced)
+      return
+
+    if (building.type in buildingTypes) {
+      const price = building.price
+      buildingTypes[building.type].count += 1
+      buildingTypes[building.type].price += price.base + (price.perExtraBuilding * (buildingTypes[building.type].count - 1))
+    }
+    else {
+      buildingTypes[building.type] = {
+        count: 1,
+        price: building.price.base,
+      }
+    }
+  })
+
+  return Object.values(buildingTypes).reduce((acc, curr) => {
+    return acc + curr.price
+  }, 0)
+})
+
+const totalMaterials = computed(() => {
+  let sapwoodPlanks = 0
+  let stoneBricks = 0
+
+  Object.values(buildings.value).forEach((building) => {
+    if (!building.isPlaced)
+      return
+
+    sapwoodPlanks += building.materials.sapwoodPlanks
+    stoneBricks += building.materials.stoneBricks
+  })
+
+  return {
+    sapwoodPlanks,
+    stoneBricks,
+  }
+})
+
 const activeBuilding = ref<Building | null>(harvestHouse.value as HarvestHouse)
 const isEditingBuilding = ref(false)
 
@@ -52,6 +103,7 @@ const parentToSnap = ref<Building | null>(null)
 const sideToSnap = ref<Direction | null>(null)
 
 const useBuildingLimits = ref(true)
+const showRoofCollisions = ref(true)
 
 function moveActiveBuilding(x: number, y: number) {
   const snappedX = snapToCellSize(x)
@@ -108,11 +160,13 @@ function onMouseMove() {
     return
 
   let hasCollision: boolean | Building = false
-  hasCollision = checkForCollisions(activeBuilding.value as Building, [activeBuilding.value.id, ...activeBuilding.value?.childrenIds])
+
+  const excludeIds = [...new Set([...activeBuilding.value.childrenIds, activeBuilding.value.id])]
+  hasCollision = checkForCollisions(activeBuilding.value as Building, excludeIds)
   activeBuilding.value.childrenIds.forEach((childId) => {
     const child = buildings.value[childId]
     if (child) {
-      const isColliding = checkForCollisions(child, [activeBuilding.value?.id || '', ...activeBuilding.value?.childrenIds || []])
+      const isColliding = checkForCollisions(child, [...excludeIds])
       if (isColliding)
         hasCollision = isColliding
     }
@@ -139,7 +193,7 @@ function onMouseMove() {
     if (snapData.snapped && hasSpace) {
       sideToSnap.value = snapData.side
       parentToSnap.value = collidingBuilding
-      const hasOtherCollisions = checkForCollisions(activeBuilding.value as Building, [...activeBuilding.value?.childrenIds as string[], collidingBuilding.id])
+      const hasOtherCollisions = checkForCollisions(activeBuilding.value as Building, [...excludeIds, collidingBuilding.id, ...collidingBuilding.adjacentBuildingIds])
       if (hasOtherCollisions)
         showBuildingColliding()
       else
@@ -177,7 +231,6 @@ watch((stage), () => {
         const snappedX = snapToCellSize(mousePos?.x as number)
         const snappedY = snapToCellSize(mousePos?.y as number)
 
-        // Object.values(buildings.value).forEach((building) => )
         for (const building of Object.values(buildings.value)) {
           if (building.isPlaced === false)
             return
@@ -212,8 +265,7 @@ watch((stage), () => {
         const side = sideToSnap.value
         const building = activeBuilding.value
 
-        const excludeIds = [...building.childrenIds, parent.id]
-
+        const excludeIds = [...building.childrenIds, parent.id, ...parent.adjacentBuildingIds, ...building.adjacentBuildingIds]
         const hasOtherCollisions = checkForCollisions(building as Building, excludeIds)
 
         if (hasOtherCollisions)
@@ -269,12 +321,12 @@ function placeBuilding(excludeIds: string[] = []): boolean {
   if (!building)
     return false
 
-  let hasCollision = checkForCollisions(building, [...new Set([...building.childrenIds, ...excludeIds])])
+  const excludeList = [...new Set([...building.childrenIds, ...excludeIds, building.id])]
+  let hasCollision = checkForCollisions(building, [...excludeList, ...building.adjacentBuildingIds])
   building.childrenIds.forEach((childId) => {
     const child = buildings.value[childId]
     if (child) {
-      const excludeList = [...new Set([...child.childrenIds, ...excludeIds, activeBuilding.value?.id || '', ...activeBuilding.value?.childrenIds || []])]
-      const isColliding = checkForCollisions(child, excludeList)
+      const isColliding = checkForCollisions(child, [...excludeList, ...child.adjacentBuildingIds])
       if (isColliding)
         hasCollision = isColliding
     }
@@ -303,7 +355,7 @@ function placeBuilding(excludeIds: string[] = []): boolean {
   return true
 }
 
-function checkForCollisions(buildingToPlace: Building, excludeIds: string[] = [], isChild: boolean = false): Building | false {
+function checkForCollisions(buildingToPlace: Building, excludeIds: string[] = []): Building | false {
   for (const building of Object.values(buildings.value)) {
     if (excludeIds.includes(building.id))
       continue
@@ -366,10 +418,10 @@ function createNewBuilding(type: BuildingType) {
 </script>
 
 <template>
-  <section class="px-16">
+  <section class="px-16 flex flex-col gap-2">
     <div class="flex gap-2 flex-wrap py-1" />
 
-    <div class="flex gap-2 py-4">
+    <div class="flex gap-2 py-2">
       <button
         class="btn btn-accent"
         @click="setActiveBuilding(createNewBuilding(BuildingType.HarvestHouse))"
@@ -408,7 +460,7 @@ function createNewBuilding(type: BuildingType) {
       </button>
     </div>
 
-    <section class="bg-neutral w-fit relative isolate">
+    <section class="bg-neutral w-fit relative isolate overflow-hidden rounded-md outline outline-2 outline-primary">
       <DevOnly>
         <p class="absolute left-0 z-50 m-4 text-xs">
           {{ text.text }}
@@ -421,8 +473,10 @@ function createNewBuilding(type: BuildingType) {
         <HouseGrid />
         <v-layer>
           <template v-for="building in buildings" :key="building.id">
-            <template v-for="collisionBox in building.collisionBoxes" :key="collisionBox.id">
-              <v-rect :config="collisionBox.rect" />
+            <template v-if="showRoofCollisions">
+              <template v-for="collisionBox in building.collisionBoxes" :key="collisionBox.id">
+                <v-rect :config="collisionBox.rect" />
+              </template>
             </template>
           </template>
         </v-layer>
@@ -439,9 +493,55 @@ function createNewBuilding(type: BuildingType) {
         </v-layer>
       </v-stage>
     </section>
-    <div>
-      <p>Use Build Limits</p>
-      <input v-model="useBuildingLimits" type="checkbox" class="toggle">
+    <div class="flex gap-2">
+      <div class="p-2 px-4 bg-palia-dark-blue rounded-md w-fit">
+        <p class="flex items-center gap-2 text-lg">
+          <nuxt-img
+            width="16"
+            height="16"
+            src="/gold.webp" class="max-h-[1.5rem]"
+            :srcset="undefined"
+            placeholder
+            alt="Gold" format="webp"
+          />
+          {{ totalPrice.toLocaleString() }}
+        </p>
+      </div>
+      <div class="p-2 px-4 bg-palia-dark-blue rounded-md w-fit flex gap-4">
+        <p class="flex items-center gap-2 text-lg">
+          <nuxt-img
+            width="32"
+            height="32"
+            src="/items/sapwood-plank.png" class="max-h-[3rem] aspect-auto object-contain"
+            :srcset="undefined"
+            placeholder
+            alt="Gold" format="webp"
+          />
+          {{ totalMaterials.sapwoodPlanks.toLocaleString() }}
+        </p>
+        <p class="flex items-center gap-2 text-lg">
+          <nuxt-img
+            width="32"
+            height="32"
+            src="/items/stone-brick.png" class="max-h-[3rem] aspect-auto object-contain"
+            :srcset="undefined"
+            placeholder
+            alt="Gold" format="webp"
+          />
+          {{ totalMaterials.stoneBricks.toLocaleString() }}
+        </p>
+      </div>
+    </div>
+
+    <div class="flex gap-8 p-4 bg-palia-dark-blue rounded-md text-xs w-fit">
+      <div>
+        <input v-model="useBuildingLimits" type="checkbox" class="toggle">
+        <p>Use Build Limits</p>
+      </div>
+      <div>
+        <input v-model="showRoofCollisions" type="checkbox" class="toggle">
+        <p>Show Roof Collisions</p>
+      </div>
     </div>
     <DevOnly>
       <div class=" bg-neutral p-4 rounded-md font-mono mb-4">

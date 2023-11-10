@@ -20,6 +20,11 @@ export class LargeHouse extends Building {
     perExtraBuilding: 1250,
   }
 
+  materials = {
+    sapwoodPlanks: 80,
+    stoneBricks: 30,
+  }
+
   constructor(gridSizing: GridSizing) {
     super(gridSizing)
   }
@@ -40,8 +45,8 @@ export class LargeHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetWidth: 1,
-        offsetHeight: 1,
+        offsetWidth: 2,
+        offsetHeight: 0.5,
       },
       this._id,
       this._gridSizing,

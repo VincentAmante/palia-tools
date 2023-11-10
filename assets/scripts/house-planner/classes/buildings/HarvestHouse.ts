@@ -23,6 +23,11 @@ export class HarvestHouse extends Building {
     perExtraBuilding: 5000,
   }
 
+  materials = {
+    sapwoodPlanks: 100,
+    stoneBricks: 35,
+  }
+
   countsTowardsLimit: boolean = true
 
   constructor(gridSizing: GridSizing) {
@@ -70,7 +75,7 @@ export class HarvestHouse extends Building {
         ...this._baseCoords,
         ...this._baseDimensions,
         offsetWidth: 2,
-        offsetHeight: 2,
+        offsetHeight: 0.5,
       },
       this._id,
       this._gridSizing,

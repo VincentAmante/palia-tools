@@ -20,6 +20,11 @@ export class MediumHouse extends Building {
     perExtraBuilding: 1000,
   }
 
+  materials = {
+    sapwoodPlanks: 80,
+    stoneBricks: 30,
+  }
+
   constructor(gridSizing: GridSizing) {
     super(gridSizing)
   }
@@ -42,8 +47,8 @@ export class MediumHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetHeight: 1,
-        offsetWidth: 1,
+        offsetHeight: 2,
+        offsetWidth: 0.5,
       },
       this._id,
       this._gridSizing,

@@ -35,6 +35,11 @@ export abstract class Building {
     perExtraBuilding: 0,
   }
 
+  readonly materials = {
+    sapwoodPlanks: 0,
+    stoneBricks: 0,
+  }
+
   protected _openSlots: {
     North: boolean
     East: boolean
@@ -163,14 +168,14 @@ export abstract class Building {
     if (building.id === this._parent?.id)
       return
 
-    console.log('adding child', building, direction)
+    // console.log('adding child', building, direction)
 
     this._children[direction] = building
     building.parent = this
   }
 
   removeChild(direction: Direction) {
-    console.log('removing child', direction)
+    // console.log('removing child', direction)
     this._children[direction]!.parent = null
     this._children[direction] = null
   }
@@ -187,6 +192,32 @@ export abstract class Building {
     }
 
     return childrenIds
+  }
+
+  // get directChildrenIds() {
+  //   const childrenIds: string[] = []
+
+  //   for (const child of Object.values(this._children)) {
+  //     if (child !== null)
+  //       childrenIds.push(child.id)
+  //   }
+
+  //   return childrenIds
+  // }
+
+  get adjacentBuildingIds(): string[] {
+    const adjacentBuildingIds: string[] = []
+
+    for (const child of Object.values(this._children)) {
+      if (child !== null)
+        adjacentBuildingIds.push(child.id)
+    }
+
+    // * Figure out whether this should count
+    // if (this._parent !== null)
+    //   adjacentBuildingIds.push(this._parent.id)
+
+    return adjacentBuildingIds
   }
 
   get childrenBuildings(): Building[] {

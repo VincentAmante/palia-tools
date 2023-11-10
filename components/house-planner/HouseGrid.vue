@@ -12,8 +12,6 @@ const configBackground = ref({
   width: stageConfig.width,
   height: stageConfig.height,
   fill: '#419257',
-  stroke: 'white',
-  strokeWidth: 1,
 })
 </script>
 

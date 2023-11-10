@@ -16,6 +16,11 @@ export class Hallway extends Building {
   protected _baseDimensions: Dimensions = { width: 3, height: 3 }
   protected _opacity: number = 1
 
+  materials = {
+    sapwoodPlanks: 80,
+    stoneBricks: 30,
+  }
+
   constructor(gridSizing: GridSizing) {
     super(gridSizing)
   }
@@ -38,8 +43,8 @@ export class Hallway extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetWidth: 1,
-        offsetHeight: 1,
+        offsetWidth: 0.5,
+        offsetHeight: 2,
       },
       this._id,
       this._gridSizing,
