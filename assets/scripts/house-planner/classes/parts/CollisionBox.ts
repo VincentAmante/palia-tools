@@ -4,6 +4,7 @@ import type { GridSizing } from '../../types/ConfigOptions'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 import type Dimensions from '@/assets/scripts/utils/types/dimensions'
 import { toScale, unscale } from '@/assets/scripts/house-planner/classes/utils/helpers'
+import { ZLevel } from '@/assets/scripts/house-planner/enums/zLevel'
 
 export type CollisionBoxRect = Konva.Rect & {
   id: string
@@ -23,13 +24,14 @@ export default class CollisionBox {
   private _rotation: number = 0
   private _gridSizing: GridSizing
   readonly hide: boolean = false
+  readonly zLevel: ZLevel = ZLevel.Ground
 
   constructor(
     {
       x, y, width, height,
       offsetX = 0, offsetY = 0,
       offsetWidth = 0, offsetHeight = 0,
-      rotation = 0,
+      rotation = 0, zLevel = ZLevel.Ground,
     }: {
       x: number
       y: number
@@ -40,6 +42,7 @@ export default class CollisionBox {
       offsetWidth?: number
       offsetHeight?: number
       rotation?: number
+      zLevel?: ZLevel
     },
     id: string = uniqid(),
     gridSizing: GridSizing,
@@ -48,6 +51,7 @@ export default class CollisionBox {
     this._id = id
     this._gridSizing = gridSizing
     this.hide = hide
+    this.zLevel = zLevel || ZLevel.Ground
 
     this._baseCoords = { x, y }
     this._baseDimensions = { width: toScale(width, gridSizing), height: toScale(height, gridSizing) }
@@ -145,7 +149,7 @@ export default class CollisionBox {
       offsetWidth,
       offsetHeight,
       rotation,
-    }, this._id, gridSizing)
+    }, this._id, gridSizing, this.hide)
   }
 }
 

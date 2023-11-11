@@ -23,6 +23,7 @@ export default class SnapBox {
   private _rect: SnapBoxRect
   private _rotation: number = 0
   private _gridSizing: GridSizing
+  private _zIndex: number = 0
 
   constructor(
     {
@@ -157,19 +158,12 @@ export default class SnapBox {
 
     const rect = getRectInfo(this._rect)
     const boxRect = getRectInfo(box.rect)
-    const rectCorners: Corners = {
-      topLeft: { x: rect.x - rect.width / 2, y: rect.y - rect.height / 2 },
-      bottomRight: { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 },
-    }
+    const rectCorners = getCorners(this._rotation, rect)
+    const otherRectCorners = getCorners(typeof box.rect.rotation === 'function' ? box.rect.rotation() : box.rect.rotation, boxRect)
 
-    const otherRectCorners: Corners = {
-      topLeft: { x: boxRect.x - boxRect.width / 2, y: boxRect.y - boxRect.height / 2 },
-      bottomRight: { x: boxRect.x + boxRect.width / 2, y: boxRect.y + boxRect.height / 2 },
-    }
-
-    if (rectCorners.topLeft.x > otherRectCorners.bottomRight.x || otherRectCorners.topLeft.x > rectCorners.bottomRight.x)
+    if (rectCorners.topLeft.x >= otherRectCorners.bottomRight.x || otherRectCorners.topLeft.x >= rectCorners.bottomRight.x)
       return false
-    else if (rectCorners.topLeft.y > otherRectCorners.bottomRight.y || otherRectCorners.topLeft.y > rectCorners.bottomRight.y)
+    else if (rectCorners.topLeft.y >= otherRectCorners.bottomRight.y || otherRectCorners.topLeft.y >= rectCorners.bottomRight.y)
       return false
 
     return true
@@ -184,12 +178,67 @@ interface SnapBoxRectInfo {
   id: string
 }
 
-function getRectInfo(rect: SnapBoxRect): SnapBoxRectInfo {
-  return {
-    x: (typeof rect.x === 'function') ? rect.x() : rect.x,
-    y: (typeof rect.y === 'function') ? rect.y() : rect.y,
+function getCorners(rotation: number, { x, y, width, height }: SnapBoxRectInfo): Corners {
+  const topLeft = { x: 0, y: 0 }
+  const bottomRight = { x: 0, y: 0 }
+
+  const xDiff = width / 2
+  const yDiff = height / 2
+
+  switch (rotation) {
+    case 0:
+    case 180:
+      topLeft.x = x - xDiff
+      topLeft.y = y - yDiff
+      bottomRight.x = x + xDiff
+      bottomRight.y = y + yDiff
+      break
+    case 90:
+    case 270:
+      topLeft.x = x - yDiff
+      topLeft.y = y - xDiff
+      bottomRight.x = x + yDiff
+      bottomRight.y = y + xDiff
+      break
+  }
+
+  return { topLeft, bottomRight }
+}
+
+function getRectInfo(rect: SnapBoxRect, offsetCoords: {
+  x: number
+  y: number
+} = { x: 0, y: 0 }): SnapBoxRectInfo {
+  const x = (typeof rect.x === 'function') ? rect.x() : rect.x
+  const offsetX = offsetCoords.x
+  const y = (typeof rect.y === 'function') ? rect.y() : rect.y
+  const offsetY = offsetCoords.y
+  const rotation = (typeof rect.rotation === 'function') ? rect.rotation() : rect.rotation
+  const info = {
+    x: x + offsetX / 2,
+    y: y + offsetY / 2,
     width: (typeof rect.width === 'function') ? rect.width() : rect.width,
     height: (typeof rect.height === 'function') ? rect.height() : rect.height,
     id: rect.id,
   }
+  switch (rotation) {
+    case 0:
+      info.x = x + offsetX / 2
+      info.y = y + offsetY / 2
+      break
+    case 90:
+      info.x = x - offsetY / 2
+      info.y = y - offsetX / 2
+      break
+    case 180:
+      info.x = x - offsetX / 2
+      info.y = y - offsetY / 2
+      break
+    case 270:
+      info.x = x + offsetY / 2
+      info.y = y + offsetX / 2
+      break
+  }
+
+  return info
 }

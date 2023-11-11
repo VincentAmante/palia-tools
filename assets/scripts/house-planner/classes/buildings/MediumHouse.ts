@@ -3,7 +3,7 @@ import SnapBox from '../parts/SnapBox'
 import CollisionBox from '../parts/CollisionBox'
 import BuildingImage from '../parts/Image'
 import type Dimensions from '../../../utils/types/dimensions'
-import { BuildingType } from '../../enums/building-type'
+import { BuildingType } from '../../enums/buildingType'
 import { Building } from '../building'
 import type { GridSizing } from '../../types/ConfigOptions'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
@@ -47,8 +47,8 @@ export class MediumHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetHeight: 0,
-        offsetWidth: 0,
+        offsetHeight: 1,
+        offsetWidth: 1,
       },
       this._id,
       this._gridSizing,

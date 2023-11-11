@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Konva from 'konva'
-import { BuildingType } from 'assets/scripts/house-planner/enums/building-type'
+import { BuildingType } from 'assets/scripts/house-planner/enums/buildingType'
 import HouseGrid from './HouseGrid.vue'
 import type { Building } from '@/assets/scripts/house-planner/classes/building'
 import type { Direction } from '@/assets/scripts/house-planner/imports'
@@ -194,7 +194,7 @@ function onMouseMove() {
     if (snapData.snapped && hasSpace) {
       sideToSnap.value = snapData.side
       parentToSnap.value = collidingBuilding
-      const hasOtherCollisions = checkForCollisions(activeBuilding.value as Building, [...excludeIds, collidingBuilding.id, ...collidingBuilding.adjacentBuildingIds])
+      const hasOtherCollisions = checkForCollisions(activeBuilding.value as Building, [...excludeIds, collidingBuilding.id, ...collidingBuilding.directChildrenIds])
       if (hasOtherCollisions)
         showBuildingColliding()
       else
@@ -311,7 +311,7 @@ watch((stage), () => {
         const side = sideToSnap.value
         const building = activeBuilding.value
 
-        const excludeIds = [...building.childrenIds, parent.id, ...parent.adjacentBuildingIds, ...building.adjacentBuildingIds]
+        const excludeIds = [...building.childrenIds, parent.id, ...parent.directChildrenIds, ...building.directChildrenIds]
         const hasOtherCollisions = checkForCollisions(building as Building, excludeIds)
 
         if (hasOtherCollisions)
@@ -368,11 +368,11 @@ function placeBuilding(excludeIds: string[] = []): boolean {
     return false
 
   const excludeList = [...new Set([...building.childrenIds, ...excludeIds, building.id])]
-  let hasCollision = checkForCollisions(building, [...excludeList, ...building.adjacentBuildingIds])
+  let hasCollision = checkForCollisions(building, [...excludeList])
   building.childrenIds.forEach((childId) => {
     const child = buildings.value[childId]
     if (child) {
-      const isColliding = checkForCollisions(child, [...excludeList, ...child.adjacentBuildingIds])
+      const isColliding = checkForCollisions(child, [...excludeList, building.id, child.id])
       if (isColliding)
         hasCollision = isColliding
     }
@@ -415,7 +415,7 @@ function checkForCollisions(buildingToPlace: Building, excludeIds: string[] = []
     if (currBuilding.id === buildingToPlace.id)
       continue
 
-    console.log('running collision check', buildingToPlace.id)
+    // console.log('running collision check', buildingToPlace.id)
 
     const isColliding = buildingToPlace.checkCollision(currBuilding, [...buildingToPlace.childrenIds, ...excludeIds])
 
@@ -613,3 +613,4 @@ onMounted(() => {
     </DevOnly>
   </section>
 </template>
+~/assets/scripts/house-planner/enums/buildingType

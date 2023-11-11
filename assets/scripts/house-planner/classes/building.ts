@@ -1,5 +1,5 @@
 import uniqid from 'uniqid'
-import { BuildingType } from '../enums/building-type'
+import { BuildingType } from '../enums/buildingType'
 import { Direction } from '../imports'
 import type { GridSizing } from '../types/ConfigOptions'
 import SnapBox from './parts/SnapBox'
@@ -101,10 +101,18 @@ export abstract class Building {
   checkCollision(building: Building, excludeIds: string[]): boolean {
     const collisionBoxes = this._collisionBoxes
     const buildingCollisionBoxes = building._collisionBoxes
+    const buildingIsAdjacent = this.adjacentBuildingIds.includes(building.id)
+
     for (const collisionBox of collisionBoxes) {
       for (const buildingCollisionBox of buildingCollisionBoxes) {
-        if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds))
+        // Use snapbox on certain buildings
+        if ((collisionBox.zLevel !== buildingCollisionBox.zLevel) || buildingIsAdjacent)
+          return this._snapBox.isIntersectingWith(building._snapBox, excludeIds)
+
+        if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds)) {
+          // console.log('collision', this._type, building._type)
           return true
+        }
       }
     }
     return false
@@ -193,16 +201,16 @@ export abstract class Building {
     return childrenIds
   }
 
-  // get directChildrenIds() {
-  //   const childrenIds: string[] = []
+  get directChildrenIds() {
+    const childrenIds: string[] = []
 
-  //   for (const child of Object.values(this._children)) {
-  //     if (child !== null)
-  //       childrenIds.push(child.id)
-  //   }
+    for (const child of Object.values(this._children)) {
+      if (child !== null)
+        childrenIds.push(child.id)
+    }
 
-  //   return childrenIds
-  // }
+    return childrenIds
+  }
 
   get adjacentBuildingIds(): string[] {
     const adjacentBuildingIds: string[] = []
@@ -213,8 +221,8 @@ export abstract class Building {
     }
 
     // * Figure out whether this should count
-    // if (this._parent !== null)
-    //   adjacentBuildingIds.push(this._parent.id)
+    if (this._parent !== null)
+      adjacentBuildingIds.push(this._parent.id)
 
     return adjacentBuildingIds
   }

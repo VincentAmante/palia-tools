@@ -3,7 +3,7 @@ import SnapBox from '../parts/SnapBox'
 import CollisionBox from '../parts/CollisionBox'
 import BuildingImage from '../parts/Image'
 import type Dimensions from '../../../utils/types/dimensions'
-import { BuildingType } from '../../enums/building-type'
+import { BuildingType } from '../../enums/buildingType'
 import { Building } from '../building'
 import type { GridSizing } from '../../types/ConfigOptions'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
@@ -45,8 +45,8 @@ export class LargeHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetWidth: 0,
-        offsetHeight: 0,
+        offsetWidth: 0.5,
+        offsetHeight: 2,
       },
       this._id,
       this._gridSizing,
