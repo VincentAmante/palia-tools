@@ -98,9 +98,9 @@ export default class CollisionBox {
     const rectCorners = getCorners(this._rotation, rect)
     const otherRectCorners = getCorners(typeof box.rect.rotation === 'function' ? box.rect.rotation() : box.rect.rotation, boxRect)
 
-    if (rectCorners.topLeft.x > otherRectCorners.bottomRight.x || otherRectCorners.topLeft.x > rectCorners.bottomRight.x)
+    if (rectCorners.topLeft.x >= otherRectCorners.bottomRight.x || otherRectCorners.topLeft.x >= rectCorners.bottomRight.x)
       return false
-    else if (rectCorners.topLeft.y > otherRectCorners.bottomRight.y || otherRectCorners.topLeft.y > rectCorners.bottomRight.y)
+    else if (rectCorners.topLeft.y >= otherRectCorners.bottomRight.y || otherRectCorners.topLeft.y >= rectCorners.bottomRight.y)
       return false
 
     return true
@@ -149,6 +149,7 @@ export default class CollisionBox {
       offsetWidth,
       offsetHeight,
       rotation,
+      zLevel: this.zLevel,
     }, this._id, gridSizing, this.hide)
   }
 }

@@ -194,7 +194,19 @@ function onMouseMove() {
     if (snapData.snapped && hasSpace) {
       sideToSnap.value = snapData.side
       parentToSnap.value = collidingBuilding
-      const hasOtherCollisions = checkForCollisions(activeBuilding.value as Building, [...excludeIds, collidingBuilding.id, ...collidingBuilding.directChildrenIds])
+      let hasOtherCollisions = checkForCollisions(activeBuilding.value as Building, [...excludeIds, collidingBuilding.id, ...collidingBuilding.directChildrenIds])
+
+      if (activeBuilding.value.childrenIds) {
+        activeBuilding.value.childrenIds.forEach((childId) => {
+          const child = buildings.value[childId]
+          if (child) {
+            const isColliding = checkForCollisions(child, [...excludeIds, collidingBuilding.id, ...collidingBuilding.directChildrenIds])
+            if (isColliding)
+              hasOtherCollisions = isColliding
+          }
+        })
+      }
+
       if (hasOtherCollisions)
         showBuildingColliding()
       else
@@ -312,6 +324,7 @@ watch((stage), () => {
         const building = activeBuilding.value
 
         const excludeIds = [...building.childrenIds, parent.id, ...parent.directChildrenIds, ...building.directChildrenIds]
+        console.log(excludeIds.includes(building.topLevelBuilding.id) || excludeIds.includes(parent.topLevelBuilding.id))
         const hasOtherCollisions = checkForCollisions(building as Building, excludeIds)
 
         if (hasOtherCollisions)
@@ -410,12 +423,9 @@ function checkForCollisions(buildingToPlace: Building, excludeIds: string[] = []
       continue
     if (excludeIds.includes(building.id))
       continue
-
     const currBuilding = building
     if (currBuilding.id === buildingToPlace.id)
       continue
-
-    // console.log('running collision check', buildingToPlace.id)
 
     const isColliding = buildingToPlace.checkCollision(currBuilding, [...buildingToPlace.childrenIds, ...excludeIds])
 
@@ -495,7 +505,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class=" flex flex-col gap-2 p-4">
+  <section class=" flex flex-col gap-2 p-4 px-12">
     <div class="flex gap-2 py-2 flex-wrap">
       <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.HarvestHouse))">
         Harvest House
@@ -517,70 +527,73 @@ onMounted(() => {
       </button>
     </div>
 
-    <section ref="stageContainer" class="w-fit relative aspect-auto isolate overflow-hidden rounded-md outline outline-2 outline-primary">
-      <DevOnly>
-        <p class="absolute left-0 z-50 m-4 text-xs">
-          {{ text.text }}
+    <div class="flex gap-2">
+      <section ref="stageContainer" class="w-fit relative aspect-auto isolate overflow-hidden rounded-md outline outline-2 outline-primary">
+        <DevOnly>
+          <p class="absolute left-0 z-50 m-4 text-xs">
+            {{ text.text }}
+          </p>
+        </DevOnly>
+        <p class="absolute right-0 z-30 m-4 bg-palia-blue p-2 text-accent rounded-full px-4 bg-opacity-50">
+          {{ countedBuildings }} / 30
         </p>
-      </DevOnly>
-      <p class="absolute right-0 z-30 m-4 bg-palia-blue p-2 text-accent rounded-full px-4 bg-opacity-50">
-        {{ countedBuildings }} / 30
-      </p>
-      <v-stage ref="stage" class="relative isolate" :config="configKonva">
-        <HouseGrid />
-        <v-layer
-          :config="{
-            listening: false,
-          }"
-        >
-          <template v-for="building in buildings" :key="building.id">
-            <template v-if="showRoofCollisions && (building.type !== BuildingType.None)">
-              <template v-for="collisionBox in building.collisionBoxes" :key="collisionBox.id">
-                <v-rect v-if="!collisionBox.hide" :config="collisionBox.rect" />
+        <v-stage ref="stage" class="relative isolate" :config="configKonva">
+          <HouseGrid />
+          <v-layer
+            :config="{
+              listening: false,
+            }"
+          >
+            <template v-for="building in buildings" :key="building.id">
+              <template v-if="showRoofCollisions && (building.type !== BuildingType.None)">
+                <template v-for="collisionBox in building.collisionBoxes" :key="collisionBox.id">
+                  <v-rect v-if="!collisionBox.hide" :config="collisionBox.rect" />
+                </template>
               </template>
             </template>
-          </template>
-        </v-layer>
-        <v-layer
-          :config="{
-            listening: false,
-          }"
-        >
-          <template v-for="building in buildings" :key="building.id">
-            <v-image :config="building.image" />
-          </template>
-          <template v-for="plotHarvestHouse in harvestHouses" :key="plotHarvestHouse.id">
-            <v-text :config="plotHarvestHouse.buildingCountText" />
-          </template>
-        </v-layer>
-      </v-stage>
-    </section>
+          </v-layer>
+          <v-layer
+            :config="{
+              listening: false,
+            }"
+          >
+            <template v-for="building in buildings" :key="building.id">
+              <v-image :config="building.image" />
+            </template>
+            <template v-for="plotHarvestHouse in harvestHouses" :key="plotHarvestHouse.id">
+              <v-text :config="plotHarvestHouse.buildingCountText" />
+            </template>
+          </v-layer>
+        </v-stage>
+      </section>
 
-    <div class="flex gap-2">
-      <div class="p-2 px-4 bg-palia-dark-blue rounded-md w-fit">
-        <p class="flex items-center gap-2 text-lg">
-          <nuxt-img
-            width="16" height="16" src="/gold.webp" class="max-h-[1.5rem]" :srcset="undefined" placeholder
-            alt="Gold" format="webp"
-          />
-          {{ totalPrice.toLocaleString() }}
-        </p>
-      </div>
-      <div class="p-2 px-4 bg-palia-dark-blue rounded-md w-fit flex gap-4">
-        <p class="flex items-center gap-2 text-lg">
-          <nuxt-img
-            width="32" height="32" src="/items/sapwood-plank.png" class="max-h-[3rem] aspect-auto object-contain"
-            :srcset="undefined" placeholder alt="Gold" format="webp"
-          />
-          {{ totalMaterials.sapwoodPlanks.toLocaleString() }}
-        </p>
-        <p class="flex items-center gap-2 text-lg">
-          <nuxt-img
-            width="32" height="32" src="/items/stone-brick.png" class="max-h-[3rem] aspect-auto object-contain"
-            :srcset="undefined" placeholder alt="Gold" format="webp"
-          />
-          {{ totalMaterials.stoneBricks.toLocaleString() }}
-        </p>
+      <div class="flex flex-col gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit">
+        <h2 class="text-xl text-center font-bold">
+          Costs
+        </h2>
+        <ul class="grid gap-4">
+          <li class="flex items-center gap-2 text-lg">
+            <nuxt-img
+              width="16" height="16" src="/gold.webp" class="max-h-[1.5rem]" :srcset="undefined" placeholder
+              alt="Gold" format="webp"
+            />
+            {{ totalPrice.toLocaleString() }}
+          </li>
+          <li class="flex items-center gap-2 text-lg">
+            <nuxt-img
+              width="32" height="32" src="/items/sapwood-plank.png" class="max-h-[3rem] aspect-auto object-contain"
+              :srcset="undefined" placeholder alt="Gold" format="webp"
+            />
+            {{ totalMaterials.sapwoodPlanks.toLocaleString() }}
+          </li>
+          <li class="flex items-center gap-2 text-lg">
+            <nuxt-img
+              width="32" height="32" src="/items/stone-brick.png" class="max-h-[3rem] aspect-auto object-contain"
+              :srcset="undefined" placeholder alt="Gold" format="webp"
+            />
+            {{ totalMaterials.stoneBricks.toLocaleString() }}
+          </li>
+        </ul>
       </div>
     </div>
 

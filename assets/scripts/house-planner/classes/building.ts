@@ -101,18 +101,20 @@ export abstract class Building {
   checkCollision(building: Building, excludeIds: string[]): boolean {
     const collisionBoxes = this._collisionBoxes
     const buildingCollisionBoxes = building._collisionBoxes
-    const buildingIsAdjacent = this.adjacentBuildingIds.includes(building.id)
+    const isAdjacent = this.adjacentBuildingIds.includes(building.id)
 
     for (const collisionBox of collisionBoxes) {
       for (const buildingCollisionBox of buildingCollisionBoxes) {
         // Use snapbox on certain buildings
-        if ((collisionBox.zLevel !== buildingCollisionBox.zLevel) || buildingIsAdjacent)
-          return this._snapBox.isIntersectingWith(building._snapBox, excludeIds)
 
-        if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds)) {
-          // console.log('collision', this._type, building._type)
-          return true
+        if ((collisionBox.zLevel !== buildingCollisionBox.zLevel)) {
+          if (this._snapBox.isIntersectingWith(building._snapBox, excludeIds))
+            return true
         }
+        else
+          if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds)) {
+            return true
+          }
       }
     }
     return false

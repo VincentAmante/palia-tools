@@ -6,6 +6,7 @@ import type Dimensions from '../../../utils/types/dimensions'
 import { BuildingType } from '../../enums/buildingType'
 import { Building } from '../building'
 import type { GridSizing } from '../../types/ConfigOptions'
+import { ZLevel } from '../../enums/zLevel'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
 export class MediumHouse extends Building {
@@ -49,6 +50,7 @@ export class MediumHouse extends Building {
         ...this._baseDimensions,
         offsetHeight: 1,
         offsetWidth: 1,
+        zLevel: ZLevel.Medium,
       },
       this._id,
       this._gridSizing,
