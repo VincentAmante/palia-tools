@@ -20,7 +20,6 @@
     "dayjs": "^1.11.9",
     "dom-to-image-more": "^3.1.6",
     "konva": "^9.2.0",
-    "downloadjs": "^1.4.7",
     "pinia": "^2.1.6",
     "uniqid": "^5.4.0"
   },
