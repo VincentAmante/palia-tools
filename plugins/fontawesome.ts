@@ -23,6 +23,8 @@ import {
   faPaste,
   faPlus,
   faRecycle,
+  faRotateLeft,
+  faRotateRight,
   faScrewdriverWrench,
   faSeedling,
   faShield,
@@ -79,6 +81,8 @@ library.add(
   faDiscord,
   faHand,
   faScrewdriverWrench,
+  faRotateRight,
+  faRotateLeft,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS
