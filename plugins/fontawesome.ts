@@ -15,6 +15,7 @@ import {
   faEraser,
   faForwardFast,
   faGift,
+  faHand,
   faHeart,
   faInfoCircle,
   faJar,
@@ -75,6 +76,7 @@ library.add(
   faChevronLeft,
   faChevronRight,
   faDiscord,
+  faHand,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS

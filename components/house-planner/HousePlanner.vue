@@ -2,6 +2,7 @@
 import Konva from 'konva'
 import { BuildingType } from 'assets/scripts/house-planner/enums/buildingType'
 import HouseGrid from './HouseGrid.vue'
+import BuildingButton from './BuildingButton.vue'
 import type { Building } from '@/assets/scripts/house-planner/classes/building'
 import type { Direction } from '@/assets/scripts/house-planner/imports'
 import { Hallway, HarvestHouse, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
@@ -280,9 +281,18 @@ watch((stage), () => {
       debounce(onMouseMove, 25)()
     })
 
-    stageObj.on('click', () => {
+    stageObj.on('contextmenu', (e) => {
+      e.evt.preventDefault()
+    })
+
+    stageObj.on('click', (e) => {
       if (activeBuilding.value === null)
         return
+
+      if (e.evt.button === 2) {
+        setActiveBuilding(new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))
+        return
+      }
 
       if (activeBuilding.value.type === BuildingType.None) {
         const mousePos = stageObj.getPointerPosition()
@@ -506,11 +516,50 @@ onMounted(() => {
 
 <template>
   <section class=" flex flex-col gap-2 p-4 px-12">
-    <div class="flex gap-2 py-2 flex-wrap">
-      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.HarvestHouse))">
-        Harvest House
-      </button>
-      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))">
+    <div class="flex gap-2 justify-evenly">
+      <div class="flex flex-col gap-1 flex-wrap">
+        <button
+          aria-label="clear"
+          class="relative isolate btn text-sm"
+          :class="(activeBuilding && activeBuilding.type) === BuildingType.None ? 'btn-active' : ''"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.None))"
+        >
+          <font-awesome-icon :icon="['fas', 'hand']" class="text-xl" />
+          <p class="normal-case font-normal">
+            Cursor
+          </p>
+        </button>
+        <BuildingButton
+          src="/buildings/icons/harvest-house.webp"
+          label="Harvest House"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.HarvestHouse"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.HarvestHouse))"
+        />
+        <BuildingButton
+          src="/buildings/icons/large-room.webp"
+          label="Large Room"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.LargeHouse"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.LargeHouse))"
+        />
+        <BuildingButton
+          src="/buildings/icons/medium-room.webp"
+          label="Medium Room"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.MediumHouse"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.MediumHouse))"
+        />
+        <BuildingButton
+          src="/buildings/icons/small-room.webp"
+          label="Small Room"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.SmallHouse"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.SmallHouse))"
+        />
+        <BuildingButton
+          src="/buildings/icons/hallway.webp"
+          label="Hallway"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Hallway"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))"
+        />
+      <!-- <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))">
         Hallway
       </button>
       <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.LargeHouse))">
@@ -524,10 +573,8 @@ onMounted(() => {
       </button>
       <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.None))">
         None
-      </button>
-    </div>
-
-    <div class="flex gap-2">
+      </button> -->
+      </div>
       <section ref="stageContainer" class="w-fit relative aspect-auto isolate overflow-hidden rounded-md outline outline-2 outline-primary">
         <DevOnly>
           <p class="absolute left-0 z-50 m-4 text-xs">
@@ -567,45 +614,48 @@ onMounted(() => {
         </v-stage>
       </section>
 
-      <div class="flex flex-col gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit">
-        <h2 class="text-xl text-center font-bold">
-          Costs
-        </h2>
-        <ul class="grid gap-4">
-          <li class="flex items-center gap-2 text-lg">
-            <nuxt-img
-              width="16" height="16" src="/gold.webp" class="max-h-[1.5rem]" :srcset="undefined" placeholder
-              alt="Gold" format="webp"
-            />
-            {{ totalPrice.toLocaleString() }}
-          </li>
-          <li class="flex items-center gap-2 text-lg">
-            <nuxt-img
-              width="32" height="32" src="/items/sapwood-plank.png" class="max-h-[3rem] aspect-auto object-contain"
-              :srcset="undefined" placeholder alt="Gold" format="webp"
-            />
-            {{ totalMaterials.sapwoodPlanks.toLocaleString() }}
-          </li>
-          <li class="flex items-center gap-2 text-lg">
-            <nuxt-img
-              width="32" height="32" src="/items/stone-brick.png" class="max-h-[3rem] aspect-auto object-contain"
-              :srcset="undefined" placeholder alt="Gold" format="webp"
-            />
-            {{ totalMaterials.stoneBricks.toLocaleString() }}
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="flex gap-8 p-4 bg-palia-dark-blue rounded-md text-xs w-fit">
-      <div>
-        <input v-model="useBuildingLimits" type="checkbox" class="toggle">
-        <p>Use Build Limits</p>
-      </div>
-      <div>
-        <input v-model="showRoofCollisions" type="checkbox" class="toggle">
-        <p>Show Roof Collisions</p>
-      </div>
+      <section class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit">
+          <h2 class="text-xl text-center font-bold">
+            Costs
+          </h2>
+          <ul class="grid gap-4">
+            <li class="flex items-center gap-2 text-lg">
+              <nuxt-img
+                width="16" height="16" src="/gold.webp" class="max-h-[1.5rem]" :srcset="undefined" placeholder
+                alt="Gold" format="webp"
+              />
+              {{ totalPrice.toLocaleString() }}
+            </li>
+            <li class="flex items-center gap-2 text-lg">
+              <nuxt-img
+                width="32" height="32" src="/items/sapwood-plank.png" class="max-h-[3rem] aspect-auto object-contain"
+                :srcset="undefined" placeholder alt="Gold" format="webp"
+              />
+              {{ totalMaterials.sapwoodPlanks.toLocaleString() }}
+            </li>
+            <li class="flex items-center gap-2 text-lg">
+              <nuxt-img
+                width="32" height="32" src="/items/stone-brick.png" class="max-h-[3rem] aspect-auto object-contain"
+                :srcset="undefined" placeholder alt="Gold" format="webp"
+              />
+              {{ totalMaterials.stoneBricks.toLocaleString() }}
+            </li>
+          </ul>
+        </div>
+        <div class="flex flex-col gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit text-xs">
+          <ul class="grid gap-4">
+            <li>
+              <input v-model="useBuildingLimits" type="checkbox" class="toggle rounded-lg">
+              <p>Use Build Limits</p>
+            </li>
+            <li>
+              <input v-model="showRoofCollisions" type="checkbox" class="toggle rounded-lg">
+              <p>Show Roof</p>
+            </li>
+          </ul>
+        </div>
+      </section>
     </div>
     <DevOnly>
       <div class=" bg-neutral p-4 rounded-md font-mono mb-4">
