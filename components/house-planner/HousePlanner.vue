@@ -519,7 +519,20 @@ function fitStageIntoParentContainer() {
 </script>
 
 <template>
-  <section class="flex flex-col gap-2 p-4 px-2 lg:px-12">
+  <section class="flex flex-col gap-1 p-4 px-2 lg:px-12">
+    <div class="bg-warning p-2 pt-4 rounded-md lg:mx-8 mb-2 flex flex-col items-center">
+      <div class="flex flex-col gap-1  text-neutral text-center">
+        <font-awesome-icon :icon="['fas', 'screwdriver-wrench']" class="text-xl" />
+        <h2 class="font-black text-2xl">
+          In Prototype Phase
+        </h2>
+        <p class="text-sm max-w-xl font-normal">
+          This tool is released primarily as a proof-of-concept and is not ready for regular use.
+          Many features are missing and bugs are to be expected.
+          <!-- Do provide feedback to its developer <span class="font-black">.aisen</span> -->
+        </p>
+      </div>
+    </div>
     <div class="flex flex-col lg:flex-row gap-2 justify-evenly">
       <div class="flex lg:flex-col gap-1 flex-wrap">
         <button
@@ -677,7 +690,7 @@ function fitStageIntoParentContainer() {
         </div>
       </section>
     </div>
-    <DevOnly>
+    <!-- <DevOnly>
       <div class=" bg-neutral p-4 rounded-md font-mono mb-4">
         <p class="text-lg uppercase font-bold">
           building ids
@@ -693,7 +706,6 @@ function fitStageIntoParentContainer() {
           </li>
         </ul>
       </div>
-    </DevOnly>
+    </DevOnly> -->
   </section>
 </template>
-~/assets/scripts/house-planner/enums/buildingType
