@@ -20,7 +20,7 @@ definePageMeta({
     <div class="bg-warning p-2 pt-4 rounded-md lg:mx-8 mb-2 flex flex-col items-center">
       <div class="flex flex-col gap-1  text-neutral text-center">
         <font-awesome-icon :icon="['fas', 'screwdriver-wrench']" class="text-xl" />
-        <h2 class="font-black text-2xl">
+        <h2 class="font-black text-xl">
           In Prototype Phase
         </h2>
         <p class="text-sm max-w-xl font-normal">
