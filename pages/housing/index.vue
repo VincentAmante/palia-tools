@@ -36,10 +36,10 @@ definePageMeta({
 
     <section class="px-2 mt-4">
       <div class="bg-palia-blue outline outline-1 outline-accent p-4 rounded-md flex flex-col items-center justify-center">
-        <h2 class="font-bold text-lg uppercase">
+        <h2 class="font-bold text-lg uppercase pb-3">
           Controls
         </h2>
-        <div class="grid grid-flow-col gap-4 text-center">
+        <div class="grid grid-cols-2 lg:grid-flow-col gap-4 text-center">
           <div>
             <kbd class="kbd kbd-lg">Left Click</kbd>
             <p>Select/Place</p>
