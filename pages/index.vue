@@ -4,7 +4,8 @@ import uniqid from 'uniqid'
 
 // import * as htmlToImage from 'html-to-image'
 import domtoimage from 'dom-to-image-more'
-import download from 'downloadjs'
+
+// import download from 'downloadjs'
 import StatsDisplay from '@/components/garden-planner/StatsDisplay.vue'
 import GardenDisplay from '@/components/garden-planner/GardenDisplay.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
