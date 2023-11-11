@@ -5,7 +5,7 @@ import HouseGrid from './HouseGrid.vue'
 import BuildingButton from './BuildingButton.vue'
 import type { Building } from '@/assets/scripts/house-planner/classes/building'
 import type { Direction } from '@/assets/scripts/house-planner/imports'
-import { Hallway, HarvestHouse, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
+import { Fireplace, Hallway, HarvestHouse, KilimaPorch, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
 
 import { useHousePlanConfig } from '@/stores/useHousePlanConfig'
 
@@ -150,7 +150,7 @@ function onMouseMove() {
   if (!stageObj)
     return
 
-  const mousePos = stageObj.getPointerPosition()
+  const mousePos = stageObj.getRelativePointerPosition()
   if (!mousePos)
     return
 
@@ -295,7 +295,7 @@ watch((stage), () => {
       }
 
       if (activeBuilding.value.type === BuildingType.None) {
-        const mousePos = stageObj.getPointerPosition()
+        const mousePos = stageObj.getRelativePointerPosition()
         const snappedX = snapToCellSize(mousePos?.x as number)
         const snappedY = snapToCellSize(mousePos?.y as number)
 
@@ -482,8 +482,12 @@ function createNewBuilding(type: BuildingType) {
       return new MediumHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
     case BuildingType.SmallHouse:
       return new SmallHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.Fireplace:
+      return new Fireplace({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
     case BuildingType.None:
       return new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.KilimaPorch:
+      return new KilimaPorch({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
     default:
       return new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
   }
@@ -493,31 +497,31 @@ const stageContainer = ref<HTMLElement | null>(null)
 
 onMounted(() => {
   Konva.pixelRatio = 1
-  // window.addEventListener('resize', fitStageIntoParentContainer)
+  window.addEventListener('resize', fitStageIntoParentContainer)
 
-  // fitStageIntoParentContainer()
+  fitStageIntoParentContainer()
 })
 
-// function fitStageIntoParentContainer() {
-//   const container = stageContainer.value as HTMLElement
-//   const stageObj = (stage.value?.getStage() as Konva.Stage)
-//   // now we need to fit stage into parent container
-//   const containerWidth = container.offsetWidth
+function fitStageIntoParentContainer() {
+  const container = stageContainer.value as HTMLElement
+  const stageObj = (stage.value?.getStage() as Konva.Stage)
+  // now we need to fit stage into parent container
+  const containerWidth = container.offsetWidth
 
-//   // but we also make the full scene visible
-//   // so we need to scale all objects on canvas
-//   const scale = containerWidth / houseConfig.width
+  // but we also make the full scene visible
+  // so we need to scale all objects on canvas
+  const scale = containerWidth / houseConfig.width
 
-//   stageObj.width(houseConfig.width * scale)
-//   stageObj.height(houseConfig.height * scale)
-//   stageObj.scale({ x: scale, y: scale })
-// }
+  stageObj.width(houseConfig.width * scale)
+  stageObj.height(houseConfig.height * scale)
+  stageObj.scale({ x: scale, y: scale })
+}
 </script>
 
 <template>
-  <section class=" flex flex-col gap-2 p-4 px-12">
-    <div class="flex gap-2 justify-evenly">
-      <div class="flex flex-col gap-1 flex-wrap">
+  <section class="flex flex-col gap-2 p-4 px-2 lg:px-12">
+    <div class="flex flex-col lg:flex-row gap-2 justify-evenly">
+      <div class="flex lg:flex-col gap-1 flex-wrap">
         <button
           aria-label="clear"
           class="relative isolate btn text-sm"
@@ -559,6 +563,18 @@ onMounted(() => {
           :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Hallway"
           @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))"
         />
+        <BuildingButton
+          src="/buildings/icons/fireplace.webp"
+          label="Fireplace"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Fireplace"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.Fireplace))"
+        />
+        <!-- <BuildingButton
+          src="/buildings/icons/kilima-porch.webp"
+          label="Kilima Porch"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaPorch"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaPorch))"
+        /> -->
       <!-- <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))">
         Hallway
       </button>
@@ -575,7 +591,10 @@ onMounted(() => {
         None
       </button> -->
       </div>
-      <section ref="stageContainer" class="w-fit relative aspect-auto isolate overflow-hidden rounded-md outline outline-2 outline-primary">
+      <section
+        ref="stageContainer"
+        class="max-w-full relative isolate overflow-hidden rounded-md outline outline-2 outline-primary aspect-[877.5/487.5]"
+      >
         <DevOnly>
           <p class="absolute left-0 z-50 m-4 text-xs">
             {{ text.text }}
@@ -606,6 +625,7 @@ onMounted(() => {
           >
             <template v-for="building in buildings" :key="building.id">
               <v-image :config="building.image" />
+              <!-- <v-image :config="building.snapBox" /> -->
             </template>
             <template v-for="plotHarvestHouse in harvestHouses" :key="plotHarvestHouse.id">
               <v-text :config="plotHarvestHouse.buildingCountText" />
@@ -615,11 +635,11 @@ onMounted(() => {
       </section>
 
       <section class="flex flex-col gap-2">
-        <div class="flex flex-col gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit">
+        <div class="flex lg:flex-col gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit">
           <h2 class="text-xl text-center font-bold">
             Costs
           </h2>
-          <ul class="grid gap-4">
+          <ul class="flex lg:grid  gap-4">
             <li class="flex items-center gap-2 text-lg">
               <nuxt-img
                 width="16" height="16" src="/gold.webp" class="max-h-[1.5rem]" :srcset="undefined" placeholder
@@ -643,8 +663,8 @@ onMounted(() => {
             </li>
           </ul>
         </div>
-        <div class="flex flex-col gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit text-xs">
-          <ul class="grid gap-4">
+        <div class="flex gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit text-xs">
+          <ul class="flex lg:grid gap-4">
             <li>
               <input v-model="useBuildingLimits" type="checkbox" class="toggle rounded-lg">
               <p>Use Build Limits</p>

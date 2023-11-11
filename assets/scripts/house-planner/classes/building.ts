@@ -377,8 +377,9 @@ export abstract class Building {
     let closestSide: Direction | null = null
 
     for (const [side, isOpen] of Object.entries(building.openSlots)) {
-      if (building.children[side] !== null)
+      if (building.children[side as Direction] !== null)
         continue
+
       if (isOpen) {
         const coords = building.getSnapCoords(side as Direction)
         const distance = Math.sqrt((x - coords.x) ** 2 + (y - coords.y) ** 2)
