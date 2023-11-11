@@ -3,6 +3,12 @@ import HousingHeader from '~/components/house-planner/HousingHeader.vue'
 
 useHead({
   title: 'Palia Housing Planner',
+  link: [
+    {
+      rel: 'icon',
+      href: '/housing-logo.webp',
+    },
+  ],
 })
 
 useServerSeoMeta({
