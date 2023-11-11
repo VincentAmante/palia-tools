@@ -40,12 +40,12 @@
                     Changelogs
                   </NuxtLink>
                 </li> -->
-                <!-- <li>
+                <li>
                   <NuxtLink to="/credits">
                     Credits
                   </NuxtLink>
                 </li>
-                <li class="dropdown dropdown-hover dropdown-bottom dropdown-end">
+                <!-- <li class="dropdown dropdown-hover dropdown-bottom dropdown-end">
                   <label tabindex="0">
                     <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xl" />
                     External Tools
