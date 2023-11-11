@@ -33,6 +33,38 @@ definePageMeta({
     <ClientOnly>
       <HousePlanner />
     </ClientOnly>
+
+    <section class="px-2 mt-4">
+      <div class="bg-palia-blue outline outline-1 outline-accent p-4 rounded-md flex flex-col items-center justify-center">
+        <h2 class="font-bold text-lg uppercase">
+          Controls
+        </h2>
+        <div class="grid grid-flow-col gap-4 text-center">
+          <div>
+            <kbd class="kbd kbd-lg">Left Click</kbd>
+            <p>Select/Place</p>
+          </div>
+          <div class="grid">
+            <kbd class="kbd kbd-lg">Right Click</kbd>
+            <p>Clear Selected</p>
+          </div>
+
+          <div>
+            <kbd class="kbd kbd-lg">Q</kbd>
+            <p class="max-w-[12rem]">
+              Rotate Left <font-awesome-icon :icon="['fas', 'rotate-left']" class="text-xl" />
+            </p>
+          </div>
+
+          <div>
+            <kbd class="kbd kbd-lg">E</kbd>
+            <p class="max-w-[12rem]">
+              Rotate Right <font-awesome-icon :icon="['fas', 'rotate-right']" class="text-xl" />
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
     <div class="flex flex-col lg:flex-row justify-between lg:mx-2 gap-2">
       <section class="collapse bg-base-200 rounded-md mt-4 h-fit collapse-arrow">
         <input type="checkbox">
