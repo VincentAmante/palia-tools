@@ -50,8 +50,8 @@ export class Hallway extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetWidth: 0,
-        offsetHeight: 0,
+        offsetWidth: 0.2,
+        offsetHeight: 1,
         zLevel: ZLevel.Hallway,
       },
       this._id,
@@ -76,8 +76,8 @@ export class Hallway extends Building {
     West: boolean
   } = {
       North: true,
-      East: true,
+      East: false,
       South: true,
-      West: true,
+      West: false,
     }
 }
