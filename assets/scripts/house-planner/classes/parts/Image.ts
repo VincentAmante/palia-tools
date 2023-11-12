@@ -68,30 +68,6 @@ export default class BuildingImage {
   }
 
   get rect(): ImageType {
-    const image = new Image()
-    image.src = this._imageSrc
-
-    const { x, y } = this._baseCoords
-    const { width, height } = this._baseDimensions
-    const offsetX = (this._baseDimensions.width + this._offsetDimensions.width + this._offsetCoords.x) / 2
-    const offsetY = (this._baseDimensions.height + this._offsetDimensions.height + this._offsetCoords.y) / 2
-
-    return new Konva.Image({
-      x,
-      y,
-      width,
-      height,
-      offsetX,
-      offsetY,
-      id: this._id,
-      rotation: this._rotation,
-      opacity: this._rect.opacity(),
-      shadowDisabled: true,
-      perfectDrawEnabled: false,
-      image,
-      listening: false,
-    }) as ImageType
-
     return this._rect as ImageType
   }
 
@@ -100,7 +76,7 @@ export default class BuildingImage {
   }
 
   set opacity(opacity: number) {
-    this._rect.opacity(opacity)
+    this._rect.opacity = opacity
     this._opacity = opacity
   }
 

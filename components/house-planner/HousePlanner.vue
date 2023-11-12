@@ -32,6 +32,9 @@ const text = ref({
   fill: 'white',
 })
 
+const buildingsLayer = ref<Konva.Layer | null>(null)
+const collisionLayer = ref<Konva.Layer | null>(null)
+
 const buildings = ref<Record<string, Building>>(
   {
     [harvestHouse.value.id]: (harvestHouse.value as HarvestHouse),
@@ -44,6 +47,14 @@ const harvestHouses = computed(() => {
 
 const countedBuildings = computed(() => {
   return Object.values(buildings.value).filter(building => (building.countsTowardsLimit && building.isPlaced)).length
+})
+
+const placedBuildings = computed(() => {
+  return Object.values(buildings.value).filter(building => building.isPlaced)
+})
+
+const unplacedBuildings = computed(() => {
+  return Object.values(buildings.value).filter(building => !building.isPlaced)
 })
 
 const totalPrice = computed(() => {
@@ -309,8 +320,6 @@ watch((stage), () => {
   if (typeof stage === 'object') {
     const stageObj = stage.value?.getStage() as Konva.Stage
 
-    stageObj.cache()
-
     stageObj.on('mousemove', () => {
       debounce(onMouseMove, 25)()
     })
@@ -319,7 +328,7 @@ watch((stage), () => {
       e.evt.preventDefault()
     })
 
-    stageObj.on('click', (e) => {
+    stageObj.on('click', async (e) => {
       if (activeBuilding.value === null)
         return
 
@@ -404,18 +413,6 @@ watch((stage), () => {
         case 'KeyE':
           building.rotateBuilding(90)
           break
-        // case 'KeyW':
-        //   building.updateCoords({ x: building.x, y: building.y - houseConfig.CELL_SIZE })
-        //   break
-        // case 'KeyS':
-        //   building.updateCoords({ x: building.x, y: building.y + houseConfig.CELL_SIZE })
-        //   break
-        // case 'KeyA':
-        //   building.updateCoords({ x: building.x - houseConfig.CELL_SIZE, y: building.y })
-        //   break
-        // case 'KeyD':
-        //   building.updateCoords({ x: building.x + houseConfig.CELL_SIZE, y: building.y })
-        //   break
         default:
           break
       }
@@ -629,12 +626,13 @@ function fitStageIntoParentContainer() {
       </p>
       <v-stage ref="stage" class="relative isolate" :config="configKonva">
         <HouseGrid />
+
         <v-layer
           :config="{
             listening: false,
           }"
         >
-          <template v-for="building in buildings" :key="building.id">
+          <template v-for="building in unplacedBuildings" :key="building.id">
             <template v-if="showRoofCollisions && (building.type !== BuildingType.None)">
               <template v-for="collisionBox in building.collisionBoxes" :key="collisionBox.id">
                 <v-rect v-if="!collisionBox.hide" :config="collisionBox.rect" />
@@ -643,11 +641,26 @@ function fitStageIntoParentContainer() {
           </template>
         </v-layer>
         <v-layer
+          ref="collisionLayer"
           :config="{
             listening: false,
           }"
         >
-          <template v-for="building in buildings" :key="building.id">
+          <template v-for="building in placedBuildings" :key="building.id">
+            <template v-if="showRoofCollisions && (building.type !== BuildingType.None)">
+              <template v-for="collisionBox in building.collisionBoxes" :key="collisionBox.id">
+                <v-rect v-if="!collisionBox.hide" :config="collisionBox.rect" />
+              </template>
+            </template>
+          </template>
+        </v-layer>
+        <v-layer
+          ref="buildingsLayer"
+          :config="{
+            listening: false,
+          }"
+        >
+          <template v-for="building in placedBuildings" :key="building.id">
             <v-image :config="building.image" />
             <!-- <v-image :config="building.snapBox" /> -->
           </template>
@@ -659,7 +672,7 @@ function fitStageIntoParentContainer() {
             </v-label>
           </template>
           <template v-if="showLabels">
-            <template v-for="building in buildings" :key="building.id">
+            <template v-for="building in placedBuildings" :key="building.id">
               <template v-if="building.type !== BuildingType.None">
                 <v-label :config="building.nameText">
                   <v-tag :config="building.nameText.getTag()" />
@@ -667,6 +680,15 @@ function fitStageIntoParentContainer() {
                 </v-label>
               </template>
             </template>
+          </template>
+        </v-layer>
+        <v-layer
+          :config="{
+            listening: false,
+          }"
+        >
+          <template v-for="building in unplacedBuildings" :key="building.id">
+            <v-image :config="building.image" />
           </template>
         </v-layer>
       </v-stage>

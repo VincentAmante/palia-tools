@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type Konva from 'konva'
 import { useHousePlanConfig } from '@/stores/useHousePlanConfig'
 
 const stageConfig = useHousePlanConfig()
@@ -13,10 +14,17 @@ const configBackground = ref({
   height: stageConfig.height,
   fill: '#419257',
 })
+
+const grid: Konva.Layer | null = ref(null)
+
+onMounted(() => {
+  grid?.value.getNode().cache()
+})
 </script>
 
 <template>
   <v-layer
+    ref="grid"
     :config="{
       listening: false,
       Cache: true,

@@ -20,6 +20,7 @@ export class HarvestHouse extends Building {
   protected _baseRotation: number = 0
   protected _baseDimensions: Dimensions = { width: 11, height: 11 }
   protected _opacity: number = 1
+  // protected _label: Konva.Label: Konva.Label
   price = {
     base: 15000,
     perExtraBuilding: 5000,
@@ -58,6 +59,8 @@ export class HarvestHouse extends Building {
     const label = new Konva.Label({
       x: this._baseCoords.x - ((text.length / 2) * FONT_SIZE + (padding / 2)) / 2,
       y: this._baseCoords.y - (FONT_SIZE),
+      listening: false,
+      hitStrokeWidth: 0,
     })
 
     label.add(
@@ -65,6 +68,7 @@ export class HarvestHouse extends Building {
         fill: '#3A4A6B',
         cornerRadius: 5,
         listening: false,
+        hitStrokeWidth: 0,
       }),
     )
 
@@ -79,6 +83,7 @@ export class HarvestHouse extends Building {
         align: 'center',
         verticalAlign: 'middle',
         listening: false,
+        hitStrokeWidth: 0,
         // shadowColor: '#000',
         // shadowOpacity: 0.2,
         // shadowBlur: 5,
