@@ -9,6 +9,7 @@ import type { GridSizing } from '../../types/ConfigOptions'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
 export class NullHouse extends Building {
+  protected readonly name: string = ''
   protected _type: BuildingType = BuildingType.None
   protected _needsParent: boolean = false
   protected _baseCoords: Coordinates = { x: 0, y: 0 }

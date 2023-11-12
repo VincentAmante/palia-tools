@@ -250,7 +250,7 @@ class Garden {
    * @returns
    */
   simulateYield(options: ICalculateYieldOptions) {
-    console.time('Simulate yield')
+    // console.time('Simulate yield')
     const layoutFlat = this._layout.flat()
     // Gets a list of all tiles, and excludes tiles that contain duplicates (i.e. 9 apples tiles should only return 1 tile)
     const individualCrops = new Map<string, Tile>()

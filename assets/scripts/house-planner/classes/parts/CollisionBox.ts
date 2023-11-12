@@ -74,6 +74,7 @@ export default class CollisionBox {
       perfectDrawEnabled: false,
       hitStrokeWidth: 0,
       rotation,
+      listening: false,
     }) as CollisionBoxRect
 
     this._rect.cache()

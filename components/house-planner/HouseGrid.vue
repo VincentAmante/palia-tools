@@ -19,6 +19,7 @@ const configBackground = ref({
   <v-layer
     :config="{
       listening: false,
+      Cache: true,
     }"
   >
     <v-rect :config="configBackground" />

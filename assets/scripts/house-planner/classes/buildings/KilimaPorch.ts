@@ -10,6 +10,7 @@ import { ZLevel } from '../../enums/zLevel'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
 export default class KilimaPorch extends Building {
+  protected readonly name: string = 'Kilima Porch'
   protected _type: BuildingType = BuildingType.KilimaPorch
   protected _needsParent: boolean = true
   protected _baseCoords: Coordinates = { x: 0, y: 0 }

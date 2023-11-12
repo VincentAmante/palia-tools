@@ -13,6 +13,7 @@ import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 const FONT_SIZE = 12
 
 export class HarvestHouse extends Building {
+  protected readonly name = 'Harvest House'
   protected _type: BuildingType = BuildingType.HarvestHouse
   protected _needsParent: boolean = false
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
@@ -48,26 +49,62 @@ export class HarvestHouse extends Building {
     this._gridSizing,
   )
 
-  get buildingCountText(): Konva.Text {
+  get buildingCountText(): Konva.Label {
     // TODO: Make the 15 a global constant
     const text = `${this.countableBuildings} / 15`
 
-    return new Konva.Text({
-      x: this._baseCoords.x - (text.length / 2) * FONT_SIZE / 2,
+    const padding = 5
+
+    const label = new Konva.Label({
+      x: this._baseCoords.x - ((text.length / 2) * FONT_SIZE + (padding / 2)) / 2,
       y: this._baseCoords.y - (FONT_SIZE),
-      text,
-      fontSize: FONT_SIZE,
-      fontVariant: 'bold',
-      fontFamily: 'Merriweather',
-      fill: '#2B3750',
-      padding: 5,
-      align: 'center',
-      verticalAlign: 'middle',
-      // shadowColor: '#000',
-      // shadowOpacity: 0.2,
-      // shadowBlur: 5,
-      // shadowOffset: { x: 1, y: 1 },
     })
+
+    label.add(
+      new Konva.Tag({
+        fill: '#3A4A6B',
+        cornerRadius: 5,
+        listening: false,
+      }),
+    )
+
+    label.add(
+      new Konva.Text({
+        text,
+        fontSize: FONT_SIZE,
+        fontVariant: 'bold',
+        fontFamily: 'Merriweather',
+        fill: '#EEE3D1',
+        padding,
+        align: 'center',
+        verticalAlign: 'middle',
+        listening: false,
+        // shadowColor: '#000',
+        // shadowOpacity: 0.2,
+        // shadowBlur: 5,
+        // shadowOffset: { x: 1, y: 1 },
+      }),
+
+    )
+
+    return label
+
+    // return new Konva.Text({
+    //   x: this._baseCoords.x - (text.length / 2) * FONT_SIZE / 2,
+    //   y: this._baseCoords.y - (FONT_SIZE),
+    //   text,
+    //   fontSize: FONT_SIZE,
+    //   fontVariant: 'bold',
+    //   fontFamily: 'Merriweather',
+    //   fill: '#2B3750',
+    //   padding: 5,
+    //   align: 'center',
+    //   verticalAlign: 'middle',
+    //   // shadowColor: '#000',
+    //   // shadowOpacity: 0.2,
+    //   // shadowBlur: 5,
+    //   // shadowOffset: { x: 1, y: 1 },
+    // })
   }
 
   protected _collisionBoxes: CollisionBox[] = [

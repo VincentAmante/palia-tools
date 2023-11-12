@@ -89,6 +89,7 @@ export default class BuildingImage {
       shadowDisabled: true,
       perfectDrawEnabled: false,
       image,
+      listening: false,
     }) as ImageType
 
     return this._rect as ImageType

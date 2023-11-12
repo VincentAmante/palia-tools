@@ -10,6 +10,7 @@ import { ZLevel } from '../../enums/zLevel'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
 export class MediumHouse extends Building {
+  protected readonly name = 'Medium Room'
   protected _type: BuildingType = BuildingType.MediumHouse
   protected _needsParent: boolean = true
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
@@ -48,8 +49,8 @@ export class MediumHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetHeight: 1,
-        offsetWidth: 1,
+        offsetHeight: 2,
+        offsetWidth: 0,
         zLevel: ZLevel.Medium,
       },
       this._id,
