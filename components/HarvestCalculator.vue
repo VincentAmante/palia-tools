@@ -21,6 +21,10 @@ const props = defineProps({
 
 const isTakingScreenshot = useTakingScreenshot()
 
+const gardenTilesAreWide = computed(() => {
+  return props.layout.plots[0].length > 3
+})
+
 const options = useStorage('approximator-options-OCT1023', {
   days: 0,
   postLevel25: false,
@@ -99,29 +103,43 @@ watchEffect(() => {
 
 <template>
   <section
-    class="collapse collapse-arrow rounded-none lg:rounded-lg w-full lg:h-fit lg:py-0 lg:mx-0 lg:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible lg:max-w-[47rem] transition-all"
+    class="transition-all lg:max-w-2xl lg:h-fit rounded-none z-50 overflow-visible w-full xl:max-w-3xl"
+    :class="[
+      gardenTilesAreWide ? '!max-w-none px-0' : 'lg:pl-20 xl:pl-2 xl:px-4 lg:px-2',
+      isTakingScreenshot.get && !gardenTilesAreWide ? 'max-w-[46rem] px-4' : '',
+    ]"
   >
     <div
-      class="bg-primary lg:rounded-lg"
-      :class="isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0 pb-6 lg:pb-0'"
+      class="bg-primary flex flex-col"
+      :class="[
+        isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0 pb-6 lg:pb-0',
+        gardenTilesAreWide ? 'rounded-none' : 'lg:rounded-lg ',
+      ]"
     >
       <div class="flex flex-col gap-1">
         <div
-          class="w-full lg:bg-misc lg:rounded-lg lg:rounded-b-none p-1 sm:px-6 flex flex-col lg:flex-row justify-between items-center lg:text-accent"
-          :class="isTakingScreenshot.get ? 'bg-misc px-6 rounded-lg rounded-b-none' : 'text-misc gap-2'"
+          class="w-full flex flex-col lg:flex-row justify-between items-center lg:bg-misc lg:rounded-lg lg:rounded-b-none p-1 sm:px-6 lg:text-accent"
+          :class="[
+            isTakingScreenshot.get ? 'bg-misc px-6 rounded-lg rounded-b-none' : 'text-misc gap-2',
+            gardenTilesAreWide ? '!bg-primary !flex-col' : '',
+          ]"
         >
           <AppDividerAlt
-            class="w-full sm:hidden"
-            :class="isTakingScreenshot.get ? 'hidden' : ''"
+            class="w-full sm:hidden order-1"
+            :class="isTakingScreenshot.get || gardenTilesAreWide ? 'hidden' : ''"
           />
-          <h2 class="text-2xl py-1 flex items-center flex-wrap gap-1">
+          <h2
+            class="text-2xl py-1 flex items-center flex-wrap gap-1 order-2"
+            :class="gardenTilesAreWide ? 'text-center text-misc' : ''"
+          >
             Harvest Approximations <span
               class="text-xs font-normal"
             >(WIP)</span>
           </h2>
           <div
             v-show="(activeTab !== 'info' && !isTakingScreenshot.get)"
-            class="px-4 py-2 w-full lg:hidden"
+            class="mx-4 py-2 w-full lg:hidden"
+            :class="gardenTilesAreWide ? 'order-first' : 'md:order-default'"
           >
             <div class="bg-accent text-misc rounded-md font-semibold flex flex-col xl:flex-row items-center justify-center md:gap-1 py-2">
               <div
@@ -171,7 +189,8 @@ watchEffect(() => {
           </div>
           <div
             v-if="!isTakingScreenshot.get"
-            class="tabs w-full justify-evenly lg:w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0 py-1 md:gap-2 max-w-[22rem]"
+            class="tabs w-full justify-evenly flex flex-nowrap bg-misc rounded-md px-4 py-1 max-w-[22rem] order-3"
+            :class="gardenTilesAreWide ? 'justify-center py-2' : 'md:px-0 md:gap-2 lg:w-fit '"
           >
             <button
               id="approximator-display-tab"
@@ -202,8 +221,11 @@ watchEffect(() => {
       </div>
       <div
         v-show="(activeTab !== 'info' || isTakingScreenshot.get)"
-        class="px-4 py-2"
-        :class="isTakingScreenshot.get ? '' : 'hidden lg:block'"
+        class="px-4 py-2 "
+        :class="[
+          isTakingScreenshot.get ? '' : 'hidden lg:block',
+          gardenTilesAreWide ? 'order-first' : '',
+        ]"
       >
         <div class="bg-accent text-misc rounded-md font-semibold flex flex-col xl:flex-row items-center justify-center md:gap-1 py-2">
           <div

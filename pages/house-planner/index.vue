@@ -26,7 +26,6 @@ definePageMeta({
         <p class="text-sm max-w-xl font-normal">
           This tool is released primarily as a proof-of-concept and is not ready for regular use.
           Many features are missing and bugs are to be expected.
-          <!-- Do provide feedback to its developer <span class="font-black">.aisen</span> -->
         </p>
       </div>
     </div>
