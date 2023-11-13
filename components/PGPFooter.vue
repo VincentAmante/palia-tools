@@ -1,18 +1,35 @@
 <template>
-  <footer class="flex flex-col gap-2 text-center sm:text-left w-full text-xs font-normal text-gray-600 p-4 pb-8 md:px-8 lg:px-16">
-    <p class="max-w-md">
-      &copy; Palia's intellectual property and assets is reserved by Singularity 6. This tool is fan-made and not affliated in any way with Palia or
-      Singularity 6.
-    </p>
-    <p>You may contact me as .aisen on Discord!</p>
-
-    <NuxtLink
-      to="https://github.com/VincentAmante/palia-tools"
-      target="_blank"
-      class="btn btn-sm btn-primary w-fit"
-    >
-      <font-awesome-icon :icon="['fab', 'github']" class="" />
-      Github Source Code
-    </NuxtLink>
+  <footer v-once class="px-4 lg:px-12 mt-2">
+    <div class="flex flex-col lg:flex-row gap-2 items-start justify-between text-center sm:text-left w-full font-normal p-4 rounded-lg bg-palia-blue mb-4 bg-opacity-50">
+      <div class="grid text-sm">
+        <p class="max-w-md">
+          &copy; Palia's intellectual property and assets are reserved by Singularity 6.
+        </p>
+        <p>
+          This tool is fan-made and not affliated in any way with Singularity 6 or Palia.
+        </p>
+      </div>
+      <div class="flex flex-col w-full items-center lg:w-fit lg:items-end gap-1">
+        <div class="flex items-center gap-1">
+          Developed by
+          <NuxtLink
+            to="https://discord.com/users/204462556012740608"
+            target="_blank"
+            class="btn btn-ghost normal-case btn-sm"
+          >
+            <font-awesome-icon :icon="['fab', 'discord']" class="" />
+            .aisen
+          </NuxtLink>
+        </div>
+        <NuxtLink
+          to="https://github.com/VincentAmante/palia-tools"
+          target="_blank"
+          class="btn w-full"
+        >
+          <font-awesome-icon :icon="['fab', 'github']" class="text-lg" />
+          Source Code
+        </NuxtLink>
+      </div>
+    </div>
   </footer>
 </template>

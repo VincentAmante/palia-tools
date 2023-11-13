@@ -38,17 +38,19 @@ interface ICropConversions {
   cropsPerSeed: number
   seedsPerConversion: number
   cropsPerPreserve: number
+  seedProcessMinutes: number
+  preserveProcessMinutes: number
 }
 
 interface IProductImages {
-  preserve: string;
-  seed: string;
+  preserve: string
+  seed: string
 }
 
 interface ICropMetadata {
-  cropCode: CropCode;
-  cropTooltip: string;
-  cropBackgroundColor: string;
+  cropCode: CropCode
+  cropTooltip: string
+  cropBackgroundColor: string
 }
 
 class Crop {
@@ -58,7 +60,8 @@ class Crop {
     preserve: string
     seed: string
   }
-  private _metadata: ICropMetadata;
+
+  private _metadata: ICropMetadata
 
   constructor(
     public readonly type: CropType,
@@ -74,12 +77,12 @@ class Crop {
     },
     metadata: ICropMetadata = {
       cropCode: CropCode.None,
-      cropTooltip: "Remove Crop",
+      cropTooltip: 'Remove Crop',
       cropBackgroundColor: '',
-    }
+    },
   ) {
-    this._images = images;
-    this._metadata = metadata;
+    this._images = images
+    this._metadata = metadata
 
     this._produceInfo = {
       ...produceInfoOptions,
@@ -87,12 +90,12 @@ class Crop {
       isReharvestable: produceInfoOptions.isReharvestable || false,
       reharvestCooldown: produceInfoOptions.reharvestCooldown || 0,
       reharvestLimit: produceInfoOptions.reharvestLimit || 0,
-    };
+    }
 
     this._goldValues = {
       ...goldValuesOptions,
       preserveStar: goldValuesOptions.preserveStar || goldValuesOptions.preserve * 1.5, // We want to assume the same 1.5x rule if not proivided
-    };
+    }
   }
 
   get produceInfo(): IProduceInfo {
@@ -112,28 +115,49 @@ class Crop {
   }
 
   get cropCode(): CropCode {
-    return this._metadata.cropCode;
+    return this._metadata.cropCode
   }
 
   get cropTooltip(): string {
-    return this._metadata.cropTooltip;
+    return this._metadata.cropTooltip
   }
 
   get cropBackgroundColor(): string {
-    return this._metadata.cropBackgroundColor;
+    return this._metadata.cropBackgroundColor
+  }
+
+  get paliapediaName(): string {
+    return this._metadata.paliapediaName || ''
   }
 
   // Assumes player harvests on the day it is harvestable
-  isHarvestableOnDay(day: number) {
-    const { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
-    const totalGrowthTime = growthTime + (reharvestCooldown * reharvestLimit)
+  isHarvestableOnDay(day: number, hasGrowthBoost: boolean = false) {
+    let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+
+    let newReharvestCooldown = reharvestCooldown
+
+    let leftover = 0
+    if (hasGrowthBoost) {
+      leftover = growthTime % 3
+      growthTime = Math.ceil((growthTime / 3) * 2)
+      newReharvestCooldown = Math.ceil((reharvestCooldown / 3) * 2)
+    }
+
+    const totalGrowthTime = this.getTotalGrowTime(hasGrowthBoost)
+    // console.log('totalGrowthTime', totalGrowthTime)
+
     const onLastHarvest = (day % totalGrowthTime) === 0
     const doReplant = onLastHarvest
 
     const harvestableDays = []
     harvestableDays.push(growthTime)
-    for (let i = 0; i < reharvestLimit; i++)
-      harvestableDays.push(growthTime + reharvestCooldown * (i + 1))
+    let lastHarvestDay = harvestableDays[harvestableDays.length - 1]
+
+    for (let i = 0; i < reharvestLimit; i++) {
+      harvestableDays.push(Math.max(lastHarvestDay + newReharvestCooldown - leftover, 1))
+      lastHarvestDay = harvestableDays[harvestableDays.length - 1]
+      leftover = harvestableDays[harvestableDays.length - 1] - lastHarvestDay
+    }
 
     if (onLastHarvest) {
       return {
@@ -147,9 +171,30 @@ class Crop {
     }
   }
 
-  get totalGrowTime(): number {
-    const { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
-    return growthTime + reharvestCooldown * reharvestLimit
+  // TODO: Re-do the growth boost logic
+  getTotalGrowTime(hasGrowthBoost: boolean = false): number {
+    let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+
+    let newReharvestCooldown = reharvestCooldown
+
+    let leftover = 0
+    if (hasGrowthBoost) {
+      leftover = growthTime % 3
+      growthTime = Math.ceil((growthTime / 3) * 2)
+      newReharvestCooldown = Math.ceil((reharvestCooldown / 3) * 2)
+    }
+
+    const harvestableDays = []
+    harvestableDays.push(growthTime)
+    let lastHarvestDay = harvestableDays[harvestableDays.length - 1]
+
+    for (let i = 0; i < reharvestLimit; i++) {
+      harvestableDays.push(Math.max(lastHarvestDay + newReharvestCooldown - leftover, 1))
+      lastHarvestDay = harvestableDays[harvestableDays.length - 1]
+      leftover = harvestableDays[harvestableDays.length - 1] - lastHarvestDay
+    }
+
+    return harvestableDays.reduce((acc, cur) => (acc) + (cur - acc), 0)
   }
 
   calculateGoldValue(

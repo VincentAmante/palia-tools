@@ -11,7 +11,7 @@ import CropType from '../enums/crops'
 import Direction from '../enums/direction'
 import CropSize from '../enums/crop-size'
 import type Fertiliser from './fertiliser'
-import type Crop from './crop'
+import Crop from './crop'
 import Tile from './tile'
 
 // Grid sizes for a plot
@@ -70,6 +70,97 @@ class Plot {
       return new Tile(null)
 
     return this._tiles[x][y]
+  }
+
+  getTilesBySize(row: number, col: number, size: CropSize): Tile[] {
+    const tiles: Tile[] = []
+
+    if (size === CropSize.Tree) {
+      if (row === 0 && col === 0) {
+        return this._tiles.flat()
+      }
+      else if (
+        row === 0
+        && col > 0
+        && this._adjacentPlots.east
+        && this._adjacentPlots.east.isActive
+      ) {
+        this._tiles.map((row: Tile[]) => row.slice(col)).forEach((row: Tile[]) => tiles.push(...row))
+        this._adjacentPlots.east.tiles.map((row: Tile[]) => row.slice(0, col)).forEach((row: Tile[]) => tiles.push(...row))
+        return tiles
+      }
+      else if (
+        row > 0
+        && col === 0
+        && this._adjacentPlots.south
+        && this._adjacentPlots.south.isActive
+      ) {
+        this._tiles.slice(row).forEach((row: Tile[]) => tiles.push(...row.slice(col)))
+        this._adjacentPlots.south.tiles.slice(0, row).forEach((row: Tile[]) => tiles.push(...row.slice(col)))
+      }
+      else if (
+        row > 0
+        && col > 0
+        && this._adjacentPlots.south
+        && this._adjacentPlots.south.isActive
+        && this._adjacentPlots.east
+        && this._adjacentPlots.east.isActive
+        && this._adjacentPlots.south._adjacentPlots.east
+        && this._adjacentPlots.south._adjacentPlots.east.isActive
+        && this._adjacentPlots.east._adjacentPlots.south
+        && this._adjacentPlots.east._adjacentPlots.south.isActive
+      ) {
+        this._tiles.slice(row).forEach((row: Tile[]) => tiles.push(...row.slice(col)))
+        this._adjacentPlots.east.tiles.slice(row).forEach((row: Tile[]) => tiles.push(...row.slice(0, col)))
+        this._adjacentPlots.south.tiles.slice(0, row).forEach((row: Tile[]) => tiles.push(...row.slice(col)))
+        this._adjacentPlots.south._adjacentPlots.east.tiles.slice(0, row).forEach((row: Tile[]) => tiles.push(...row.slice(0, col)))
+      }
+    }
+    else if (size === CropSize.Bush) {
+      if (row < TILE_ROWS - 1 && col < TILE_COLS - 1) {
+        tiles.push(...this._tiles.slice(row, row + 2).map((row: Tile[]) => row.slice(col, col + 2)).flat())
+      }
+      else if (
+        row < TILE_ROWS - 1
+        && col === TILE_COLS - 1
+        && this._adjacentPlots.east
+        && this._adjacentPlots.east.isActive
+      ) {
+        tiles.push(...this._tiles.slice(row, row + 2).map((row: Tile[]) => row.slice(col, col + 2)).flat())
+        tiles.push(...this._adjacentPlots.east.tiles.slice(row, row + 2).map((row: Tile[]) => row.slice(0, 1)).flat())
+      }
+      else if (
+        row === TILE_ROWS - 1
+        && col < TILE_COLS - 1
+        && this._adjacentPlots.south
+        && this._adjacentPlots.south.isActive
+      ) {
+        tiles.push(...this._tiles.slice(row, row + 2).map((row: Tile[]) => row.slice(col, col + 2)).flat())
+        tiles.push(...this._adjacentPlots.south.tiles.slice(0, 1).map((row: Tile[]) => row.slice(col, col + 2)).flat())
+      }
+      else if (
+        row === TILE_ROWS - 1
+        && col === TILE_COLS - 1
+        && this._adjacentPlots.south
+        && this._adjacentPlots.south.isActive
+        && this._adjacentPlots.east
+        && this._adjacentPlots.east.isActive
+        && this._adjacentPlots.south._adjacentPlots.east
+        && this._adjacentPlots.south._adjacentPlots.east.isActive
+        && this._adjacentPlots.east._adjacentPlots.south
+        && this._adjacentPlots.east._adjacentPlots.south.isActive
+      ) {
+        tiles.push(...this._tiles.slice(row, row + 2).map((row: Tile[]) => row.slice(col, col + 2)).flat())
+        tiles.push(...this._adjacentPlots.east.tiles.slice(row, row + 2).map((row: Tile[]) => row.slice(0, 1)).flat())
+        tiles.push(...this._adjacentPlots.south.tiles.slice(0, 1).map((row: Tile[]) => row.slice(col, col + 2)).flat())
+        tiles.push(...this._adjacentPlots.south._adjacentPlots.east.tiles.slice(0, 1).map((row: Tile[]) => row.slice(0, 1)).flat())
+      }
+    }
+    else {
+      tiles.push(this._tiles[row][col])
+    }
+
+    return tiles
   }
 
   /**
@@ -207,7 +298,7 @@ class Plot {
           this.placeCropsOnPlot(this._adjacentPlots.south._adjacentPlots.east, 0, 0, row, column, crop, id)
         }
         else {
-          throw new Error('Invalid placement')
+          throw new Error(`Cannot place plant of type: ${crop.type} using this tile`)
         }
       }
     }
@@ -478,6 +569,54 @@ class Plot {
 
   getTileBonuses(x: number, y: number): Bonus[] {
     return this._tiles[x][y].bonuses
+  }
+
+  resetTileHover(): void {
+    const tiles = this._tiles.flat()
+    if (!tiles.some((tile: Tile) => tile.isHovered))
+      return
+
+    for (const tile of tiles)
+      tile.isHovered = false
+  }
+
+  onTileHover(row: number, col: number, selectedItem: Crop | Fertiliser | null | string = null): void {
+    if (!this._isActive)
+      return
+    if (this._tiles[row][col].isHovered)
+      return
+
+    this.resetTileHover()
+    this._tiles[row][col].isHovered = true
+
+    if (!(selectedItem instanceof Crop)) {
+      const tileCrop = this._tiles[row][col].crop
+      if (tileCrop && tileCrop.size !== CropSize.Single) {
+        const matchingTiles: Tile[] = this._tiles.flat().filter((tile: Tile) => tile.id === this._tiles[row][col].id)
+        matchingTiles.forEach((tile: Tile) => {
+          const tileX: number = this._tiles.findIndex((row: Tile[]) => row.includes(tile))
+          const tileY: number = this._tiles[tileX].findIndex((t: Tile) => t === tile)
+          this._tiles[tileX][tileY].isHovered = true
+        })
+
+        // look for adjacent tiles with the same id in adjacent plots and recursively hover them
+        for (const adjacentPlot of Object.values(this._adjacentPlots)) {
+          if (adjacentPlot === null)
+            continue
+          const matchingTiles: Tile[] = adjacentPlot.tiles.flat().filter((tile: Tile) => tile.id === this._tiles[row][col].id)
+          matchingTiles.forEach((tile: Tile) => {
+            const tileX: number = adjacentPlot.tiles.findIndex((row: Tile[]) => row.includes(tile))
+            const tileY: number = adjacentPlot.tiles[tileX].findIndex((t: Tile) => t === tile)
+            adjacentPlot.onTileHover(tileX, tileY, selectedItem)
+          })
+        }
+      }
+    }
+    else {
+      const tileSize = selectedItem.size
+      const tiles = this.getTilesBySize(row, col, tileSize)
+      tiles.forEach((tile: Tile) => tile.isHovered = true)
+    }
   }
 }
 
