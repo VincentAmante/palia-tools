@@ -283,7 +283,7 @@ definePageMeta({
 </script>
 
 <template>
-  <main class="flex flex-col">
+  <main class="flex flex-col bg-primary">
     <h1 class="sr-only">
       Garden Planner
     </h1>

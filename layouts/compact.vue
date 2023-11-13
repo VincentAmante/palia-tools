@@ -6,7 +6,7 @@ useHead({
 
 <template>
   <div>
-    <div class="-z-10 bg-gradient fixed w-full h-full" />
+    <div class="-z-10 bg-primary fixed w-full h-full" />
     <div class="flex flex-col">
       <NuxtPage />
     </div>
