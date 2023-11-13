@@ -107,9 +107,11 @@ definePageMeta({
             </p>
             <ul class="list-disc list-inside">
               <li>
+                Improve performance (SUPER laggy right now)
+              </li>
+              <li>
                 Add porch and door support (currently facing snapping issues)
               </li>
-
               <li>
                 Adjust collision mechanics to imitate in-game behaviour better
               </li>

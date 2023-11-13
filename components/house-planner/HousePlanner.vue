@@ -550,12 +550,12 @@ function fitStageIntoParentContainer() {
         :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Fireplace"
         @click="setActiveBuilding(createNewBuilding(BuildingType.Fireplace))"
       />
-      <BuildingButton
+      <!-- <BuildingButton
         src="/buildings/icons/kilima-porch.webp"
         label="Kilima Porch"
         :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaPorch"
         @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaPorch))"
-      />
+      /> -->
     </div>
     <section
       ref="stageContainer"
@@ -571,7 +571,7 @@ function fitStageIntoParentContainer() {
       </p>
       <v-stage ref="stage" class="relative isolate" :config="configKonva">
         <HouseGrid />
-        <!-- <v-layer
+        <v-layer
           :config="{
             listening: false,
           }"
@@ -583,7 +583,7 @@ function fitStageIntoParentContainer() {
               </template>
             </template>
           </template>
-        </v-layer> -->
+        </v-layer>
         <v-layer
           ref="buildingsLayer"
           :config="{
