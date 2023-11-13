@@ -17,7 +17,7 @@ defineProps({
     default: false,
   },
 })
-const emit = defineEmits(['selectTile', 'rightClick', 'mouseover', 'updateGardenTiles', 'mouseup'])
+const emit = defineEmits(['selectTile', 'rightClick', 'mouseover', 'updateGardenTiles', 'mouseup', 'middleClick'])
 
 const plotsDisplay = ref<HTMLDivElement | null>(null)
 function getPlotsDisplay() {
@@ -46,6 +46,11 @@ function handleRightClick(event: MouseEvent, rowIndex: number, index: number, pl
     emit('rightClick', event, rowIndex, index, plot)
 }
 
+function handleMiddleClick(event: MouseEvent, rowIndex: number, index: number, plot: Plot) {
+  if (plot.isActive)
+    emit('middleClick', event, rowIndex, index, plot)
+}
+
 function handleHover(rowIndex: number, index: number, plot: Plot) {
   if (plot.isActive)
     emit('mouseover', rowIndex, index, plot)
@@ -65,11 +70,12 @@ function handleDragEnter(row: number, col: number, plot: Plot) {
 <template>
   <div
     class="h-full flex flex-col items-center"
-    :class="[(isTakingScreenshot.get && gardenTilesAreWide) ? '' : 'max-w-[100vw]']"
+    :class="[(isTakingScreenshot.get && gardenTilesAreWide) ? 'max-w-[1680px]'
+      : isTakingScreenshot.get ? 'max-w-[1680px]' : 'max-w-[100vw]']"
   >
     <div
-      class="rounded-xl  my-4 md:my-0  lg:ml-0 lg:mr-auto px-3 lg:px-2 bg-accent"
-      :class="(isTakingScreenshot.get) ? 'w-fit  px-1 mt-0' : 'w-full sm:w-fit'"
+      class="rounded-xl  my-4 md:my-0  lg:ml-0 lg:mr-auto px-3 lg:px-2"
+      :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'"
       @contextmenu.prevent.self=""
     >
       <div ref="plotsDisplay" class="w-full overflow-auto grid gap-2">
@@ -86,6 +92,8 @@ function handleDragEnter(row: number, col: number, plot: Plot) {
                   @mouseover="handleHover(rowIndex, index, plot as Plot)"
                   @mouseup="(handleMouseUp(rowIndex, index, plot as Plot))"
                   @dragenter="(e: DragEvent) => handleDragEnter(rowIndex, index, plot as Plot)"
+                  @click.middle="((e: MouseEvent) => handleMiddleClick(event, rowIndex, index, plot as Plot))"
+                  @mousedown.middle.prevent.stop
                 />
               </div>
             </div>

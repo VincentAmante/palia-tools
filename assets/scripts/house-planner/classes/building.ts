@@ -1,3 +1,4 @@
+import Konva from 'konva'
 import uniqid from 'uniqid'
 import { BuildingType } from '../enums/buildingType'
 import { Direction } from '../imports'
@@ -19,6 +20,7 @@ interface Dimensions {
 export abstract class Building {
   protected _id: string = uniqid()
   protected _type: BuildingType = BuildingType.None
+  protected readonly name: string = 'Building'
   protected _needsParent: boolean = false
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
   protected _baseRotation: number = 0
@@ -101,7 +103,7 @@ export abstract class Building {
   checkCollision(building: Building, excludeIds: string[]): boolean {
     const collisionBoxes = this._collisionBoxes
     const buildingCollisionBoxes = building._collisionBoxes
-    const isAdjacent = this.adjacentBuildingIds.includes(building.id)
+    // const isAdjacent = this.adjacentBuildingIds.includes(building.id)
 
     for (const collisionBox of collisionBoxes) {
       for (const buildingCollisionBox of buildingCollisionBoxes) {
@@ -169,6 +171,42 @@ export abstract class Building {
 
   get y(): number {
     return this._baseCoords.y
+  }
+
+  get nameText(): Konva.Label {
+    const text = this.name
+    const FONT_SIZE = 8
+
+    const padding = 5
+
+    const width = typeof this._snapBox.rect.width === 'function' ? this._snapBox.rect.width() : this._snapBox.rect.width
+    const height = typeof this._snapBox.rect.height === 'function' ? this._snapBox.rect.height() : this._snapBox.rect.height
+
+    const label = new Konva.Label({
+      x: this._baseCoords.x - width / 2 - (text.length / 2) * FONT_SIZE / 2,
+      y: this._baseCoords.y - (height / 2) - FONT_SIZE,
+      listening: false,
+    })
+
+    label.add(new Konva.Tag({
+      fill: '#3A4A6B',
+      shadowEnabled: false,
+      cornerRadius: 2,
+      listening: false,
+    }))
+
+    label.add(new Konva.Text({
+      text,
+      fontSize: FONT_SIZE,
+      fontFamily: 'Merriweather',
+      fontStyle: 'italic',
+      fill: '#FFF',
+      padding,
+      verticalAlign: 'middle',
+      listening: false,
+    }))
+
+    return label
   }
 
   addChild(building: Building, direction: Direction) {

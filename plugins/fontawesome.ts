@@ -21,6 +21,7 @@ import {
   faJar,
   faMap,
   faPaste,
+  faPeopleGroup,
   faPlus,
   faRecycle,
   faRotateLeft,
@@ -83,6 +84,7 @@ library.add(
   faScrewdriverWrench,
   faRotateRight,
   faRotateLeft,
+  faPeopleGroup,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS

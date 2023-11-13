@@ -32,6 +32,8 @@ const text = ref({
   fill: 'white',
 })
 
+const buildingsLayer = ref<Konva.Layer | null>(null)
+
 const buildings = ref<Record<string, Building>>(
   {
     [harvestHouse.value.id]: (harvestHouse.value as HarvestHouse),
@@ -105,6 +107,7 @@ const sideToSnap = ref<Direction | null>(null)
 
 const useBuildingLimits = ref(true)
 const showRoofCollisions = ref(true)
+const showLabels = ref(false)
 
 function moveActiveBuilding(x: number, y: number) {
   const snappedX = snapToCellSize(x)
@@ -228,19 +231,6 @@ function onMouseMove() {
   }
 }
 
-// Debounce the mousemove event to prevent lag
-// function debounce(func, interval) {
-//   let lastCall = -1
-//   return function () {
-//     clearTimeout(lastCall)
-//     const args = arguments
-//     const self = this
-//     lastCall = setTimeout(() => {
-//       func.apply(self, args)
-//     }, interval)
-//   }
-// }
-
 type DebouncedFunction<T extends (...args: any[]) => void> = (
   this: ThisParameterType<T>,
   ...args: Parameters<T>
@@ -271,11 +261,42 @@ function debounce<T extends (...args: any[]) => void>(
   }
 }
 
+function tryPlaceBuilding() {
+  if (activeBuilding.value === null)
+    return
+
+  if (!activeBuilding.value.needsParent) {
+    if (!useBuildingLimits.value
+          || (countedBuildings.value < houseConfig.MAX_BUILDINGS)
+          || !activeBuilding.value.countsTowardsLimit)
+      placeBuilding()
+  }
+  else if (parentToSnap.value !== null && sideToSnap.value !== null) {
+    const parent = buildings.value[parentToSnap.value.id]
+    const side = sideToSnap.value
+    const building = activeBuilding.value
+
+    const excludeIds = [...building.childrenIds, parent.id, ...parent.directChildrenIds, ...building.directChildrenIds]
+    const hasOtherCollisions = checkForCollisions(building as Building, excludeIds)
+
+    if (hasOtherCollisions)
+      return
+
+    const topLevelBuilding = parent.topLevelBuilding
+
+    if (
+      !useBuildingLimits.value
+          || (topLevelBuilding.countableBuildings < houseConfig.MAX_CLUSTER_BUILDINGS && countedBuildings.value < houseConfig.MAX_BUILDINGS)
+          || !building.countsTowardsLimit) {
+      if (placeBuilding(excludeIds))
+        parent.addChild(building as Building, side)
+    }
+  }
+}
+
 watch((stage), () => {
   if (typeof stage === 'object') {
     const stageObj = stage.value?.getStage() as Konva.Stage
-
-    stageObj.cache()
 
     stageObj.on('mousemove', () => {
       debounce(onMouseMove, 25)()
@@ -322,34 +343,7 @@ watch((stage), () => {
         }
       }
 
-      if (!activeBuilding.value.needsParent) {
-        if (!useBuildingLimits.value
-          || (countedBuildings.value < houseConfig.MAX_BUILDINGS)
-          || !activeBuilding.value.countsTowardsLimit)
-          placeBuilding()
-      }
-      else if (parentToSnap.value !== null && sideToSnap.value !== null) {
-        const parent = buildings.value[parentToSnap.value.id]
-        const side = sideToSnap.value
-        const building = activeBuilding.value
-
-        const excludeIds = [...building.childrenIds, parent.id, ...parent.directChildrenIds, ...building.directChildrenIds]
-        console.log(excludeIds.includes(building.topLevelBuilding.id) || excludeIds.includes(parent.topLevelBuilding.id))
-        const hasOtherCollisions = checkForCollisions(building as Building, excludeIds)
-
-        if (hasOtherCollisions)
-          return
-
-        const topLevelBuilding = parent.topLevelBuilding
-
-        if (
-          !useBuildingLimits.value
-          || (topLevelBuilding.countableBuildings < houseConfig.MAX_CLUSTER_BUILDINGS && countedBuildings.value < houseConfig.MAX_BUILDINGS)
-          || !building.countsTowardsLimit) {
-          if (placeBuilding(excludeIds))
-            parent.addChild(building as Building, side)
-        }
-      }
+      tryPlaceBuilding()
     })
 
     window.addEventListener('keydown', (e) => {
@@ -363,18 +357,6 @@ watch((stage), () => {
           break
         case 'KeyE':
           building.rotateBuilding(90)
-          break
-        case 'KeyW':
-          building.updateCoords({ x: building.x, y: building.y - houseConfig.CELL_SIZE })
-          break
-        case 'KeyS':
-          building.updateCoords({ x: building.x, y: building.y + houseConfig.CELL_SIZE })
-          break
-        case 'KeyA':
-          building.updateCoords({ x: building.x - houseConfig.CELL_SIZE, y: building.y })
-          break
-        case 'KeyD':
-          building.updateCoords({ x: building.x + houseConfig.CELL_SIZE, y: building.y })
           break
         default:
           break
@@ -569,26 +551,11 @@ function fitStageIntoParentContainer() {
         @click="setActiveBuilding(createNewBuilding(BuildingType.Fireplace))"
       />
       <!-- <BuildingButton
-          src="/buildings/icons/kilima-porch.webp"
-          label="Kilima Porch"
-          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaPorch"
-          @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaPorch))"
-        /> -->
-      <!-- <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))">
-        Hallway
-      </button>
-      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.LargeHouse))">
-        Large Room
-      </button>
-      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.MediumHouse))">
-        Medium Room
-      </button>
-      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.SmallHouse))">
-        Small Room
-      </button>
-      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.None))">
-        None
-      </button> -->
+        src="/buildings/icons/kilima-porch.webp"
+        label="Kilima Porch"
+        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaPorch"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaPorch))"
+      /> -->
     </div>
     <section
       ref="stageContainer"
@@ -618,6 +585,7 @@ function fitStageIntoParentContainer() {
           </template>
         </v-layer>
         <v-layer
+          ref="buildingsLayer"
           :config="{
             listening: false,
           }"
@@ -627,7 +595,21 @@ function fitStageIntoParentContainer() {
             <!-- <v-image :config="building.snapBox" /> -->
           </template>
           <template v-for="plotHarvestHouse in harvestHouses" :key="plotHarvestHouse.id">
-            <v-text :config="plotHarvestHouse.buildingCountText" />
+            <!-- <v-text :config="plotHarvestHouse.buildingCountText" /> -->
+            <v-label :config="plotHarvestHouse.buildingCountText">
+              <v-tag :config="plotHarvestHouse.buildingCountText.getTag()" />
+              <v-text :config="plotHarvestHouse.buildingCountText.getText()" />
+            </v-label>
+          </template>
+          <template v-if="showLabels">
+            <template v-for="building in buildings" :key="building.id">
+              <template v-if="building.type !== BuildingType.None">
+                <v-label :config="building.nameText">
+                  <v-tag :config="building.nameText.getTag()" />
+                  <v-text :config="building.nameText.getText()" />
+                </v-label>
+              </template>
+            </template>
           </template>
         </v-layer>
       </v-stage>
@@ -671,6 +653,10 @@ function fitStageIntoParentContainer() {
           <li>
             <input v-model="showRoofCollisions" type="checkbox" class="toggle rounded-lg">
             <p>Show Roof</p>
+          </li>
+          <li>
+            <input v-model="showLabels" type="checkbox" class="toggle rounded-lg">
+            <p>Show Labels</p>
           </li>
         </ul>
       </div>

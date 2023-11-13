@@ -34,6 +34,103 @@ useHead({
       <div class="grid gap-2">
         <ChangelogItem checked>
           <template #title>
+            November 13, 2023 — Mild Bugfixes
+          </template>
+          <template #summary>
+            <li>
+              House Planner
+            </li>
+            <li>
+              <span class="ml-5">Experimental Release</span> - Added a proof of concept house planner: <NuxtLink class="link" to="/house-planner">
+                Link Here
+              </NuxtLink> (Warning: Heavily early stage, not recommended for regular use)
+            </li>
+            <li class="ml-5">
+              <span class="italic">Bugfix</span> - Prevented hallways from connecting at the sides
+            </li>
+            <li class="ml-5">
+              <span class="italic">Adjustment</span> - Gave most buildings a vertical roof for collision checks
+            </li>
+            <li>
+              <span class="italic">UI</span> - Slightly tweaked UI for smaller screens and wider gardens
+            </li>
+            <li>
+              <span class="italic">Compact View (Experimental)</span> - Added experimental compact view to support a potential feature on another website that's not mine to announce :D
+            </li>
+            <li class="ml-5">
+              See here: <NuxtLink class="link" to="/compact">
+                Compact View
+              </NuxtLink>
+            </li>
+            <li class="font-bold uppercase">
+              Update regarding crafters below
+            </li>
+          </template>
+
+          <template #default>
+            <p>
+              Heya folks, small update this time round with a small focus on features unrelated to the garden planner.
+            </p>
+            <p>
+              I've worked on the layout for the planner a bit, hopefully to support larger gardens and smaller screens a little.
+              I meant to add a fix to the screenshot feature but it did not pan out.
+            </p>
+            <div class="divider" />
+            <h3 class="font-bold text-lg">
+              Crafter Support
+            </h3>
+            <p>
+              Crafters are under construction! Internally they're partially implemented,
+              they support having limited slots and can properly calculate time spent processing
+              regardless of the different crops inserted into each one.
+              Information with and without idle time is also available.
+            </p>
+            <p>
+              Not much work left on the crafters themselves as they're almost functional.
+              The big problem is how they'll be managed and displayed.
+              I intend to support the ability to calculate for total processing time
+              given a number of crafters.
+              Every crafter <span class="italic">will</span> support having different crops placed into each one.
+            </p>
+            <p>
+              I have been mind-blocked on both how to manage and configure the crafters in a way that can reflect multiple playstyles.
+              Not to mention that on release it'll likely need configuration saving and sharing, which is a whole other can of worms.
+              Overall though, work is progressing on them, I hope to release them in a state that's satisfying.
+            </p>
+            <p>
+              However, to make sure I implement them right, I plan on releasing them in an experimental page first.
+              This was where the house planner came in, as a way to gauge how users react to experimental features.
+            </p>
+            <div class="divider" />
+            <h3 class="font-bold text-lg">
+              House Planner
+            </h3>
+            <p>
+              The house planner is a proof of concept, and is not meant to be used regularly.
+              Aside from being a way to gauge how users react to experimental features,
+              it's also a highly demanded project that I've been wishing someone else would make.
+              Since it's been months and I needed a change of gear to work on, I decided to make it myself.
+            </p>
+            <p>
+              It's currently in it's early stages, and is currently not a reliable source of information on housing.
+              It has a lot of inaccuracies, and is missing a lot of information.
+              That said, having this out there will let me test for bugs much earlier,
+              as I personally do not have the resources and space to test for housing.
+            </p>
+            <p>
+              Hopefully, this will also encourage other developers to either improve on this or make their own versions.
+              Otherwise, this opens up a new end goal of being the one-stop shop for simulating certain Palia mechanics.
+            </p>
+            <p>
+              You may try it out yourself here: <NuxtLink class="link" to="/house-planner">
+                House Planner
+              </NuxtLink>
+            </p>
+          </template>
+        </ChangelogItem>
+
+        <ChangelogItem>
+          <template #title>
             October 15, 2023 — UI Rework
           </template>
           <template #summary>

@@ -26,7 +26,6 @@ definePageMeta({
         <p class="text-sm max-w-xl font-normal">
           This tool is released primarily as a proof-of-concept and is not ready for regular use.
           Many features are missing and bugs are to be expected.
-          <!-- Do provide feedback to its developer <span class="font-black">.aisen</span> -->
         </p>
       </div>
     </div>
@@ -108,9 +107,11 @@ definePageMeta({
             </p>
             <ul class="list-disc list-inside">
               <li>
+                Improve performance (SUPER laggy right now)
+              </li>
+              <li>
                 Add porch and door support (currently facing snapping issues)
               </li>
-
               <li>
                 Adjust collision mechanics to imitate in-game behaviour better
               </li>

@@ -54,7 +54,7 @@
                         target="_blank"
                       >
                         <font-awesome-icon :icon="['fas', 'gift']" class="text-xl" />
-                        Gift Tracker
+                        Palia Tracker
                         <span class="text-xs">(anniebananie)</span>
                       </NuxtLink>
                     </li>
@@ -84,6 +84,19 @@
                           alt="Paliapedia Logo"
                         />
                         Paliapedia
+                      </NuxtLink>
+                    </li>
+                    <li class="text-sm">
+                      <NuxtLink
+                        to="https://paliaparty.app/" class="flex" rel="noopener"
+                        target="_blank"
+                      >
+                        <nuxt-img
+                          src="/externals/palia-party.webp" width="18px" height="18px"
+                          class="max-w-[1.5rem] inline-block text-lg"
+                          alt="Palia Party Logo"
+                        />
+                        Palia Party
                       </NuxtLink>
                     </li>
                   </ul>
@@ -141,8 +154,7 @@
                     target="_blank"
                   >
                     <font-awesome-icon :icon="['fas', 'gift']" class="text-xl" />
-                    Gift Tracker
-                    <span class="text-xs">(anniebananie)</span>
+                    Palia Tracker
                   </NuxtLink>
                 </li>
                 <li class="text-sm">
@@ -166,6 +178,19 @@
                       alt="Paliapedia Logo"
                     />
                     Paliapedia
+                  </NuxtLink>
+                </li>
+                <li class="text-sm">
+                  <NuxtLink
+                    to="https://paliaparty.app/" class="flex" rel="noopener"
+                    target="_blank"
+                  >
+                    <nuxt-img
+                      src="/externals/palia-party.webp" width="18px" height="18px"
+                      class="max-w-[1.5rem] inline-block text-lg"
+                      alt="Palia Party Logo"
+                    />
+                    Palia Party
                   </NuxtLink>
                 </li>
               </ul>

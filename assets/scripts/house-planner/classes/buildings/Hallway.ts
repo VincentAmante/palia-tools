@@ -10,6 +10,7 @@ import { ZLevel } from '../../enums/zLevel'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
 export class Hallway extends Building {
+  protected readonly name = 'Hallway'
   protected _type: BuildingType = BuildingType.Hallway
   protected _needsParent: boolean = true
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
@@ -49,8 +50,8 @@ export class Hallway extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetWidth: 0,
-        offsetHeight: 0,
+        offsetWidth: 0.2,
+        offsetHeight: 1,
         zLevel: ZLevel.Hallway,
       },
       this._id,
@@ -75,8 +76,8 @@ export class Hallway extends Building {
     West: boolean
   } = {
       North: true,
-      East: true,
+      East: false,
       South: true,
-      West: true,
+      West: false,
     }
 }

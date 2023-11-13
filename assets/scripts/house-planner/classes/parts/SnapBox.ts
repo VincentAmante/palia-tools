@@ -69,6 +69,7 @@ export default class SnapBox {
       perfectDrawEnabled: false,
       rotation,
       hitStrokeWidth: 0,
+      listening: false,
     }) as SnapBoxRect
 
     this._rect.cache()

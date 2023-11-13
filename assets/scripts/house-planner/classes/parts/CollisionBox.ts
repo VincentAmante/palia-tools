@@ -83,6 +83,10 @@ export default class CollisionBox {
     return this._rect
   }
 
+  get id(): string {
+    return this._id
+  }
+
   updateCoords({ x, y }: Coordinates) {
     this._baseCoords = { x, y }
     this._rect.x = x
@@ -122,6 +126,10 @@ export default class CollisionBox {
     return true
   }
 
+  get baseCoords(): Coordinates {
+    return new Vector2d(this._baseCoords.x, this._baseCoords.y)
+  }
+
   updateRotation(rotation: number) {
     this._rotation = rotation
     this._rect.rotation = rotation
@@ -151,6 +159,24 @@ export default class CollisionBox {
       rotation,
       zLevel: this.zLevel,
     }, this._id, gridSizing, this.hide)
+  }
+}
+
+class Vector2d {
+  private _x: number
+  private _y: number
+
+  constructor(x: number, y: number) {
+    this._x = x
+    this._y = y
+  }
+
+  get x(): number {
+    return this._x
+  }
+
+  get y(): number {
+    return this._y
   }
 }
 

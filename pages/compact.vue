@@ -21,7 +21,7 @@ useHead({
   link: [
     {
       rel: 'canonical',
-      href: 'https://palia-garden-planner.vercel.app/',
+      href: 'https://palia-garden-planner.vercel.app/compact',
     },
   ],
 })
@@ -276,35 +276,24 @@ function handleMouseLeave() {
   resetHover()
   useDragAndDrop().clearTileCoords()
 }
+
+definePageMeta({
+  layout: 'compact',
+})
 </script>
 
 <template>
-  <main class="flex flex-col py-2 gap-4">
+  <main class="flex flex-col">
     <h1 class="sr-only">
       Garden Planner
     </h1>
-    <GuideCard />
     <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
     <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
     <SaveModal ref="saveModal" @save-layout="saveLayout()" />
     <ExportModal ref="exportModal" @download-image="async () => await saveAsImage()" />
-    <!-- <DevOnly>
-      <div class="bg-neutral w-fit rounded-md p-2 my-2 flex flex-col gap-2 mx-12">
-        <button
-          class="btn btn-accent"
-          @click="isTakingScreenshot.set(!isTakingScreenshot.get)"
-        >
-          {{ isTakingScreenshot.get }}
-        </button>
-        <p class="text-sm">
-          Toggle Screenshot Mode
-        </p>
-      </div>
-    </DevOnly> -->
-
-    <div ref="display" class="lg:px-12">
+    <div ref="display" class="">
       <div
-        class="grid bg-accent lg:grid-cols-7 lg:rounded-md overflow-hidden pt-2"
+        class="grid bg-accent lg:grid-cols-7 overflow-hidden pt-2"
         :class="[isTakingScreenshot.get ? 'grid-cols-7' : '']"
       >
         <section
