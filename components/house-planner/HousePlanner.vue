@@ -231,19 +231,6 @@ function onMouseMove() {
   }
 }
 
-// Debounce the mousemove event to prevent lag
-// function debounce(func, interval) {
-//   let lastCall = -1
-//   return function () {
-//     clearTimeout(lastCall)
-//     const args = arguments
-//     const self = this
-//     lastCall = setTimeout(() => {
-//       func.apply(self, args)
-//     }, interval)
-//   }
-// }
-
 type DebouncedFunction<T extends (...args: any[]) => void> = (
   this: ThisParameterType<T>,
   ...args: Parameters<T>
@@ -358,39 +345,6 @@ watch((stage), () => {
 
       tryPlaceBuilding()
     })
-
-    // stageObj.on('tap', (e) => {
-    //   if (activeBuilding.value === null)
-    //     return
-
-    //   if (activeBuilding.value.type === BuildingType.None) {
-    //     const mousePos = stageObj.getRelativePointerPosition()
-    //     const snappedX = snapToCellSize(mousePos?.x as number)
-    //     const snappedY = snapToCellSize(mousePos?.y as number)
-
-    //     for (const building of Object.values(buildings.value)) {
-    //       if (building.isPlaced === false)
-    //         return
-
-    //       const isInside = building.isPointInBuilding({
-    //         x: snappedX,
-    //         y: snappedY,
-    //       })
-
-    //       if (isInside) {
-    //         setActiveBuilding(building)
-    //         building.isPlaced = false
-    //         building.childrenIds.forEach((childId) => {
-    //           const child = buildings.value[childId]
-    //           if (child)
-    //             child.isPlaced = false
-    //         })
-    //         building.removeParent()
-    //         isEditingBuilding.value = true
-    //       }
-    //     }
-    //   }
-    // })
 
     window.addEventListener('keydown', (e) => {
       if (activeBuilding.value === null)
