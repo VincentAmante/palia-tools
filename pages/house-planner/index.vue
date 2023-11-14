@@ -110,6 +110,9 @@ definePageMeta({
                 Improve performance (SUPER laggy right now)
               </li>
               <li>
+                Fix price calculations (does not account price increase after a certain amount of items)
+              </li>
+              <li class="line-through">
                 Add porch and door support (currently facing snapping issues)
               </li>
               <li>

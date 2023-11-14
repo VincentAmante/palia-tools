@@ -388,7 +388,7 @@ export abstract class Building {
         this.rotateToFace(Direction.North)
         break
       case Direction.East:
-        this._baseCoords.x = x + (width / 2)
+        this._baseCoords.x = x + (width / 2) + (height - width) / 2
         this._baseCoords.y = y
         this.rotateToFace(Direction.East)
         break
@@ -398,7 +398,7 @@ export abstract class Building {
         this.rotateToFace(Direction.South)
         break
       case Direction.West:
-        this._baseCoords.x = x - (width / 2)
+        this._baseCoords.x = x - (width / 2) - (height - width) / 2
         this._baseCoords.y = y
         this.rotateToFace(Direction.West)
         break
@@ -529,6 +529,10 @@ export abstract class Building {
   set opacity(value: number) {
     this._opacity = value
     this._image.opacity = value
+  }
+
+  getPrice(count: number): number {
+    return this.price.base * count + (this.price.perExtraBuilding * (count - 1))
   }
 
   get copy(): Building {
