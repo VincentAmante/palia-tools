@@ -157,7 +157,7 @@ function clearAllPlots() {
   garden.value.calculateBonuses()
 }
 
-const display = ref(null as unknown as HTMLElement)
+const display = ref<null | HTMLElement>(null)
 const statDisplay = ref<InstanceType<typeof StatsDisplay> | null>()
 const gardenDisplay = ref<InstanceType<typeof GardenDisplay> | null>()
 
@@ -171,6 +171,9 @@ const downloadedImgSrc = ref('')
 const displayWidth = ref(0)
 
 function setScreenshotLayout() {
+  if (!display.value || !gardenDisplay.value)
+    return
+
   displayWidth.value = ((gardenDisplay.value?.getPlotsDisplay() as HTMLElement).clientWidth) + 200
   if (!gardenTilesAreWide.value)
     displayWidth.value += gardenDisplay.value?.getPlotsDisplay()?.clientWidth || 0
@@ -183,6 +186,9 @@ function setScreenshotLayout() {
 }
 
 function resetScreenshotLayout() {
+  if (!display.value || !gardenDisplay.value)
+    return
+
   display.value.style.width = ''
 
   gardenDisplay.value?.modifyPlotsDisplayClassList((classList) => {
