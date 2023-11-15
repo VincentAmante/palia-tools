@@ -80,7 +80,7 @@ useHead({
               Crafter Support
             </h3>
             <p>
-              Crafters are under construction! Internally they're partially implemented,
+              Crafters are under construction! Files for them exist somewhere in the background.
               they support having limited slots and can properly calculate time spent processing
               regardless of the different crops inserted into each one.
               Information with and without idle time is also available.

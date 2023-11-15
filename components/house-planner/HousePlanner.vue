@@ -5,7 +5,7 @@ import HouseGrid from './HouseGrid.vue'
 import BuildingButton from './BuildingButton.vue'
 import type { Building } from '@/assets/scripts/house-planner/classes/building'
 import type { Direction } from '@/assets/scripts/house-planner/imports'
-import { Fireplace, Hallway, HarvestHouse, KilimaPorch, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
+import { Fireplace, Hallway, HarvestHouse, KilimaDoor, KilimaPorch, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
 
 import { useHousePlanConfig } from '@/stores/useHousePlanConfig'
 
@@ -470,6 +470,8 @@ function createNewBuilding(type: BuildingType) {
       return new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
     case BuildingType.KilimaPorch:
       return new KilimaPorch({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.KilimaDoor:
+      return new KilimaDoor({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
     default:
       return new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
   }
@@ -550,12 +552,18 @@ function fitStageIntoParentContainer() {
         :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Fireplace"
         @click="setActiveBuilding(createNewBuilding(BuildingType.Fireplace))"
       />
-      <!-- <BuildingButton
+      <BuildingButton
         src="/buildings/icons/kilima-porch.webp"
         label="Kilima Porch"
         :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaPorch"
         @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaPorch))"
-      /> -->
+      />
+      <BuildingButton
+        src="/buildings/icons/kilima-door.webp"
+        label="Kilima Door"
+        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaDoor"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaDoor))"
+      />
     </div>
     <section
       ref="stageContainer"

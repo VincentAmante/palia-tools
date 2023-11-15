@@ -46,7 +46,7 @@ export default class BuildingImage {
     this._baseCoords = { x, y }
     this._baseDimensions = { width: toScale(width, gridSizing), height: toScale(height, gridSizing) }
     this._offsetCoords = { x: toScale(offsetX, gridSizing), y: toScale(offsetY, gridSizing) }
-    this._offsetDimensions = { width: toScale(offsetHeight, gridSizing), height: toScale(offsetHeight, gridSizing) }
+    this._offsetDimensions = { width: toScale(offsetWidth, gridSizing), height: toScale(offsetHeight, gridSizing) }
 
     this._opacity = 1
 
