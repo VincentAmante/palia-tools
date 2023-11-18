@@ -426,7 +426,7 @@ function handleMouseLeave() {
           :layout="garden as Garden"
         />
         <div
-          class="flex bg-primary px-2 lg:px-4 justify-center "
+          class="flex bg-primary sm:px-2 lg:px-4 justify-center "
           :class="[
             (gardenTilesAreWide) ? 'lg:col-span-7' : 'lg:order-7 lg:col-span-3 lg:justify-start',
             (isTakingScreenshot.get) ? 'order-7 col-span-3' : 'order-6',

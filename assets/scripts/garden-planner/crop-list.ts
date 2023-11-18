@@ -1,4 +1,4 @@
-import Crop from './classes/crop'
+import Crop from './classes/Crop'
 import CropType from './enums/crops'
 import Bonus from './enums/bonus'
 import CropCode from './enums/cropcode'

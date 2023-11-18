@@ -1,7 +1,7 @@
 import uniqid from 'uniqid'
 import Bonus from '../enums/bonus'
-import type Crop from './crop'
-import type Fertiliser from './fertiliser'
+import type Crop from './Crop'
+import type Fertiliser from './Fertiliser'
 
 class Tile {
   private _crop: Crop | null = null

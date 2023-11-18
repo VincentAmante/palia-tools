@@ -133,7 +133,6 @@ class Crop {
   // Assumes player harvests on the day it is harvestable
   isHarvestableOnDay(day: number, hasGrowthBoost: boolean = false) {
     let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
-
     let newReharvestCooldown = reharvestCooldown
 
     let leftover = 0
@@ -159,6 +158,8 @@ class Crop {
       leftover = harvestableDays[harvestableDays.length - 1] - lastHarvestDay
     }
 
+    // console.log('harvestableDays', harvestableDays)
+
     if (onLastHarvest) {
       return {
         isHarvestable: true,
@@ -169,6 +170,30 @@ class Crop {
       isHarvestable: harvestableDays.includes(day % totalGrowthTime),
       doReplant,
     }
+  }
+
+  getHarvestDays(hasGrowthBoost: boolean = false) {
+    let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+    let newReharvestCooldown = reharvestCooldown
+
+    let leftover = 0
+    if (hasGrowthBoost) {
+      leftover = growthTime % 3
+      growthTime = Math.ceil((growthTime / 3) * 2)
+      newReharvestCooldown = Math.ceil((reharvestCooldown / 3) * 2)
+    }
+
+    const harvestDays = []
+    harvestDays.push(growthTime)
+    let lastHarvestDay = harvestDays[harvestDays.length - 1]
+
+    for (let i = 0; i < reharvestLimit; i++) {
+      harvestDays.push(Math.max(lastHarvestDay + newReharvestCooldown - leftover, 1))
+      lastHarvestDay = harvestDays[harvestDays.length - 1]
+      leftover = harvestDays[harvestDays.length - 1] - lastHarvestDay
+    }
+
+    return harvestDays
   }
 
   // TODO: Re-do the growth boost logic

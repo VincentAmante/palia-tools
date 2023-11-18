@@ -8,7 +8,7 @@ import LazyHCDay from './garden-planner/HarvestCalculator/HCDay.vue'
 import OptionCard from './garden-planner/HarvestCalculator/OptionCard.vue'
 import type { ICalculateValueResult, ISimulateYieldResult } from '@/assets/scripts/garden-planner/imports'
 import { CropType, Garden, crops } from '@/assets/scripts/garden-planner/imports'
-import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/garden'
+import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/Garden'
 import AppDividerAlt from '@/components/AppDividerAlt.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
 
@@ -55,6 +55,8 @@ const cropOptions = ref(Object.values(CropType).reduce((acc, cropType) => {
   }
   return acc
 }, {} as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>))
+
+console.log(cropOptions.value)
 
 function calculateGoldValue() {
   if (harvestData.value) {
@@ -616,3 +618,4 @@ watchEffect(() => {
     </div>
   </section>
 </template>
+~/assets/scripts/garden-planner/classes/Garden

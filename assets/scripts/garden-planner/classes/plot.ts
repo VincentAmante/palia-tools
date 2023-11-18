@@ -10,9 +10,9 @@ import type Bonus from '../enums/bonus'
 import CropType from '../enums/crops'
 import Direction from '../enums/direction'
 import CropSize from '../enums/crop-size'
-import type Fertiliser from './fertiliser'
-import Crop from './crop'
-import Tile from './tile'
+import type Fertiliser from './Fertiliser'
+import Crop from './Crop'
+import Tile from './Tile'
 
 // Grid sizes for a plot
 const TILE_ROWS = 3

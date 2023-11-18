@@ -1,4 +1,4 @@
-import Fertiliser from './classes/fertiliser'
+import Fertiliser from './classes/Fertiliser'
 import FertiliserType from './enums/fertiliser'
 import FertiliserCode from './enums/fertilisercode'
 import Bonus from './enums/bonus'

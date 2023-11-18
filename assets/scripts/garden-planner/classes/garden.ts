@@ -11,14 +11,16 @@ import FertiliserCode from '../enums/fertilisercode'
 import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliser-list'
 import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo, ISimulateYieldResult } from '../utils/garden-helpers'
 import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
+import HarvestSimulator from './HarvestSimulator'
 
-import Plot from './plot'
-import Tile from './tile'
-import type Crop from './crop'
+import Plot from './Plot'
+import Tile from './Tile'
+import type Crop from './Crop'
 
 class Garden {
   private _layout: Plot[][] = []
   private _version: string = '0.2'
+  private harvestSimulator: HarvestSimulator = new HarvestSimulator()
 
   constructor() {
     const defaultRows = 3
@@ -250,191 +252,37 @@ class Garden {
    * @returns
    */
   simulateYield(options: ICalculateYieldOptions) {
-    // console.time('Simulate yield')
+    this.harvestSimulator.options = {
+      days: options.days || 0,
+      includeReplant: options.includeReplant || false,
+      postLevel25: options.postLevel25,
+      useStarSeeds: options.allStarSeeds || false,
+      level: (options.postLevel25 ? 25 : 10),
+      useGrowthBoost: options.useGrowthBoost || false,
+      includeReplantCost: options.includeReplantCost || false,
+    }
     const layoutFlat = this._layout.flat()
-    // Gets a list of all tiles, and excludes tiles that contain duplicates (i.e. 9 apples tiles should only return 1 tile)
     const individualCrops = new Map<string, Tile>()
-
-    const seedsRemainder: {
-      [key in CropType]: {
-        base: number
-        star: number
-      }
-    } = getCropMap()
 
     layoutFlat.forEach((plot) => {
       if (!plot.isActive)
         return
-
       plot.tiles.flat().forEach((tile) => {
         if (tile.crop && tile.crop.type !== CropType.None)
           individualCrops.set(tile.id, tile)
       })
     })
 
-    if (individualCrops.size <= 0) {
-      return {
-        harvests: [] as IHarvestInfo[],
-        harvestTotal: {
-          day: 0,
-          crops: getCropMap(),
-          seedsRemainder: getCropMap(),
-        } as IHarvestInfo,
-      }
-    }
+    const { harvestLog, harvestInventory, lastDay } = this.harvestSimulator.simulate([...individualCrops.values()])
 
-    const useGrowthBoost = options.useGrowthBoost
-    // max growth time is the maximum growth time of all crops, and then reharvest cooldown multiplied by rehavest limit
-    let maxGrowthTime = Math.max(
-      ...Array.from(individualCrops.values()).map((tile) => {
-        if (tile.crop?.produceInfo == null)
-          return 0
-
-        return tile.crop.getTotalGrowTime(
-          (useGrowthBoost ?? false)
-          && tile.bonuses.includes(Bonus.SpeedIncrease),
-        )
-      }),
-    )
-
-    if (options.days && options.days > 0)
-      maxGrowthTime = options.days
-
-    const harvests: IHarvestInfo[] = []
-    const harvestTotal: IHarvestInfo & {
-      totalGold: number
-    } = {
-      day: 0,
-      crops: getCropMap(),
-      seedsRemainder: getCropMap(),
-      totalGold: 0,
-    }
-
-    // Reduce growth time by 1 to account for speed boost
-    for (let day = 1; day <= maxGrowthTime; day++) {
-      const harvest: IHarvestInfo = {
-        day,
-        crops: getCropMap(),
-        seedsRemainder: getCropMap(),
-      }
-
-      const seedsRequired: {
-        [key in CropType]: {
-          base: number
-          star: number
-        }
-      } = getCropMap()
-
-      for (const [, tile] of individualCrops) {
-        const crop = tile.crop
-        if (
-          crop?.produceInfo == null
-          || crop?.type === CropType.None
-          || crop?.produceInfo.growthTime === null
-        ) continue
-
-        const hasGrowthBoost = (useGrowthBoost ?? false) && tile.bonuses.includes(Bonus.SpeedIncrease)
-
-        if (day > crop.getTotalGrowTime(hasGrowthBoost) && !options.includeReplant)
-          continue
-
-        const baseStarChance
-          = (tile.hasStarSeed || options.allStarSeeds) && options.postLevel25
-            ? 1
-            : tile.hasStarSeed || options.allStarSeeds
-              ? options.starChanceOverride ?? 0.66
-              : options.baseChanceOverride ?? 0
-
-        const { base, withBonus } = crop.produceInfo
-        const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day, hasGrowthBoost)
-
-        if (isHarvestable) {
-          let finalStarChance = baseStarChance
-          if (tile.bonuses.includes(Bonus.QualityIncrease)) {
-            // TODO: Verify this is correct
-            finalStarChance += 0.66
-            finalStarChance = Math.min(finalStarChance, 1)
-          }
-          const hasBonus = tile.bonuses.includes(Bonus.HarvestIncrease)
-          const starCrops = Math.round(finalStarChance * (hasBonus ? withBonus : base))
-          const nonStarCrops = hasBonus ? withBonus - starCrops : base - starCrops
-
-          harvest.crops[crop.type as CropType].base += nonStarCrops
-          harvest.crops[crop.type as CropType].star += starCrops
-
-          if (doReplant) {
-            if (tile.hasStarSeed || options.allStarSeeds)
-              seedsRequired[crop.type as CropType].star++
-            else
-              seedsRequired[crop.type as CropType].base++
-          }
-        }
-      }
-
-      const hasCrop = Object.values(harvest.crops).some(crop => crop.base > 0 || crop.star > 0)
-      // Push harvests that have at least 1 crop
-      if (hasCrop)
-        harvests.push(harvest)
-
-      if (options.includeReplantCost && hasCrop) {
-        for (const type of Object.keys(seedsRequired)) {
-          const cropType = type as CropType
-          const crop = crops[cropType]
-
-          if (crop == null)
-            continue
-
-          const seeds = seedsRequired[cropType]
-          const { cropsPerSeed, seedsPerConversion } = crop.conversionInfo
-
-          if (seeds.star > 0) {
-            const seedsToProduce = Math.max(0, (seeds.star - seedsRemainder[cropType].star))
-            if (seedsToProduce > 0) {
-              const cropsConsumed = Math.max(Math.ceil((cropsPerSeed / seedsPerConversion) * seedsToProduce), cropsPerSeed)
-              harvest.crops[cropType].star -= cropsConsumed
-              const seedsProduced = Math.floor((cropsConsumed / cropsPerSeed) * seedsPerConversion)
-              seedsRemainder[cropType].star
-                += Math.floor(seedsProduced - seedsToProduce)
-            }
-
-            const remainderSeedsToBeUsed = seeds.star - seedsToProduce
-            seedsRemainder[cropType].star -= remainderSeedsToBeUsed
-            harvest.seedsRemainder[cropType].star = seedsRemainder[cropType].star
-          }
-
-          if (seeds.base > 0) {
-            const seedsToProduce = Math.max(0, (seeds.base - seedsRemainder[cropType].base))
-
-            if (seedsToProduce > 0) {
-              const cropsConsumed = Math.max(Math.ceil((cropsPerSeed / seedsPerConversion) * seedsToProduce), cropsPerSeed)
-              harvest.crops[cropType].base -= cropsConsumed
-              const seedsProduced = Math.floor((cropsConsumed / cropsPerSeed) * seedsPerConversion)
-              seedsRemainder[cropType].base
-                += Math.floor(seedsProduced - seedsToProduce)
-            }
-
-            const remainderSeedsToBeUsed = seeds.base - seedsToProduce
-            seedsRemainder[cropType].base -= remainderSeedsToBeUsed
-            harvest.seedsRemainder[cropType].base = seedsRemainder[cropType].base
-          }
-        }
-      }
-
-      harvestTotal.day = harvest.day
-      for (const cropType in harvest.crops) {
-        harvestTotal.crops[cropType as CropType].base += harvest.crops[cropType as CropType].base
-        harvestTotal.crops[cropType as CropType].star += harvest.crops[cropType as CropType].star
-
-        harvestTotal.seedsRemainder[cropType as CropType].base
-          = seedsRemainder[cropType as CropType].base
-        harvestTotal.seedsRemainder[cropType as CropType].star
-          = seedsRemainder[cropType as CropType].star
-      }
-    }
-
+    // TODO: Change return type of either this function or HarvestSimulator.simulate
     return {
-      harvests,
-      harvestTotal,
+      harvests: harvestLog,
+      harvestTotal: {
+        day: lastDay,
+        crops: harvestInventory.crops,
+        seedsRemainder: harvestInventory.seedsLeft,
+      },
     } as {
       harvests: IHarvestInfo[]
       harvestTotal: IHarvestInfo
