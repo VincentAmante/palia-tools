@@ -13,7 +13,7 @@ import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptio
 import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
 import HarvestSimulator from './HarvestSimulator'
 
-import Plot from './_Plot'
+import Plot from './Plot'
 import Tile from './Tile'
 import type Crop from './Crop'
 
