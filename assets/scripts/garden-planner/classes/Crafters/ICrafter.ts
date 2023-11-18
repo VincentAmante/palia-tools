@@ -1,4 +1,4 @@
-import type { Item, ItemType } from '../items/_item'
+import type { Item, ItemType } from '../items/Item'
 
 export interface InsertItemArgs {
   day: number

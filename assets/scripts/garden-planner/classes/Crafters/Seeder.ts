@@ -1,4 +1,4 @@
-import { CropItem, ItemType } from '../items/_item'
+import { CropItem, ItemType } from '../items/Item'
 
 import crops from '../../crop-list'
 import type { ICrafter, InsertItemArgs } from './ICrafter'
