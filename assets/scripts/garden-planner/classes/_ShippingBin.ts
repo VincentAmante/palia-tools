@@ -3,7 +3,7 @@
  * - This class will be used in the future to store data about items being sold
  */
 
-import type { Item } from './items/item'
+import type { Item } from './items/_item'
 
 export interface IBinInfo {
   [day: string]: Record<string, Item>

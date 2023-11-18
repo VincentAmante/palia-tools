@@ -1,7 +1,7 @@
 import { CropType } from '../imports'
 import Bonus from '../enums/bonus'
 import crops from '../crop-list'
-import type Tile from './Tile'
+import type Tile from './_Tile'
 
 interface HarvestSimulatorOptions {
   days: number
