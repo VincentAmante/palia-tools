@@ -13,7 +13,7 @@ export class CrafterManager {
   }
 
   _managerSettings = {
-    // Whether or not crafters should insert crops based on the day of harvest
+    // Whether or not crafters should insert crops based  on the day of harvest
     useDaySeparation: true,
   }
 
@@ -60,7 +60,7 @@ export class CrafterManager {
   distributeQueue(): void {
     const { useDaySeparation } = this._managerSettings
     if (useDaySeparation) {
-      
+
     }
   }
 }

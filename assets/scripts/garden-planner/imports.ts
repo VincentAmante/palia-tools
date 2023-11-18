@@ -2,7 +2,7 @@
 
 import Crop from './classes/Crop'
 import CropType from './enums/crops'
-import Plot from './classes/_Plot'
+import Plot from './classes/Plot'
 import Tile from './classes/Tile'
 import Direction from './enums/direction'
 import Bonus from './enums/bonus'

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Seeder } from '~/assets/scripts/garden-planner/classes/crafters/Seeder'
-import { CropItem, ItemType } from '~/assets/scripts/garden-planner/classes/items/item'
+import { Seeder } from '~/assets/scripts/garden-planner/classes/Crafters/Seeder'
+import { CropItem, ItemType } from '~/assets/scripts/garden-planner/classes/Items/Item'
 import { CropType, crops } from '~/assets/scripts/garden-planner/imports'
 
 const seeder = ref(new Seeder())
