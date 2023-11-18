@@ -12,7 +12,7 @@ import Direction from '../enums/direction'
 import CropSize from '../enums/crop-size'
 import type Fertiliser from './Fertiliser'
 import Crop from './Crop'
-import Tile from './_Tile'
+import Tile from './Tile'
 
 // Grid sizes for a plot
 const TILE_ROWS = 3

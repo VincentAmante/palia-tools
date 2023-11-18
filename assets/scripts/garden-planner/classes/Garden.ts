@@ -14,7 +14,7 @@ import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
 import HarvestSimulator from './HarvestSimulator'
 
 import Plot from './_Plot'
-import Tile from './_Tile'
+import Tile from './Tile'
 import type Crop from './Crop'
 
 class Garden {
