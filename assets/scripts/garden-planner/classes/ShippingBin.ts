@@ -3,10 +3,10 @@
  * - This class will be used in the future to store data about items being sold
  */
 
-import type { Item } from './items/Item'
+import type { IItem } from './items/Item'
 
 export interface IBinInfo {
-  [day: string]: Record<string, Item>
+  [day: string]: Record<string, IItem>
 }
 
 export class ShippingBin {
@@ -32,7 +32,7 @@ export class ShippingBin {
     return this._binInfo
   }
 
-  add(day: string, item: Item): void {
+  add(day: string, item: IItem): void {
     /**
      * I've considered making it so that the player is limited in how much they
      *  can sell in a day based on item stack size (as there's a limited amount of slots)

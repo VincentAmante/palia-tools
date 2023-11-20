@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Seeder } from '~/assets/scripts/garden-planner/classes/Crafters/Seeder'
+import { CropType, Jar, crops } from '~/assets/scripts/garden-planner/imports'
 import { CropItem, ItemType } from '~/assets/scripts/garden-planner/classes/Items/Item'
-import { CropType, crops } from '~/assets/scripts/garden-planner/imports'
 
 const seeder = ref(new Seeder())
+const jar = ref(new Jar())
 
 const tomato = crops[CropType.Tomato]
 const crop = ref(new CropItem(
@@ -18,7 +19,12 @@ const crop = ref(new CropItem(
 ))
 
 function addTomato() {
-  seeder.value.insertItem({
+  // seeder.value.insertItem({
+  //   item: crop.value as CropItem,
+  //   day: 1,
+  // })
+
+  jar.value.insertItem({
     item: crop.value as CropItem,
     day: 1,
   })
@@ -32,6 +38,7 @@ const settings = ref({
 
 watchEffect(() => {
   seeder.value.setSettings(settings.value)
+  jar.value.setSettings(settings.value)
 })
 
 function seederProcess() {
@@ -79,8 +86,8 @@ function seederProcess() {
               Tomatoes in Insert Hopper
             </p>
             <div class="flex items-center">
-              <img v-if="seeder.hopperSlots[0]" :src="seeder.hopperSlots[0]?.image" class="w-12 h-12">
-              {{ seeder.hopperSlots[0]?.count }}
+              <img v-if="jar.hopperSlots[0]" :src="jar.hopperSlots[0]?.image" class="w-12 h-12">
+              {{ jar.hopperSlots[0]?.count }}
             </div>
           </div>
           <div>
@@ -102,7 +109,7 @@ function seederProcess() {
         </section>
         <section class="w-fit mockup-code max-w-xl">
           <div class="px-6 py-2">
-            <template v-for="(value, key) in seeder" :key="key">
+            <template v-for="(value, key) in jar" :key="key">
               <span class="block">
                 {{ key }}: {{ value }}
               </span>

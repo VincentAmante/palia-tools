@@ -1,15 +1,15 @@
-import type { Item, ItemType } from '../items/Item'
+import type { IItem, ItemType } from '../items/Item'
 
 export interface InsertItemArgs {
   day: number
-  item: Item
+  item: IItem
 }
 
 export interface ICrafter {
   readonly name: string
-  hopperSlots: Item[]
+  hopperSlots: IItem[]
   maxHopperSlots: number
-  outputSlots: Item[]
+  outputSlots: IItem[]
   maxOutputSlots: number
   acceptedItems: ItemType[]
   // how much time the crafter has been processing items, including time spent unused
