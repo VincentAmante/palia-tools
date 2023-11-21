@@ -1,9 +1,11 @@
-import type { IItem, ItemType } from '../items/Item'
+import type { CropLogItem, IItem, ItemType, LogItem } from '../Items/Item'
 
 export interface InsertItemArgs {
   day: number
   item: IItem
 }
+
+type LoggableItem = LogItem | CropLogItem
 
 export interface ICrafter {
   readonly name: string
@@ -23,10 +25,18 @@ export interface ICrafter {
   }
   goldGenerated: number
 
+  // Track the items that are inserted into the crafter on a given day
+  logs: {
+    insertions: Record<number, LoggableItem[]>
+    collections: Record<number, LoggableItem[]>
+  }
+
   process(): void
 
   // returns true if the item was successfully inserted
   insertItem(itemData: InsertItemArgs): boolean
 
   setSettings(settings: Partial<ICrafter['settings']>): void
+
+  collect(day: number): IItem[]
 }

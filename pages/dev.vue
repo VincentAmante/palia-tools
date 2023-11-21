@@ -23,7 +23,6 @@ function addTomato() {
   //   item: crop.value as CropItem,
   //   day: 1,
   // })
-
   jar.value.insertItem({
     item: crop.value as CropItem,
     day: 1,

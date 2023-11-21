@@ -13,6 +13,15 @@ export enum ItemType {
   Misc = 'misc',
 }
 
+export interface LogItem {
+  readonly name: string
+  readonly type: ItemType
+  readonly image: string
+  readonly price: number
+  readonly isStar: boolean
+  readonly count: number
+}
+
 export interface IItem {
   readonly name: string
   readonly type: ItemType
@@ -28,10 +37,14 @@ export interface IItem {
   /**
    * Returns an array of duplicate items that represent how many stacks of this item are in the inventory.
    */
-  get inventoryStacks(): this[]
+  get inventoryStacks(): IItem[]
   // takes any number of identical items and combines them into stacks of this item
-  combineIntoStacks(...items: IItem[]): this[]
-  combineToOneStack(...items: IItem[]): this
+  combineIntoStacks(...items: IItem[]): IItem[]
+  combineToOneStack(...items: IItem[]): IItem
+  clone(count?: number): IItem
+  take(count: number): IItem
+  splitInto(stacks: number): IItem[]
+  logItem(count: number): LogItem | CropLogItem
 }
 
 export abstract class Item implements IItem {
@@ -65,31 +78,21 @@ export abstract class Item implements IItem {
   }
 
   // Converts the count of this item into an array of stacks of this item based on the maxStack value.
-  get inventoryStacks(): this[] {
-    let count = this.count
+  get inventoryStacks(): IItem[] {
+    const count = this.count
     const STACK_COUNT = Math.ceil(count / this.maxStack)
 
     if (STACK_COUNT === 1)
       return [this]
 
     return Array.from({ length: STACK_COUNT }, () => {
-      const stack = new (this.constructor as any)(
-        this.name,
-        this.type,
-        this.image,
-        this.price,
-        this.isStar,
-        this.maxStack,
-        Math.min(this.maxStack, count),
-      )
-      count -= stack.count
-
+      const stack = this.take(Math.min(this.maxStack, count))
       return stack
-    }) as this[]
+    })
   }
 
   // takes any number of identical items and combines them into stacks of this item
-  combineIntoStacks(...items: this[]): this[] {
+  combineIntoStacks(...items: IItem[]) {
     try {
       items.forEach((item) => {
         if (!this.equals(item))
@@ -105,7 +108,7 @@ export abstract class Item implements IItem {
     }
   }
 
-  combineToOneStack(...items: this[]): this {
+  combineToOneStack(...items: IItem[]) {
     try {
       items.forEach((item) => {
         if (!this.equals(item))
@@ -120,6 +123,59 @@ export abstract class Item implements IItem {
       return this
     }
   }
+
+  // Makes a copy of this item with the specified count
+  // * If count is not specified, the count is 0 as this will be considered a new item
+  clone(count = 0) {
+    return new (this.constructor as any)(
+      this.name,
+      this.type,
+      this.image,
+      this.price,
+      this.isStar,
+      this.maxStack,
+      count,
+    )
+  }
+
+  // Takes the specified number of items from this item and returns a new item with that count
+  take(count: number): CropItem {
+    if (count > this.count)
+      throw new Error('Cannot take more items than the current count')
+
+    const toTake = Math.min(count, this.count)
+    const clone = this.clone(toTake)
+    this.count -= toTake
+    return clone
+  }
+
+  // Splits the item into the specified number of stacks
+  splitInto(stacks: number) {
+    if (stacks <= 1)
+      return [this]
+    if (stacks > this.count)
+      throw new Error('Cannot split into more stacks than the current count')
+    const amountToTake = Math.round(this.count / stacks)
+    return Array.from({ length: stacks }, () => this.take(amountToTake))
+  }
+
+  // Returns an object meant for logging the item in transactions
+  logItem(count: number = this._count) {
+    const item: LogItem = {
+      name: this.name,
+      type: this.type,
+      image: this.image,
+      price: this.price,
+      isStar: this.isStar,
+      count,
+    }
+    return item
+  }
+}
+
+export interface CropLogItem extends LogItem {
+  readonly type: ItemType.Crop
+  readonly cropType: CropType
 }
 
 /**
@@ -155,24 +211,30 @@ export class CropItem extends Item {
     this._count += count
   }
 
-  // Converts the count of this item into an array of stacks of this item based on the maxStack value.
-  get inventoryStacks(): this[] {
-    let count = this.count
-    const STACK_COUNT = Math.ceil(count / this.maxStack)
-    return Array.from({ length: STACK_COUNT }, () => {
-      const stack = new CropItem(
-        this.name,
-        this.type,
-        this.image,
-        this.price,
-        this.isStar,
-        this.maxStack,
-        Math.min(this.maxStack, count),
-        this.cropType,
-      )
-      count -= stack.count
+  clone(count = 0) {
+    // console.debug(`Cloning ${this.name} with count ${count}`)
+    return new CropItem(
+      this.name,
+      this.type,
+      this.image,
+      this.price,
+      this.isStar,
+      this.maxStack,
+      count,
+      this.cropType,
+    )
+  }
 
-      return stack
-    }) as this[]
+  logItem(count: number = this._count): CropLogItem {
+    const item: CropLogItem = {
+      name: this.name,
+      type: ItemType.Crop,
+      image: this.image,
+      price: this.price,
+      isStar: this.isStar,
+      count,
+      cropType: this.cropType,
+    }
+    return item
   }
 }

@@ -1,4 +1,5 @@
-import { CropItem, ItemType } from '../items/Item'
+import type { CropLogItem } from '../Items/Item'
+import { CropItem, ItemType } from '../Items/Item'
 
 import crops from '../../crop-list'
 import type { ICrafter, InsertItemArgs } from './ICrafter'
@@ -18,6 +19,14 @@ export class Seeder implements ICrafter {
     useHopperLimit: true,
     includeNormalSeeds: true,
   }
+
+  logs: {
+    insertions: Record<number, CropLogItem[]>
+    collections: Record<number, CropLogItem[]>
+  } = {
+      insertions: {},
+      collections: {},
+    }
 
   goldGenerated: number = 0
 
@@ -99,7 +108,7 @@ export class Seeder implements ICrafter {
           if (!itemStack)
             throw new Error('Item stack not found')
 
-          this.outputSlots.push(itemStack)
+          this.outputSlots.push(itemStack as CropItem)
           item.count -= itemStack.count
         }
 
