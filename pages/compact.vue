@@ -264,7 +264,7 @@ onMounted(() => {
     'message',
     (event: MessageEvent) => {
       if (
-        !event.origin.startsWith('http://localhost:')
+        (!event.origin.startsWith('http://localhost:') && !event.origin.startsWith('https://paliaparty.app'))
         || event.data.source !== 'PALIA_PARTY'
       )
         return
