@@ -49,7 +49,7 @@ export class MediumHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
-        offsetHeight: 2,
+        offsetHeight: 1,
         offsetWidth: 0,
         zLevel: ZLevel.Medium,
       },
