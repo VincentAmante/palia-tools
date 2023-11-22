@@ -6,6 +6,8 @@ import { CropItem, ItemType } from '~/assets/scripts/garden-planner/classes/Item
 const seeder = ref(new Seeder())
 const jar = ref(new Jar())
 
+const day = ref(1)
+
 const tomato = crops[CropType.Tomato]
 const crop = ref(new CropItem(
   CropType.Tomato,
@@ -19,10 +21,6 @@ const crop = ref(new CropItem(
 ))
 
 function addTomato() {
-  // seeder.value.insertItem({
-  //   item: crop.value as CropItem,
-  //   day: 1,
-  // })
   jar.value.insertItem({
     item: crop.value as CropItem,
     day: 1,
@@ -41,7 +39,8 @@ watchEffect(() => {
 })
 
 function seederProcess() {
-  seeder.value.process()
+  seeder.value.process(day.value)
+  jar.value.process(day.value)
 }
 </script>
 
@@ -77,33 +76,63 @@ function seederProcess() {
                 {{ key }}
               </li>
             </template>
+            <li>
+              <input v-model="day" type="number" class="input w-fit max-w-[8rem]">
+              Day
+            </li>
           </ul>
         </section>
-        <section class="bg-palia-dark-blue p-2 flex flex-col gap-2 rounded-md border-primary border">
+        <section class="bg-palia-dark-blue p-2 px-4 flex flex-col gap-2 rounded-md border-primary border min-w-[300px]">
           <div>
-            <p>
-              Tomatoes in Insert Hopper
+            <p class="py-2 uppercase">
+              Inserted
             </p>
-            <div class="flex items-center">
-              <img v-if="jar.hopperSlots[0]" :src="jar.hopperSlots[0]?.image" class="w-12 h-12">
-              {{ jar.hopperSlots[0]?.count }}
-            </div>
+
+            <ul class="flex bg-accent rounded-md text-misc p-2 gap-2">
+              <template v-for="(item, index) in jar.hopperSlots" :key="index">
+                <li class="flex items-center relative p-1 bg-primary rounded-md">
+                  <NuxtImg v-if="item" :src="item.image" class="w-12 h-12 aspect-square object-contain" />
+                  <p class="absolute bottom-0 right-0 m-1 rounded-full text-xs p-1 bg-palia-dark-blue bg-opacity-60 text-primary">
+                    {{ item.count }}
+                  </p>
+
+                  <font-awesome-icon v-if="item.isStar" icon="star" class="text-quality-increase-dark absolute bottom-0 left-0 m-1" />
+                </li>
+              </template>
+            </ul>
           </div>
           <div>
             <p>
               Output
             </p>
-            <div class="flex gap-2">
-              <template v-for="(output, index) in seeder.outputSlots" :key="index">
-                <li class="flex items-center bg-primary text-neutral p-2 gap-1 rounded-md">
-                  <div class="flex flex-col font-bold">
-                    <font-awesome-icon v-if="output.isStar" icon="star" class="text-quality-increase-dark" />
+            <ul class="flex bg-accent rounded-md text-misc p-2 gap-2">
+              <template v-for="(output, index) in jar.outputSlots" :key="index">
+                <li class="flex items-center relative p-1 bg-primary rounded-md">
+                  <nuxt-img v-if="output" :src="output.image" class="w-12 h-12 aspect-square object-contain" />
+                  <p class="absolute bottom-0 right-0 m-1 rounded-full text-xs p-1 bg-palia-dark-blue bg-opacity-60 text-primary">
                     {{ output.count }}
-                  </div>
-                  <img v-if="output" :src="output.image" class="w-12 h-12">
+                  </p>
+
+                  <font-awesome-icon v-if="output.isStar" icon="star" class="text-quality-increase-dark absolute bottom-0 left-0 m-1" />
                 </li>
               </template>
-            </div>
+            </ul>
+          </div>
+          <div>
+            <p>
+              Gold / Day
+            </p>
+            <p class="flex gap-1 items-center">
+              <nuxt-img
+                width="16"
+                height="16"
+                src="/gold.webp" class="max-h-[1rem]"
+                :srcset="undefined"
+                placeholder
+                alt="Gold" format="webp"
+              />
+              {{ `${Math.floor((jar.goldGenerated ?? 0) / (Math.max(jar.lifeTimeMinutes, 1) / 60)).toLocaleString()}` }}
+            </p>
           </div>
         </section>
         <section class="w-fit mockup-code max-w-xl">
