@@ -1,3 +1,5 @@
+// TODO: Segment into separate files
+
 import type CropType from '../../enums/crops'
 
 export enum ItemType {
@@ -34,12 +36,11 @@ export interface IItem {
   equals(item: IItem): boolean
   add(count: number): void
 
-  /**
-   * Returns an array of duplicate items that represent how many stacks of this item are in the inventory.
-   */
+  // converts the item into stacks of the maximum stack size, like how they behave in the player's inventory
   get inventoryStacks(): IItem[]
   // takes any number of identical items and combines them into stacks of this item
   combineIntoStacks(...items: IItem[]): IItem[]
+  // takes any number of identical items and combines them into one stack of this item
   combineToOneStack(...items: IItem[]): IItem
   clone(count?: number): IItem
   take(count: number): IItem
@@ -47,6 +48,9 @@ export interface IItem {
   logItem(count: number): LogItem | CropLogItem
 }
 
+/**
+ * Represents an abstract item in the game.
+ */
 export abstract class Item implements IItem {
   readonly name: string
   readonly type: ItemType
@@ -77,7 +81,11 @@ export abstract class Item implements IItem {
     this._count = count
   }
 
-  // Converts the count of this item into an array of stacks of this item based on the maxStack value.
+  /**
+   * Converts the item into stacks of the maximum stack size, like how they behave in the player's inventory.
+   * This subtracts the count of the stacks from the original item.
+   * @returns An array of IItem representing the inventory stacks.
+   */
   get inventoryStacks(): IItem[] {
     const count = this.count
     const STACK_COUNT = Math.ceil(count / this.maxStack)
@@ -91,7 +99,13 @@ export abstract class Item implements IItem {
     })
   }
 
-  // takes any number of identical items and combines them into stacks of this item
+  /**
+   * Combines multiple items of the same type into one set of stacks.
+   * Useful for combining items with different counts into one set of stacks.
+   * @param items - The items to be combined. Must be of the same type.
+   * @returns An array of inventory stacks after combining the items.
+   * @throws Error if the items being combined are different.
+   */
   combineIntoStacks(...items: IItem[]) {
     try {
       items.forEach((item) => {
@@ -108,6 +122,13 @@ export abstract class Item implements IItem {
     }
   }
 
+  /**
+   * Combines multiple items of the same type into one stack.
+   * Useful for combining items with different counts into one stack.
+   * @param items - The items to be combined. Must be of the same type.
+   * @returns The combined stack.
+   * @throws Error if the items being combined are different.
+   */
   combineToOneStack(...items: IItem[]) {
     try {
       items.forEach((item) => {
@@ -124,8 +145,11 @@ export abstract class Item implements IItem {
     }
   }
 
-  // Makes a copy of this item with the specified count
-  // * If count is not specified, the count is 0 as this will be considered a new item
+  /**
+   * Creates a clone of the item.
+   * @param count The count of the cloned item. Defaults to 0 as this will be considered a new item.
+   * @returns A new instance of the cloned item.
+   */
   clone(count = 0) {
     return new (this.constructor as any)(
       this.name,
@@ -138,7 +162,12 @@ export abstract class Item implements IItem {
     )
   }
 
-  // Takes the specified number of items from this item and returns a new item with that count
+  /**
+   * Takes the specified amount of items from the current item and returns a new item with the specified count.
+   * @param count The amount of items to take.
+   * @returns A new item with the specified count.
+   * @throws Error if the count is greater than the current count.
+   */
   take(count: number): CropItem {
     if (count > this.count)
       throw new Error('Cannot take more items than the current count')
@@ -149,7 +178,12 @@ export abstract class Item implements IItem {
     return clone
   }
 
-  // Splits the item into the specified number of stacks
+  /**
+   * Splits the item as evenly as possible into the specified number of stacks.
+   * @param stacks The number of stacks to split the item into.
+   * @returns An array of items representing the stacks.
+   * @throws Error if the number of stacks is less than or equal to 1 or greater than the current count.
+   */
   splitInto(stacks: number) {
     if (stacks <= 1)
       return [this]
@@ -159,7 +193,11 @@ export abstract class Item implements IItem {
     return Array.from({ length: stacks }, () => this.take(amountToTake))
   }
 
-  // Returns an object meant for logging the item in transactions
+  /**
+   * Logs the item for info-purposes and returns a LogItem.
+   * @param count - The count of the item. Defaults to the current count of the item.
+   * @returns The LogItem representing the logged item.
+   */
   logItem(count: number = this._count) {
     const item: LogItem = {
       name: this.name,
@@ -196,23 +234,22 @@ export class CropItem extends Item {
 
   // for crops, equals mean the same crop type and star quality
   equals(item: IItem): boolean {
-    return this.name === item.name && this.isStar === item.isStar
-  }
+    if (!(item instanceof CropItem))
+      return false
 
-  get count(): number {
-    return this._count
-  }
-
-  set count(count: number) {
-    this._count = count
+    return this.type === item.type && this.isStar === item.isStar
   }
 
   add(count: number): void {
     this._count += count
   }
 
+  /**
+   * Creates a clone of the crop item, unlike the base Item class, this will also clone the cropType.
+   * @param count The count of the cloned item. Defaults to 0 as this will be considered a new item.
+   * @returns A new instance of the cloned item.
+   */
   clone(count = 0) {
-    // console.debug(`Cloning ${this.name} with count ${count}`)
     return new CropItem(
       this.name,
       this.type,
@@ -225,8 +262,13 @@ export class CropItem extends Item {
     )
   }
 
+  /**
+   * Logs the item for info-purposes and returns a CropLogItem.
+   * @param count - The count of the item. Defaults to the current count of the item.
+   * @returns The CropLogItem representing the logged item.
+   */
   logItem(count: number = this._count): CropLogItem {
-    const item: CropLogItem = {
+    return {
       name: this.name,
       type: ItemType.Crop,
       image: this.image,
@@ -234,7 +276,6 @@ export class CropItem extends Item {
       isStar: this.isStar,
       count,
       cropType: this.cropType,
-    }
-    return item
+    } as const
   }
 }
