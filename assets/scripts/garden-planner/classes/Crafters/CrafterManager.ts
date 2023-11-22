@@ -10,6 +10,7 @@ export class CrafterManager {
     useStackLimit: true,
     useHopperLimit: true,
     includeNormalSeeds: true,
+    useDayLimit: true,
   }
 
   _managerSettings = {
@@ -43,9 +44,9 @@ export class CrafterManager {
   }
 
   process(): void {
-    this._seeders.forEach((seeder) => {
-      seeder.process()
-    })
+    // this._seeders.forEach((seeder) => {
+    //   seeder.process()
+    // })
   }
 
   addToQueue(day: number, cropType: CropType, base: number, star: number): void {
@@ -58,9 +59,9 @@ export class CrafterManager {
   }
 
   distributeQueue(): void {
-    const { useDaySeparation } = this._managerSettings
-    if (useDaySeparation) {
+    // const { useDaySeparation } = this._managerSettings
+    // if (useDaySeparation) {
 
-    }
+    // }
   }
 }

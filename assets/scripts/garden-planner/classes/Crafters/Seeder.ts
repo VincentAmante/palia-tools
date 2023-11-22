@@ -12,15 +12,15 @@ export class Seeder implements ICrafter {
   outputSlots: CropItem[] = []
   maxOutputSlots: number = 3
   acceptedItems: ItemType[] = [ItemType.Crop]
-  lifeTimeMinutes: number = 0
-  elapsedTimeMinutes: number = 0
+  _lifeTimeMinutes: number = 0
+  _elapsedTimeMinutes: number = 0
   settings = {
     useStackLimit: true,
     useHopperLimit: true,
     includeNormalSeeds: true,
   }
 
-  logs: {
+  _logs: {
     insertions: Record<number, CropLogItem[]>
     collections: Record<number, CropLogItem[]>
   } = {
@@ -28,9 +28,9 @@ export class Seeder implements ICrafter {
       collections: {},
     }
 
-  goldGenerated: number = 0
+  _goldGenerated: number = 0
 
-  process(): void {
+  process(tillDay: number): void {
     if (this.hopperSlots.length === 0)
       return
     const item = this.hopperSlots[0]
@@ -61,11 +61,11 @@ export class Seeder implements ICrafter {
       crop.type,
     )
 
-    this.goldGenerated += seedsItem.price * seedsItem.count
+    this._goldGenerated += seedsItem.price * seedsItem.count
 
     const normalSeedsProduced = (this.settings.includeNormalSeeds) ? Math.round(seedsProduced * NORMAL_SEED_CHANCE) : 0
 
-    this.goldGenerated += normalSeedsProduced * crop.goldValues.seed
+    this._goldGenerated += normalSeedsProduced * crop.goldValues.seed
 
     if (seedsItem.count > 0)
       this.insertToOutput(seedsItem)
@@ -78,8 +78,8 @@ export class Seeder implements ICrafter {
     else if (item.count < 0)
       throw new Error('Item count is less than 0')
 
-    this.elapsedTimeMinutes += processTime
-    this.lifeTimeMinutes += processTime
+    this._elapsedTimeMinutes += processTime
+    this._lifeTimeMinutes += processTime
   }
 
   insertToOutput(item: CropItem): boolean {
@@ -141,10 +141,10 @@ export class Seeder implements ICrafter {
     // Update the lifetime of the seeder to include idle time before the first item was inserted
     // this is to track a number of stuff like processing time, gold generated, and number of processable items
     const minutes = day * 60
-    if (this.lifeTimeMinutes === 0)
-      this.lifeTimeMinutes = minutes
-    else if (this.lifeTimeMinutes < minutes)
-      this.lifeTimeMinutes = minutes
+    if (this._lifeTimeMinutes === 0)
+      this._lifeTimeMinutes = minutes
+    else if (this._lifeTimeMinutes < minutes)
+      this._lifeTimeMinutes = minutes
 
     const { existingSlots, hasEmptySlot } = this.getHopperAvailability(item)
     if (existingSlots) {
@@ -317,5 +317,13 @@ export class Seeder implements ICrafter {
     const maxProcessableItemsWithTime = Math.floor(timeLeft / processTime)
 
     return Math.min(maxProcessableItems, maxProcessableItemsWithTime)
+  }
+
+  get elapsedTimeMinutes(): number {
+    return this._elapsedTimeMinutes
+  }
+
+  get lifeTimeMinutes(): number {
+    return this._lifeTimeMinutes
   }
 }

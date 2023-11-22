@@ -15,28 +15,29 @@ export interface ICrafter {
   maxOutputSlots: number
   acceptedItems: ItemType[]
   // how much time the crafter has been processing items, including time spent unused
-  lifeTimeMinutes: number
+  readonly lifeTimeMinutes: number
   // how much time the crafter has been processing items, excluding time spent unused
   // useful for seeing how long the crafter has been idle
-  elapsedTimeMinutes: number
+  readonly elapsedTimeMinutes: number
   settings: {
     useStackLimit: boolean
     useHopperLimit: boolean
   }
-  goldGenerated: number
-
+  readonly goldGenerated: number
   // Track the items that are inserted into the crafter on a given day
-  logs: {
+  readonly logs: {
     insertions: Record<number, LoggableItem[]>
     collections: Record<number, LoggableItem[]>
   }
 
-  process(): void
+  // Converts the items in the hopper into output items as per the crafter's rules
+  process(tillDay: number): void
 
   // returns true if the item was successfully inserted
   insertItem(itemData: InsertItemArgs): boolean
 
   setSettings(settings: Partial<ICrafter['settings']>): void
 
+  // empties the output slots and returns the items that were in them
   collect(day: number): IItem[]
 }
