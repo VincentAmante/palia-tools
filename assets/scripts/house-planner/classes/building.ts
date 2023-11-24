@@ -107,16 +107,8 @@ export abstract class Building {
 
     for (const collisionBox of collisionBoxes) {
       for (const buildingCollisionBox of buildingCollisionBoxes) {
-        // Use snapbox on certain buildings
-
         if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds))
           return true
-
-        // if ((collisionBox.zLevel !== buildingCollisionBox.zLevel)) {
-        //   if (this._snapBox.isIntersectingWith(building._snapBox, excludeIds))
-        //     return true
-        // }
-        // else
       }
     }
     return false
@@ -411,8 +403,14 @@ export abstract class Building {
     let closestCoords = Number.POSITIVE_INFINITY
     let closestSide: Direction | null = null
 
+    const order = getBuildingOrder(building.type)
+    const thisOrder = getBuildingOrder(this.type)
+
     for (const [side, isOpen] of Object.entries(building.openSlots)) {
       if (building.children[side as Direction] !== null)
+        continue
+
+      if ((side === 'East' || side === 'West') && order > thisOrder)
         continue
 
       if (isOpen) {
@@ -560,4 +558,28 @@ function getCorners(collisionBox: CollisionBox) {
   const bottomRight = { x: x + width / 2, y: y + height / 2 }
 
   return { topLeft, bottomRight }
+}
+
+function getBuildingOrder(type: BuildingType) {
+  let order = 0
+
+  switch (type) {
+    case BuildingType.LargeHouse:
+    case BuildingType.HarvestHouse:
+      order = 1
+      break
+    case BuildingType.MediumHouse:
+      order = 2
+      break
+    case BuildingType.SmallHouse:
+      order = 3
+      break
+    case BuildingType.Hallway:
+      order = 4
+      break
+    default:
+      order = 100
+  }
+
+  return order
 }
