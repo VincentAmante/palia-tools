@@ -109,14 +109,14 @@ export abstract class Building {
       for (const buildingCollisionBox of buildingCollisionBoxes) {
         // Use snapbox on certain buildings
 
-        if ((collisionBox.zLevel !== buildingCollisionBox.zLevel)) {
-          if (this._snapBox.isIntersectingWith(building._snapBox, excludeIds))
-            return true
-        }
-        else
-          if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds)) {
-            return true
-          }
+        if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds))
+          return true
+
+        // if ((collisionBox.zLevel !== buildingCollisionBox.zLevel)) {
+        //   if (this._snapBox.isIntersectingWith(building._snapBox, excludeIds))
+        //     return true
+        // }
+        // else
       }
     }
     return false
@@ -214,8 +214,6 @@ export abstract class Building {
       return
     if (building.id === this._parent?.id)
       return
-
-    // console.log('adding child', building, direction)
 
     this._children[direction] = building
     building.parent = this
@@ -346,7 +344,6 @@ export abstract class Building {
       if (this._children[slotSide as Direction] !== null) {
         if (this._children[slotSide as Direction]!.id === this._parent?.id)
           return
-
         this._children[slotSide as Direction]!.snapToBuilding(this, slotSide as Direction)
       }
     }
