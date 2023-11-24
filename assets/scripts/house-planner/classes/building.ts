@@ -406,10 +406,17 @@ export abstract class Building {
     const order = getBuildingOrder(building.type)
     const thisOrder = getBuildingOrder(this.type)
 
+    // Special override for fireplaces
+    if (this.type === BuildingType.Fireplace && building.type === BuildingType.Hallway) {
+      return {
+        snapped: false,
+        side: null,
+      }
+    }
+
     for (const [side, isOpen] of Object.entries(building.openSlots)) {
       if (building.children[side as Direction] !== null)
         continue
-
       if ((side === 'East' || side === 'West') && order > thisOrder)
         continue
 
@@ -566,16 +573,19 @@ function getBuildingOrder(type: BuildingType) {
   switch (type) {
     case BuildingType.LargeHouse:
     case BuildingType.HarvestHouse:
-      order = 1
+      order = 10
       break
     case BuildingType.MediumHouse:
-      order = 2
+      order = 20
       break
     case BuildingType.SmallHouse:
-      order = 3
+      order = 30
+      break
+    case BuildingType.Fireplace:
+      order = 35
       break
     case BuildingType.Hallway:
-      order = 4
+      order = 40
       break
     default:
       order = 100
