@@ -255,9 +255,8 @@ class Garden {
     this.harvestSimulator.options = {
       days: options.days || 0,
       includeReplant: options.includeReplant || false,
-      postLevel25: options.postLevel25,
-      useStarSeeds: options.allStarSeeds || false,
-      level: (options.postLevel25 ? 25 : 10),
+      useStarSeeds: options.useStarSeeds || false,
+      level: (options.level),
       useGrowthBoost: options.useGrowthBoost || false,
       includeReplantCost: options.includeReplantCost || false,
     }

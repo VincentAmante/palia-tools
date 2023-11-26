@@ -7,7 +7,6 @@ interface HarvestSimulatorOptions {
   days: number
   includeReplant: boolean
   level: number
-  postLevel25: boolean
   includeReplantCost: boolean
   useGrowthBoost: boolean
   useStarSeeds: boolean
@@ -40,7 +39,6 @@ export default class HarvestSimulator {
     days: 0,
     includeReplant: false,
     level: 0,
-    postLevel25: false,
     includeReplantCost: false,
     useGrowthBoost: false,
     useStarSeeds: false,
@@ -97,10 +95,6 @@ export default class HarvestSimulator {
         ? options.days
         : getMaxGrowTime(cropTiles, options.useGrowthBoost)
 
-    // Day by day simulation
-    // const cropsMemory: Record<string, CropYield> = {}
-
-    // 25% base chance, +25% if using star seeds, +2% per level
     // TODO: verify this again
     const baseStarChance = 0.25 + (options.useStarSeeds ? 0.25 : 0) + (options.level * 0.02)
     const tilesData: Record<string, {
@@ -161,8 +155,13 @@ export default class HarvestSimulator {
         if (day > growTime && !options.includeReplant)
           return
 
-        const isHarvestable = tileData.harvestDays.includes(day)
-        const doReplant = day % tileData.harvestDays[tileData.harvestDays.length - 1] === 0
+        const harvestDays = tileData.harvestDays
+
+        if (harvestDays.length === 0)
+          return
+
+        const isHarvestable = harvestDays.includes(day % growTime) || (day >= growTime && day % growTime === 0)
+        const doReplant = options.includeReplant && (day % growTime === 0)
 
         if (isHarvestable) {
           dayHarvest.crops[crop.type].base += tileData.increase.base

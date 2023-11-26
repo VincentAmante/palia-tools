@@ -25,24 +25,18 @@ const gardenTilesAreWide = computed(() => {
   return props.layout.plots[0].length > 3
 })
 
-const options = useStorage('approximator-options-OCT1023', {
+const options = useStorage('approximator-options-NOV1023', {
   days: 0,
-  postLevel25: false,
-  allStarSeeds: true,
+  useStarSeeds: true,
   includeReplant: true,
   includeReplantCost: true,
-  baseChanceStarSeed: 66,
-  baseChanceNormalSeed: 33,
   useGrowthBoost: false,
+  level: 0,
 })
 
 const harvestData = computed<ISimulateYieldResult>(() => {
   return props.layout.simulateYield({
     ...options.value,
-    starChanceOverride: (options.value.baseChanceStarSeed / 100),
-    baseChanceOverride: (options.value.baseChanceNormalSeed / 100),
-    includeReplantCost: (options.value.includeReplantCost && options.value.includeReplant),
-    level: 0,
   })
 })
 
@@ -55,8 +49,6 @@ const cropOptions = ref(Object.values(CropType).reduce((acc, cropType) => {
   }
   return acc
 }, {} as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>))
-
-console.log(cropOptions.value)
 
 function calculateGoldValue() {
   if (harvestData.value) {
@@ -94,12 +86,8 @@ function setCropOption(cropType: CropType, type: 'star' | 'base', option: Produc
 }
 
 watchEffect(() => {
-  if (
-    options.value.baseChanceStarSeed < 0)
-    options.value.baseChanceStarSeed = 0
-
-  else if (options.value.baseChanceStarSeed > 100)
-    options.value.baseChanceStarSeed = 100
+  if (options.value.level < 0)
+    options.value.level = 0
 })
 </script>
 
@@ -277,13 +265,11 @@ watchEffect(() => {
       </div>
       <div v-show="(isTakingScreenshot.get) || activeTab === 'display'" class="flex flex-col px-4">
         <HCTags
-          :post-level25="options.postLevel25"
-          :all-star-seeds="options.allStarSeeds"
+          :use-star-seeds="options.useStarSeeds"
           :include-replant="options.includeReplant"
           :include-replant-cost="options.includeReplantCost"
-          :base-chance-star-seed="options.baseChanceStarSeed"
-          :base-chance-normal-seed="options.baseChanceNormalSeed"
           :use-growth-boost="options.useGrowthBoost"
+          :level="options.level"
         />
         <div v-if="!isTakingScreenshot.get" class="tabs gap-2 pt-1">
           <div
@@ -339,6 +325,7 @@ watchEffect(() => {
             Crop
           </div>
         </div>
+
         <!-- box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset; -->
         <div class=" max-h-[19.75rem] overflow-y-scroll mb-4 rounded-lg rounded-r-none border border-misc border-opacity-50 p-2">
           <div
@@ -369,84 +356,53 @@ watchEffect(() => {
               </template>
             </OptionCard>
 
-            <OptionCard label="postLevel25" name="Post Level 25">
+            <OptionCard label="level" name="Gardening Level">
               <template #input>
-                <input v-model="options.postLevel25" class="toggle rounded-md" type="checkbox">
+                <div class="join">
+                  <button
+                    class="join-item btn btn-sm " @click="options.level = 0"
+                  >
+                    0
+                  </button>
+                  <button
+                    class="join-item btn btn-sm " @click="options.level = 10"
+                  >
+                    10
+                  </button>
+                  <input
+                    v-model="options.level" class="input input-sm text-lg max-w-[5rem] join-item" type="number"
+                    min="0"
+                  >
+                  <button
+                    class="join-item btn btn-sm " @click="options.level = 25"
+                  >
+                    25
+                  </button>
+                  <button
+                    class="join-item btn btn-sm " @click="options.level = 50"
+                  >
+                    50
+                  </button>
+                </div>
               </template>
               <template #labels>
                 <p>
-                  After level 25 Gardening, star seeds alone gives you the full quality
-                  bonus.
+                  Decides base star chance of crops
                 </p>
+                <p>
+                  Base Star Chance: <code class="bg-misc text-accent rounded-sm px-2">{{ Math.min(100, (0.25 + (options.useStarSeeds ? 0.25 : 0) + (0.02 * options.level)) * 100) }}%</code>
+                </p>
+                <p>Formula in info</p>
               </template>
             </OptionCard>
 
-            <OptionCard label="allStarSeeds" name="All Star Seeds">
+            <OptionCard label="useStarSeeds" name="All Star Seeds">
               <template #input>
-                <input v-model="options.allStarSeeds" class="toggle rounded-md" type="checkbox">
+                <input v-model="options.useStarSeeds" class="toggle rounded-md" type="checkbox">
               </template>
               <template #labels>
                 <p>
                   The entire layout will use star seeds
-                </p>
-              </template>
-            </OptionCard>
-
-            <OptionCard label="baseChanceStarSeed" name="Star Base Chance">
-              <template #input>
-                <div class="join">
-                  <button
-                    class="join-item btn btn-sm btn-primary transition-all"
-                    :class="options.baseChanceStarSeed === 66 ? 'btn-active' : ''"
-                    @click="options.baseChanceStarSeed = 66"
-                  >
-                    66%
-                  </button>
-                  <button
-                    class="join-item btn btn-sm btn-primary transition-all"
-                    :class="options.baseChanceStarSeed === 50 ? 'btn-active' : ''"
-                    @click="options.baseChanceStarSeed = 50"
-                  >
-                    50%
-                  </button>
-                  <button
-                    class="join-item btn btn-sm btn-primary transition-all"
-                    :class="options.baseChanceStarSeed === 33 ? 'btn-active' : ''"
-                    @click="options.baseChanceStarSeed = 33"
-                  >
-                    33%
-                  </button>
-                </div>
-              </template>
-              <template #labels>
-                <p>
-                  Chance of getting a star crop from a star seed
-                </p>
-              </template>
-            </OptionCard>
-
-            <OptionCard label="baseChanceNormalSeed" name="Normal Base Chance">
-              <template #input>
-                <div class="join">
-                  <button
-                    class="join-item btn btn-sm btn-primary transition-all"
-                    :class="options.baseChanceNormalSeed === 0 ? 'btn-active' : ''"
-                    @click="options.baseChanceNormalSeed = 0"
-                  >
-                    0%
-                  </button>
-                  <button
-                    class="join-item btn btn-sm btn-primary transition-all"
-                    :class="options.baseChanceNormalSeed === 33 ? 'btn-active' : ''"
-                    @click="options.baseChanceNormalSeed = 33"
-                  >
-                    33%
-                  </button>
-                </div>
-              </template>
-              <template #labels>
-                <p>
-                  Chance of getting a star crop from a normal seed
                 </p>
               </template>
             </OptionCard>
@@ -618,4 +574,3 @@ watchEffect(() => {
     </div>
   </section>
 </template>
-~/assets/scripts/garden-planner/classes/Garden
