@@ -126,10 +126,6 @@ class Crop {
     return this._metadata.cropBackgroundColor
   }
 
-  get paliapediaName(): string {
-    return this._metadata.paliapediaName || ''
-  }
-
   // Assumes player harvests on the day it is harvestable
   isHarvestableOnDay(day: number, hasGrowthBoost: boolean = false) {
     let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
@@ -143,7 +139,6 @@ class Crop {
     }
 
     const totalGrowthTime = this.getTotalGrowTime(hasGrowthBoost)
-    // console.log('totalGrowthTime', totalGrowthTime)
 
     const onLastHarvest = (day % totalGrowthTime) === 0
     const doReplant = onLastHarvest
@@ -157,8 +152,6 @@ class Crop {
       lastHarvestDay = harvestableDays[harvestableDays.length - 1]
       leftover = harvestableDays[harvestableDays.length - 1] - lastHarvestDay
     }
-
-    // console.log('harvestableDays', harvestableDays)
 
     if (onLastHarvest) {
       return {
