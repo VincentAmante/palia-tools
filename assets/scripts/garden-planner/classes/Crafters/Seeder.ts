@@ -1,6 +1,7 @@
 import type { CropLogItem, IItem } from '../Items/Item'
 import crops from '../../cropList'
-import { CropItem, ItemType } from '../Items/Item'
+import { CropItem } from '../Items/Item'
+import { ItemType } from '../../enums'
 
 import { CropType } from '../../imports'
 import type { ICrafter, InsertItemArgs } from './ICrafter'
