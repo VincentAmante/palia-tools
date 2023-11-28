@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import ItemType from '~/assets/scripts/garden-planner/enums/itemType'
 import { Seeder } from '~/assets/scripts/garden-planner/classes/Crafters/Seeder'
 import { CropType, Jar, crops } from '~/assets/scripts/garden-planner/imports'
-import { CropItem, ItemType } from '~/assets/scripts/garden-planner/classes/Items/Item'
+import { CropItem } from '~/assets/scripts/garden-planner/classes/Items/Item'
 
 const seeder = ref(new Seeder())
 const jar = ref(new Jar())
