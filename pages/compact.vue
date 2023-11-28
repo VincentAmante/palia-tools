@@ -312,22 +312,16 @@ definePageMeta({
           </h3>
           <div class="flex flex-wrap   gap-2 pt-2 w-full">
             <button
-              id="crop-eraser"
-              aria-label="Select Crop Eraser"
+              id="crop-eraser" aria-label="Select Crop Eraser"
               class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
               :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
-              :in-picture-mode="isTakingScreenshot.get"
-              @click="selectedItem.select('crop-erase')"
+              :in-picture-mode="isTakingScreenshot.get" @click="selectedItem.select('crop-erase')"
             >
-              <font-awesome-icon
-                class="absolute -z-10 max-w-[45px] text-success text-2xl "
-                :icon="['fas', 'eraser']"
-              />
+              <font-awesome-icon class="absolute -z-10 max-w-[45px] text-success text-2xl " :icon="['fas', 'eraser']" />
             </button>
             <template v-for="(count, index) in plotStat.cropTypeCount" :key="index">
               <CropButton
-                v-if="(index !== CropType.None)"
-                :crop="getCropFromType(index) as Crop"
+                v-if="(index !== CropType.None)" :crop="getCropFromType(index) as Crop"
                 :is-selected="(selectedItem.val instanceof Crop) && selectedItem.val !== null && index === selectedItem.val.type"
                 :count="count" @click="setCrop(index)"
               />
@@ -344,16 +338,12 @@ definePageMeta({
             </h3>
             <div class="flex flex-wrap gap-2 pt-2">
               <button
-                id="fertiliser-eraser"
-                aria-label="Select Fertiliser Eraser"
+                id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
                 class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
                 :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
                 @click="selectedItem.select('fertiliser-erase')"
               >
-                <font-awesome-icon
-                  class="absolute -z-10 max-w-[42px] text-warning text-2xl "
-                  :icon="['fas', 'eraser']"
-                />
+                <font-awesome-icon class="absolute -z-10 max-w-[42px] text-warning text-2xl " :icon="['fas', 'eraser']" />
               </button>
               <template v-for="(count, index) in plotStat.fertiliserCount" :key="index">
                 <FertiliserButton
@@ -368,10 +358,7 @@ definePageMeta({
             </div>
           </div>
         </section>
-        <AppDivider
-          class="mx-4 my-6 mt-4 lg:col-span-7 order-3"
-          :class="[isTakingScreenshot.get ? 'col-span-7' : '']"
-        />
+        <AppDivider class="mx-4 my-6 mt-4 lg:col-span-7 order-3" :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
         <div
           v-if="garden.activePlotCount > 9" class="py-1 px-3 md:px-8 lg:px-12 lg:col-span-7 order-4"
           :class="[isTakingScreenshot.get ? 'col-span-7' : '']"
@@ -382,8 +369,7 @@ definePageMeta({
           </p>
         </div>
         <section
-          class="order-5 lg:px-3 pt-0 pb-4"
-          :class="[
+          class="order-5 lg:px-3 pt-0 pb-4" :class="[
             (gardenTilesAreWide) ? 'lg:col-span-7 overflow-auto' : 'lg:col-span-3',
             (isTakingScreenshot.get && gardenTilesAreWide) ? ''
             : (isTakingScreenshot.get) ? 'col-span-3' : '',
@@ -393,58 +379,40 @@ definePageMeta({
             Garden Display
           </h2>
           <GardenDisplay
-            ref="gardenDisplay"
-            :garden-tiles="gardenTiles as Plot[][]"
-            :garden-tiles-are-wide="gardenTilesAreWide"
-            :hovered-bonus="hoveredBonus as Bonus"
-            class="opacity-100"
-            draggable="false"
-            @right-click="handleRightClick"
-            @middle-click="handleMiddleClick"
-            @mouseover="handleHover"
-            @select-tile="selectTile"
-            @mouseleave="handleMouseLeave"
+            ref="gardenDisplay" :garden-tiles="gardenTiles as Plot[][]"
+            :garden-tiles-are-wide="gardenTilesAreWide" :hovered-bonus="hoveredBonus as Bonus" class="opacity-100"
+            draggable="false" @right-click="handleRightClick" @middle-click="handleMiddleClick" @mouseover="handleHover"
+            @select-tile="selectTile" @mouseleave="handleMouseLeave"
           />
         </section>
         <HarvestCalculator
-          class="w-full"
-          :class="[
+          class="w-full" :class="[
             (gardenTilesAreWide) ? 'order-7 lg:col-span-7' : 'order-7 lg:order-6 lg:col-span-4 xl:col-span-4',
             (isTakingScreenshot.get) ? 'col-span-4 pr-4' : '',
-          ]"
-          :layout="garden as Garden"
+          ]" :layout="garden as Garden"
         />
         <div
-          class="flex bg-primary px-2 lg:px-4 justify-center "
-          :class="[
+          class="flex bg-primary px-2 lg:px-4 justify-center " :class="[
             (gardenTilesAreWide) ? 'lg:col-span-7' : 'lg:order-7 lg:col-span-3 lg:justify-start',
             (isTakingScreenshot.get) ? 'order-7 col-span-3' : 'order-6',
           ]"
         >
           <StatsDisplay
-            ref="statDisplay"
-            v-model:hovered-bonus="hoveredBonus"
-            class="pb-2 pt-2 w-fit "
-            :garden-tiles-are-wide="gardenTilesAreWide"
-            :plot-stat-total="plotStat"
+            ref="statDisplay" v-model:hovered-bonus="hoveredBonus" class="pb-2 pt-2 w-fit "
+            :garden-tiles-are-wide="gardenTilesAreWide" :plot-stat-total="plotStat"
           />
         </div>
         <div
-          v-show="isTakingScreenshot.get"
-          id="watermark"
-          class="px-4 flex justify-end items-start w-full order-8 lg:col-span-4 bg-primary"
-          :class="[
+          v-show="isTakingScreenshot.get" id="watermark"
+          class="px-4 flex justify-end items-start w-full order-8 lg:col-span-4 bg-primary" :class="[
             (gardenTilesAreWide) ? 'lg:col-span-7' : 'lg:col-span-3',
             (isTakingScreenshot.get) ? 'col-span-4' : '',
           ]"
         >
           <div class="flex flex-row-reverse p-2 text-right gap-2 leading-1 items-center rounded-md w-full">
             <nuxt-img
-              format="png" src="/logo.webp"
-              class="max-w-[6rem]"
-              alt="Palia Garden Planner Logo"
-              :srcset="undefined"
-              placeholder
+              format="png" src="/logo.webp" class="max-w-[6rem]" alt="Palia Garden Planner Logo"
+              :srcset="undefined" placeholder
             />
             <div class="text-right flex flex-col justify-end text-misc items-end w-full flex-nowrap ws-nowrap">
               <NuxtLink to="/" class="flex items-center gap-1 justify-start">
@@ -459,8 +427,7 @@ definePageMeta({
           </div>
         </div>
         <div
-          class="grid gap-1 bg-primary p-2 py-4 md:gap-2   order-8"
-          :class="[
+          class="grid gap-1 bg-primary p-2 py-4 md:gap-2   order-8" :class="[
             (isTakingScreenshot.get) ? 'hidden' : '',
             (gardenTilesAreWide) ? 'lg:col-span-4 px-4' : 'lg:col-span-2',
           ]"
@@ -477,29 +444,19 @@ definePageMeta({
             </button>
           </div>
           <div class="grid grid-cols-3 gap-3 items-center ">
-            <button
-              class="btn h-full btn-accent"
-              @click="() => openSaveModal()"
-            >
+            <button class="btn h-full btn-accent" @click="() => openSaveModal()">
               Save
             </button>
-            <button
-              class="btn h-full btn-accent"
-              @click="openLoadModal()"
-            >
+            <button class="btn h-full btn-accent" @click="openLoadModal()">
               Load
             </button>
-            <button
-              class="btn h-full btn-accent"
-              @click="openExportModal()"
-            >
+            <button class="btn h-full btn-accent" @click="openExportModal()">
               Export
             </button>
           </div>
         </div>
         <TimeDisplay
-          class=" order-9 p-2 py-4 bg-primary"
-          :class="[
+          class=" order-9 p-2 py-4 bg-primary" :class="[
             (isTakingScreenshot.get) ? 'hidden' : 'grid',
             (gardenTilesAreWide) ? 'lg:col-span-3' : 'lg:col-span-2',
           ]"

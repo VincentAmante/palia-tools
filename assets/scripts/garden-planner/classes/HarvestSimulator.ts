@@ -1,6 +1,7 @@
 import { CropType } from '../imports'
 import Bonus from '../enums/bonus'
-import crops from '../crop-list'
+import crops from '../cropList'
+import type { HarvestInventory, HarvestSimulatorLog } from '../utils/gardenHelpers'
 import type Tile from './Tile'
 
 interface HarvestSimulatorOptions {
@@ -17,24 +18,19 @@ interface CropYield {
   star: number
 }
 
-interface HarvestSimulatorLog {
-  day: number
-  crops: Record<CropType, CropYield>
-  seedsRemainder: Record<CropType, CropYield>
+export interface IHarvestSimulator {
+  options: HarvestSimulatorOptions
+  simulate(cropTiles: Tile[]): {
+    harvestLog: HarvestSimulatorLog[]
+    harvestInventory: HarvestInventory
+    lastDay: number
+  }
 }
 
-interface HarvestInventory {
-  crops: Record<CropType, {
-    base: number
-    star: number
-  }>
-  seedsLeft: Record<CropType, {
-    base: number
-    star: number
-  }>
-}
-
-export default class HarvestSimulator {
+/**
+ * A class to handle the simulation of a garden harvest over the course of a given number of days.
+ */
+export default class HarvestSimulator implements IHarvestSimulator {
   private _options: HarvestSimulatorOptions = {
     days: 0,
     includeReplant: false,
@@ -93,7 +89,7 @@ export default class HarvestSimulator {
     const days
       = (options.days && options.days > 0)
         ? options.days
-        : getMaxGrowTime(cropTiles, options.useGrowthBoost)
+        : getHighestGrowTime(cropTiles, options.useGrowthBoost)
 
     // TODO: verify this again
     const baseStarChance = 0.25 + (options.useStarSeeds ? 0.25 : 0) + (options.level * 0.02)
@@ -225,7 +221,14 @@ export default class HarvestSimulator {
   }
 }
 
-function getMaxGrowTime(
+/**
+ * Calculates the highest grow time among the given tiles.
+ *
+ * @param tiles - The array of tiles to calculate the grow time from.
+ * @param useGrowthBoost - A boolean indicating whether to use growth boost or not.
+ * @returns The highest grow time among the tiles.
+ */
+function getHighestGrowTime(
   tiles: Tile[],
   useGrowthBoost: boolean,
 ) {
@@ -240,6 +243,10 @@ function getMaxGrowTime(
   return maxGrowthTime
 }
 
+/**
+ * Retrieves a crop map to store an inventory of any value by crop type and quality.
+ * @returns The crop map object.
+ */
 function getCropMap() {
   const cropMap: Record<CropType, {
     base: number

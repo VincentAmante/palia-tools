@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import CropType from '@/assets/scripts/garden-planner/enums/crops'
+import CropType from '~/assets/scripts/garden-planner/enums/cropType'
 
 export type ProduceOption = 'crop' | 'seed' | 'preserve'
 

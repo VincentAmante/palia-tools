@@ -1,17 +1,17 @@
 import Direction from '../enums/direction'
 import Bonus from '../enums/bonus'
-import CropType from '../enums/crops'
-import CropCode from '../enums/cropcode'
-import CropSize from '../enums/crop-size'
+import CropType from '../enums/cropType'
+import CropCode from '../enums/cropCode'
+import CropSize from '../enums/cropSize'
 import type { PlotStat } from '../types/plotStat'
-import crops, { getCodeFromCrop, getCropFromCode } from '../crop-list'
-import { parseSave } from '../save-handler'
-import FertiliserType from '../enums/fertiliser'
-import FertiliserCode from '../enums/fertilisercode'
-import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliser-list'
-import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo, ISimulateYieldResult } from '../utils/garden-helpers'
-import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
-import HarvestSimulator from './HarvestSimulator'
+import crops, { getCodeFromCrop, getCropFromCode } from '../cropList'
+import { parseSave } from '../saveHandler'
+import FertiliserType from '../enums/Fertiliser'
+import FertiliserCode from '../enums/FertiliserCode'
+import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliserList'
+import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo, ISimulateYieldResult } from '../utils/gardenHelpers'
+import { getCropMap, getCropValueMap } from '../utils/gardenHelpers'
+import HarvestSimulator, { type IHarvestSimulator } from './HarvestSimulator'
 
 import Plot from './Plot'
 import Tile from './Tile'
@@ -20,7 +20,7 @@ import type Crop from './Crop'
 class Garden {
   private _layout: Plot[][] = []
   private _version: string = '0.2'
-  private harvestSimulator: HarvestSimulator = new HarvestSimulator()
+  private harvestSimulator: IHarvestSimulator = new HarvestSimulator()
 
   constructor() {
     const defaultRows = 3

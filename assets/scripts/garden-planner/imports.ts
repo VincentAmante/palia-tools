@@ -1,18 +1,18 @@
 // File acts as a central import file for all classes and enums
 
 import Crop from './classes/Crop'
-import CropType from './enums/crops'
+import CropType from './enums/cropType'
 import Plot from './classes/Plot'
 import Tile from './classes/Tile'
 import Direction from './enums/direction'
-import Bonus from './enums/bonus'
-import CropCode from './enums/cropcode'
-import crops, { getCodeFromCrop, getCropFromCode, getCropFromType } from './crop-list'
+import Bonus from './enums/Bonus'
+import CropCode from './enums/cropCode'
+import crops, { getCodeFromCrop, getCropFromCode, getCropFromType } from './cropList'
 import Garden from './classes/Garden'
 import Fertiliser from './classes/Fertiliser'
-import FertiliserType from './enums/fertiliser'
-import fertilisers, { getCodeFromFertiliser, getFertiliserFromCode, getFertiliserFromType } from './fertiliser-list'
-import type { ICalculateValueResult, ISimulateYieldResult } from './utils/garden-helpers'
+import FertiliserType from './enums/Fertiliser'
+import fertilisers, { getCodeFromFertiliser, getFertiliserFromCode, getFertiliserFromType } from './fertiliserList'
+import type { ICalculateValueResult, ISimulateYieldResult } from './utils/gardenHelpers'
 import { Jar } from './classes/Crafters/Jar'
 
 import type { PlotStat } from './types/plotStat'
@@ -40,4 +40,5 @@ export {
   type ISimulateYieldResult,
   Jar,
 }
+
 export type { PlotStat }

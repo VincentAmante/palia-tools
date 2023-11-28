@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
 import { useStorage } from '@vueuse/core'
+import { createItemFromCrop } from 'assets/scripts/garden-planner/utils/gardenHelpers'
 import LazyHCInfo from './garden-planner/HarvestCalculator/HCInfo.vue'
 import HCTags from './garden-planner/HarvestCalculator/HCTags.vue'
 import LazyHCTotal from './garden-planner/HarvestCalculator/HCTotal.vue'
@@ -11,6 +12,8 @@ import { CropType, Garden, crops } from '@/assets/scripts/garden-planner/imports
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/Garden'
 import AppDividerAlt from '@/components/AppDividerAlt.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
+import type { IShippingBin } from '~/assets/scripts/garden-planner/classes/ShippingBin'
+import ShippingBin from '~/assets/scripts/garden-planner/classes/ShippingBin'
 
 const props = defineProps({
   layout: {
@@ -18,6 +21,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const shippingBin = ref<IShippingBin>(new ShippingBin())
 
 const isTakingScreenshot = useTakingScreenshot()
 
@@ -59,6 +64,25 @@ function calculateGoldValue() {
 }
 
 const processedYields = computed<ICalculateValueResult>(() => {
+  shippingBin.value.clear()
+
+  for (const day of harvestData.value.harvests || []) {
+    for (const [type, crop] of Object.entries(day.crops)) {
+      const cropOption = cropOptions.value[type as CropType]
+
+      if (type === CropType.None)
+        continue
+      const starCrop = createItemFromCrop(type as CropType, true, crop.star)
+      const baseCrop = createItemFromCrop(type as CropType, false, crop.base)
+
+      if (cropOption.baseType === 'crop')
+        shippingBin.value.add(baseCrop, day.day)
+
+      if (cropOption.starType === 'crop')
+        shippingBin.value.add(starCrop, day.day)
+    }
+  }
+
   return calculateGoldValue() as ICalculateValueResult
 })
 
@@ -308,6 +332,7 @@ watchEffect(() => {
           />
         </div>
       </div>
+
       <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'" class="flex flex-col gap-2 px-4 max-h-96 transition-all ">
         <div class="tabs gap-2">
           <div
@@ -358,28 +383,28 @@ watchEffect(() => {
 
             <OptionCard label="level" name="Gardening Level">
               <template #input>
-                <div class="join">
+                <div class="join ">
                   <button
-                    class="join-item btn btn-sm " @click="options.level = 0"
+                    class="join-item btn btn-sm  text-primary" @click="options.level = 0"
                   >
                     0
                   </button>
                   <button
-                    class="join-item btn btn-sm " @click="options.level = 10"
+                    class="join-item btn btn-sm  text-primary" @click="options.level = 10"
                   >
                     10
                   </button>
                   <input
-                    v-model="options.level" class="input input-sm text-lg max-w-[5rem] join-item" type="number"
+                    v-model="options.level" class="input input-sm text-lg max-w-[5rem] join-item text-accent" type="number"
                     min="0"
                   >
                   <button
-                    class="join-item btn btn-sm " @click="options.level = 25"
+                    class="join-item btn btn-sm text-primary" @click="options.level = 25"
                   >
                     25
                   </button>
                   <button
-                    class="join-item btn btn-sm " @click="options.level = 50"
+                    class="join-item btn btn-sm text-primary " @click="options.level = 50"
                   >
                     50
                   </button>
@@ -485,7 +510,7 @@ watchEffect(() => {
             <div class="grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2 pr-2">
               <template v-for="(crop, type) in crops" :key="type">
                 <div
-                  v-if="crops[type]"
+                  v-if="type !== CropType.None && crops[type]"
                   class="grid grid-cols-3 gap-2 items-center justify-start py-2 p-1 rounded-lg bg-accent text-misc h-fit"
                 >
                   <div class="flex flex-col items-center justify-center pl-1 xl:aspect-square">
@@ -496,7 +521,7 @@ watchEffect(() => {
                       width="3.5rem"
                       height="3.5rem"
                       :alt="crop?.type"
-                      :src="crop?.image"
+                      :src="crop?.image "
                     />
                     <p class="text-sm capitalize font-bold text-center">
                       {{ crop?.type }}

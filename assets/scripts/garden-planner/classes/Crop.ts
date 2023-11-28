@@ -1,6 +1,6 @@
 import type Bonus from '../enums/bonus'
-import type CropType from '../enums/crops'
-import type CropSize from '../enums/crop-size'
+import type CropType from '../enums/cropType'
+import type CropSize from '../enums/cropSize'
 import { CropCode } from '../imports'
 
 interface IProduceInfoOptions {

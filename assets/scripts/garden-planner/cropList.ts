@@ -1,8 +1,8 @@
 import Crop from './classes/Crop'
-import CropType from './enums/crops'
+import CropType from './enums/cropType'
 import Bonus from './enums/bonus'
-import CropCode from './enums/cropcode'
-import CropSize from './enums/crop-size'
+import CropCode from './enums/cropCode'
+import CropSize from './enums/cropSize'
 
 const TOMATO = new Crop(
   CropType.Tomato,
@@ -459,7 +459,6 @@ const crops = {
   [CropType.Tomato]: TOMATO,
   [CropType.Potato]: POTATO,
   [CropType.Rice]: RICE,
-
   [CropType.Wheat]: WHEAT,
   [CropType.Carrot]: CARROT,
   [CropType.Onion]: ONION,
@@ -471,7 +470,7 @@ const crops = {
   [CropType.None]: NULLCROP,
 } as const
 
-function getCropFromCode(code: CropCode): Crop | null {
+function getCropFromCode(code: CropCode): Crop {
   switch (code) {
     case CropCode.Tomato:
       return crops[CropType.Tomato]

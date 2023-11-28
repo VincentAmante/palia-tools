@@ -1,19 +1,7 @@
 // TODO: Segment into separate files
 
-import type CropType from '../../enums/crops'
-
-export enum ItemType {
-  Crop = 'crop',
-  Seed = 'seed',
-  Preserve = 'preserve',
-  Fertiliser = 'fertiliser',
-  // Optional types
-  Worm = 'worm',
-  Fabric = 'fabric',
-  Weed = 'weed',
-  // For unimplemented items
-  Misc = 'misc',
-}
+import type CropType from '../../enums/cropType'
+import ItemType from '../../enums/ItemType'
 
 export interface LogItem {
   readonly name: string
@@ -31,6 +19,7 @@ export interface IItem {
   readonly price: number
   readonly isStar: boolean
   readonly maxStack: number
+  readonly id: string
   count: number
 
   equals(item: IItem): boolean
@@ -79,6 +68,10 @@ export abstract class Item implements IItem {
 
   set count(count: number) {
     this._count = count
+  }
+
+  get id(): string {
+    return `${this.name}-${this.isStar ? 'star' : 'base'}`
   }
 
   /**
@@ -237,7 +230,11 @@ export class CropItem extends Item {
     if (!(item instanceof CropItem))
       return false
 
-    return this.type === item.type && this.isStar === item.isStar
+    return this.name === item.name && this.type === item.type && this.isStar === item.isStar
+  }
+
+  get id(): string {
+    return `${this.name}-${this.cropType}-${this.isStar ? 'star' : 'base'}`
   }
 
   add(count: number): void {

@@ -1,4 +1,4 @@
-import Direction from './enums/direction'
+import Direction from './enums/ADirection'
 
 export {
   Direction,

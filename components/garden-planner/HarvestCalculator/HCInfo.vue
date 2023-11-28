@@ -53,9 +53,15 @@
     <div class="px-2  pb-3">
       <div class="bg-accent grid gap-2 p-3 rounded-md">
         <h3 class="font-bold text-lg">
-          Assumptions (8/9/2023)
+          Assumptions (11/26/2023)
         </h3>
         <ul class="list-inside list-disc text-sm grid gap-1">
+          <li>
+            Arbitrary planner formula for star chance:
+            <p class="bg-neutral p-1 rounded-md text-white w-fit px-2 ml-5">
+              <code>0.25 + (0.25 * useStarSeeds) + (0.02 * level) + (0.25 * hasQualityBoost)</code>
+            </p>
+          </li>
           <li class="font-semibold">
             <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
             Seed/Preserve conversion time is not accounted for.
@@ -64,24 +70,11 @@
             <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
             Weed Chance is not accounted for due to their unreliable or undocumented behaviour.
           </li>
-          <li class="font-bold">
-            Speed Growth is underway
-          </li>
           <li>
             The player harvests crops on the day they are ready.
           </li>
           <li>
             Crops receive daily watering or has Water Retain.
-          </li>
-          <li>
-            Base quality chance for star seeds is 66%, or as specified in the options.
-          </li>
-          <li>
-            At Gardening level 25, star seeds have a 100% quality chance.
-          </li>
-
-          <li>
-            Cotton Boost/Quality Up Fertiliser increases quality chance to ~66%.
           </li>
           <li>
             Buffs on crops last until the final calculation day.

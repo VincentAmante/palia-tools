@@ -1,12 +1,12 @@
 import { CropType } from '../imports'
+import { CropItem } from '../classes/Items/Item'
+import { getCropFromType } from '../cropList'
+import ItemType from '../enums/ItemType'
 
 export interface ICalculateYieldOptions {
   days?: number
   includeReplant?: boolean
-  postLevel25: boolean
-  allStarSeeds?: boolean
-  starChanceOverride?: number
-  baseChanceOverride?: number
+  useStarSeeds?: boolean
   includeReplantCost?: boolean
   useGrowthBoost?: boolean
   level: number
@@ -73,16 +73,18 @@ interface CropYield {
   star: number
 }
 
-export function getCropMap() {
+/**
+ * Retrieves a map of all crop types for use in counting
+ * @returns A record object representing the crop map.
+ */
+export function getCropMap(): Record<CropType, CropYield> {
   const cropValue: Record<CropType, CropYield> = {} as Record<CropType, CropYield>
-
   for (const cropType of Object.values(CropType)) {
     cropValue[cropType] = {
       base: 0,
       star: 0,
     }
   }
-
   return cropValue
 }
 
@@ -100,4 +102,39 @@ export interface ICalculateValueResult {
 export interface ISimulateYieldResult {
   harvests: IHarvestInfo[]
   harvestTotal: IHarvestInfo
+}
+
+export interface HarvestSimulatorLog {
+  day: number
+  crops: Record<CropType, CropYield>
+  seedsRemainder: Record<CropType, CropYield>
+}
+
+export interface HarvestInventory {
+  crops: Record<CropType, {
+    base: number
+    star: number
+  }>
+  seedsLeft: Record<CropType, {
+    base: number
+    star: number
+  }>
+}
+
+export function createItemFromCrop(cropType: CropType, isStar: boolean, count: number = 0): CropItem {
+  const crop = getCropFromType(cropType)
+
+  if (!crop)
+    throw new Error(`Could not find crop with type ${cropType}`)
+
+  return new CropItem(
+    crop.type,
+    ItemType.Crop,
+    crop.image,
+    (isStar ? crop.goldValues.cropStar : crop.goldValues.crop),
+    isStar,
+    30,
+    count,
+    cropType,
+  )
 }

@@ -1,4 +1,5 @@
-import type { CropLogItem, IItem, ItemType, LogItem } from '../Items/Item'
+import type { CropLogItem, IItem, LogItem } from '../Items/Item'
+import type ItemType from '../../enums/ItemType'
 
 export interface InsertItemArgs {
   day: number

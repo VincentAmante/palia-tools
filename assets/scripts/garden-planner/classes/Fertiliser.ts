@@ -1,5 +1,5 @@
 import uniqid from 'uniqid'
-import type FertiliserType from '../enums/fertiliser'
+import type FertiliserType from '../enums/Fertiliser'
 import type Bonus from '../enums/bonus'
 
 class Fertiliser {
