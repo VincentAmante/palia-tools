@@ -1,7 +1,7 @@
 import { CropType } from '../imports'
 import { CropItem } from '../classes/Items/Item'
 import { getCropFromType } from '../cropList'
-import ItemType from '../enums/ItemType'
+import ItemType from '../enums/itemType'
 
 export interface ICalculateYieldOptions {
   days?: number

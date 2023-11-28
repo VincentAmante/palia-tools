@@ -1,7 +1,7 @@
 // TODO: Segment into separate files
 
 import type CropType from '../../enums/cropType'
-import ItemType from '../../enums/ItemType'
+import ItemType from '../../enums/itemType'
 
 export interface LogItem {
   readonly name: string
