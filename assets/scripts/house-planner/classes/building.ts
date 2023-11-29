@@ -107,13 +107,6 @@ export abstract class Building {
 
     for (const collisionBox of collisionBoxes) {
       for (const buildingCollisionBox of buildingCollisionBoxes) {
-        // Use snapbox on certain buildings
-
-        // if ((collisionBox.zLevel !== buildingCollisionBox.zLevel)) {
-        //   if (this._snapBox.isIntersectingWith(building._snapBox, excludeIds))
-        //     return true
-        // }
-        // else
         if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds))
           return true
       }
