@@ -117,14 +117,14 @@ watchEffect(() => {
 
 <template>
   <section
-    class="transition-all lg:max-w-2xl lg:h-fit rounded-none z-50 overflow-visible w-full xl:max-w-3xl"
+    class="transition-all lg:max-w-2xl lg:h-fit rounded-none z-50 overflow-visible w-full xl:max-w-3xl pointer-events-none"
     :class="[
       gardenTilesAreWide ? '!max-w-none px-0' : 'lg:pl-20 xl:pl-2 xl:px-4 lg:px-2',
       isTakingScreenshot.get && !gardenTilesAreWide ? 'max-w-[46rem] px-4' : '',
     ]"
   >
     <div
-      class="bg-primary flex flex-col"
+      class="bg-primary flex flex-col pointer-events-auto"
       :class="[
         isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0 pb-6 lg:pb-0',
         gardenTilesAreWide ? 'rounded-none' : 'lg:rounded-lg ',
