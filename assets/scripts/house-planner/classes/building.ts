@@ -207,8 +207,6 @@ export abstract class Building {
     if (building.id === this._parent?.id)
       return
 
-    // console.log('adding child', building, direction)
-
     this._children[direction] = building
     building.parent = this
   }
@@ -338,7 +336,6 @@ export abstract class Building {
       if (this._children[slotSide as Direction] !== null) {
         if (this._children[slotSide as Direction]!.id === this._parent?.id)
           return
-
         this._children[slotSide as Direction]!.snapToBuilding(this, slotSide as Direction)
       }
     }
@@ -406,8 +403,21 @@ export abstract class Building {
     let closestCoords = Number.POSITIVE_INFINITY
     let closestSide: Direction | null = null
 
+    const order = getBuildingOrder(building.type)
+    const thisOrder = getBuildingOrder(this.type)
+
+    // Special override for fireplaces
+    if (this.type === BuildingType.Fireplace && building.type === BuildingType.Hallway) {
+      return {
+        snapped: false,
+        side: null,
+      }
+    }
+
     for (const [side, isOpen] of Object.entries(building.openSlots)) {
       if (building.children[side as Direction] !== null)
+        continue
+      if ((side === 'East' || side === 'West') && order > thisOrder)
         continue
 
       if (isOpen) {
@@ -555,4 +565,31 @@ function getCorners(collisionBox: CollisionBox) {
   const bottomRight = { x: x + width / 2, y: y + height / 2 }
 
   return { topLeft, bottomRight }
+}
+
+function getBuildingOrder(type: BuildingType) {
+  let order = 0
+
+  switch (type) {
+    case BuildingType.LargeHouse:
+    case BuildingType.HarvestHouse:
+      order = 10
+      break
+    case BuildingType.MediumHouse:
+      order = 20
+      break
+    case BuildingType.SmallHouse:
+      order = 30
+      break
+    case BuildingType.Fireplace:
+      order = 35
+      break
+    case BuildingType.Hallway:
+      order = 40
+      break
+    default:
+      order = 100
+  }
+
+  return order
 }
