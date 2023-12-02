@@ -14,6 +14,16 @@ import FertiliserType from './enums/fertiliser'
 import fertilisers, { getCodeFromFertiliser, getFertiliserFromCode, getFertiliserFromType } from './fertiliserList'
 import type { ICalculateValueResult, ISimulateYieldResult } from './utils/gardenHelpers'
 import { Jar } from './classes/Crafters/Jar'
+import type {
+  CropOption,
+  DistributionMethod,
+  ICropOption,
+  ICropOptions,
+  IManagerSettings,
+} from './classes/Crafters/ProduceManager'
+import {
+  ProduceManager,
+} from './classes/Crafters/ProduceManager'
 
 import type { PlotStat } from './types/plotStat'
 
@@ -36,9 +46,14 @@ export {
   getFertiliserFromType,
   getCodeFromFertiliser,
   getFertiliserFromCode,
+  Jar,
+  ProduceManager,
   type ICalculateValueResult,
   type ISimulateYieldResult,
-  Jar,
+  type DistributionMethod,
+  type CropOption,
+  type ICropOption,
+  type ICropOptions,
+  type IManagerSettings,
+  type PlotStat,
 }
-
-export type { PlotStat }

@@ -1,5 +1,6 @@
 import type { CropLogItem, IItem, LogItem } from '../Items/Item'
 import type ItemType from '../../enums/itemType'
+import type CropType from '../../enums/cropType'
 
 export interface InsertItemArgs {
   day: number
@@ -10,10 +11,15 @@ type LoggableItem = LogItem | CropLogItem
 
 export interface ICrafter {
   readonly name: string
+
   hopperSlots: IItem[]
+
   maxHopperSlots: number
+
   outputSlots: IItem[]
+
   maxOutputSlots: number
+
   acceptedItems: ItemType[]
   // how much time the crafter has been processing items, including time spent unused
   readonly lifeTimeMinutes: number
@@ -25,11 +31,16 @@ export interface ICrafter {
     useHopperLimit: boolean
   }
   readonly goldGenerated: number
+
   // Track the items that are inserted into the crafter on a given day
   readonly logs: {
     insertions: Record<number, LoggableItem[]>
     collections: Record<number, LoggableItem[]>
   }
+
+  // The crop that the crafter is dedicated to processing
+  // TODO: This shouldn't be in the ICrafter, but rather in a child interface such as <ICropCrafter>
+  dedicatedCrop: CropType | null
 
   // Converts the items in the hopper into output items as per the crafter's rules
   process(tillDay: number): void
@@ -41,4 +52,7 @@ export interface ICrafter {
 
   // empties the output slots and returns the items that were in them
   collect(day: number): IItem[]
+
+  // resets the crafter's lifeTimeMinutes and elapsedTimeMinutes to 0
+  resetTime(): void
 }

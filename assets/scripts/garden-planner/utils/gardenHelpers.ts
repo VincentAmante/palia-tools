@@ -121,7 +121,7 @@ export interface HarvestInventory {
   }>
 }
 
-export function createItemFromCrop(cropType: CropType, isStar: boolean, count: number = 0): CropItem {
+export function createItemFromCropType(cropType: CropType, isStar: boolean, count: number = 0): CropItem {
   const crop = getCropFromType(cropType)
 
   if (!crop)

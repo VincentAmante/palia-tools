@@ -44,6 +44,13 @@ export class Seeder implements ICrafter {
 
   _goldGenerated: number = 0
 
+  resetTime(): void {
+    this._lifeTimeMinutes = 0
+    this._elapsedTimeMinutes = 0
+  }
+
+  private _dedicatedCrop: CropType | null = null
+
   /**
    * Processes the items in the jar until the specified day.
    * @param tillDay The day until which the items should be processed. 0 or less means to ignore the day limit.
@@ -275,5 +282,13 @@ export class Seeder implements ICrafter {
 
   get logs(): Seeder['_logs'] {
     return this._logs
+  }
+
+  get dedicatedCrop(): CropType | null {
+    return this._dedicatedCrop
+  }
+
+  set dedicatedCrop(crop: CropType | null) {
+    this._dedicatedCrop = crop
   }
 }

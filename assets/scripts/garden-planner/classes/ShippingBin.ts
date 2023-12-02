@@ -7,7 +7,7 @@ interface IDayLog {
 
 export interface IShippingBin {
   readonly inventory: Record<string, IItem>
-  add(item: IItem, dayAdded: number): void
+  add(dayAdded: number, ...items: IItem[]): void
   readonly totalGold: number
   readonly days: number[]
   getDayLog(day: number): IDayLog
@@ -33,19 +33,19 @@ export default class ShippingBin implements IShippingBin {
    * Adds an item to the shipping bin's inventory.
    * @param item - The item to be added to the inventory.
    */
-  add(item: IItem, dayAdded: number = 0): void {
-    // TODO: Figure out how stacks work in the shipping bin
-
-    if (this._inventory[item.id])
-      this._inventory[item.id].add(item.count)
-    else
-      this._inventory[item.id] = item
+  add(dayAdded: number, ...items: IItem[]): void {
+    for (const item of items) {
+      if (this._inventory[item.id])
+        this._inventory[item.id].add(item.count)
+      else
+        this._inventory[item.id] = item
+    }
 
     if (dayAdded) {
       if (!this._log[dayAdded])
         this._log[dayAdded] = []
 
-      this._log[dayAdded].push(item)
+      this._log[dayAdded].push(...items)
     }
   }
 
