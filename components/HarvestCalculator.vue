@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
 import { useStorage } from '@vueuse/core'
-import { createItemFromCrop } from 'assets/scripts/garden-planner/utils/gardenHelpers'
 import LazyHCInfo from './garden-planner/HarvestCalculator/HCInfo.vue'
 import HCTags from './garden-planner/HarvestCalculator/HCTags.vue'
 import LazyHCTotal from './garden-planner/HarvestCalculator/HCTotal.vue'
 import LazyHCDay from './garden-planner/HarvestCalculator/HCDay.vue'
 import OptionCard from './garden-planner/HarvestCalculator/OptionCard.vue'
-import type { ICalculateValueResult, ISimulateYieldResult } from '@/assets/scripts/garden-planner/imports'
-import { CropType, Garden, crops } from '@/assets/scripts/garden-planner/imports'
+import CropOptions from './garden-planner/HarvestCalculator/CropOptions.vue'
+import type { ICalculateValueResult, ICropOptions, ISimulateYieldResult } from '@/assets/scripts/garden-planner/imports'
+import { CropType, Garden } from '@/assets/scripts/garden-planner/imports'
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/Garden'
 import AppDividerAlt from '@/components/AppDividerAlt.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
 import type { IShippingBin } from '~/assets/scripts/garden-planner/classes/ShippingBin'
 import ShippingBin from '~/assets/scripts/garden-planner/classes/ShippingBin'
+import { CropOption, ProduceManager } from '~/assets/scripts/garden-planner/classes/Crafters/ProduceManager'
 
 const props = defineProps({
   layout: {
@@ -21,6 +22,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const produceManager = ref(new ProduceManager())
 
 const shippingBin = ref<IShippingBin>(new ShippingBin())
 
@@ -65,24 +68,8 @@ function calculateGoldValue() {
 
 const processedYields = computed<ICalculateValueResult>(() => {
   shippingBin.value.clear()
-
-  for (const day of harvestData.value.harvests || []) {
-    for (const [type, crop] of Object.entries(day.crops)) {
-      const cropOption = cropOptions.value[type as CropType]
-
-      if (type === CropType.None)
-        continue
-      const starCrop = createItemFromCrop(type as CropType, true, crop.star)
-      const baseCrop = createItemFromCrop(type as CropType, false, crop.base)
-
-      if (cropOption.baseType === 'crop')
-        shippingBin.value.add(baseCrop, day.day)
-
-      if (cropOption.starType === 'crop')
-        shippingBin.value.add(starCrop, day.day)
-    }
-  }
-
+  produceManager.value.logs = harvestData.value.harvests
+  produceManager.value.simulate(shippingBin.value)
   return calculateGoldValue() as ICalculateValueResult
 })
 
@@ -104,9 +91,29 @@ function setOptionTab(tab: 'main' | 'crop') {
 function setCropOption(cropType: CropType, type: 'star' | 'base', option: ProduceOptions) {
   if (type === 'star')
     cropOptions.value[cropType].starType = option
-
   else
     cropOptions.value[cropType].baseType = option
+
+  let newOption: CropOption = CropOption.Crop
+
+  switch (option) {
+    case 'crop':
+      newOption = CropOption.Crop
+      break
+    case 'seed':
+      newOption = CropOption.Seed
+      break
+    case 'preserve':
+      newOption = CropOption.Preserve
+      break
+  }
+
+  produceManager.value.setCropOption(cropType, type === 'star', newOption)
+}
+
+function setCropOptions(cropOptions: ICropOptions) {
+  produceManager.value.cropOptions = cropOptions
+  console.log(produceManager.value.cropOptions)
 }
 
 watchEffect(() => {
@@ -502,94 +509,10 @@ watchEffect(() => {
             v-if="activeOptionTab === 'crop'"
             class="grid gap-1 pb-2"
           >
-            <p class="text-xs text-misc">
-              <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
-              Conversion time is not yet accounted for with seeds and preserves
-            </p>
-
-            <div class="grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2 pr-2">
-              <template v-for="(crop, type) in crops" :key="type">
-                <div
-                  v-if="type !== CropType.None && crops[type]"
-                  class="grid grid-cols-3 gap-2 items-center justify-start py-2 p-1 rounded-lg bg-accent text-misc h-fit"
-                >
-                  <div class="flex flex-col items-center justify-center pl-1 xl:aspect-square">
-                    <nuxt-img
-                      format="webp"
-                      class="w-[3.15rem] object-contain p-1 py-1 aspect-square"
-                      :srcset="undefined"
-                      width="3.5rem"
-                      height="3.5rem"
-                      :alt="crop?.type"
-                      :src="crop?.image "
-                    />
-                    <p class="text-sm capitalize font-bold text-center">
-                      {{ crop?.type }}
-                    </p>
-                  </div>
-                  <div class="flex flex-col gap-1 px-2 pb-2 col-span-2">
-                    <div class="flex flex-col text-sm font-bold">
-                      <p class="text-xs">
-                        Star
-                      </p>
-                      <div class="join rounded-md">
-                        <button
-                          class="join-item btn btn-xs btn-primary"
-                          :class="{ 'btn-active': cropOptions[type].starType === 'crop' }"
-                          @click="setCropOption(type, 'star', 'crop')"
-                        >
-                          Crop
-                        </button>
-                        <button
-                          class="join-item btn btn-xs btn-primary"
-                          :class="{ 'btn-active': cropOptions[type].starType === 'seed' }"
-                          @click="setCropOption(type, 'star', 'seed')"
-                        >
-                          Seed
-                        </button>
-                        <button
-                          v-if="crop?.goldValues?.hasPreserve"
-                          class="join-item btn btn-xs btn-primary"
-                          :class="{ 'btn-active': cropOptions[type].starType === 'preserve' }"
-                          @click="setCropOption(type, 'star', 'preserve')"
-                        >
-                          Jar
-                        </button>
-                      </div>
-                    </div>
-                    <div class="flex flex-col font-semibold">
-                      <p class="text-xs">
-                        Normal
-                      </p>
-                      <div class="join">
-                        <button
-                          class="join-item btn btn-xs btn-primary"
-                          :class="{ 'btn-active': cropOptions[type].baseType === 'crop' }"
-                          @click="setCropOption(type, 'base', 'crop')"
-                        >
-                          Crop
-                        </button>
-                        <button
-                          class="join-item btn btn-xs btn-primary"
-                          :class="{ 'btn-active': cropOptions[type].baseType === 'seed' }"
-                          @click="setCropOption(type, 'base', 'seed')"
-                        >
-                          Seed
-                        </button>
-                        <button
-                          v-if="crop?.goldValues?.hasPreserve"
-                          class="join-item btn btn-xs btn-primary"
-                          :class="{ 'btn-active': cropOptions[type].baseType === 'preserve' }"
-                          @click="setCropOption(type, 'base', 'preserve')"
-                        >
-                          Jar
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </div>
+            <CropOptions
+              :crop-options="produceManager.cropOptions as ICropOptions"
+              @update:crop-options="(cropOptions) => setCropOptions(cropOptions)"
+            />
           </div>
         </div>
       </div>

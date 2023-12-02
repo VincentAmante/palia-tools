@@ -15,11 +15,13 @@ import {
   faEraser,
   faForwardFast,
   faGift,
+  faGripVertical,
   faHand,
   faHeart,
   faInfoCircle,
   faJar,
   faMap,
+  faMinus,
   faPaste,
   faPeopleGroup,
   faPlus,
@@ -85,6 +87,8 @@ library.add(
   faRotateRight,
   faRotateLeft,
   faPeopleGroup,
+  faGripVertical,
+  faMinus,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS
