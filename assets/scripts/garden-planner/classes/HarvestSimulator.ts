@@ -113,7 +113,7 @@ export default class HarvestSimulator implements IHarvestSimulator {
       const growTime = crop.getTotalGrowTime(hasGrowthBoost)
       const harvestDays = crop.getHarvestDays(hasGrowthBoost)
 
-      const starChance = Math.min(1, baseStarChance + (tile.bonuses.includes(Bonus.QualityIncrease) ? 0.25 : 0))
+      const starChance = Math.min(1, baseStarChance + (tile.bonuses.includes(Bonus.QualityIncrease) ? 0.5 : 0))
       const { base, withBonus } = crop.produceInfo
       const hasHarvestBonus = tile.bonuses.includes(Bonus.HarvestIncrease)
       const starCrops = Math.round(starChance * (hasHarvestBonus ? withBonus : base))

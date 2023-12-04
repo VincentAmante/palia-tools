@@ -57,15 +57,37 @@
         </h3>
         <ul class="list-inside list-disc text-sm grid gap-1">
           <li>
-            Arbitrary planner formula for star chance:
+            <span class="font-black">
+              Planner Formula for Star Chance:
+            </span>
             <p class="bg-neutral p-1 rounded-md text-white w-fit px-2 ml-5">
-              <code>0.25 + (0.25 * useStarSeeds) + (0.02 * level) + (0.25 * hasQualityBoost)</code>
+              <code>0.25 + (0.25 * useStarSeeds) + (0.02 * level) + (0.5 * hasQualityBoost)</code>
+            </p>
+            <p class="ml-5">
+              Not the actual formula and is based off player observations and personal assumptions.
+              Fully debatable and may be tweaked in the future.
             </p>
           </li>
-          <li class="font-semibold">
-            <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
-            Seed/Preserve conversion time is not accounted for.
+          <li>
+            <span class="font-black">
+              Assumptions that result in the Planner Formula:
+            </span>
+            <ul class="list-inside list-disc">
+              <li class="ml-5">
+                Star Seed + Quality Boost stacks up to 100% star chance (hence +50% from quality boost).
+              </li>
+              <li class="ml-5">
+                At level 25, star seeds alone can reach 100% star chance (hence an assumed level scaling).
+              </li>
+              <li class="ml-5">
+                At level 50, normal seeds alone can reach 100% star chance.
+              </li>
+              <li class="ml-5">
+                Normal seeds always have a chance of star crops (hence an assumed 25% base chance).
+              </li>
+            </ul>
           </li>
+
           <li class="">
             <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
             Weed Chance is not accounted for due to their unreliable or undocumented behaviour.

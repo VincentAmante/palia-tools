@@ -10,12 +10,16 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'update:cropOptions', value: ICropOptions): void
+  (e: 'update:cropOption', value: {
+    cropOption: ICropOption
+    option: CropOption
+  }): void
 }>()
 
 const cropOptions = ref<ICropOptions>(props.cropOptions)
 
 const list = ref<HTMLElement | null>(null)
-const { option } = useSortable(list, cropOptions, {
+useSortable(list, cropOptions, {
   handle: '.crop-list-handle',
   animation: 200,
   easing: 'cubic-bezier(1, 0, 0, 1)',
@@ -42,7 +46,13 @@ function typeHasPreserve(type: CropType) {
 }
 
 function setCropOption(cropOption: ICropOption, option: CropOption) {
-  cropOption.option = option
+  // cropOption.option = option
+
+  // produceManager.value.setCropOption(cropOption, cropOption.isStar, option)
+  emit('update:cropOption', {
+    cropOption,
+    option,
+  })
 }
 
 function incrementCrafter(cropOption: ICropOption, option: CropOption) {
@@ -77,6 +87,39 @@ function getCrafterImage(option: CropOption) {
       return '/crafters/preserve-jar.webp'
   }
 }
+
+function setStarCropOptions(cropOption: CropOption) {
+  for (const crop of cropOptions.value) {
+    if (crop.isStar) {
+      // This kinda ugly but it works
+      if (cropOption === CropOption.Preserve) {
+        if (crops[crop.cropType]?.goldValues?.hasPreserve)
+          crop.option = CropOption.Preserve
+      }
+      else {
+        crop.option = cropOption
+      }
+    }
+  }
+
+  emit('update:cropOptions', cropOptions.value)
+}
+
+function setNormalCropOptions(cropOption: CropOption) {
+  for (const crop of cropOptions.value) {
+    if (!crop.isStar) {
+      if (cropOption === CropOption.Preserve) {
+        if (crops[crop.cropType]?.goldValues?.hasPreserve)
+          crop.option = CropOption.Preserve
+      }
+      else {
+        crop.option = cropOption
+      }
+    }
+  }
+
+  emit('update:cropOptions', cropOptions.value)
+}
 </script>
 
 <template>
@@ -109,13 +152,22 @@ function getCrafterImage(option: CropOption) {
           Star
         </p>
         <div class="join">
-          <button class="join-item btn  btn-xs normal-case">
+          <button
+            class="join-item btn  btn-xs normal-case"
+            @click="() => setStarCropOptions(CropOption.Crop)"
+          >
             Crop
           </button>
-          <button class="join-item btn  btn-xs normal-case">
+          <button
+            class="join-item btn  btn-xs normal-case"
+            @click="() => setStarCropOptions(CropOption.Seed)"
+          >
             Seed
           </button>
-          <button class="join-item btn  btn-xs normal-case">
+          <button
+            class="join-item btn  btn-xs normal-case"
+            @click="() => setStarCropOptions(CropOption.Preserve)"
+          >
             Jar
           </button>
         </div>
@@ -124,13 +176,22 @@ function getCrafterImage(option: CropOption) {
           Normal
         </p>
         <div class="join">
-          <button class="join-item btn  btn-xs normal-case">
+          <button
+            class="join-item btn  btn-xs normal-case"
+            @click="() => setNormalCropOptions(CropOption.Crop)"
+          >
             Crop
           </button>
-          <button class="join-item btn  btn-xs normal-case">
+          <button
+            class="join-item btn  btn-xs normal-case"
+            @click="() => setNormalCropOptions(CropOption.Seed)"
+          >
             Seed
           </button>
-          <button class="join-item btn  btn-xs normal-case">
+          <button
+            class="join-item btn  btn-xs normal-case"
+            @click="() => setNormalCropOptions(CropOption.Preserve)"
+          >
             Jar
           </button>
         </div>
@@ -150,7 +211,7 @@ function getCrafterImage(option: CropOption) {
             :icon="['fas', 'grip-vertical']"
           />
           <div class="relative">
-            <NuxtImg
+            <nuxt-img
               format="webp" class="w-10 object-contain p-1 py-1 aspect-square" :srcset="undefined" width="1.5rem"
               height="1.5rem" :alt="cropOption.cropType" :src="getCropImg(cropOption.cropType)"
             />

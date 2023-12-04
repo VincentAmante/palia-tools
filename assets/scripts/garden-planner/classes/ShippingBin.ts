@@ -3,11 +3,13 @@ import type { IItem } from './Items/Item'
 interface IDayLog {
   gold: number
   items: IItem[]
+  itemCosts: IItem[]
 }
 
 export interface IShippingBin {
   readonly inventory: Record<string, IItem>
   add(dayAdded: number, ...items: IItem[]): void
+  addCost(dayAdded: number, ...items: IItem[]): void
   readonly totalGold: number
   readonly days: number[]
   getDayLog(day: number): IDayLog
@@ -20,6 +22,9 @@ export default class ShippingBin implements IShippingBin {
 
   // Tracks the day that an item was added to the shipping bin
   private _log: Record<string, IItem[]> = {}
+
+  // Tracks items that have to be purchased or counts as a loss
+  private _logCosts: Record<string, IItem[]> = {}
 
   /**
    * Get the shipping bin's inventory.
@@ -49,6 +54,22 @@ export default class ShippingBin implements IShippingBin {
     }
   }
 
+  addCost(dayAdded: number, ...items: IItem[]): void {
+    for (const item of items) {
+      if (this._inventory[item.id])
+        this._inventory[item.id].add(item.count)
+      else
+        this._inventory[item.id] = item
+    }
+
+    if (dayAdded) {
+      if (!this._logCosts[dayAdded])
+        this._logCosts[dayAdded] = []
+
+      this._logCosts[dayAdded].push(...items)
+    }
+  }
+
   /**
    * Returns the total value of all items in the shipping bin.
    */
@@ -73,22 +94,29 @@ export default class ShippingBin implements IShippingBin {
    */
   getDayLog(day: number): IDayLog {
     const items = this._log[day]
+    const itemCosts = this._logCosts[day]
     if (!items) {
       console.warn(`No items found for day ${day}`)
       return {
         gold: 0,
         items: [],
+        itemCosts: [],
       }
     }
 
     let gold = 0
+
     for (const item of items)
       gold += item.price * item.count
+
+    for (const item of itemCosts)
+      gold -= item.price * item.count
 
     return {
       gold,
       items,
-    }
+      itemCosts,
+    } as IDayLog
   }
 
   /**

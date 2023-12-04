@@ -7,7 +7,17 @@ export interface InsertItemArgs {
   item: IItem
 }
 
-type LoggableItem = LogItem | CropLogItem
+export type LoggableItem = LogItem | CropLogItem
+
+export interface ICrafterLog {
+  insertions: Record<number, LoggableItem[]>
+  collections: Record<number, LoggableItem[]>
+}
+
+export interface IDedicatedCrop {
+  type: CropType
+  isStarred: boolean
+}
 
 export interface ICrafter {
   readonly name: string
@@ -33,14 +43,11 @@ export interface ICrafter {
   readonly goldGenerated: number
 
   // Track the items that are inserted into the crafter on a given day
-  readonly logs: {
-    insertions: Record<number, LoggableItem[]>
-    collections: Record<number, LoggableItem[]>
-  }
+  readonly logs: ICrafterLog
 
   // The crop that the crafter is dedicated to processing
   // TODO: This shouldn't be in the ICrafter, but rather in a child interface such as <ICropCrafter>
-  dedicatedCrop: CropType | null
+  dedicatedCrop: IDedicatedCrop | null
 
   // Converts the items in the hopper into output items as per the crafter's rules
   process(tillDay: number): void
@@ -55,4 +62,11 @@ export interface ICrafter {
 
   // resets the crafter's lifeTimeMinutes and elapsedTimeMinutes to 0
   resetTime(): void
+
+  resetLogs(): void
+
+  get combinedLogs(): Record<number, {
+    insertions: LoggableItem[] | CropLogItem[]
+    collections: LoggableItem[] | CropLogItem[]
+  }>
 }

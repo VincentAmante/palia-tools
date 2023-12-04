@@ -41,7 +41,7 @@
     "@vueuse/core": "^10.4.0",
     "@vueuse/nuxt": "^10.4.0",
     "autoprefixer": "^10.4.15",
-    "daisyui": "^3.5.1",
+    "daisyui": "latest",
     "eslint": "^8.47.0",
     "eslint-plugin-unused-imports": "^3.0.0",
     "nuxt": "^3.6.5",

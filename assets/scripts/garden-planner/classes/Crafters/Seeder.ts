@@ -5,7 +5,7 @@ import { CropItem } from '../Items/Item'
 import ItemType from '../../enums/itemType'
 
 import { CropType } from '../../imports'
-import type { ICrafter, InsertItemArgs } from './ICrafter'
+import type { ICrafter, IDedicatedCrop, InsertItemArgs } from './ICrafter'
 
 // The number of minutes in an in-game day
 const DAY_IN_MINUTES = 60
@@ -49,7 +49,14 @@ export class Seeder implements ICrafter {
     this._elapsedTimeMinutes = 0
   }
 
-  private _dedicatedCrop: CropType | null = null
+  resetLogs(): void {
+    this._logs = {
+      insertions: {},
+      collections: {},
+    }
+  }
+
+  private _dedicatedCrop: IDedicatedCrop | null = null
 
   /**
    * Processes the items in the jar until the specified day.
@@ -64,14 +71,14 @@ export class Seeder implements ICrafter {
       for (const hopperItem of this.hopperSlots) {
         const availableTime = dayInMinutes - this._lifeTimeMinutes
         const crop = crops[hopperItem.cropType]
-        const { preserveProcessMinutes } = crop.conversionInfo
+        const { seedProcessMinutes, cropsPerSeed, seedsPerConversion } = crop.conversionInfo
         if (crop.type === CropType.None)
           throw new Error('Crop type is None')
 
         const matchingOutputItems = this.getMatchingOutputSlots(hopperItem)
 
         // Available processes is the number of times the item can be processed till the specified day
-        let availableProcesses = Math.floor(availableTime / preserveProcessMinutes)
+        let availableProcesses = Math.floor(availableTime / seedProcessMinutes)
         if (availableProcesses === 0)
           return
 
@@ -90,9 +97,9 @@ export class Seeder implements ICrafter {
           if (!this.settings.useStackLimit)
             amountToProcess = hopperItem.count
 
-          const timeToProcess = amountToProcess * preserveProcessMinutes
+          const timeToProcess = amountToProcess * seedProcessMinutes
 
-          const newPreserveItem = this.createPreserveItem(hopperItem, amountToProcess)
+          const newPreserveItem = this.createSeedItem(hopperItem, amountToProcess)
           hopperItem.take(amountToProcess)
           outputItem.add(amountToProcess)
 
@@ -252,12 +259,12 @@ export class Seeder implements ICrafter {
    * @param count - The number of crop items to be preserved.
    * @returns The preserved crop item.
    */
-  private createPreserveItem(item: CropItem, count: number): CropItem {
+  private createSeedItem(item: CropItem, count: number): CropItem {
     const image = crops[item.cropType].preserveImage
     const price = (item.isStar) ? crops[item.cropType].goldValues.preserveStar : crops[item.cropType].goldValues.preserve
     const preserveItem = new CropItem(
       item.name,
-      ItemType.Preserve,
+      ItemType.Seed,
       image,
       price,
       item.isStar,
@@ -284,11 +291,32 @@ export class Seeder implements ICrafter {
     return this._logs
   }
 
-  get dedicatedCrop(): CropType | null {
+  get dedicatedCrop(): IDedicatedCrop | null {
     return this._dedicatedCrop
   }
 
-  set dedicatedCrop(crop: CropType | null) {
-    this._dedicatedCrop = crop
+  set dedicatedCrop(dedicatedCropData: IDedicatedCrop | null) {
+    this._dedicatedCrop = dedicatedCropData
+  }
+
+  get combinedLogs(): Record<number, {
+    insertions: CropLogItem[]
+    collections: CropLogItem[]
+  }> {
+    const combinedLogs: Record<number, {
+      insertions: CropLogItem[]
+      collections: CropLogItem[]
+    }> = {}
+
+    const days = Object.keys(this._logs.insertions)
+    days.forEach((day) => {
+      const dayParsed = Number.parseInt(day)
+      combinedLogs[dayParsed] = {
+        insertions: this._logs.insertions[dayParsed],
+        collections: this._logs.collections[dayParsed],
+      }
+    })
+
+    return combinedLogs
   }
 }

@@ -114,7 +114,7 @@
           </div>
         </div>
       </div>
-      <div class="drawer-side">
+      <div class="drawer-side overflow-x-hidden">
         <label
           for="menu" class="drawer-overlay"
           aria-label="close menu"

@@ -7,14 +7,16 @@ import LazyHCTotal from './garden-planner/HarvestCalculator/HCTotal.vue'
 import LazyHCDay from './garden-planner/HarvestCalculator/HCDay.vue'
 import OptionCard from './garden-planner/HarvestCalculator/OptionCard.vue'
 import CropOptions from './garden-planner/HarvestCalculator/CropOptions.vue'
-import type { ICalculateValueResult, ICropOptions, ISimulateYieldResult } from '@/assets/scripts/garden-planner/imports'
+import CrafterDataDisplay from './garden-planner/HarvestCalculator/CrafterDataDisplay.vue'
+import type { ICalculateValueResult, ICropOption, ICropOptions, ISimulateYieldResult } from '@/assets/scripts/garden-planner/imports'
 import { CropType, Garden } from '@/assets/scripts/garden-planner/imports'
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/Garden'
 import AppDividerAlt from '@/components/AppDividerAlt.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
 import type { IShippingBin } from '~/assets/scripts/garden-planner/classes/ShippingBin'
 import ShippingBin from '~/assets/scripts/garden-planner/classes/ShippingBin'
-import { CropOption, ProduceManager } from '~/assets/scripts/garden-planner/classes/Crafters/ProduceManager'
+import type { CropOption as ProduceManagerCropOption } from '~/assets/scripts/garden-planner/classes/Crafters/ProduceManager'
+import { ProduceManager } from '~/assets/scripts/garden-planner/classes/Crafters/ProduceManager'
 
 const props = defineProps({
   layout: {
@@ -79,41 +81,23 @@ function setTab(tab: string) {
 }
 
 const activeDisplayTab = ref('overview')
-function setDisplayTab(tab: 'overview' | 'day') {
+type DisplayTab = 'overview' | 'day' | 'crafter'
+function setDisplayTab(tab: DisplayTab) {
   activeDisplayTab.value = tab
 }
 
 const activeOptionTab = ref('main')
-function setOptionTab(tab: 'main' | 'crop') {
+type OptionTab = 'main' | 'crop' | 'crafter'
+function setOptionTab(tab: OptionTab) {
   activeOptionTab.value = tab
 }
 
-function setCropOption(cropType: CropType, type: 'star' | 'base', option: ProduceOptions) {
-  if (type === 'star')
-    cropOptions.value[cropType].starType = option
-  else
-    cropOptions.value[cropType].baseType = option
-
-  let newOption: CropOption = CropOption.Crop
-
-  switch (option) {
-    case 'crop':
-      newOption = CropOption.Crop
-      break
-    case 'seed':
-      newOption = CropOption.Seed
-      break
-    case 'preserve':
-      newOption = CropOption.Preserve
-      break
-  }
-
-  produceManager.value.setCropOption(cropType, type === 'star', newOption)
+function setCropOption(cropOption: ICropOption, option: ProduceManagerCropOption) {
+  produceManager.value.setCropOption(cropOption.cropType, cropOption.isStar, option)
 }
 
 function setCropOptions(cropOptions: ICropOptions) {
   produceManager.value.cropOptions = cropOptions
-  console.log(produceManager.value.cropOptions)
 }
 
 watchEffect(() => {
@@ -203,20 +187,20 @@ watchEffect(() => {
                     :srcset="undefined"
                   />{{
                     (Math.round(processedYields.totalResult.totalGold
-                      / processedYields.totalResult.day)).toLocaleString() }}</span>/ day
+                      / (Math.ceil(produceManager.highestTime / 60)))).toLocaleString() }}</span>/ day
                 </p>
               </div>
             </div>
           </div>
           <div
             v-if="!isTakingScreenshot.get"
-            class="tabs w-full justify-evenly flex flex-nowrap bg-misc rounded-md px-4 py-1 max-w-[22rem] order-3"
+            class="w-full justify-evenly flex flex-nowrap bg-misc rounded-md px-4 py-1 max-w-[22rem] order-3 text-accent"
             :class="gardenTilesAreWide ? 'justify-center py-2' : 'md:px-0 md:gap-2 lg:w-fit '"
           >
             <button
               id="approximator-display-tab"
               aria-label="Display Tab"
-              class="tab px-0 text-2xl" :class="activeTab === 'display' ? 'tab-active' : ''"
+              class="btn btn-square btn-ghost btn-sm text-2xl" :class="activeTab === 'display' ? 'btn-active' : ''"
               @click="setTab('display')"
             >
               <font-awesome-icon :icon="['fas', 'table']" />
@@ -224,7 +208,7 @@ watchEffect(() => {
             <button
               id="approximator-options-tab"
               aria-label="Options Tab"
-              class="tab px-0 text-2xl " :class="activeTab === 'options' ? 'tab-active' : ''"
+              class="btn btn-square btn-ghost btn-sm text-2xl" :class="activeTab === 'options' ? 'btn-active' : ''"
               @click="setTab('options')"
             >
               <font-awesome-icon :icon="['fas', 'sliders']" />
@@ -232,7 +216,7 @@ watchEffect(() => {
             <button
               id="approximator-info-tab"
               aria-label="Info Tab"
-              class="tab px-0 text-2xl " :class="activeTab === 'info' ? 'tab-active' : ''"
+              class="btn btn-circle btn-ghost btn-sm text-2xl" :class="activeTab === 'info' ? 'btn-active' : ''"
               @click="setTab('info')"
             >
               <font-awesome-icon :icon="['fas', 'info-circle']" />
@@ -289,7 +273,7 @@ watchEffect(() => {
                 :srcset="undefined"
               />{{
                 (Math.round(processedYields.totalResult.totalGold
-                  / processedYields.totalResult.day)).toLocaleString() }}</span>/ day
+                  / (Math.ceil(produceManager.highestTime)))).toLocaleString() }}</span>/ day
             </p>
           </div>
         </div>
@@ -302,7 +286,7 @@ watchEffect(() => {
           :use-growth-boost="options.useGrowthBoost"
           :level="options.level"
         />
-        <div v-if="!isTakingScreenshot.get" class="tabs gap-2 pt-1">
+        <div v-if="!isTakingScreenshot.get" class="tabs gap-2">
           <div
             class="tab btn btn-sm rounded-md normal-case"
             :class="activeDisplayTab === 'overview' ? 'tab-active btn-accent' : 'btn-ghost text-misc'"
@@ -311,11 +295,18 @@ watchEffect(() => {
             Overview
           </div>
           <div
-            class="tab btn btn-sm rounded-md normal-case whitespace-nowrap"
+            class="tab btn btn-sm rounded-md normal-case"
             :class="activeDisplayTab === 'day' ? 'tab-active btn-accent' : 'btn-ghost text-misc '"
             @click="setDisplayTab('day')"
           >
-            Day-by-day
+            Day by Day
+          </div>
+          <div
+            class="tab btn btn-sm rounded-md normal-case"
+            :class="activeDisplayTab === 'crafter' ? 'tab-active btn-accent' : 'btn-ghost text-misc '"
+            @click="setDisplayTab('crafter')"
+          >
+            Crafter Info
           </div>
         </div>
         <div class="pt-2">
@@ -331,12 +322,20 @@ watchEffect(() => {
           </div>
 
           <LazyHCDay
-            v-if="!(isTakingScreenshot.get) && activeDisplayTab === 'day' && harvestData"
+            v-if="(!(isTakingScreenshot.get) && activeDisplayTab === 'day' && harvestData)"
             class="pb-4"
             :processed-yields="processedYields as ICalculateValueResult"
             :harvest-data="harvestData as ISimulateYieldResult"
             :crop-options="cropOptions as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>"
           />
+          <div
+            v-if="(!(isTakingScreenshot.get) && activeDisplayTab === 'crafter' && harvestData)"
+            class="grid"
+          >
+            <CrafterDataDisplay
+              :crafters-data="produceManager.crafterData"
+            />
+          </div>
         </div>
       </div>
 
@@ -347,7 +346,7 @@ watchEffect(() => {
             :class="activeOptionTab === 'main' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('main')"
           >
-            Main
+            Garden
           </div>
           <div
             class="tab btn btn-sm rounded-md normal-case"
@@ -355,6 +354,13 @@ watchEffect(() => {
             @click="setOptionTab('crop')"
           >
             Crop
+          </div>
+          <div
+            class="tab btn btn-sm rounded-md normal-case"
+            :class="activeOptionTab === 'crafter' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
+            @click="setOptionTab('crafter')"
+          >
+            Crafter
           </div>
         </div>
 
@@ -383,7 +389,7 @@ watchEffect(() => {
                   Manual override for how many days of harvest
                 </p>
                 <p>
-                  Auto: Uses crop w/ highest growth time
+                  <span class="font-bold uppercase">Auto:</span> Uses crop w/ highest growth time
                 </p>
               </template>
             </OptionCard>
@@ -434,7 +440,7 @@ watchEffect(() => {
               </template>
               <template #labels>
                 <p>
-                  The entire layout will use star seeds
+                  The garden will use star seeds
                 </p>
               </template>
             </OptionCard>
@@ -512,6 +518,7 @@ watchEffect(() => {
             <CropOptions
               :crop-options="produceManager.cropOptions as ICropOptions"
               @update:crop-options="(cropOptions) => setCropOptions(cropOptions)"
+              @update:crop-option="(cropOption) => setCropOption(cropOption.cropOption, cropOption.option)"
             />
           </div>
         </div>

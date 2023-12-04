@@ -4,7 +4,7 @@ import { CropItem } from '../Items/Item'
 import ItemType from '../../enums/itemType'
 
 import { CropType } from '../../imports'
-import type { ICrafter, InsertItemArgs } from './ICrafter'
+import type { ICrafter, IDedicatedCrop, InsertItemArgs } from './ICrafter'
 
 // The number of minutes in an in-game day
 const DAY_IN_MINUTES = 60
@@ -43,11 +43,18 @@ export class Jar implements ICrafter {
 
   _goldGenerated: number = 0
 
-  private _dedicatedCrop: CropType | null = null
+  private _dedicatedCrop: IDedicatedCrop | null = null
 
   resetTime(): void {
     this._lifeTimeMinutes = 0
     this._elapsedTimeMinutes = 0
+  }
+
+  resetLogs(): void {
+    this._logs = {
+      insertions: {},
+      collections: {},
+    }
   }
 
   /**
@@ -162,7 +169,8 @@ export class Jar implements ICrafter {
    * @returns True if the item was fully inserted. Used to determine if the item should be removed from the inventory.
    */
   insertItem(itemData: InsertItemArgs & { item: CropItem }): boolean {
-    // throw new Error('Method not implemented.')
+    console.log('insertItem', itemData.item.count)
+
     const item = itemData.item
     const matchingItems = this.getMatchingHopperSlots(item)
 
@@ -213,6 +221,7 @@ export class Jar implements ICrafter {
       }
     }
 
+    console.log(this.hopperSlots)
     return item.count === 0
   }
 
@@ -283,11 +292,39 @@ export class Jar implements ICrafter {
     return this._logs
   }
 
-  get dedicatedCrop(): CropType | null {
+  get dedicatedCrop(): IDedicatedCrop | null {
     return this._dedicatedCrop
   }
 
-  set dedicatedCrop(crop: CropType | null) {
-    this._dedicatedCrop = crop
+  set dedicatedCrop(dedicatedCropData: IDedicatedCrop | null) {
+    this._dedicatedCrop = dedicatedCropData
+  }
+
+  get combinedLogs(): Record<number, {
+    insertions: CropLogItem[]
+    collections: CropLogItem[]
+  }> {
+    const combinedLogs: Record<number, {
+      insertions: CropLogItem[]
+      collections: CropLogItem[]
+    }> = {}
+    const days = new Set([...Object.keys(this._logs.insertions), ...Object.keys(this._logs.collections)])
+    days.forEach((day) => {
+      const dayParsed = Number.parseInt(day)
+      combinedLogs[dayParsed] = {
+        insertions: this._logs.insertions[dayParsed],
+        collections: this._logs.collections[dayParsed],
+      }
+
+      if (combinedLogs[dayParsed].insertions)
+        console.log(combinedLogs[dayParsed].insertions)
+
+      if (!combinedLogs[dayParsed].insertions)
+        combinedLogs[dayParsed].insertions = []
+      if (!combinedLogs[dayParsed].collections)
+        combinedLogs[dayParsed].collections = []
+    })
+
+    return combinedLogs
   }
 }

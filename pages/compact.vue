@@ -310,10 +310,10 @@ definePageMeta({
           <h3 class="font-semibold text-palia-blue">
             Crops
           </h3>
-          <div class="flex flex-wrap   gap-2 pt-2 w-full">
+          <div class="flex flex-wrap gap-2 pt-2 w-full">
             <button
               id="crop-eraser" aria-label="Select Crop Eraser"
-              class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+              class="relative btn btn-square btn-secondary isolate border border-misc"
               :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
               :in-picture-mode="isTakingScreenshot.get" @click="selectedItem.select('crop-erase')"
             >
@@ -339,7 +339,7 @@ definePageMeta({
             <div class="flex flex-wrap gap-2 pt-2">
               <button
                 id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
-                class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+                class="relative btn btn-square btn-secondary isolate border border-misc"
                 :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
                 @click="selectedItem.select('fertiliser-erase')"
               >

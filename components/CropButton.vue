@@ -71,11 +71,11 @@ const dragHandler = useDragAndDrop()
   >
     <button
       draggable="true"
-      class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+      class="relative btn btn-square btn-secondary isolate border border-misc"
       :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
       :name="`select ${crop.type}`"
-      @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)"
-      @dragend="(e: DragEvent) => dragHandler.stopDrag()"
+      @dragstart="() => dragHandler.startDrag(crop.type)"
+      @dragend="() => dragHandler.stopDrag()"
     >
       <font-awesome-icon
         v-if="bonus.icon !== ''"
