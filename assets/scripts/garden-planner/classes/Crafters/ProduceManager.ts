@@ -3,6 +3,7 @@ import { CropType } from '../../imports'
 import { createItemFromCropType } from '../../utils/gardenHelpers'
 import { type HarvestSimulatorLog, getCropMap } from '../../utils/gardenHelpers'
 import type { IShippingBin } from '../ShippingBin'
+import type { IItem } from '../Items/Item'
 import { Seeder } from './Seeder'
 import { Jar } from './Jar'
 import type { IDedicatedCrop, LoggableItem } from './ICrafter'
@@ -33,6 +34,7 @@ export interface IManagerSettings {
   useDaySeparation: boolean
   autoSetCrafters: boolean
   useCrafterLimit: boolean
+  spreadCrops: boolean
 }
 
 export interface ICrafterSettings {
@@ -63,7 +65,7 @@ type HarvestInventory = Record<CropType, {
   star: number
 }>
 
-interface ICrafterCounts {
+export interface ICrafterCounts {
   seeders: number
   jars: number
 }
@@ -90,6 +92,9 @@ export class ProduceManager {
     autoSetCrafters: true,
     // Whether to respect the limit of 30 crafters
     useCrafterLimit: true,
+
+    // Whether to evenly distribute crops across all crafters instead of filling one crafter at a time
+    spreadCrops: true,
   }
 
   private _craftersNeedUpdate = true
@@ -160,14 +165,15 @@ export class ProduceManager {
         throw new Error('Jar still has items in hopper')
     }
 
-    if (this._jars.length === 0 && this._seeders.length === 0)
-      return
-
     let day = firstDay
+    console.time('simulate')
     while ((this.itemsLeftToProcess() || day <= lastDay) && day <= MAX_DAYS) {
-      this.processCraftersTillDay(day)
-      this.collectFromCrafters(shippingBin, day)
+      if (this._jars.length > 0 || this._seeders.length > 0) {
+        this.processCraftersTillDay(day)
+        this.collectFromCrafters(shippingBin, day)
+      }
       this._currentDay = this._logs.find(log => log.day === day) ?? null
+
       // Simulate the crops being harvested and added to the inventory to be processed
       if (this._currentDay) {
         Object.entries(this._currentDay.crops).forEach(([cropType, cropYield]) => {
@@ -202,17 +208,19 @@ export class ProduceManager {
           if (starOption?.option !== CropOption.Crop) {
             this._toProcess[cropType as CropType].star += cropYield.star
           }
-
           else {
             if (cropYield.star > 0)
               shippingBin.add(day, createItemFromCropType(cropType as CropType, true, cropYield.star))
           }
         })
       }
-      this.distributeCrops(day)
+
+      if (this._jars.length > 0 || this._seeders.length > 0)
+        this.distributeCrops(day)
 
       day++
     }
+    console.timeEnd('simulate')
 
     if (day >= MAX_DAYS)
       throw new Error('Infinite loop detected. Aborting simulation.')
@@ -230,16 +238,20 @@ export class ProduceManager {
   }
 
   private collectFromCrafters(shippingBin: IShippingBin, day: number): void {
+    const output: IItem[][] = []
     for (const seeder of this._seeders) {
       const result = seeder.collect(day)
       if (result.length > 0)
-        shippingBin.add(day, ...result)
+        output.push(result)
     }
     for (const jar of this._jars) {
       const result = jar.collect(day)
       if (result.length > 0)
-        shippingBin.add(day, ...result)
+        output.push(result)
     }
+
+    if (output.length > 0)
+      shippingBin.add(day, ...output.flat())
   }
 
   private setCrafters(): void {
@@ -276,8 +288,6 @@ export class ProduceManager {
   private setCraftersDedicated(): void {
     const seeders: Seeder[] = []
     const jars: Jar[] = []
-
-    console.log('setCraftersDedicated', this._cropOptions)
 
     this._cropOptions.forEach((cropOption) => {
       for (let i = 0; i < cropOption.seeders; i++) {
@@ -385,6 +395,8 @@ export class ProduceManager {
 
   set distributionMethod(method: DistributionMethod) {
     this._distributionMethod = method
+
+    this._craftersNeedUpdate = true
   }
 
   private distributeCropsDedicated(day: number): void {
@@ -409,13 +421,30 @@ export class ProduceManager {
         }))
       }
 
+      // Helps evenly distribute crops across crafters
+      let evenCount = 0
+      const useSpreadCrops = this._managerSettings.spreadCrops
+      && crafters.length > 1
+
+      if (useSpreadCrops)
+        evenCount = Math.min(crops, Math.max(Math.round(crops / crafters.length), 1))
+
       for (const crafter of crafters) {
+        const itemToAdd = (useSpreadCrops) ? cropItems.take(evenCount) : cropItems
+
+        if (itemToAdd.count === 0)
+          break
         const isFullyInserted = crafter.insertItem({
-          item: cropItems,
+          item: itemToAdd,
           day,
         })
-        if (isFullyInserted)
+        if (cropItems.count === 0 && isFullyInserted)
           break
+
+        if (isFullyInserted)
+          continue
+        else if (useSpreadCrops) // Add the item back to the cropItems
+          cropItems.add(itemToAdd.count)
       }
 
       const itemsInserted = crops - cropItems.count
@@ -441,14 +470,31 @@ export class ProduceManager {
       else if (option === CropOption.Preserve)
         crafters = this._jars
 
+      // Helps evenly distribute crops across crafters
+      let evenCount = 0
+      const useSpreadCrops = this._managerSettings.spreadCrops
+      && crafters.length > 1
+
+      if (useSpreadCrops)
+        evenCount = Math.min(crops, Math.max(Math.round(crops / crafters.length), 1))
+
       for (const crafter of crafters) {
+        const itemToAdd = (useSpreadCrops) ? cropItems.take(evenCount) : cropItems
+
+        if (itemToAdd.count === 0)
+          break
         const isFullyInserted = crafter.insertItem({
-          item: cropItems,
+          item: itemToAdd,
           day,
         })
 
-        if (isFullyInserted)
+        if (cropItems.count === 0 && isFullyInserted)
           break
+
+        if (isFullyInserted)
+          continue
+        else if (useSpreadCrops) // Add the item back to the cropItems
+          cropItems.add(itemToAdd.count)
       }
 
       const itemsInserted = crops - cropItems.count
@@ -482,18 +528,7 @@ export class ProduceManager {
 
   set logs(logs: HarvestSimulatorLog[]) {
     this._logs = []
-
     logs.filter(log => log.day !== 0)
-    // for (const log of logs) {
-    //   // Remove negative values
-    //   // TODO: Figure out how we want to handle negative values
-    //   Object.entries(log.crops).forEach(([cropType, cropYield]) => {
-    //     if (cropYield.base < 0)
-    //       log.crops[cropType as CropType].base = 0
-    //     if (cropYield.star < 0)
-    //       log.crops[cropType as CropType].star = 0
-    //   })
-    // }
     this._logs = logs.sort((logA, logB) => logA.day - logB.day)
   }
 
@@ -522,8 +557,6 @@ export class ProduceManager {
       return
     if (this.crafterCount <= MAX_CRAFTERS)
       return
-
-    console.log('Trimming crafters')
 
     // If we're over the limit, remove crafters based on the distribution method
     switch (this._distributionMethod) {
@@ -607,8 +640,6 @@ export class ProduceManager {
     if (this.crafterCount <= MAX_CRAFTERS)
       return
 
-    console.log('Trimming crafters')
-
     while (this.crafterCount > MAX_CRAFTERS) {
       // Remove crafters in the following order: Jars, Seeders
       if (this._jars.length > 1)
@@ -624,7 +655,6 @@ export class ProduceManager {
   setCropOption(type: CropType, isStar: boolean, option: CropOption): void {
     const cropOption = this._cropOptions.find(cropOption => cropOption.cropType === type && cropOption.isStar === isStar)
 
-    console.log('setCropOption', this._cropOptions)
     if (!cropOption)
       return
 
@@ -771,6 +801,21 @@ export class ProduceManager {
 
     // Return the highest time in days, or the last harvest day, whichever is higher
     return Math.max(minutesInDays, lastHarvestDay)
+  }
+
+  // Gets the highest time, formatted as hours and minutes
+  get highestExactTime(): string {
+    const seeders = this._seeders.map(seeder => seeder.lifeTimeMinutes)
+    const jars = this._jars.map(jar => jar.lifeTimeMinutes)
+    const maxMinutes = Math.max(...seeders, ...jars)
+    const lastHarvestDay = (this._logs.length > 0) ? this._logs[this._logs.length - 1].day : 0
+    const minutesInHarvestDays = lastHarvestDay * 60
+
+    const highestTime = Math.max(minutesInHarvestDays, maxMinutes)
+
+    const hours = (Math.floor(highestTime / 60)).toString()
+    const minutes = (highestTime % 60).toString().padStart(2, '0')
+    return `${hours}:${minutes}`
   }
 }
 

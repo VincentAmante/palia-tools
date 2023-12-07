@@ -39,7 +39,8 @@ export default class ShippingBin implements IShippingBin {
    * @param item - The item to be added to the inventory.
    */
   add(dayAdded: number, ...items: IItem[]): void {
-    for (const item of items) {
+    const itemsToAdd = [...items]
+    for (const item of itemsToAdd) {
       if (this._inventory[item.id])
         this._inventory[item.id].add(item.count)
       else
@@ -48,9 +49,9 @@ export default class ShippingBin implements IShippingBin {
 
     if (dayAdded) {
       if (!this._log[dayAdded])
-        this._log[dayAdded] = []
-
-      this._log[dayAdded].push(...items)
+        this._log[dayAdded] = itemsToAdd
+      else
+        this._log[dayAdded].push(...itemsToAdd)
     }
   }
 

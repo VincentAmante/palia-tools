@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import CrafterDisplayTimeline from './CrafterDisplayTimeline.vue'
 import CrafterDisplayStats from './CrafterDisplayStats.vue'
 import type { ICrafterData } from '~/assets/scripts/garden-planner/classes/Crafters/ProduceManager'
 import type { CropType } from '@/assets/scripts/garden-planner/imports'
@@ -78,7 +77,7 @@ function getCropImg(crop: CropType, cropOption: CropOption = CropOption.Crop) {
         <div class="w-full h-full">
           <CrafterDisplayStats :crafter="crafter" />
         </div>
-        <CrafterDisplayTimeline class="hidden" :crafter="crafter" />
+        <!-- <CrafterDisplayTimeline class="hidden" :crafter="crafter" /> -->
       </li>
     </ul>
     <div

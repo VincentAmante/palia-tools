@@ -162,9 +162,6 @@ export abstract class Item implements IItem {
    * @throws Error if the count is greater than the current count.
    */
   take(count: number): CropItem {
-    if (count > this.count)
-      throw new Error('Cannot take more items than the current count')
-
     const toTake = Math.min(count, this.count)
     const clone = this.clone(toTake)
     this.count -= toTake
@@ -253,6 +250,19 @@ export class CropItem extends Item {
       this.image,
       this.price,
       this.isStar,
+      this.maxStack,
+      count,
+      this.cropType,
+    )
+  }
+
+  cloneAltQuality(count = 0, isStar: boolean = !this.isStar) {
+    return new CropItem(
+      this.name,
+      this.type,
+      this.image,
+      this.price,
+      isStar,
       this.maxStack,
       count,
       this.cropType,

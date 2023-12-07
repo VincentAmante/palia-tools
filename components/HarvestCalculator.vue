@@ -8,6 +8,7 @@ import LazyHCDay from './garden-planner/HarvestCalculator/HCDay.vue'
 import OptionCard from './garden-planner/HarvestCalculator/OptionCard.vue'
 import CropOptions from './garden-planner/HarvestCalculator/CropOptions.vue'
 import CrafterDataDisplay from './garden-planner/HarvestCalculator/CrafterDataDisplay.vue'
+import ProduceManagerSettings from './garden-planner/HarvestCalculator/ProduceManagerSettings.vue'
 import type { ICalculateValueResult, ICropOption, ICropOptions, ISimulateYieldResult } from '@/assets/scripts/garden-planner/imports'
 import { CropType, Garden } from '@/assets/scripts/garden-planner/imports'
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/Garden'
@@ -44,11 +45,24 @@ const options = useStorage('approximator-options-NOV1023', {
   level: 0,
 })
 
-const harvestData = computed<ISimulateYieldResult>(() => {
-  return props.layout.simulateYield({
+// const harvestData = computed<ISimulateYieldResult>(() => {
+//   return props.layout.simulateYield({
+//     ...options.value,
+//   })
+// })
+
+const harvestData = ref<ISimulateYieldResult | undefined>(props.layout.simulateYield({
+  ...options.value,
+}))
+
+watchPostEffect(() => {
+  harvestData.value = props.layout.simulateYield({
     ...options.value,
   })
 })
+
+// Debounce to prevent too many calculations
+const harvestDataDebounced = refDebounced(harvestData, 200)
 
 type ProduceOptions = 'crop' | 'seed' | 'preserve'
 
@@ -61,18 +75,28 @@ const cropOptions = ref(Object.values(CropType).reduce((acc, cropType) => {
 }, {} as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>))
 
 function calculateGoldValue() {
-  if (harvestData.value) {
+  if (harvestDataDebounced.value) {
     return props.layout.calculateValue(cropOptions.value as CalculateValueOptions,
-      harvestData.value,
+      harvestDataDebounced.value,
     )
   }
 }
 
-const processedYields = computed<ICalculateValueResult>(() => {
+const processedYields = ref<ICalculateValueResult | undefined>(calculateGoldValue())
+
+function triggerGoldCalculations() {
+  if (!harvestDataDebounced.value)
+    return
+
   shippingBin.value.clear()
-  produceManager.value.logs = harvestData.value.harvests
+  produceManager.value.logs = harvestDataDebounced.value.harvests
   produceManager.value.simulate(shippingBin.value)
-  return calculateGoldValue() as ICalculateValueResult
+}
+
+watchPostEffect(async () => {
+  await triggerGoldCalculations()
+
+  processedYields.value = calculateGoldValue()
 })
 
 const activeTab = ref('display')
@@ -108,7 +132,7 @@ watchEffect(() => {
 
 <template>
   <section
-    class="transition-all lg:max-w-2xl lg:h-fit rounded-none z-50 overflow-visible w-full xl:max-w-3xl pointer-events-none"
+    class="transition-all lg:max-w-2xl lg:h-fit rounded-none z-50 overflow-visible w-full xl:max-w-3xl pointer-events-none lg:mb-4"
     :class="[
       gardenTilesAreWide ? '!max-w-none px-0' : 'lg:pl-20 xl:pl-2 xl:px-4 lg:px-2',
       isTakingScreenshot.get && !gardenTilesAreWide ? 'max-w-[46rem] px-4' : '',
@@ -137,9 +161,7 @@ watchEffect(() => {
             class="text-2xl py-1 flex items-center flex-wrap gap-1 order-2"
             :class="gardenTilesAreWide ? 'text-center text-misc' : ''"
           >
-            Harvest Approximations <span
-              class="text-xs font-normal"
-            >(WIP)</span>
+            Harvest Approximations
           </h2>
           <div
             v-show="(activeTab !== 'info' && !isTakingScreenshot.get)"
@@ -162,21 +184,29 @@ watchEffect(() => {
                       placeholder
                       alt="Gold" format="webp"
                     />{{
-                      processedYields?.totalResult.totalGold.toLocaleString() }}
+                      shippingBin.totalGold.toLocaleString()
+                    }}
                   </div>
                 </div>
+
+                <p
+                  v-if="produceManager.highestTime !== 0"
+                  class="text-xs"
+                >
+                  Total Time: {{ produceManager.highestExactTime }}
+                </p>
               </div>
               <div
-                v-show="processedYields?.totalResult.totalGold !== 0"
+                v-if="shippingBin.totalGold !== 0"
                 class="divider divider-horizontal after:bg-misc before:bg-misc"
               />
               <div
-                v-show="processedYields?.totalResult.totalGold !== 0"
+                v-show="shippingBin.totalGold !== 0"
                 class="tooltip tooltip-top"
                 data-tip="Raw average is without processing time"
               >
                 <p class="flex gap-1 items-center">
-                  Raw Average:
+                  Average:
                   <span class="flex gap-1 items-center"><nuxt-img
                     src="/gold.webp"
                     class="max-h-[1rem]"
@@ -186,8 +216,7 @@ watchEffect(() => {
                     height="16"
                     :srcset="undefined"
                   />{{
-                    (Math.round(processedYields.totalResult.totalGold
-                      / (Math.ceil(produceManager.highestTime / 60)))).toLocaleString() }}</span>/ day
+                    (Math.round(shippingBin.totalGold / produceManager.highestTime)).toLocaleString() }}</span>/ day
                 </p>
               </div>
             </div>
@@ -225,7 +254,7 @@ watchEffect(() => {
         </div>
       </div>
       <div
-        v-show="(activeTab !== 'info' || isTakingScreenshot.get)"
+        v-if="(activeTab !== 'info' || isTakingScreenshot.get)"
         class="px-4 py-2 "
         :class="[
           isTakingScreenshot.get ? '' : 'hidden lg:block',
@@ -233,36 +262,49 @@ watchEffect(() => {
         ]"
       >
         <div class="bg-accent text-misc rounded-md font-semibold flex flex-col xl:flex-row items-center justify-center md:gap-1 py-2">
-          <div
-            class="tooltip tooltip-top"
-            data-tip="The last harvest before approximations are made"
-          >
-            <div class="flex gap-1 items-center ">
-              Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
-              <div class="flex gap-1 items-center">
-                <nuxt-img
-                  width="16"
-                  height="16"
-                  src="/gold.webp" class="max-h-[1rem]"
-                  :srcset="undefined"
-                  placeholder
-                  alt="Gold" format="webp"
-                />{{
-                  processedYields?.totalResult.totalGold.toLocaleString() }}
+          <div class="flex flex-col items-center">
+            <div
+              class="tooltip tooltip-top"
+              data-tip="The last harvest before approximations are made"
+            >
+              <div
+                v-if="processedYields?.totalResult.day !== undefined"
+                class="flex gap-1 items-center"
+              >
+                Last Harvest: Day
+                {{ Math.max(processedYields.totalResult.day || 0, options.days) }} —
+                <div class="flex gap-1 items-center">
+                  <nuxt-img
+                    width="16"
+                    height="16"
+                    src="/gold.webp" class="max-h-[1rem]"
+                    :srcset="undefined"
+                    placeholder
+                    alt="Gold" format="webp"
+                  />{{
+                    shippingBin.totalGold.toLocaleString() }}
+                </div>
               </div>
             </div>
+
+            <p
+              v-if="produceManager.highestTime !== 0"
+              class="text-sm font-normal"
+            >
+              Total Time: <span class="font-bold">{{ produceManager.highestExactTime }}</span>
+            </p>
           </div>
           <div
-            v-show="processedYields?.totalResult.totalGold !== 0"
+            v-if="shippingBin.totalGold !== 0"
             class="divider divider-horizontal after:bg-misc before:bg-misc"
           />
           <div
-            v-show="processedYields?.totalResult.totalGold !== 0"
+            v-if="shippingBin.totalGold !== 0"
             class="tooltip tooltip-top"
-            data-tip="Raw average is without processing time"
+            data-tip="Average gold per Palian Day/Real Life Hour"
           >
             <p class="flex gap-1 items-center">
-              Raw Average:
+              Average:
               <span class="flex gap-1 items-center"><nuxt-img
                 src="/gold.webp"
                 class="max-h-[1rem]"
@@ -272,7 +314,7 @@ watchEffect(() => {
                 height="16"
                 :srcset="undefined"
               />{{
-                (Math.round(processedYields.totalResult.totalGold
+                (Math.round(shippingBin.totalGold
                   / (Math.ceil(produceManager.highestTime)))).toLocaleString() }}</span>/ day
             </p>
           </div>
@@ -316,20 +358,20 @@ watchEffect(() => {
           >
             <LazyHCTotal
               :processed-yields="processedYields as ICalculateValueResult"
-              :harvest-data="harvestData as ISimulateYieldResult"
+              :harvest-data="harvestDataDebounced as ISimulateYieldResult"
               :crop-options="cropOptions as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>"
             />
           </div>
 
           <LazyHCDay
-            v-if="(!(isTakingScreenshot.get) && activeDisplayTab === 'day' && harvestData)"
+            v-if="(!(isTakingScreenshot.get) && activeDisplayTab === 'day' && harvestDataDebounced)"
             class="pb-4"
             :processed-yields="processedYields as ICalculateValueResult"
-            :harvest-data="harvestData as ISimulateYieldResult"
+            :harvest-data="harvestDataDebounced as ISimulateYieldResult"
             :crop-options="cropOptions as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>"
           />
           <div
-            v-if="(!(isTakingScreenshot.get) && activeDisplayTab === 'crafter' && harvestData)"
+            v-if="(!(isTakingScreenshot.get) && activeDisplayTab === 'crafter' && harvestDataDebounced)"
             class="grid"
           >
             <CrafterDataDisplay
@@ -517,8 +559,22 @@ watchEffect(() => {
           >
             <CropOptions
               :crop-options="produceManager.cropOptions as ICropOptions"
+              :has-max-crafter-limit="produceManager.managerSettings.useCrafterLimit"
+              :is-dedicated="produceManager.distributionMethod === 'Dedicated'"
               @update:crop-options="(cropOptions) => setCropOptions(cropOptions)"
               @update:crop-option="(cropOption) => setCropOption(cropOption.cropOption, cropOption.option)"
+            />
+          </div>
+          <div
+            v-if="activeOptionTab === 'crafter'"
+            class="grid gap-1 pb-2"
+          >
+            <ProduceManagerSettings
+              :manager-settings="produceManager.managerSettings"
+              :crafter-settings="produceManager.crafterSettings"
+              :crafter-counts="produceManager.manualCrafterCounts"
+              :distribution-method="produceManager.distributionMethod"
+              @update-distribution-method="(method) => produceManager.distributionMethod = method"
             />
           </div>
         </div>

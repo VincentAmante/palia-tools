@@ -16,12 +16,14 @@ import type { ICalculateValueResult, ISimulateYieldResult } from './utils/garden
 import { Jar } from './classes/Crafters/Jar'
 import type {
   CropOption,
-  DistributionMethod,
+  ICrafterCounts,
+  ICrafterSettings,
   ICropOption,
   ICropOptions,
   IManagerSettings,
 } from './classes/Crafters/ProduceManager'
 import {
+  DistributionMethod,
   ProduceManager,
 } from './classes/Crafters/ProduceManager'
 
@@ -50,10 +52,12 @@ export {
   ProduceManager,
   type ICalculateValueResult,
   type ISimulateYieldResult,
-  type DistributionMethod,
+  DistributionMethod,
   type CropOption,
   type ICropOption,
   type ICropOptions,
   type IManagerSettings,
   type PlotStat,
+  type ICrafterSettings,
+  type ICrafterCounts,
 }

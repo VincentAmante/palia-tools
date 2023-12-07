@@ -6,6 +6,9 @@ import { CropOption, CropSortOption, sortCropOptions } from '@/assets/scripts/ga
 
 const props = defineProps<{
   cropOptions: ICropOptions
+  hasMaxCrafterLimit: boolean
+  isDedicated: boolean
+
 }>()
 
 const emit = defineEmits<{
@@ -16,7 +19,21 @@ const emit = defineEmits<{
   }): void
 }>()
 
+const MAX_CRAFTER_LIMIT = 30
+
 const cropOptions = ref<ICropOptions>(props.cropOptions)
+
+const crafterCount = computed(() => {
+  let count = 0
+  for (const cropOption of cropOptions.value) {
+    if (cropOption.option === CropOption.Seed)
+      count += cropOption.seeders
+    else if (cropOption.option === CropOption.Preserve)
+      count += cropOption.jars
+  }
+
+  return count
+})
 
 const list = ref<HTMLElement | null>(null)
 useSortable(list, cropOptions, {
@@ -25,12 +42,35 @@ useSortable(list, cropOptions, {
   easing: 'cubic-bezier(1, 0, 0, 1)',
 })
 
-watchEffect(() => {
+function onChange() {
+  const optionsReverse = cropOptions.value.toReversed()
+
+  // If over the limit, trim the crafters based on the priority order
+
+  if (crafterCount.value > MAX_CRAFTER_LIMIT) {
+    for (const cropOption of optionsReverse) {
+      if (crafterCount.value <= MAX_CRAFTER_LIMIT)
+        break
+
+      if (cropOption.option === CropOption.Seed) {
+        if (cropOption.seeders > 1)
+          cropOption.seeders--
+      }
+      else if (cropOption.option === CropOption.Preserve) {
+        if (cropOption.jars > 1) {
+          console.log('decrementing', cropOption.cropType)
+          cropOption.jars--
+        }
+
+        console.log('decrementing', cropOption.cropType)
+      }
+    }
+  }
+
   emit('update:cropOptions', cropOptions.value)
-})
+}
 
 function getCropImg(crop: CropType, cropOption: CropOption = CropOption.Crop) {
-  // return crops[crop]?.image
   switch (cropOption) {
     case CropOption.Crop:
       return crops[crop]?.image
@@ -46,24 +86,32 @@ function typeHasPreserve(type: CropType) {
 }
 
 function setCropOption(cropOption: ICropOption, option: CropOption) {
-  // cropOption.option = option
-
-  // produceManager.value.setCropOption(cropOption, cropOption.isStar, option)
   emit('update:cropOption', {
     cropOption,
     option,
   })
+
+  nextTick(() => {
+    onChange()
+  })
 }
 
 function incrementCrafter(cropOption: ICropOption, option: CropOption) {
+  const limit = props.hasMaxCrafterLimit ? MAX_CRAFTER_LIMIT : Number.POSITIVE_INFINITY
+
   switch (option) {
     case CropOption.Seed:
-      cropOption.seeders++
+      if (crafterCount.value < limit)
+        cropOption.seeders++
+
       break
     case CropOption.Preserve:
-      cropOption.jars++
+      if (crafterCount.value < limit)
+        cropOption.jars++
       break
   }
+
+  onChange()
 }
 
 function decrementCrafter(cropOption: ICropOption, option: CropOption) {
@@ -77,6 +125,8 @@ function decrementCrafter(cropOption: ICropOption, option: CropOption) {
         cropOption.jars--
       break
   }
+
+  onChange()
 }
 
 function getCrafterImage(option: CropOption) {
@@ -102,7 +152,7 @@ function setStarCropOptions(cropOption: CropOption) {
     }
   }
 
-  emit('update:cropOptions', cropOptions.value)
+  onChange()
 }
 
 function setNormalCropOptions(cropOption: CropOption) {
@@ -118,7 +168,7 @@ function setNormalCropOptions(cropOption: CropOption) {
     }
   }
 
-  emit('update:cropOptions', cropOptions.value)
+  onChange()
 }
 </script>
 
@@ -244,15 +294,20 @@ function setNormalCropOptions(cropOption: CropOption) {
             </button>
           </div>
         </div>
-        <div v-if="cropOption.option !== CropOption.Crop" class="flex">
+        <div
+          v-if="(cropOption.option !== CropOption.Crop && isDedicated)" class="flex"
+        >
           <div class="flex flex-col items-center text-accent">
             <input
-              v-if="cropOption.option === CropOption.Seed" v-model="cropOption.seeders" type="number" min="0"
-              max="100" class=" input  rounded-b-none input-xs text-center text-sm"
+              v-if="cropOption.option === CropOption.Seed"
+              v-model="cropOption.seeders" type="number" min="0"
+              max="100"
+              class=" input  rounded-b-none input-xs text-center text-sm" @change="onChange"
             >
             <input
               v-if="cropOption.option === CropOption.Preserve" v-model="cropOption.jars" type="number" min="0"
               max="100" class=" input  rounded-b-none input-xs text-center text-sm"
+              @change="onChange"
             >
             <div class="flex w-full rounded-t-none justify-between ">
               <button

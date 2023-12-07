@@ -169,8 +169,6 @@ export class Jar implements ICrafter {
    * @returns True if the item was fully inserted. Used to determine if the item should be removed from the inventory.
    */
   insertItem(itemData: InsertItemArgs & { item: CropItem }): boolean {
-    console.log('insertItem', itemData.item.count)
-
     const item = itemData.item
     const matchingItems = this.getMatchingHopperSlots(item)
 
@@ -221,7 +219,6 @@ export class Jar implements ICrafter {
       }
     }
 
-    console.log(this.hopperSlots)
     return item.count === 0
   }
 
@@ -234,10 +231,13 @@ export class Jar implements ICrafter {
   }
 
   collect(day: number = 0): IItem[] {
-    for (const outputItem of this.outputSlots) {
-      this.initialiseLogCollection(day)
+    if (this.outputSlots.length === 0)
+      return []
+
+    this.initialiseLogCollection(day)
+
+    for (const outputItem of this.outputSlots)
       this._logs.collections[day].push(outputItem.logItem(outputItem.count) as CropLogItem)
-    }
 
     return this.outputSlots.splice(0, this.outputSlots.length)
   }
@@ -315,9 +315,6 @@ export class Jar implements ICrafter {
         insertions: this._logs.insertions[dayParsed],
         collections: this._logs.collections[dayParsed],
       }
-
-      if (combinedLogs[dayParsed].insertions)
-        console.log(combinedLogs[dayParsed].insertions)
 
       if (!combinedLogs[dayParsed].insertions)
         combinedLogs[dayParsed].insertions = []

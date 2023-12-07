@@ -58,6 +58,25 @@ export class Seeder implements ICrafter {
 
   private _dedicatedCrop: IDedicatedCrop | null = null
 
+  private getMaxAvailableProcesses(cropItem: CropItem): number {
+    if (!this.settings.useStackLimit || !this.settings.useHopperLimit)
+      return Number.POSITIVE_INFINITY
+
+    const matchingItems = this.getMatchingHopperSlots(cropItem)
+    let availableProcesses = Number.POSITIVE_INFINITY
+
+    const maxItems = cropItem.maxStack * (matchingItems.length + (this.maxOutputSlots - this.outputSlots.length))
+    const itemsBeforeLimit = maxItems - matchingItems.reduce((total, item) => total + item.count, 0)
+    const { seedsPerConversion } = crops[cropItem.cropType].conversionInfo
+    availableProcesses = Math.floor(itemsBeforeLimit / seedsPerConversion)
+
+    return availableProcesses
+  }
+
+  private checkOutputSlotsValidity(cropItem: CropItem, nonStar: CropItem = cropItem.cloneAltQuality(0, false)): boolean {
+    const itemIsStar = cropItem.isStar
+  }
+
   /**
    * Processes the items in the jar until the specified day.
    * @param tillDay The day until which the items should be processed. 0 or less means to ignore the day limit.
@@ -75,7 +94,11 @@ export class Seeder implements ICrafter {
         if (crop.type === CropType.None)
           throw new Error('Crop type is None')
 
-        const matchingOutputItems = this.getMatchingOutputSlots(hopperItem)
+        let matchingOutputItems = this.getMatchingOutputSlots(hopperItem)
+
+        // If using stack limit, filter out items that are already at max stack
+        if (this.settings.useStackLimit)
+          matchingOutputItems = matchingOutputItems.filter(outputItem => outputItem.count < outputItem.maxStack)
 
         // Available processes is the number of times the item can be processed till the specified day
         let availableProcesses = Math.floor(availableTime / seedProcessMinutes)
@@ -124,11 +147,11 @@ export class Seeder implements ICrafter {
 
           let amountToProcess = (this.settings.useStackLimit) ? Math.min(hopperItem.count, hopperItem.maxStack) : hopperItem.count
           amountToProcess = Math.min(amountToProcess, availableProcesses)
-          const newPreserveItem = this.createPreserveItem(hopperItem, amountToProcess)
+          const newPreserveItem = this.createSeedItem(hopperItem, amountToProcess)
           hopperItem.take(amountToProcess)
           this.outputSlots.push(newPreserveItem)
 
-          const timeToProcess = amountToProcess * preserveProcessMinutes
+          const timeToProcess = amountToProcess * seedProcessMinutes
           this._lifeTimeMinutes += timeToProcess
           this._elapsedTimeMinutes += timeToProcess
           this._goldGenerated += newPreserveItem.price * newPreserveItem.count
@@ -144,6 +167,41 @@ export class Seeder implements ICrafter {
       // Remove any empty hopper slots
       this.hopperSlots = this.hopperSlots.filter(hopperItem => hopperItem.count > 0)
     }
+  }
+
+  private insertToOutputSlots(item: CropItem): boolean {
+    if (item.count === 0)
+      throw new Error(`Item being inserted has a count of 0 ${item.type} ${item.name}`)
+
+    // Add to existing items first
+    const matchingItems = this.getMatchingOutputSlots(item)
+      .filter(outputItem => (outputItem.count < outputItem.maxStack || !this.settings.useStackLimit))
+      // Prioritise items closest to max stack
+      .sort((a, b) => a.count - b.count)
+
+    if (matchingItems.length > 0) {
+      for (const matchingItem of matchingItems) {
+        const amountToAdd = (this.settings.useStackLimit) ? Math.min(item.count, item.maxStack - matchingItem.count) : item.count
+        matchingItem.add(amountToAdd)
+        item.take(amountToAdd)
+
+        if (item.count === 0)
+          return true
+      }
+    }
+
+    do {
+      const amountToAdd = (this.settings.useStackLimit) ? Math.min(item.count, item.maxStack) : item.count
+      const newItem = item.take(amountToAdd) as CropItem
+      this.outputSlots.push(newItem)
+
+      if (item.count === 0)
+        return true
+      if (item.count < 0)
+        throw new Error(`Item count is somehow less than 0, ${item.type} ${item.name}`)
+    } while (this.outputSlots.length < this.maxOutputSlots || !this.settings.useHopperLimit)
+
+    return false
   }
 
   /**
