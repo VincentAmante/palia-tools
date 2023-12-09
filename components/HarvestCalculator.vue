@@ -3,12 +3,12 @@ import { ref, watchEffect } from 'vue'
 import { useStorage } from '@vueuse/core'
 import LazyHCInfo from './garden-planner/HarvestCalculator/HCInfo.vue'
 import HCTags from './garden-planner/HarvestCalculator/HCTags.vue'
-import LazyHCTotal from './garden-planner/HarvestCalculator/HCTotal.vue'
 import LazyHCDay from './garden-planner/HarvestCalculator/HCDay.vue'
 import OptionCard from './garden-planner/HarvestCalculator/OptionCard.vue'
 import CropOptions from './garden-planner/HarvestCalculator/CropOptions.vue'
 import CrafterDataDisplay from './garden-planner/HarvestCalculator/CrafterDataDisplay.vue'
 import ProduceManagerSettings from './garden-planner/HarvestCalculator/ProduceManagerSettings.vue'
+import ShippingBinTotal from './garden-planner/HarvestCalculator/ShippingBinTotal.vue'
 import type { ICalculateValueResult, ICropOption, ICropOptions, ISimulateYieldResult } from '@/assets/scripts/garden-planner/imports'
 import { CropType, Garden } from '@/assets/scripts/garden-planner/imports'
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/Garden'
@@ -62,7 +62,7 @@ watchPostEffect(() => {
 })
 
 // Debounce to prevent too many calculations
-const harvestDataDebounced = refDebounced(harvestData, 200)
+const harvestDataDebounced = refDebounced(harvestData, 150)
 
 type ProduceOptions = 'crop' | 'seed' | 'preserve'
 
@@ -216,7 +216,7 @@ watchEffect(() => {
                     height="16"
                     :srcset="undefined"
                   />{{
-                    (Math.round(shippingBin.totalGold / produceManager.highestTime)).toLocaleString() }}</span>/ day
+                    (Math.round(shippingBin.totalGold / produceManager.highestTime)).toLocaleString() }}</span>/ hour
                 </p>
               </div>
             </div>
@@ -315,7 +315,7 @@ watchEffect(() => {
                 :srcset="undefined"
               />{{
                 (Math.round(shippingBin.totalGold
-                  / (Math.ceil(produceManager.highestTime)))).toLocaleString() }}</span>/ day
+                  / (Math.ceil(produceManager.highestTime)))).toLocaleString() }}</span>/ hour
             </p>
           </div>
         </div>
@@ -356,10 +356,13 @@ watchEffect(() => {
             v-if="(isTakingScreenshot.get) || activeDisplayTab === 'overview'"
             class="flex flex-col gap-2 pb-3"
           >
-            <LazyHCTotal
+            <!-- <LazyHCTotal
               :processed-yields="processedYields as ICalculateValueResult"
               :harvest-data="harvestDataDebounced as ISimulateYieldResult"
               :crop-options="cropOptions as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>"
+            /> -->
+            <ShippingBinTotal
+              :shipping-bin="shippingBin as IShippingBin"
             />
           </div>
 
