@@ -20,6 +20,8 @@ export default class ShippingBin implements IShippingBin {
   // Final inventory after all items have been added
   private _inventory: Record<string, IItem> = {}
 
+  private _itemCosts: Record<string, IItem> = {}
+
   // Tracks the day that an item was added to the shipping bin
   private _log: Record<string, IItem[]> = {}
 
@@ -56,11 +58,12 @@ export default class ShippingBin implements IShippingBin {
   }
 
   addCost(dayAdded: number, ...items: IItem[]): void {
-    for (const item of items) {
-      if (this._inventory[item.id])
-        this._inventory[item.id].add(item.count)
+    const itemsToAdd = [...items]
+    for (const item of itemsToAdd) {
+      if (this._itemCosts[item.id])
+        this._itemCosts[item.id].add(item.count)
       else
-        this._inventory[item.id] = item
+        this._itemCosts[item.id] = item
     }
 
     if (dayAdded) {
@@ -78,6 +81,9 @@ export default class ShippingBin implements IShippingBin {
     let total = 0
     for (const item of Object.values(this._inventory))
       total += item.price * item.count
+
+    for (const item of Object.values(this._itemCosts))
+      total -= item.price * item.count
 
     return total
   }
@@ -126,5 +132,7 @@ export default class ShippingBin implements IShippingBin {
   clear(): void {
     this._inventory = {}
     this._log = {}
+    this._itemCosts = {}
+    this._logCosts = {}
   }
 }
