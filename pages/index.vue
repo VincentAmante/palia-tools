@@ -224,6 +224,17 @@ async function saveAsImage() {
 }
 
 const hoveredBonus = ref(Bonus.None)
+
+function onMouseDown(event: MouseEvent) {
+  if (event.button === 2)
+    rightClickIsDown.value = true
+}
+
+function onMouseUp(event: MouseEvent) {
+  if (event.button === 2)
+    rightClickIsDown.value = false
+}
+
 onMounted(() => {
   if (urlParams.layout) {
     loadCode.value = urlParams.layout as string
@@ -231,14 +242,13 @@ onMounted(() => {
   }
 
   // checks if right click is down
-  window.addEventListener('mousedown', (e) => {
-    if (e.button === 2)
-      rightClickIsDown.value = true
-  })
-  window.addEventListener('mouseup', (e) => {
-    if (e.button === 2)
-      rightClickIsDown.value = false
-  })
+  window.addEventListener('mousedown', onMouseDown)
+  window.addEventListener('mouseup', onMouseUp)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('mousedown', onMouseDown)
+  window.removeEventListener('mouseup', onMouseUp)
 })
 
 const createLayoutDialog = ref<InstanceType<typeof LayoutCreator> | null>()
