@@ -21,6 +21,8 @@ export class Seeder implements ICrafter {
 
   outputSlots: CropItem[] = []
 
+  _waitingSlot: CropItem | null = null
+
   maxOutputSlots: number = 3
 
   acceptedItems: ItemType[] = [ItemType.Crop]
@@ -58,25 +60,6 @@ export class Seeder implements ICrafter {
 
   private _dedicatedCrop: IDedicatedCrop | null = null
 
-  private getMaxAvailableProcesses(cropItem: CropItem): number {
-    if (!this.settings.useStackLimit || !this.settings.useHopperLimit)
-      return Number.POSITIVE_INFINITY
-
-    const matchingItems = this.getMatchingHopperSlots(cropItem)
-    let availableProcesses = Number.POSITIVE_INFINITY
-
-    const maxItems = cropItem.maxStack * (matchingItems.length + (this.maxOutputSlots - this.outputSlots.length))
-    const itemsBeforeLimit = maxItems - matchingItems.reduce((total, item) => total + item.count, 0)
-    const { seedsPerConversion } = crops[cropItem.cropType].conversionInfo
-    availableProcesses = Math.floor(itemsBeforeLimit / seedsPerConversion)
-
-    return availableProcesses
-  }
-
-  private checkOutputSlotsValidity(cropItem: CropItem, nonStar: CropItem = cropItem.cloneAltQuality(0, false)): boolean {
-    const itemIsStar = cropItem.isStar
-  }
-
   /**
    * Processes the items in the jar until the specified day.
    * @param tillDay The day until which the items should be processed. 0 or less means to ignore the day limit.
@@ -86,7 +69,14 @@ export class Seeder implements ICrafter {
     // 0 or less means to ignore the day limit
     const dayInMinutes = (tillDay > 0) ? tillDay * DAY_IN_MINUTES : Number.POSITIVE_INFINITY
 
+    if (this._waitingSlot) {
+      this._goldGenerated += (this._waitingSlot.price * this._waitingSlot.count)
+      this.insertToOutputSlots(this._waitingSlot)
+      this._waitingSlot = null
+    }
+
     try {
+      // TODO: Add a check to take from multiple hopper slots if the item taken is more than the max stack
       for (const hopperItem of this.hopperSlots) {
         const availableTime = dayInMinutes - this._lifeTimeMinutes
         const crop = crops[hopperItem.cropType]
@@ -94,70 +84,64 @@ export class Seeder implements ICrafter {
         if (crop.type === CropType.None)
           throw new Error('Crop type is None')
 
-        let matchingOutputItems = this.getMatchingOutputSlots(hopperItem)
-
-        // If using stack limit, filter out items that are already at max stack
-        if (this.settings.useStackLimit)
-          matchingOutputItems = matchingOutputItems.filter(outputItem => outputItem.count < outputItem.maxStack)
-
         // Available processes is the number of times the item can be processed till the specified day
         let availableProcesses = Math.floor(availableTime / seedProcessMinutes)
+
         if (availableProcesses === 0)
           return
 
-        matchingOutputItems.forEach((outputItem) => {
-          switch (true) {
-            case hopperItem.count === 0:
-            case availableProcesses === 0:
-              return
-            case availableProcesses < 0:
-              throw new Error('maxProcesses is somehow less than 0')
+        availableProcesses = Math.min(this.getMaxAvailableProcesses(hopperItem), availableProcesses)
+        availableProcesses = Math.min(Math.floor(hopperItem.count / cropsPerSeed), availableProcesses)
+
+        if (hopperItem.isStar) {
+          const nonStarItem = hopperItem.cloneAltQuality(0, false)
+          availableProcesses = Math.min(this.getMaxCraftableExtraSeeds(nonStarItem), availableProcesses)
+        }
+
+        if (availableProcesses === 0)
+          return
+
+        const processableSeeds = Math.floor(hopperItem.count / cropsPerSeed)
+
+        const processes = Math.min(processableSeeds, availableProcesses)
+
+        hopperItem.take(processes * cropsPerSeed) as CropItem
+
+        const seedsMade = processes * seedsPerConversion
+
+        const seedItem = createSeedItem(hopperItem, seedsMade)
+
+        this._goldGenerated += (seedItem.price * seedItem.count)
+        this._elapsedTimeMinutes += (processes * seedProcessMinutes)
+        this._lifeTimeMinutes += (processes * seedProcessMinutes)
+
+        this.insertToOutputSlots(seedItem)
+
+        // If there's time left before the day ends, process the next item and add it to the waiting slot
+        if (this._lifeTimeMinutes < (tillDay * DAY_IN_MINUTES)) {
+          const nextHopperItem = this.hopperSlots[0]
+          if (nextHopperItem && nextHopperItem.count >= cropsPerSeed) {
+            const nextCrop = crops[nextHopperItem.cropType]
+            const { seedProcessMinutes } = nextCrop.conversionInfo
+
+            const roomForOneProcess = this.getMaxAvailableProcesses(nextHopperItem) > 0
+
+            if (roomForOneProcess) {
+              const nextSeedItem = createSeedItem(nextHopperItem, seedsPerConversion)
+
+              this._waitingSlot = nextSeedItem
+
+              nextHopperItem.take(cropsPerSeed) as CropItem
+
+              this._elapsedTimeMinutes += seedProcessMinutes
+
+              this._lifeTimeMinutes += seedProcessMinutes
+            }
           }
-
-          let amountToProcess = Math.min(outputItem.maxStack - outputItem.count, hopperItem.count)
-          amountToProcess = Math.min(amountToProcess, availableProcesses)
-
-          if (!this.settings.useStackLimit)
-            amountToProcess = hopperItem.count
-
-          const timeToProcess = amountToProcess * seedProcessMinutes
-
-          const newPreserveItem = this.createSeedItem(hopperItem, amountToProcess)
-          hopperItem.take(amountToProcess)
-          outputItem.add(amountToProcess)
-
-          this._lifeTimeMinutes += timeToProcess
-          this._elapsedTimeMinutes += timeToProcess
-          this._goldGenerated += newPreserveItem.price * newPreserveItem.count
-          // Now that the item has been processed, reduce the available processes for next checks
-          availableProcesses -= amountToProcess
-        })
+        }
 
         if (hopperItem.count === 0)
           continue
-
-        // If there are still items left, try adding them to empty slots
-        while (hopperItem.count > 0 && this.outputSlots.length < this.maxOutputSlots) {
-          switch (true) {
-            case availableProcesses === 0:
-              return
-            case availableProcesses < 0:
-              throw new Error('maxProcesses is somehow less than 0')
-          }
-
-          let amountToProcess = (this.settings.useStackLimit) ? Math.min(hopperItem.count, hopperItem.maxStack) : hopperItem.count
-          amountToProcess = Math.min(amountToProcess, availableProcesses)
-          const newPreserveItem = this.createSeedItem(hopperItem, amountToProcess)
-          hopperItem.take(amountToProcess)
-          this.outputSlots.push(newPreserveItem)
-
-          const timeToProcess = amountToProcess * seedProcessMinutes
-          this._lifeTimeMinutes += timeToProcess
-          this._elapsedTimeMinutes += timeToProcess
-          this._goldGenerated += newPreserveItem.price * newPreserveItem.count
-
-          availableProcesses -= amountToProcess
-        }
       }
     }
     catch (error) {
@@ -169,7 +153,7 @@ export class Seeder implements ICrafter {
     }
   }
 
-  private insertToOutputSlots(item: CropItem): boolean {
+  insertToOutputSlots(item: CropItem): boolean {
     if (item.count === 0)
       throw new Error(`Item being inserted has a count of 0 ${item.type} ${item.name}`)
 
@@ -193,6 +177,7 @@ export class Seeder implements ICrafter {
     do {
       const amountToAdd = (this.settings.useStackLimit) ? Math.min(item.count, item.maxStack) : item.count
       const newItem = item.take(amountToAdd) as CropItem
+
       this.outputSlots.push(newItem)
 
       if (item.count === 0)
@@ -228,11 +213,15 @@ export class Seeder implements ICrafter {
    * @returns True if the item was fully inserted. Used to determine if the item should be removed from the inventory.
    */
   insertItem(itemData: InsertItemArgs & { item: CropItem }): boolean {
-    // throw new Error('Method not implemented.')
     const item = itemData.item
     const matchingItems = this.getMatchingHopperSlots(item)
 
-    const dayInMinutes = itemData.day * DAY_IN_MINUTES
+    if (itemData.day < 1)
+      throw new Error('Day is less than 1')
+
+    const dayInMinutes = (itemData.day) * DAY_IN_MINUTES
+
+    const { cropsPerSeed } = crops[item.cropType].conversionInfo
 
     // If there are matching items, add to them first
     if (matchingItems.length) {
@@ -244,8 +233,17 @@ export class Seeder implements ICrafter {
             throw new Error('Item count is somehow less than 0')
         }
 
-        const addableAmount = matchingItem.maxStack - matchingItem.count
-        const amountToAdd = (this.settings.useStackLimit) ? Math.min(item.count, addableAmount) : item.count
+        const addableAmount = (matchingItem.maxStack - matchingItem.count)
+
+        if (addableAmount < cropsPerSeed) {
+          // console.log('Addable amount is less than crops per seed', addableAmount, cropsPerSeed)
+          return false
+        }
+
+        let amountToAdd = (this.settings.useStackLimit) ? Math.min(item.count, addableAmount) : item.count
+
+        // Reduce the amount to add to the nearest multiple of crops per seed
+        amountToAdd = amountToAdd - ((matchingItem.count + amountToAdd) % cropsPerSeed)
         const newItem = item.take(amountToAdd) as CropItem
         matchingItem.count += newItem.count
 
@@ -265,7 +263,13 @@ export class Seeder implements ICrafter {
 
     // If there are still items left, try adding them to empty slots
     while (item.count > 0 && (this.hopperSlots.length < this.maxHopperSlots || !this.settings.useHopperLimit)) {
-      const amountToAdd = (this.settings.useStackLimit) ? Math.min(item.count, item.maxStack) : item.count
+      let amountToAdd = (this.settings.useStackLimit) ? Math.min(item.count, item.maxStack) : item.count
+      amountToAdd = amountToAdd - (amountToAdd % cropsPerSeed)
+
+      if (amountToAdd < cropsPerSeed) {
+        // console.log('Amount to add is less than crops per seed', amountToAdd, cropsPerSeed)
+        return false
+      }
 
       // const newItem = new CropItem(item.name, ItemType.Crop, item.image, item.price, item.isStar, item.maxStack, amountToAdd, item.cropType)
       const newItem = item.take(amountToAdd) as CropItem
@@ -282,6 +286,65 @@ export class Seeder implements ICrafter {
     return item.count === 0
   }
 
+  /**
+   *  When processing a star crop, we need room for at least 1 non-star seed to be made
+   * @param item - The item to check for availability, must be the non-star version of the item
+   * @returns
+   */
+  private getMaxCraftableExtraSeeds(item: CropItem): number {
+    const { useHopperLimit, useStackLimit } = this.settings
+
+    if (item.isStar)
+      throw new Error('Item is a star item')
+
+    if (!useHopperLimit || !useStackLimit)
+      return Number.POSITIVE_INFINITY
+    // Processing star items require room for at least 1 non-star item
+
+    // Get any matching items in the output slots, excluding items that are already at max stack
+    const matchingItems = this.getMatchingOutputSlots(item).filter(hopperItem => hopperItem.count < hopperItem.maxStack)
+
+    if (this.outputSlots.length >= this.maxOutputSlots) {
+      if (matchingItems.length === 0)
+        return 0
+    }
+
+    let craftableSeeds = Math.max(0, (this.maxOutputSlots - this.outputSlots.length) * item.maxStack)
+
+    const spaceWithinExistingSlots = (matchingItems.length * item.maxStack) - matchingItems.reduce((total, item) => total + item.count, 0)
+    craftableSeeds += Math.max(0, spaceWithinExistingSlots)
+
+    return craftableSeeds
+  }
+
+  /**
+   * Regular method for getting the max craftable seeds
+   * @param item - The item to check for availability
+   */
+  private getMaxAvailableProcesses(cropItem: CropItem): number {
+    if (!this.settings.useStackLimit || !this.settings.useHopperLimit)
+      return Number.POSITIVE_INFINITY
+
+    const matchingItems = this.getMatchingHopperSlots(cropItem).filter(hopperItem => hopperItem.count < hopperItem.maxStack)
+
+    if (this.outputSlots.length >= this.maxOutputSlots) {
+      if (matchingItems.length === 0)
+        return 0
+    }
+
+    let availableProcesses = 0
+
+    const maxItems = cropItem.maxStack * (matchingItems.length + Math.max(0, this.maxOutputSlots - this.outputSlots.length))
+
+    const itemsBeforeLimit = maxItems - matchingItems.reduce((total, item) => total + item.count, 0)
+
+    const { seedsPerConversion } = crops[cropItem.cropType].conversionInfo
+
+    availableProcesses = Math.floor(itemsBeforeLimit / seedsPerConversion)
+
+    return availableProcesses
+  }
+
   private getMatchingHopperSlots(item: CropItem): CropItem[] {
     return this.hopperSlots.filter(hopperItem => item.equals(hopperItem))
   }
@@ -291,10 +354,13 @@ export class Seeder implements ICrafter {
   }
 
   collect(day: number = 0): IItem[] {
-    for (const outputItem of this.outputSlots) {
-      this.initialiseLogCollection(day)
+    if (this.outputSlots.length === 0)
+      return []
+
+    this.initialiseLogCollection(day)
+
+    for (const outputItem of this.outputSlots)
       this._logs.collections[day].push(outputItem.logItem(outputItem.count) as CropLogItem)
-    }
 
     return this.outputSlots.splice(0, this.outputSlots.length)
   }
@@ -308,29 +374,6 @@ export class Seeder implements ICrafter {
       this.settings.useStackLimit = settings.useStackLimit
     if (settings.useHopperLimit !== undefined)
       this.settings.useHopperLimit = settings.useHopperLimit
-  }
-
-  /**
-   * Creates a preserved crop item based on the given crop item and count.
-   *
-   * @param item - The crop item to be preserved.
-   * @param count - The number of crop items to be preserved.
-   * @returns The preserved crop item.
-   */
-  private createSeedItem(item: CropItem, count: number): CropItem {
-    const image = crops[item.cropType].preserveImage
-    const price = (item.isStar) ? crops[item.cropType].goldValues.preserveStar : crops[item.cropType].goldValues.preserve
-    const preserveItem = new CropItem(
-      item.name,
-      ItemType.Seed,
-      image,
-      price,
-      item.isStar,
-      item.maxStack,
-      count,
-      item.cropType,
-    )
-    return preserveItem
   }
 
   get elapsedTimeMinutes(): number {
@@ -365,16 +408,47 @@ export class Seeder implements ICrafter {
       insertions: CropLogItem[]
       collections: CropLogItem[]
     }> = {}
-
-    const days = Object.keys(this._logs.insertions)
+    const days = new Set([...Object.keys(this._logs.insertions), ...Object.keys(this._logs.collections)])
     days.forEach((day) => {
       const dayParsed = Number.parseInt(day)
       combinedLogs[dayParsed] = {
         insertions: this._logs.insertions[dayParsed],
         collections: this._logs.collections[dayParsed],
       }
+
+      if (!combinedLogs[dayParsed].insertions)
+        combinedLogs[dayParsed].insertions = []
+      if (!combinedLogs[dayParsed].collections)
+        combinedLogs[dayParsed].collections = []
     })
 
     return combinedLogs
   }
+
+  get hasItemsInside(): boolean {
+    return this.hopperSlots.length > 0 || this.outputSlots.length > 0 || this._waitingSlot !== null
+  }
+}
+
+/**
+   * Creates a preserved crop item based on the given crop item and count.
+   *
+   * @param item - The crop item to be preserved.
+   * @param count - The number of crop items to be preserved.
+   * @returns The preserved crop item.
+   */
+function createSeedItem(item: CropItem, count: number): CropItem {
+  const image = crops[item.cropType].seedImage
+  const price = (item.isStar) ? crops[item.cropType].goldValues.seedStar : crops[item.cropType].goldValues.seed
+  const preserveItem = new CropItem(
+    item.name,
+    ItemType.Seed,
+    image,
+    price,
+    item.isStar,
+    item.maxStack,
+    count,
+    item.cropType,
+  )
+  return preserveItem
 }

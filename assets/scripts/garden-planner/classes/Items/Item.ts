@@ -165,6 +165,7 @@ export abstract class Item implements IItem {
     const toTake = Math.min(count, this.count)
     const clone = this.clone(toTake)
     this.count -= toTake
+
     return clone
   }
 

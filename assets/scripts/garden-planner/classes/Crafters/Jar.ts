@@ -324,4 +324,8 @@ export class Jar implements ICrafter {
 
     return combinedLogs
   }
+
+  get hasItemsInside(): boolean {
+    return this.hopperSlots.length > 0 || this.outputSlots.length > 0
+  }
 }

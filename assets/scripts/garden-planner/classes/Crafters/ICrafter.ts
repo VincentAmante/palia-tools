@@ -69,4 +69,6 @@ export interface ICrafter {
     insertions: LoggableItem[] | CropLogItem[]
     collections: LoggableItem[] | CropLogItem[]
   }>
+
+  get hasItemsInside(): boolean
 }
