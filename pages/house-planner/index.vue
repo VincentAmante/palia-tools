@@ -110,7 +110,12 @@ definePageMeta({
                 Improve performance (SUPER laggy right now)
               </li>
               <li>
-                Fix price calculations (does not account price increase after a certain amount of items)
+                <span class="line-through">
+                  Fix price calculations (does not account price increase after a certain amount of items)
+                </span>
+                <span class="font-bold ml-2">
+                  Made to match with wiki prices
+                </span>
               </li>
               <li class="line-through">
                 Add porch and door support (currently facing snapping issues)

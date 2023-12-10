@@ -20,6 +20,8 @@ export class LargeHouse extends Building {
   price = {
     base: 10000,
     perExtraBuilding: 1250,
+    increaseIncrement: 750,
+    increaseInterval: 10,
   }
 
   materials = {
