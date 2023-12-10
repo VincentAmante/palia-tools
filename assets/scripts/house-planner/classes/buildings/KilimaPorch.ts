@@ -34,6 +34,8 @@ export default class KilimaPorch extends Building {
   price = {
     base: 1500,
     perExtraBuilding: 100,
+    increaseIncrement: 100,
+    increaseInterval: 11,
   }
 
   materials = {
