@@ -32,7 +32,7 @@ async function paste() {
     </template>
     <template #body>
       <div class="card card-compact">
-        <div class="card-body bg-palia-dark-blue p-4 px-3 rounded-md flex flex-col relative">
+        <div class="relative flex flex-col p-4 px-3 rounded-md card-body bg-palia-dark-blue">
           <p class="card-title">
             Clipboard
           </p>
@@ -42,7 +42,7 @@ async function paste() {
           />
           <div class="card-actions">
             <button
-              class="btn btn-sm normal-case btn-ghost"
+              class="normal-case btn btn-sm btn-ghost"
               @click="paste()"
             >
               Paste Code
@@ -51,7 +51,7 @@ async function paste() {
         </div>
       </div>
 
-      <button class="btn normal-case  w-fit" @click="() => load(loadCode)">
+      <button class="normal-case btn w-fit" @click="() => load(loadCode)">
         Load
       </button>
     </template>

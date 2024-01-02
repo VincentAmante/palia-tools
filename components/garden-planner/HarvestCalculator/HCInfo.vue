@@ -1,11 +1,11 @@
 <template>
-  <div v-once class="flex flex-col gap-2 py-4 px-2 text-neutral">
-    <div class="px-2 grid gap-2">
-      <div class="bg-accent p-3 rounded-md">
-        <h3 class="font-bold text-lg uppercase">
+  <div v-once class="flex flex-col gap-2 px-2 py-4 text-neutral">
+    <div class="grid gap-2 px-2">
+      <div class="p-3 rounded-md bg-accent">
+        <h3 class="text-lg font-bold uppercase">
           Note
         </h3>
-        <div class="py-2 flex flex-col gap-1">
+        <div class="flex flex-col gap-1 py-2">
           <div class="text-sm">
             This tool uses information on crops gathered
             from
@@ -13,7 +13,7 @@
             <NuxtLink
               href="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
               target="_blank"
-              class="items-center gap-1 text-harvest-boost-dark inline-block font-bold"
+              class="items-center inline-block gap-1 font-bold text-harvest-boost-dark"
             >
               <font-awesome-icon
                 :icon="['fas', 'arrow-up-right-from-square']"
@@ -24,7 +24,7 @@
             and their
             <NuxtLink
               to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
-              target="_blank" class="inline-block gap-1 text-harvest-boost-dark font-bold"
+              target="_blank" class="inline-block gap-1 font-bold text-harvest-boost-dark"
             >
               <font-awesome-icon
                 :icon="['fas', 'arrow-up-right-from-square']"
@@ -40,27 +40,27 @@
           </p>
         </div>
       </div>
-      <div class="bg-accent p-3 rounded-md ">
-        <h3 class="font-bold text-lg ">
+      <div class="p-3 rounded-md bg-accent ">
+        <h3 class="text-lg font-bold ">
           How it works (8/9/2023)
         </h3>
-        <ol class="list-inside list-decimal text-sm">
+        <ol class="text-sm list-decimal list-inside">
           <li>The planner estimates crop yields, factoring in [Quality, Harvest] Boosts, and star chance of crops.</li>
           <li>Using the provided yields, it calculates the gold value in the form you wish to sell them (Crop/Seed/Preserve)</li>
         </ol>
       </div>
     </div>
-    <div class="px-2  pb-3">
-      <div class="bg-accent grid gap-2 p-3 rounded-md">
-        <h3 class="font-bold text-lg">
+    <div class="px-2 pb-3">
+      <div class="grid gap-2 p-3 rounded-md bg-accent">
+        <h3 class="text-lg font-bold">
           Assumptions (11/26/2023)
         </h3>
-        <ul class="list-inside list-disc text-sm grid gap-1">
+        <ul class="grid gap-1 text-sm list-disc list-inside">
           <li>
             <span class="font-black">
               Planner Formula for Star Chance:
             </span>
-            <p class="bg-neutral p-1 rounded-md text-white w-fit px-2 ml-5">
+            <p class="p-1 px-2 ml-5 text-white rounded-md bg-neutral w-fit">
               <code>0.25 + (0.25 * useStarSeeds) + (0.02 * level) + (0.5 * hasQualityBoost)</code>
             </p>
             <p class="ml-5">
@@ -72,7 +72,7 @@
             <span class="font-black">
               Assumptions that result in the Planner Formula:
             </span>
-            <ul class="list-inside list-disc">
+            <ul class="list-disc list-inside">
               <li class="ml-5">
                 Star Seed + Quality Boost stacks up to 100% star chance (hence +50% from quality boost).
               </li>
@@ -89,7 +89,7 @@
           </li>
 
           <li class="">
-            <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
+            <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
             Weed Chance is not accounted for due to their unreliable or undocumented behaviour.
           </li>
           <li>

@@ -33,15 +33,15 @@ function getCropImg(crop: CropType, cropOption: CropOption = CropOption.Crop) {
 </script>
 
 <template>
-  <section class="overflow-y-auto max-h-72 pb-3">
+  <section class="pb-3 overflow-y-auto max-h-72">
     <ul
       v-if="craftersData && craftersData.length > 0"
-      class="grid text-misc gap-2 py-2 mb-2 max-w-full"
+      class="grid max-w-full gap-2 py-2 mb-2 text-misc"
     >
       <li
         v-for="(crafter, index) in craftersData"
         :key="index"
-        class="p-1 bg-secondary rounded-md flex w-max min-w-full"
+        class="flex min-w-full p-1 rounded-md bg-secondary w-max"
       >
         <div class="flex flex-col items-center p-1">
           <nuxt-img
@@ -61,11 +61,11 @@ function getCropImg(crop: CropType, cropOption: CropOption = CropOption.Crop) {
               :alt="crafter.dedicatedCrop.type"
               width="64"
               height="64"
-              class="w-8 h-8 object-contain"
+              class="object-contain w-8 h-8"
             />
             <p
               v-if="crafter.dedicatedCrop?.isStarred"
-              class="absolute left-0 bottom-0 p-1"
+              class="absolute bottom-0 left-0 p-1"
             >
               <font-awesome-icon
                 class="text-quality-increase"
@@ -82,9 +82,9 @@ function getCropImg(crop: CropType, cropOption: CropOption = CropOption.Crop) {
     </ul>
     <div
       v-else
-      class="flex flex-col items-center justify-center text-misc bg-accent py-6 rounded-md text-opacity-50 font-bold"
+      class="flex flex-col items-center justify-center py-6 font-bold text-opacity-50 rounded-md text-misc bg-accent"
     >
-      <p class=" font-bold">
+      <p class="font-bold ">
         Add crafters to see data here
       </p>
     </div>

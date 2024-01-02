@@ -71,7 +71,7 @@ function minutesToHours(minutes: number) {
 </script>
 
 <template>
-  <div class="flex flex-col w-full p-2 gap-y-2 text-sm">
+  <div class="flex flex-col w-full p-2 text-sm gap-y-2">
     <div class="w-fit">
       <div class="tooltip" data-tip="Total time includes the wait for harvests & idle time">
         <p class="w-full">
@@ -98,7 +98,7 @@ function minutesToHours(minutes: number) {
       <p class="text-sm">
         Input
       </p>
-      <ul class="flex flex-wrap bg-primary p-1 rounded-md h-full">
+      <ul class="flex flex-wrap h-full p-1 rounded-md bg-primary">
         <li
           v-for="(insertion, index) in summary.insertions"
           :key="index"
@@ -117,7 +117,7 @@ function minutesToHours(minutes: number) {
       <p class="text-sm">
         Output
       </p>
-      <ul class="flex flex-wrap bg-primary p-1 rounded-md h-fit">
+      <ul class="flex flex-wrap p-1 rounded-md bg-primary h-fit">
         <li
           v-for="(insertion, index) in summary.collections"
           :key="index"

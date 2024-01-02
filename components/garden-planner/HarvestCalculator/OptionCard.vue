@@ -9,17 +9,17 @@ defineProps({
 <template>
   <label
     :for="label"
-    class="rounded-md p-2 px-3 bg-accent text-misc flex flex-col justify-start"
+    class="flex flex-col justify-start p-2 px-3 rounded-md bg-accent text-misc"
     :class="(disabled) ? 'opacity-50' : ''"
   >
-    <div class="flex flex-col items-center text-center gap-1">
+    <div class="flex flex-col items-center gap-1 text-center">
       <p class="py-1 font-bold">
         {{ name }}
       </p>
-      <div class="flex gap-2 items-center">
+      <div class="flex items-center gap-2">
         <slot name="input" />
       </div>
-      <div class="text-xs max-w-xs">
+      <div class="max-w-xs text-xs">
         <slot name="labels" />
       </div>
     </div>

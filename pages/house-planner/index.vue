@@ -17,13 +17,13 @@ definePageMeta({
 
 <template>
   <main class="flex flex-col gap-2 p-4 px-2 lg:px-12">
-    <div class="bg-warning p-2 pt-4 rounded-md lg:mx-8 mb-2 flex flex-col items-center">
-      <div class="flex flex-col gap-1  text-neutral text-center">
+    <div class="flex flex-col items-center p-2 pt-4 mb-2 rounded-md bg-warning lg:mx-8">
+      <div class="flex flex-col gap-1 text-center text-neutral">
         <font-awesome-icon :icon="['fas', 'screwdriver-wrench']" class="text-xl" />
-        <h2 class="font-black text-xl">
+        <h2 class="text-xl font-black">
           In Prototype Phase
         </h2>
-        <p class="text-sm max-w-xl font-normal">
+        <p class="max-w-xl text-sm font-normal">
           This tool is released primarily as a proof-of-concept and is not ready for regular use.
           Many features are missing and bugs are to be expected.
         </p>
@@ -34,11 +34,11 @@ definePageMeta({
     </ClientOnly>
 
     <section class="px-2 mt-4">
-      <div class="bg-palia-blue outline outline-1 outline-accent p-4 rounded-md flex flex-col items-center justify-center">
-        <h2 class="font-bold text-lg uppercase pb-3">
+      <div class="flex flex-col items-center justify-center p-4 rounded-md bg-palia-blue outline outline-1 outline-accent">
+        <h2 class="pb-3 text-lg font-bold uppercase">
           Controls
         </h2>
-        <div class="grid grid-cols-2 lg:grid-flow-col gap-4 text-center">
+        <div class="grid grid-cols-2 gap-4 text-center lg:grid-flow-col">
           <div>
             <kbd class="kbd kbd-lg">Left Click</kbd>
             <p>Select/Place</p>
@@ -64,13 +64,13 @@ definePageMeta({
         </div>
       </div>
     </section>
-    <div class="flex flex-col lg:flex-row justify-between lg:mx-2 gap-2">
-      <section class="collapse bg-base-200 rounded-md mt-4 h-fit collapse-arrow">
+    <div class="flex flex-col justify-between gap-2 lg:flex-row lg:mx-2">
+      <section class="mt-4 rounded-md collapse bg-base-200 h-fit collapse-arrow">
         <input type="checkbox">
-        <div class="collapse-title text-2xl font-medium">
+        <div class="text-2xl font-medium collapse-title">
           Quick Dev Note
         </div>
-        <div class="collapse-content max-w-xl">
+        <div class="max-w-xl collapse-content">
           <div class="flex flex-col gap-2">
             <p class="font-bold">
               Hey folks!
@@ -95,12 +95,12 @@ definePageMeta({
           </div>
         </div>
       </section>
-      <section class="collapse bg-base-200 rounded-md mt-4 h-fit collapse-arrow">
+      <section class="mt-4 rounded-md collapse bg-base-200 h-fit collapse-arrow">
         <input type="checkbox">
-        <div class="collapse-title text-2xl font-medium">
+        <div class="text-2xl font-medium collapse-title">
           Goals
         </div>
-        <div class="collapse-content max-w-xl">
+        <div class="max-w-xl collapse-content">
           <div class="flex flex-col gap-2">
             <p class="text-sm">
               Leaving this here both as a temp roadmap and so I can remember what I'm doing.
@@ -119,7 +119,7 @@ definePageMeta({
                 Adjust collision mechanics to imitate in-game behaviour better
               </li>
               <li class="ml-5 text-sm">
-                Looking for assistance on this, please send notes to <span class="font-black italic">.aisen</span> on Discord
+                Looking for assistance on this, please send notes to <span class="italic font-black">.aisen</span> on Discord
                 if you have images on building interactions/connections.
               </li>
               <li class="ml-5 text-sm">

@@ -299,21 +299,21 @@ definePageMeta({
     <ExportModal ref="exportModal" @download-image="async () => await saveAsImage()" />
     <div ref="display" class="">
       <div
-        class="grid bg-accent lg:grid-cols-7 overflow-hidden pt-2"
+        class="grid pt-2 overflow-hidden bg-accent lg:grid-cols-7"
         :class="[isTakingScreenshot.get ? 'grid-cols-7' : '']"
       >
         <section
           v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
-          class="flex flex-col w-full lg:col-span-4 order-1 px-4 py-2"
+          class="flex flex-col order-1 w-full px-4 py-2 lg:col-span-4"
           :class="[isTakingScreenshot.get ? 'col-span-4' : '']"
         >
           <h3 class="font-semibold text-palia-blue">
             Crops
           </h3>
-          <div class="flex flex-wrap gap-2 pt-2 w-full">
+          <div class="flex flex-wrap w-full gap-2 pt-2">
             <button
               id="crop-eraser" aria-label="Select Crop Eraser"
-              class="relative btn btn-square btn-secondary isolate border border-misc"
+              class="relative border btn btn-square btn-secondary isolate border-misc"
               :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
               :in-picture-mode="isTakingScreenshot.get" @click="selectedItem.select('crop-erase')"
             >
@@ -329,7 +329,7 @@ definePageMeta({
           </div>
         </section>
         <section
-          class="flex flex-wrap lg:justify-end px-4 py-2 lg:col-span-3 order-2"
+          class="flex flex-wrap order-2 px-4 py-2 lg:justify-end lg:col-span-3"
           :class="[isTakingScreenshot.get ? 'col-span-3' : '']"
         >
           <div v-if="!(isTakingScreenshot.get && fertiliserCount <= 0)">
@@ -339,7 +339,7 @@ definePageMeta({
             <div class="flex flex-wrap gap-2 pt-2">
               <button
                 id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
-                class="relative btn btn-square btn-secondary isolate border border-misc"
+                class="relative border btn btn-square btn-secondary isolate border-misc"
                 :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
                 @click="selectedItem.select('fertiliser-erase')"
               >
@@ -358,18 +358,18 @@ definePageMeta({
             </div>
           </div>
         </section>
-        <AppDivider class="mx-4 my-6 mt-4 lg:col-span-7 order-3" :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
+        <AppDivider class="order-3 mx-4 my-6 mt-4 lg:col-span-7" :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
         <div
-          v-if="garden.activePlotCount > 9" class="py-1 px-3 md:px-8 lg:px-12 lg:col-span-7 order-4"
+          v-if="garden.activePlotCount > 9" class="order-4 px-3 py-1 md:px-8 lg:px-12 lg:col-span-7"
           :class="[isTakingScreenshot.get ? 'col-span-7' : '']"
         >
-          <p class="text-warning items-center flex gap-2">
+          <p class="flex items-center gap-2 text-warning">
             <font-awesome-icon :icon="['fas', 'exclamation-triangle']" />
             Over max plot count
           </p>
         </div>
         <section
-          class="order-5 lg:px-3 pt-0 pb-4" :class="[
+          class="order-5 pt-0 pb-4 lg:px-3" :class="[
             (gardenTilesAreWide) ? 'lg:col-span-7 overflow-auto' : 'lg:col-span-3',
             (isTakingScreenshot.get && gardenTilesAreWide) ? ''
             : (isTakingScreenshot.get) ? 'col-span-3' : '',
@@ -392,71 +392,71 @@ definePageMeta({
           ]" :layout="garden as Garden"
         />
         <div
-          class="flex bg-primary px-2 lg:px-4 justify-center " :class="[
+          class="flex justify-center px-2 bg-primary lg:px-4 " :class="[
             (gardenTilesAreWide) ? 'lg:col-span-7' : 'lg:order-7 lg:col-span-3 lg:justify-start',
             (isTakingScreenshot.get) ? 'order-7 col-span-3' : 'order-6',
           ]"
         >
           <StatsDisplay
-            ref="statDisplay" v-model:hovered-bonus="hoveredBonus" class="pb-2 pt-2 w-fit "
+            ref="statDisplay" v-model:hovered-bonus="hoveredBonus" class="pt-2 pb-2 w-fit "
             :garden-tiles-are-wide="gardenTilesAreWide" :plot-stat-total="plotStat"
           />
         </div>
         <div
           v-show="isTakingScreenshot.get" id="watermark"
-          class="px-4 flex justify-end items-start w-full order-8 lg:col-span-4 bg-primary" :class="[
+          class="flex items-start justify-end order-8 w-full px-4 lg:col-span-4 bg-primary" :class="[
             (gardenTilesAreWide) ? 'lg:col-span-7' : 'lg:col-span-3',
             (isTakingScreenshot.get) ? 'col-span-4' : '',
           ]"
         >
-          <div class="flex flex-row-reverse p-2 text-right gap-2 leading-1 items-center rounded-md w-full">
+          <div class="flex flex-row-reverse items-center w-full gap-2 p-2 text-right rounded-md leading-1">
             <nuxt-img
               format="png" src="/logo.webp" class="max-w-[6rem]" alt="Palia Garden Planner Logo"
               :srcset="undefined" placeholder
             />
-            <div class="text-right flex flex-col justify-end text-misc items-end w-full flex-nowrap ws-nowrap">
-              <NuxtLink to="/" class="flex items-center gap-1 justify-start">
-                <p class="text-2xl font-bold w-full">
+            <div class="flex flex-col items-end justify-end w-full text-right text-misc flex-nowrap ws-nowrap">
+              <NuxtLink to="/" class="flex items-center justify-start gap-1">
+                <p class="w-full text-2xl font-bold">
                   Palia Garden Planner
                 </p>
               </NuxtLink>
-              <p class="font-black p-2 bg-accent text-misc py-1 rounded-md flex-nowrap ws-nowrap w-96">
+              <p class="p-2 py-1 font-black rounded-md bg-accent text-misc flex-nowrap ws-nowrap w-96">
                 https://palia-garden-planner.vercel.app
               </p>
             </div>
           </div>
         </div>
         <div
-          class="grid gap-1 bg-primary p-2 py-4 md:gap-2   order-8" :class="[
+          class="grid order-8 gap-1 p-2 py-4 bg-primary md:gap-2" :class="[
             (isTakingScreenshot.get) ? 'hidden' : '',
             (gardenTilesAreWide) ? 'lg:col-span-4 px-4' : 'lg:col-span-2',
           ]"
         >
-          <div class="grid grid-cols-2 gap-3 items-center">
+          <div class="grid items-center grid-cols-2 gap-3">
             <button
-              class="btn h-full leading-6" :class="(isTakingScreenshot.get) ? 'hidden' : ''"
+              class="h-full leading-6 btn" :class="(isTakingScreenshot.get) ? 'hidden' : ''"
               @click="openNewLayoutModal()"
             >
               New Layout
             </button>
-            <button class="btn btn-error h-full leading-6" @click="clearAllPlots()">
+            <button class="h-full leading-6 btn btn-error" @click="clearAllPlots()">
               <p>Clear Plot</p>
             </button>
           </div>
-          <div class="grid grid-cols-3 gap-3 items-center ">
-            <button class="btn h-full btn-accent" @click="() => openSaveModal()">
+          <div class="grid items-center grid-cols-3 gap-3 ">
+            <button class="h-full btn btn-accent" @click="() => openSaveModal()">
               Save
             </button>
-            <button class="btn h-full btn-accent" @click="openLoadModal()">
+            <button class="h-full btn btn-accent" @click="openLoadModal()">
               Load
             </button>
-            <button class="btn h-full btn-accent" @click="openExportModal()">
+            <button class="h-full btn btn-accent" @click="openExportModal()">
               Export
             </button>
           </div>
         </div>
         <TimeDisplay
-          class=" order-9 p-2 py-4 bg-primary" :class="[
+          class="order-9 p-2 py-4  bg-primary" :class="[
             (isTakingScreenshot.get) ? 'hidden' : 'grid',
             (gardenTilesAreWide) ? 'lg:col-span-3' : 'lg:col-span-2',
           ]"

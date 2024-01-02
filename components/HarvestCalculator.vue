@@ -132,14 +132,14 @@ watchEffect(() => {
 
 <template>
   <section
-    class="transition-all lg:max-w-2xl lg:h-fit rounded-none z-50 overflow-visible w-full xl:max-w-3xl pointer-events-none lg:mb-4"
+    class="z-50 w-full overflow-visible transition-all rounded-none pointer-events-none lg:max-w-2xl lg:h-fit xl:max-w-3xl lg:mb-4"
     :class="[
       gardenTilesAreWide ? '!max-w-none px-0' : 'lg:pl-20 xl:pl-2 xl:px-4 lg:px-2',
       isTakingScreenshot.get && !gardenTilesAreWide ? 'max-w-[46rem] px-4' : '',
     ]"
   >
     <div
-      class="bg-primary flex flex-col pointer-events-auto"
+      class="flex flex-col pointer-events-auto bg-primary"
       :class="[
         isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0 pb-6 lg:pb-0',
         gardenTilesAreWide ? 'rounded-none' : 'lg:rounded-lg ',
@@ -147,35 +147,35 @@ watchEffect(() => {
     >
       <div class="flex flex-col gap-1">
         <div
-          class="w-full flex flex-col lg:flex-row justify-between items-center lg:bg-misc lg:rounded-lg lg:rounded-b-none p-1 sm:px-6 lg:text-accent"
+          class="flex flex-col items-center justify-between w-full p-1 lg:flex-row lg:bg-misc lg:rounded-lg lg:rounded-b-none sm:px-6 lg:text-accent"
           :class="[
             isTakingScreenshot.get ? 'bg-misc px-6 rounded-lg rounded-b-none' : 'text-misc gap-2',
             gardenTilesAreWide ? '!bg-primary !flex-col' : '',
           ]"
         >
           <AppDividerAlt
-            class="w-full sm:hidden order-1"
+            class="order-1 w-full sm:hidden"
             :class="isTakingScreenshot.get || gardenTilesAreWide ? 'hidden' : ''"
           />
           <h2
-            class="text-2xl py-1 flex items-center flex-wrap gap-1 order-2"
+            class="flex flex-wrap items-center order-2 gap-1 py-1 text-2xl"
             :class="gardenTilesAreWide ? 'text-center text-misc' : ''"
           >
             Harvest Approximations
           </h2>
           <div
             v-show="(activeTab !== 'info' && !isTakingScreenshot.get)"
-            class="mx-4 py-2 w-full lg:hidden"
+            class="w-full py-2 mx-4 lg:hidden"
             :class="gardenTilesAreWide ? 'order-first' : 'md:order-default'"
           >
-            <div class="bg-accent text-misc rounded-md font-semibold flex flex-col xl:flex-row items-center justify-center md:gap-1 py-2">
+            <div class="flex flex-col items-center justify-center py-2 font-semibold rounded-md bg-accent text-misc xl:flex-row md:gap-1">
               <div
                 class="tooltip tooltip-top"
                 data-tip="The last harvest before approximations are made"
               >
-                <div class="flex gap-1 items-center ">
+                <div class="flex items-center gap-1 ">
                   Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
-                  <div class="flex gap-1 items-center">
+                  <div class="flex items-center gap-1">
                     <nuxt-img
                       width="16"
                       height="16"
@@ -205,9 +205,9 @@ watchEffect(() => {
                 class="tooltip tooltip-top"
                 data-tip="Raw average is without processing time"
               >
-                <p class="flex gap-1 items-center">
+                <p class="flex items-center gap-1">
                   Average:
-                  <span class="flex gap-1 items-center"><nuxt-img
+                  <span class="flex items-center gap-1"><nuxt-img
                     src="/gold.webp"
                     class="max-h-[1rem]"
                     format="webp"
@@ -229,7 +229,7 @@ watchEffect(() => {
             <button
               id="approximator-display-tab"
               aria-label="Display Tab"
-              class="btn btn-square btn-ghost btn-sm text-2xl" :class="activeTab === 'display' ? 'btn-active' : ''"
+              class="text-2xl btn btn-square btn-ghost btn-sm" :class="activeTab === 'display' ? 'btn-active' : ''"
               @click="setTab('display')"
             >
               <font-awesome-icon :icon="['fas', 'table']" />
@@ -237,7 +237,7 @@ watchEffect(() => {
             <button
               id="approximator-options-tab"
               aria-label="Options Tab"
-              class="btn btn-square btn-ghost btn-sm text-2xl" :class="activeTab === 'options' ? 'btn-active' : ''"
+              class="text-2xl btn btn-square btn-ghost btn-sm" :class="activeTab === 'options' ? 'btn-active' : ''"
               @click="setTab('options')"
             >
               <font-awesome-icon :icon="['fas', 'sliders']" />
@@ -245,7 +245,7 @@ watchEffect(() => {
             <button
               id="approximator-info-tab"
               aria-label="Info Tab"
-              class="btn btn-circle btn-ghost btn-sm text-2xl" :class="activeTab === 'info' ? 'btn-active' : ''"
+              class="text-2xl btn btn-circle btn-ghost btn-sm" :class="activeTab === 'info' ? 'btn-active' : ''"
               @click="setTab('info')"
             >
               <font-awesome-icon :icon="['fas', 'info-circle']" />
@@ -261,7 +261,7 @@ watchEffect(() => {
           gardenTilesAreWide ? 'order-first' : '',
         ]"
       >
-        <div class="bg-accent text-misc rounded-md font-semibold flex flex-col xl:flex-row items-center justify-center md:gap-1 py-2">
+        <div class="flex flex-col items-center justify-center py-2 font-semibold rounded-md bg-accent text-misc xl:flex-row md:gap-1">
           <div class="flex flex-col items-center">
             <div
               class="tooltip tooltip-top"
@@ -269,11 +269,11 @@ watchEffect(() => {
             >
               <div
                 v-if="processedYields?.totalResult.day !== undefined"
-                class="flex gap-1 items-center"
+                class="flex items-center gap-1"
               >
                 Last Harvest: Day
                 {{ Math.max(processedYields.totalResult.day || 0, options.days) }} —
-                <div class="flex gap-1 items-center">
+                <div class="flex items-center gap-1">
                   <nuxt-img
                     width="16"
                     height="16"
@@ -303,9 +303,9 @@ watchEffect(() => {
             class="tooltip tooltip-top"
             data-tip="Average gold per Palian Day/Real Life Hour"
           >
-            <p class="flex gap-1 items-center">
+            <p class="flex items-center gap-1">
               Average:
-              <span class="flex gap-1 items-center"><nuxt-img
+              <span class="flex items-center gap-1"><nuxt-img
                 src="/gold.webp"
                 class="max-h-[1rem]"
                 format="webp"
@@ -328,23 +328,23 @@ watchEffect(() => {
           :use-growth-boost="options.useGrowthBoost"
           :level="options.level"
         />
-        <div v-if="!isTakingScreenshot.get" class="tabs gap-2">
+        <div v-if="!isTakingScreenshot.get" class="gap-2 tabs">
           <div
-            class="tab btn btn-sm rounded-md normal-case"
+            class="normal-case rounded-md tab btn btn-sm"
             :class="activeDisplayTab === 'overview' ? 'tab-active btn-accent' : 'btn-ghost text-misc'"
             @click="setDisplayTab('overview')"
           >
             Overview
           </div>
           <div
-            class="tab btn btn-sm rounded-md normal-case"
+            class="normal-case rounded-md tab btn btn-sm"
             :class="activeDisplayTab === 'day' ? 'tab-active btn-accent' : 'btn-ghost text-misc '"
             @click="setDisplayTab('day')"
           >
             Day by Day
           </div>
           <div
-            class="tab btn btn-sm rounded-md normal-case"
+            class="normal-case rounded-md tab btn btn-sm"
             :class="activeDisplayTab === 'crafter' ? 'tab-active btn-accent' : 'btn-ghost text-misc '"
             @click="setDisplayTab('crafter')"
           >
@@ -387,24 +387,24 @@ watchEffect(() => {
         </div>
       </div>
 
-      <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'" class="flex flex-col gap-2 px-4 max-h-96 transition-all ">
-        <div class="tabs gap-2">
+      <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'" class="flex flex-col gap-2 px-4 transition-all max-h-96 ">
+        <div class="gap-2 tabs">
           <div
-            class="tab btn btn-sm rounded-md normal-case"
+            class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'main' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('main')"
           >
             Garden
           </div>
           <div
-            class="tab btn btn-sm rounded-md normal-case"
+            class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'crop' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('crop')"
           >
             Crop
           </div>
           <div
-            class="tab btn btn-sm rounded-md normal-case"
+            class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'crafter' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('crafter')"
           >
@@ -416,7 +416,7 @@ watchEffect(() => {
         <div class=" max-h-[19.75rem] overflow-y-scroll mb-4 rounded-lg rounded-r-none border border-misc border-opacity-50 p-2">
           <div
             v-if="activeOptionTab === 'main'"
-            class="grid gap-2 pr-2 pb-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
+            class="grid gap-2 pb-4 pr-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
           >
             <OptionCard label="days" name="Days">
               <template #input>
@@ -446,12 +446,12 @@ watchEffect(() => {
               <template #input>
                 <div class="join ">
                   <button
-                    class="join-item btn btn-sm  text-primary" @click="options.level = 0"
+                    class="join-item btn btn-sm text-primary" @click="options.level = 0"
                   >
                     0
                   </button>
                   <button
-                    class="join-item btn btn-sm  text-primary" @click="options.level = 10"
+                    class="join-item btn btn-sm text-primary" @click="options.level = 10"
                   >
                     10
                   </button>
@@ -476,7 +476,7 @@ watchEffect(() => {
                   Decides base star chance of crops
                 </p>
                 <p>
-                  Base Star Chance: <code class="bg-misc text-accent rounded-sm px-2">{{ Math.min(100, (0.25 + (options.useStarSeeds ? 0.25 : 0) + (0.02 * options.level)) * 100) }}%</code>
+                  Base Star Chance: <code class="px-2 rounded-sm bg-misc text-accent">{{ Math.min(100, (0.25 + (options.useStarSeeds ? 0.25 : 0) + (0.02 * options.level)) * 100) }}%</code>
                 </p>
                 <p>Formula in info</p>
               </template>
@@ -484,7 +484,7 @@ watchEffect(() => {
 
             <OptionCard label="useStarSeeds" name="All Star Seeds">
               <template #input>
-                <input v-model="options.useStarSeeds" class="toggle rounded-md" type="checkbox">
+                <input v-model="options.useStarSeeds" class="rounded-md toggle" type="checkbox">
               </template>
               <template #labels>
                 <p>
@@ -495,7 +495,7 @@ watchEffect(() => {
 
             <OptionCard label="includeReplant" name="Include Replant">
               <template #input>
-                <input v-model="options.includeReplant" class="toggle rounded-md" type="checkbox">
+                <input v-model="options.includeReplant" class="rounded-md toggle" type="checkbox">
               </template>
               <template #labels>
                 <p>
@@ -514,7 +514,7 @@ watchEffect(() => {
             <OptionCard label="includeReplantCost" name="Include Replant Cost">
               <template #input>
                 <input
-                  v-model="options.includeReplantCost" class="toggle rounded-md" type="checkbox"
+                  v-model="options.includeReplantCost" class="rounded-md toggle" type="checkbox"
                   :disabled="!options.includeReplant"
                 >
               </template>
@@ -527,17 +527,17 @@ watchEffect(() => {
 
             <OptionCard label="useGrowthBoost" name="Use Growth Boost">
               <template #input>
-                <input v-model="options.useGrowthBoost" class="toggle rounded-md" type="checkbox">
+                <input v-model="options.useGrowthBoost" class="rounded-md toggle" type="checkbox">
               </template>
               <template #labels>
                 <p>
                   Factors in growth boost when simulating yields, does not account for any RNG and is theoretical
                 </p>
-                <p class="text-warning py-1">
-                  <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
+                <p class="py-1 text-warning">
+                  <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
                   Likely bugged as of 0.169
                   <NuxtLink
-                    class="text-misc pl-1 underline"
+                    class="pl-1 underline text-misc"
                     to="https://docs.google.com/document/d/1f4MQHjEC1RCNpDUz1I3eg2tioD_6yBmW0XWsVxUOJ1Y/edit" target="_blank"
                   >
                     <font-awesome-icon class="text-sm" :icon="['fas', 'arrow-up-right-from-square']" />
@@ -549,11 +549,11 @@ watchEffect(() => {
 
             <OptionCard label="includeFertiliserCosts" name="Include Fertiliser Costs" disabled>
               <template #input>
-                <input class="toggle rounded-md" type="checkbox" disabled>
+                <input class="rounded-md toggle" type="checkbox" disabled>
               </template>
               <template #labels>
                 <p>
-                  <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
+                  <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
                   Not yet supported
                 </p>
               </template>

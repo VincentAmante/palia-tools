@@ -75,24 +75,24 @@ const spreadCropsOptionTxt = computed(() => {
   <section>
     <section>
       <div>
-        <p class="text-misc py-1 font-bold">
+        <p class="py-1 font-bold text-misc">
           Crafters
         </p>
-        <p class="text-misc text-sm">
+        <p class="text-sm text-misc">
           Manually sets crafters, is only used outside of Dedicated Distribution.
         </p>
       </div>
-      <div class="grid gap-2 pr-2 pb-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+      <div class="grid gap-2 pb-4 pr-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         <label
           for="seedCollectors"
-          class="rounded-md p-2 px-3 bg-accent text-misc flex flex-col justify-start"
+          class="flex flex-col justify-start p-2 px-3 rounded-md bg-accent text-misc"
           :class="(isDedicated()) ? 'opacity-50' : ''"
         >
-          <div class="flex flex-col items-center text-center gap-1">
+          <div class="flex flex-col items-center gap-1 text-center">
             <p class="py-1 font-bold">
               Seed Collectors
             </p>
-            <div class="flex gap-2 items-center">
+            <div class="flex items-center gap-2">
               <input
                 v-model.lazy="clientCrafterCounts.seeders"
                 type="number"
@@ -105,14 +105,14 @@ const spreadCropsOptionTxt = computed(() => {
         </label>
         <label
           for="preserveJars"
-          class="rounded-md p-2 px-3 bg-accent text-misc flex flex-col justify-start"
+          class="flex flex-col justify-start p-2 px-3 rounded-md bg-accent text-misc"
           :class="(isDedicated()) ? 'opacity-50' : ''"
         >
-          <div class="flex flex-col items-center text-center gap-1">
+          <div class="flex flex-col items-center gap-1 text-center">
             <p class="py-1 font-bold">
               Preserve Jars
             </p>
-            <div class="flex gap-2 items-center">
+            <div class="flex items-center gap-2">
               <input
                 v-model.lazy="clientCrafterCounts.jars"
                 type="number" class="input"
@@ -125,10 +125,10 @@ const spreadCropsOptionTxt = computed(() => {
       </div>
     </section>
     <section>
-      <p class="text-misc py-1 font-bold">
+      <p class="py-1 font-bold text-misc">
         Manager Settings
       </p>
-      <div class="grid gap-2 pr-2 pb-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+      <div class="grid gap-2 pb-4 pr-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         <OptionCard label="distributionMethod" name="Distribution Method">
           <template #input>
             <select
@@ -155,7 +155,7 @@ const spreadCropsOptionTxt = computed(() => {
           <template #input>
             <input
               v-model="clientManagerSettings.spreadCrops"
-              type="checkbox" class="toggle rounded-md toggle-lg"
+              type="checkbox" class="rounded-md toggle toggle-lg"
               @change="onUpdateManagerSettings"
             >
           </template>

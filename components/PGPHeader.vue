@@ -1,21 +1,21 @@
 <template>
   <div>
-    <header class="drawer drawer-end z-50">
+    <header class="z-50 drawer drawer-end">
       <input id="menu" type="checkbox" class="drawer-toggle">
-      <div class="drawer-content flex flex-col">
-        <div class="w-full navbar py-3 sm:px-12 lg:px-22">
+      <div class="flex flex-col drawer-content">
+        <div class="w-full py-3 navbar sm:px-12 lg:px-22">
           <div class="flex-1 mx-2">
-            <NuxtLink to="/" class="flex gap-2 items-center">
+            <NuxtLink to="/" class="flex items-center gap-2">
               <nuxt-img
                 format="webp" src="/logo.webp"
                 width="48px" height="48px" alt="Palia Garden Planner Logo"
                 class="max-w-[3rem]"
               />
               <div class="flex flex-col gap-0 leading-tight">
-                <h1 class="text-xl font-bold text-left lg:text-2xl leading-tight">
+                <h1 class="text-xl font-bold leading-tight text-left lg:text-2xl">
                   Palia Garden Planner
                 </h1>
-                <p class="text-xs text-left leading-tight">
+                <p class="text-xs leading-tight text-left">
                   <font-awesome-icon :icon="['fas', 'heart']" class="" />
                   A player-made tool for planning your garden
                 </p>
@@ -24,7 +24,7 @@
           </div>
           <div class="flex items-center">
             <div class="flex-none hidden lg:block">
-              <ul class="menu menu-horizontal gap-1 items-center text-base">
+              <ul class="items-center gap-1 text-base menu menu-horizontal">
                 <li>
                   <NuxtLink to="/roadmap">
                     Roadmap
@@ -49,7 +49,7 @@
                     <li class="text-sm">
                       <NuxtLink
                         to="https://palia.anniebananie.io"
-                        class="flex items-center flex-wrap"
+                        class="flex flex-wrap items-center"
                         rel="noopener"
                         target="_blank"
                       >
@@ -61,7 +61,7 @@
                     <li class="text-sm">
                       <NuxtLink
                         to="https://palia.th.gl/"
-                        class="flex items-center flex-wrap"
+                        class="flex flex-wrap items-center"
                         rel="noopener"
 
                         target="_blank"
@@ -114,13 +114,13 @@
           </div>
         </div>
       </div>
-      <div class="drawer-side overflow-x-hidden">
+      <div class="overflow-x-hidden drawer-side">
         <label
           for="menu" class="drawer-overlay"
           aria-label="close menu"
         />
-        <ul class="menu p-4 w-80 h-full bg-base-200 gap-2 relative">
-          <li class="w-full flex items-end lg:hidden">
+        <ul class="relative h-full gap-2 p-4 menu w-80 bg-base-200">
+          <li class="flex items-end w-full lg:hidden">
             <label for="menu">
               <font-awesome-icon :icon="['fas', 'x']" class="text-xl" />
               <input id="menu" type="checkbox" class="drawer-toggle">
@@ -142,15 +142,15 @@
             </NuxtLink>
           </li>
           <li>
-            <div class="text-lg font-bold flex flex-col items-start">
-              <p class="flex gap-2 items-center">
+            <div class="flex flex-col items-start text-lg font-bold">
+              <p class="flex items-center gap-2">
                 <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xl" />
                 External Tools
               </p>
               <ul>
                 <li class="text-sm">
                   <NuxtLink
-                    to="https://palia.anniebananie.io" class="flex items-center flex-wrap" rel="noopener"
+                    to="https://palia.anniebananie.io" class="flex flex-wrap items-center" rel="noopener"
                     target="_blank"
                   >
                     <font-awesome-icon :icon="['fas', 'gift']" class="text-xl" />
@@ -159,7 +159,7 @@
                 </li>
                 <li class="text-sm">
                   <NuxtLink
-                    to="https://palia.th.gl/" class="flex items-center flex-wrap" rel="noopener"
+                    to="https://palia.th.gl/" class="flex flex-wrap items-center" rel="noopener"
                     target="_blank"
                   >
                     <font-awesome-icon :icon="['fas', 'map']" class="text-xl" />

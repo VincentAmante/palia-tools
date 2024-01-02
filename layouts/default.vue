@@ -6,7 +6,7 @@ useHead({
 
 <template>
   <div>
-    <div class="-z-10 bg-gradient fixed w-full h-full" />
+    <div class="fixed w-full h-full -z-10 bg-gradient" />
     <div class="flex flex-col max-w-[1440px] mx-auto overflow-x-hidden">
       <PGPHeader />
       <NuxtPage />

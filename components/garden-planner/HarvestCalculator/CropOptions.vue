@@ -297,11 +297,11 @@ function setNormalCropOptions(cropOption: CropOption) {
               v-if="cropOption.option === CropOption.Seed"
               v-model="cropOption.seeders" type="number" min="0"
               max="100"
-              class="text-sm text-center rounded-b-none  input input-xs" @change="onChange"
+              class="text-sm text-center rounded-b-none input input-xs" @change="onChange"
             >
             <input
               v-if="cropOption.option === CropOption.Preserve" v-model="cropOption.jars" type="number" min="0"
-              max="100" class="text-sm text-center rounded-b-none  input input-xs"
+              max="100" class="text-sm text-center rounded-b-none input input-xs"
               @change="onChange"
             >
             <div class="flex justify-between w-full rounded-t-none ">

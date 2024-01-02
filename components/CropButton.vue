@@ -71,7 +71,7 @@ const dragHandler = useDragAndDrop()
   >
     <button
       draggable="true"
-      class="relative btn btn-square btn-secondary isolate border border-misc"
+      class="relative border btn btn-square btn-secondary isolate border-misc"
       :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
       :name="`select ${crop.type}`"
       @dragstart="() => dragHandler.startDrag(crop.type)"
