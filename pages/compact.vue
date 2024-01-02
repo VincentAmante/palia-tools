@@ -491,7 +491,7 @@ definePageMeta({
           </div>
         </div>
         <TimeDisplay
-          class="order-9 p-2 py-4 bg-primary" :class="[
+          class="order-9 p-2 py-4  bg-primary" :class="[
             (isTakingScreenshot.get) ? 'hidden' : 'grid',
             (gardenTilesAreWide) ? 'lg:col-span-3' : 'lg:col-span-2',
           ]"
