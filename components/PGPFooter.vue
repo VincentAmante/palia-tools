@@ -1,6 +1,6 @@
 <template>
-  <footer v-once class="px-4 lg:px-12 mt-2">
-    <div class="flex flex-col lg:flex-row gap-2 items-start justify-between text-center sm:text-left w-full font-normal p-4 rounded-lg bg-palia-blue mb-4 bg-opacity-50">
+  <footer v-once class="px-4 mt-2 lg:px-12">
+    <div class="flex flex-col items-start justify-between w-full gap-2 p-4 mb-4 font-normal text-center bg-opacity-50 rounded-lg lg:flex-row sm:text-left bg-palia-blue">
       <div class="grid text-sm">
         <p class="max-w-md">
           &copy; Palia's intellectual property and assets are reserved by Singularity 6.
@@ -9,13 +9,13 @@
           This tool is fan-made and not affliated in any way with Singularity 6 or Palia.
         </p>
       </div>
-      <div class="flex flex-col w-full items-center lg:w-fit lg:items-end gap-1">
+      <div class="flex flex-col items-center w-full gap-1 lg:w-fit lg:items-end">
         <div class="flex items-center gap-1">
           Developed by
           <NuxtLink
             to="https://discord.com/users/204462556012740608"
             target="_blank"
-            class="btn btn-ghost normal-case btn-sm"
+            class="normal-case btn btn-ghost btn-sm"
           >
             <font-awesome-icon :icon="['fab', 'discord']" class="" />
             .aisen
@@ -24,7 +24,7 @@
         <NuxtLink
           to="https://github.com/VincentAmante/palia-tools"
           target="_blank"
-          class="btn w-full"
+          class="w-full btn"
         >
           <font-awesome-icon :icon="['fab', 'github']" class="text-lg" />
           Source Code

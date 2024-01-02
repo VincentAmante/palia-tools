@@ -48,7 +48,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-2 bg-accent rounded-md min-h-16 overflow-visible px-3 py-2">
+  <div class="flex flex-wrap gap-2 px-3 py-2 overflow-visible rounded-md bg-accent min-h-16">
     <template v-if="(processedYields.totalResult.day > 0)">
       <template v-for="(crop, cropType) of processedYields.totalResult.crops" :key="cropType">
         <CropDisplay
@@ -66,7 +66,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           star
         >
           <template #icon>
-            <font-awesome-icon class="text-success text-sm" :icon="['fas', 'recycle']" />
+            <font-awesome-icon class="text-sm text-success" :icon="['fas', 'recycle']" />
           </template>
         </CropDisplay>
 
@@ -79,7 +79,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
         >
           <template #icon>
             <font-awesome-icon
-              class="font-bold text-warning text-sm"
+              class="text-sm font-bold text-warning"
               :icon="['fas', 'turn-down']"
             />
           </template>
@@ -99,7 +99,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
           :amount="crop.base.cropRemainder"
         >
           <template #icon>
-            <font-awesome-icon class="text-success text-sm" :icon="['fas', 'recycle']" />
+            <font-awesome-icon class="text-sm text-success" :icon="['fas', 'recycle']" />
           </template>
         </CropDisplay>
 
@@ -111,7 +111,7 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
         >
           <template #icon>
             <font-awesome-icon
-              class="font-bold text-warning text-sm"
+              class="text-sm font-bold text-warning"
               :icon="['fas', 'turn-down']"
             />
           </template>
@@ -119,8 +119,8 @@ function getTooltipMessage(cropType: CropType, type: 'star' | 'base', produceAmo
       </template>
     </template>
     <template v-else>
-      <div class="w-full h-full py-4 flex items-center justify-center">
-        <p class="text-center text-misc font-bold opacity-50">
+      <div class="flex items-center justify-center w-full h-full py-4">
+        <p class="font-bold text-center opacity-50 text-misc">
           Place crops on the grid to calculate harvest
         </p>
       </div>

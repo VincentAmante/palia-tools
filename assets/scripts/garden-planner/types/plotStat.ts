@@ -1,4 +1,4 @@
-import type CropType from '../enums/crops'
+import type CropType from '../enums/cropType'
 import type { FertiliserType } from '../imports'
 import type Bonus from '../enums/bonus'
 

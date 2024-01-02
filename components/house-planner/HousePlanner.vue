@@ -503,16 +503,16 @@ function fitStageIntoParentContainer() {
 </script>
 
 <template>
-  <div class="flex flex-col lg:flex-row gap-2 justify-evenly">
-    <div class="flex lg:flex-col gap-1 flex-wrap">
+  <div class="flex flex-col gap-2 lg:flex-row justify-evenly">
+    <div class="flex flex-wrap gap-1 lg:flex-col">
       <button
         aria-label="clear"
-        class="relative isolate btn text-sm"
+        class="relative text-sm isolate btn"
         :class="(activeBuilding && activeBuilding.type) === BuildingType.None ? 'btn-active' : ''"
         @click="setActiveBuilding(createNewBuilding(BuildingType.None))"
       >
         <font-awesome-icon :icon="['fas', 'hand']" class="text-xl" />
-        <p class="normal-case font-normal">
+        <p class="font-normal normal-case">
           Cursor
         </p>
       </button>
@@ -574,7 +574,7 @@ function fitStageIntoParentContainer() {
           {{ text.text }}
         </p>
       </DevOnly>
-      <p class="absolute right-0 z-30 m-4 bg-palia-blue p-2 text-accent rounded-full px-4 bg-opacity-50">
+      <p class="absolute right-0 z-30 p-2 px-4 m-4 bg-opacity-50 rounded-full bg-palia-blue text-accent">
         {{ countedBuildings }} / 30
       </p>
       <v-stage ref="stage" class="relative isolate" :config="configKonva">
@@ -624,11 +624,11 @@ function fitStageIntoParentContainer() {
     </section>
 
     <section class="flex flex-col gap-2">
-      <div class="flex lg:flex-col gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit">
-        <h2 class="text-xl text-center font-bold">
+      <div class="flex gap-2 p-4 px-8 rounded-md lg:flex-col bg-palia-dark-blue h-fit">
+        <h2 class="text-xl font-bold text-center">
           Costs
         </h2>
-        <ul class="flex lg:grid  gap-4">
+        <ul class="flex gap-4 lg:grid">
           <li class="flex items-center gap-2 text-lg">
             <nuxt-img
               width="16" height="16" src="/gold.webp" class="max-h-[1.5rem]" :srcset="undefined" placeholder
@@ -652,18 +652,18 @@ function fitStageIntoParentContainer() {
           </li>
         </ul>
       </div>
-      <div class="flex gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit text-xs">
-        <ul class="flex lg:grid gap-4">
+      <div class="flex gap-2 p-4 px-8 text-xs rounded-md bg-palia-dark-blue h-fit">
+        <ul class="flex gap-4 lg:grid">
           <li>
-            <input v-model="useBuildingLimits" type="checkbox" class="toggle rounded-lg">
+            <input v-model="useBuildingLimits" type="checkbox" class="rounded-lg toggle">
             <p>Use Build Limits</p>
           </li>
           <li>
-            <input v-model="showRoofCollisions" type="checkbox" class="toggle rounded-lg">
+            <input v-model="showRoofCollisions" type="checkbox" class="rounded-lg toggle">
             <p>Show Roof</p>
           </li>
           <li>
-            <input v-model="showLabels" type="checkbox" class="toggle rounded-lg">
+            <input v-model="showLabels" type="checkbox" class="rounded-lg toggle">
             <p>Show Labels</p>
           </li>
         </ul>
@@ -671,8 +671,8 @@ function fitStageIntoParentContainer() {
     </section>
 
     <!-- <DevOnly>
-      <div class=" bg-neutral p-4 rounded-md font-mono mb-4">
-        <p class="text-lg uppercase font-bold">
+      <div class="p-4 mb-4 font-mono rounded-md  bg-neutral">
+        <p class="text-lg font-bold uppercase">
           building ids
         </p>
         <ul>

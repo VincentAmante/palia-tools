@@ -2,7 +2,7 @@
  * File contains methods for converting saves to the latest version
  */
 
-import CropCode from './enums/cropcode'
+import CropCode from './enums/cropCode'
 
 const v0_1CropCodes: { [key in CropCode]: string } = {
   [CropCode.None]: 'Na',

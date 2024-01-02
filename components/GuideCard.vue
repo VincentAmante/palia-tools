@@ -1,5 +1,5 @@
 <template>
-  <div class="px-2 lg:px-12 flex flex-col gap-2 items-center text-center">
+  <div class="flex flex-col items-center gap-2 px-2 text-center lg:px-12">
     <div class="bg-misc-secondary rounded-lg max-w-[1680px] p-4 md:p-2 h-fit flex flex-col md:flex-row items-center justify-center gap-2 w-full">
       <p class="font-semibold">
         <font-awesome-icon :icon="['fas', 'question-circle']" class="text-sm" />
@@ -10,7 +10,7 @@
       </p>
       <NuxtLink
         to="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/" target="_blank"
-        class="btn btn-misc w-fit btn-sm text-sm px-6 font-normal rounded-full"
+        class="px-6 text-sm font-normal rounded-full btn btn-misc w-fit btn-sm"
       >
         <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="mr-1" />
         <p>Go to Guide</p>

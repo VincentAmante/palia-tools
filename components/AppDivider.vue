@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between gap-0 items-center relative ">
+  <div class="relative flex items-center justify-between gap-0 ">
     <div class="absolute left-0">
       <nuxt-img
         class="w-auto h-3"

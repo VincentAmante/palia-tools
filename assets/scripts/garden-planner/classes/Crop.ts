@@ -1,6 +1,6 @@
 import type Bonus from '../enums/bonus'
-import type CropType from '../enums/crops'
-import type CropSize from '../enums/crop-size'
+import type CropType from '../enums/cropType'
+import type CropSize from '../enums/cropSize'
 import { CropCode } from '../imports'
 
 interface IProduceInfoOptions {
@@ -126,14 +126,9 @@ class Crop {
     return this._metadata.cropBackgroundColor
   }
 
-  get paliapediaName(): string {
-    return this._metadata.paliapediaName || ''
-  }
-
   // Assumes player harvests on the day it is harvestable
   isHarvestableOnDay(day: number, hasGrowthBoost: boolean = false) {
     let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
-
     let newReharvestCooldown = reharvestCooldown
 
     let leftover = 0
@@ -144,7 +139,6 @@ class Crop {
     }
 
     const totalGrowthTime = this.getTotalGrowTime(hasGrowthBoost)
-    // console.log('totalGrowthTime', totalGrowthTime)
 
     const onLastHarvest = (day % totalGrowthTime) === 0
     const doReplant = onLastHarvest
@@ -169,6 +163,30 @@ class Crop {
       isHarvestable: harvestableDays.includes(day % totalGrowthTime),
       doReplant,
     }
+  }
+
+  getHarvestDays(hasGrowthBoost: boolean = false) {
+    let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+    let newReharvestCooldown = reharvestCooldown
+
+    let leftover = 0
+    if (hasGrowthBoost) {
+      leftover = growthTime % 3
+      growthTime = Math.ceil((growthTime / 3) * 2)
+      newReharvestCooldown = Math.ceil((reharvestCooldown / 3) * 2)
+    }
+
+    const harvestDays = []
+    harvestDays.push(growthTime)
+    let lastHarvestDay = harvestDays[harvestDays.length - 1]
+
+    for (let i = 0; i < reharvestLimit; i++) {
+      harvestDays.push(Math.max(lastHarvestDay + newReharvestCooldown - leftover, 1))
+      lastHarvestDay = harvestDays[harvestDays.length - 1]
+      leftover = harvestDays[harvestDays.length - 1] - lastHarvestDay
+    }
+
+    return harvestDays
   }
 
   // TODO: Re-do the growth boost logic

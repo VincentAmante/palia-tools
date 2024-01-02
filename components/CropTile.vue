@@ -75,7 +75,7 @@ const border = computed(() => {
 
   switch (props.index) {
     case 1:
-      style += 'border-t border-l border-t-[1px]'
+      style += 'border-t border-l border-t-[1px] '
       break
     case 2:
       style += 'border-t border-t-[1px] border-l'
@@ -93,7 +93,7 @@ const border = computed(() => {
       style += 'border-r border-l border-t-[1px] border-r-[1px]'
       break
     case 7:
-      style += ' border-b border-l border-t'
+      style += 'border-b border-l border-t'
       break
     case 8:
       style += 'border-b border-l border-b-[1px] border-t'
@@ -111,7 +111,7 @@ const border = computed(() => {
 
 <template>
   <div
-    class="border-misc-saturated relative select-none min-w-[3rem] xl:min-w-[3.25rem] hover:bg-primary aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
+    class="border-misc-saturated relative select-none min-w-[3rem] xl:min-w-[3.25rem] hover:bg-primary rounded-none border-0 shadow-none hover:border-misc-saturated p-0 border-collapse  aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
              border,
              borderRadius,
@@ -119,7 +119,7 @@ const border = computed(() => {
     ]"
   >
     <div class="absolute w-full h-full bg-opacity-20 -z-10" :class="bgColour" />
-    <div class="lg:text-3xl font-bold uppercase select-none">
+    <div class="font-bold uppercase select-none lg:text-3xl">
       <nuxt-img
         v-if="(selectedItem.val instanceof Crop && tile?.isHovered)"
         format="webp"
@@ -172,7 +172,7 @@ const border = computed(() => {
       />
     </div>
     <div
-      class=" transition-all w-full absolute h-full -z-20"
+      class="absolute w-full h-full transition-all -z-20"
       :class="bonusBgColor"
     />
   </div>

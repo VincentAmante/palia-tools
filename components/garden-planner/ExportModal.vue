@@ -25,14 +25,14 @@ function downloadImage() {
     </template>
     <template #body>
       <div class="card card-compact">
-        <div class="card-body bg-palia-dark-blue p-4 px-3 rounded-md flex flex-col relative">
+        <div class="relative flex flex-col p-4 px-3 rounded-md card-body bg-palia-dark-blue">
           <p class="card-title">
             As Image
           </p>
 
           <div class="card-actions">
             <button
-              class="btn normal-case btn-outline"
+              class="normal-case btn btn-outline"
               @click="downloadImage()"
             >
               Export as Image
