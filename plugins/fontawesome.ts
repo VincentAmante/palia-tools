@@ -13,6 +13,7 @@ import {
   faCopy,
   faDroplet,
   faEraser,
+  faFloppyDisk,
   faForwardFast,
   faGift,
   faHand,
@@ -85,6 +86,7 @@ library.add(
   faRotateRight,
   faRotateLeft,
   faPeopleGroup,
+  faFloppyDisk,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS
