@@ -428,6 +428,17 @@ export class Seeder implements ICrafter {
   get hasItemsInside(): boolean {
     return this.hopperSlots.length > 0 || this.outputSlots.length > 0 || this._waitingSlot !== null
   }
+
+  get waitingSlot(): CropItem | null {
+    return this._waitingSlot
+  }
+
+  // Clears the crafter of all items
+  flush(): void {
+    this.hopperSlots = []
+    this.outputSlots = []
+    this._waitingSlot = null
+  }
 }
 
 /**

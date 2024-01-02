@@ -36,6 +36,9 @@ export interface ICrafter {
   // how much time the crafter has been processing items, excluding time spent unused
   // useful for seeing how long the crafter has been idle
   readonly elapsedTimeMinutes: number
+
+  readonly waitingSlot: IItem | null
+
   settings: {
     useStackLimit: boolean
     useHopperLimit: boolean
@@ -71,4 +74,6 @@ export interface ICrafter {
   }>
 
   get hasItemsInside(): boolean
+
+  flush(): void
 }

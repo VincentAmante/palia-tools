@@ -57,12 +57,8 @@ function onChange() {
           cropOption.seeders--
       }
       else if (cropOption.option === CropOption.Preserve) {
-        if (cropOption.jars > 1) {
-          console.log('decrementing', cropOption.cropType)
+        if (cropOption.jars > 1)
           cropOption.jars--
-        }
-
-        console.log('decrementing', cropOption.cropType)
       }
     }
   }
@@ -103,7 +99,6 @@ function incrementCrafter(cropOption: ICropOption, option: CropOption) {
     case CropOption.Seed:
       if (crafterCount.value < limit)
         cropOption.seeders++
-
       break
     case CropOption.Preserve:
       if (crafterCount.value < limit)
@@ -174,72 +169,72 @@ function setNormalCropOptions(cropOption: CropOption) {
 
 <template>
   <div>
-    <div class="flex justify-between items-center">
-      <section class="text-sm py-2 flex flex-wrap gap-1 items-center">
-        <p class="text-palia-blue uppercase font-black text-xs">
+    <div class="flex items-center justify-between">
+      <section class="flex flex-wrap items-center gap-1 py-2 text-sm">
+        <p class="text-xs font-black uppercase text-palia-blue">
           Auto-sort
         </p>
-        <button class="btn btn-sm rounded-md normal-case" @click="sortCropOptions(cropOptions, CropSortOption.StarFirst)">
+        <button class="normal-case rounded-md btn btn-sm" @click="sortCropOptions(cropOptions, CropSortOption.StarFirst)">
           <span>
             <font-awesome-icon class="text-quality-increase" :icon="['fas', 'star']" />
           </span> First
         </button>
-        <button class="btn btn-sm rounded-md normal-case" @click="sortCropOptions(cropOptions, CropSortOption.StarLast)">
+        <button class="normal-case rounded-md btn btn-sm" @click="sortCropOptions(cropOptions, CropSortOption.StarLast)">
           <span>
             <font-awesome-icon class="text-quality-increase" :icon="['fas', 'star']" />
           </span> Last
         </button>
         <button
-          class="btn btn-sm rounded-md normal-case" @click="() => {
+          class="normal-case rounded-md btn btn-sm" @click="() => {
             cropOptions = sortCropOptions(cropOptions, CropSortOption.Default)
           }"
         >
           Reset
         </button>
       </section>
-      <section class="flex flex-wrap gap-1 items-center">
-        <p class="text-palia-blue text-xs uppercase font-black">
+      <section class="flex flex-wrap items-center gap-1">
+        <p class="text-xs font-black uppercase text-palia-blue">
           Star
         </p>
         <div class="join">
           <button
-            class="join-item btn  btn-xs normal-case"
+            class="normal-case join-item btn btn-xs"
             @click="() => setStarCropOptions(CropOption.Crop)"
           >
             Crop
           </button>
           <button
-            class="join-item btn  btn-xs normal-case"
+            class="normal-case join-item btn btn-xs"
             @click="() => setStarCropOptions(CropOption.Seed)"
           >
             Seed
           </button>
           <button
-            class="join-item btn  btn-xs normal-case"
+            class="normal-case join-item btn btn-xs"
             @click="() => setStarCropOptions(CropOption.Preserve)"
           >
             Jar
           </button>
         </div>
 
-        <p class="text-palia-blue text-xs uppercase font-black">
+        <p class="text-xs font-black uppercase text-palia-blue">
           Normal
         </p>
         <div class="join">
           <button
-            class="join-item btn  btn-xs normal-case"
+            class="normal-case join-item btn btn-xs"
             @click="() => setNormalCropOptions(CropOption.Crop)"
           >
             Crop
           </button>
           <button
-            class="join-item btn  btn-xs normal-case"
+            class="normal-case join-item btn btn-xs"
             @click="() => setNormalCropOptions(CropOption.Seed)"
           >
             Seed
           </button>
           <button
-            class="join-item btn  btn-xs normal-case"
+            class="normal-case join-item btn btn-xs"
             @click="() => setNormalCropOptions(CropOption.Preserve)"
           >
             Jar
@@ -253,40 +248,40 @@ function setNormalCropOptions(cropOption: CropOption) {
         v-for="
           (cropOption) in cropOptions
         " :key="`${cropOption.cropType}-${cropOption.isStar}`"
-        class="bg-secondary text-misc font-bold w-full flex items-center justify-between rounded-sm p-1 select-none py-2"
+        class="flex items-center justify-between w-full p-1 py-2 font-bold rounded-sm select-none bg-secondary text-misc"
       >
         <div class="flex items-center">
           <font-awesome-icon
-            class="p-1 text-misc object-contain crop-list-handle text-lg cursor-grab"
+            class="object-contain p-1 text-lg text-misc crop-list-handle cursor-grab"
             :icon="['fas', 'grip-vertical']"
           />
           <div class="relative">
             <nuxt-img
-              format="webp" class="w-10 object-contain p-1 py-1 aspect-square" :srcset="undefined" width="1.5rem"
+              format="webp" class="object-contain w-10 p-1 py-1 aspect-square" :srcset="undefined" width="1.5rem"
               height="1.5rem" :alt="cropOption.cropType" :src="getCropImg(cropOption.cropType)"
             />
             <font-awesome-icon
               v-if="cropOption.isStar"
-              class="text-xs p-1 text-quality-increase object-contain absolute bottom-0" :icon="['fas', 'star']"
+              class="absolute bottom-0 object-contain p-1 text-xs text-quality-increase" :icon="['fas', 'star']"
             />
           </div>
-          <div class="join rounded-md">
+          <div class="rounded-md join">
             <button
-              class="join-item btn  btn-xs normal-case"
+              class="normal-case join-item btn btn-xs"
               :class="{ ' bg-palia-blue': cropOption.option === CropOption.Crop }"
               @click="setCropOption(cropOption, CropOption.Crop)"
             >
               Crop
             </button>
             <button
-              class="join-item btn  btn-xs normal-case"
+              class="normal-case join-item btn btn-xs"
               :class="{ 'bg-palia-blue': cropOption.option === CropOption.Seed }"
               @click="setCropOption(cropOption, CropOption.Seed)"
             >
               Seed
             </button>
             <button
-              v-if="typeHasPreserve(cropOption.cropType)" class="join-item btn  btn-xs normal-case"
+              v-if="typeHasPreserve(cropOption.cropType)" class="normal-case join-item btn btn-xs"
               :class="{ 'bg-palia-blue': cropOption.option === CropOption.Preserve }"
               @click="setCropOption(cropOption, CropOption.Preserve)"
             >
@@ -302,23 +297,23 @@ function setNormalCropOptions(cropOption: CropOption) {
               v-if="cropOption.option === CropOption.Seed"
               v-model="cropOption.seeders" type="number" min="0"
               max="100"
-              class=" input  rounded-b-none input-xs text-center text-sm" @change="onChange"
+              class="text-sm text-center rounded-b-none  input input-xs" @change="onChange"
             >
             <input
               v-if="cropOption.option === CropOption.Preserve" v-model="cropOption.jars" type="number" min="0"
-              max="100" class=" input  rounded-b-none input-xs text-center text-sm"
+              max="100" class="text-sm text-center rounded-b-none  input input-xs"
               @change="onChange"
             >
-            <div class="flex w-full rounded-t-none justify-between ">
+            <div class="flex justify-between w-full rounded-t-none ">
               <button
-                class="btn btn-xs grow rounded-t-none rounded-r-none"
+                class="rounded-t-none rounded-r-none btn btn-xs grow"
                 @click="() => decrementCrafter(cropOption, cropOption.option)"
               >
                 <font-awesome-icon class="text-accent" :icon="['fas', 'minus']" />
               </button>
 
               <button
-                class="btn btn-xs grow rounded-t-none rounded-l-none"
+                class="rounded-t-none rounded-l-none btn btn-xs grow"
                 @click="() => incrementCrafter(cropOption, cropOption.option)"
               >
                 <font-awesome-icon class="text-accent" :icon="['fas', 'plus']" />
@@ -326,7 +321,7 @@ function setNormalCropOptions(cropOption: CropOption) {
             </div>
           </div>
           <nuxt-img
-            format="webp" class="w-12 object-contain p-1 py-1 aspect-square" :srcset="undefined" width="1.5rem"
+            format="webp" class="object-contain w-12 p-1 py-1 aspect-square" :srcset="undefined" width="1.5rem"
             height="1.5rem" :alt="cropOption.cropType" :src="getCrafterImage(cropOption.option)"
           />
         </div>

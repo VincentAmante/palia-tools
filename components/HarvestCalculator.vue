@@ -364,6 +364,9 @@ watchEffect(() => {
             <ShippingBinTotal
               :shipping-bin="shippingBin as IShippingBin"
             />
+            <div>
+              <p>Hey</p>
+            </div>
           </div>
 
           <LazyHCDay
@@ -578,6 +581,7 @@ watchEffect(() => {
               :crafter-counts="produceManager.manualCrafterCounts"
               :distribution-method="produceManager.distributionMethod"
               @update-distribution-method="(method) => produceManager.distributionMethod = method"
+              @update-crafter-counts="(counts) => produceManager.manualCrafterCounts = counts"
             />
           </div>
         </div>

@@ -13,7 +13,7 @@ const totalSales = computed(() => {
 
 <template>
   <div
-    class="flex flex-wrap "
+    class="flex flex-wrap bg-secondary p-1 pt`-2 rounded-md"
   >
     <template
       v-for="item in totalSales"

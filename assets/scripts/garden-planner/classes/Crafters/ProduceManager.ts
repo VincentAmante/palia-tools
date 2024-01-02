@@ -1,10 +1,9 @@
 // This file will handle all the logic for the crafters
-import { CropType } from '../../imports'
+import { CropType, crops } from '../../imports'
 import { createItemFromCropType } from '../../utils/gardenHelpers'
 import { type HarvestSimulatorLog, getCropMap } from '../../utils/gardenHelpers'
 import type { IShippingBin } from '../ShippingBin'
 import type { IItem } from '../Items/Item'
-import { crops } from '../../imports'
 import { Seeder } from './Seeder'
 import { Jar } from './Jar'
 import type { IDedicatedCrop, LoggableItem } from './ICrafter'
@@ -138,23 +137,6 @@ export class ProduceManager {
     if (this._craftersNeedUpdate)
       this.setCrafters()
 
-    // reset each crafter's time
-    for (const seeder of this._seeders) {
-      seeder.resetTime()
-      seeder.resetLogs()
-    }
-    for (const jar of this._jars) {
-      jar.resetTime()
-      jar.resetLogs()
-    }
-
-    if (this._logs.length === 0)
-      return
-
-    const firstDay = this._logs[0].day
-    const lastDay = this._logs[this._logs.length - 1].day
-    this._toProcess = getCropMap()
-
     // TODO: Remove soon
     // Check if each crafter has an item in their hopper still, throw an error if so
     for (const seeder of this._seeders) {
@@ -165,6 +147,25 @@ export class ProduceManager {
       if (jar.hopperSlots.length > 0)
         throw new Error('Jar still has items in hopper')
     }
+
+    // reset each crafter's time
+    for (const seeder of this._seeders) {
+      seeder.resetTime()
+      seeder.resetLogs()
+      seeder.flush()
+    }
+    for (const jar of this._jars) {
+      jar.resetTime()
+      jar.resetLogs()
+      jar.flush()
+    }
+
+    if (this._logs.length === 0)
+      return
+
+    const firstDay = this._logs[0].day
+    const lastDay = this._logs[this._logs.length - 1].day
+    this._toProcess = getCropMap()
 
     let day = firstDay
     while ((this.itemsLeftToProcess() || day <= lastDay) && day <= MAX_DAYS) {
@@ -271,6 +272,9 @@ export class ProduceManager {
         break
     }
 
+    // Trim the crafters if we're over the limit
+    this.trimCrafters()
+
     // Set each crafters settings
     if (this._seeders.length > 0) {
       this._seeders.forEach((seeder) => {
@@ -282,9 +286,6 @@ export class ProduceManager {
         jar.setSettings(this._crafterSettings)
       })
     }
-
-    // Trim the crafters if we're over the limit
-    this.trimCrafters()
 
     // * Switch off the update flag
     // prevents the crafters from being updated again until a change occurs to either the crafters or the crop options
@@ -347,15 +348,30 @@ export class ProduceManager {
     if (seedOption && seeders.length === 0) {
       seeders.push(new Seeder())
       console.warn('No seeders were set, but the seed option was selected. Defaulting to 1 seeder.')
+
+      if (jars.length >= MAX_CRAFTERS && this._managerSettings.useCrafterLimit)
+        jars.pop()
     }
     const preserveOption = this._cropOptions.find(cropOption => cropOption.option === CropOption.Preserve)
     if (preserveOption && jars.length === 0) {
       jars.push(new Jar())
       console.warn('No jars were set, but the preserve option was selected. Defaulting to 1 jar.')
+
+      if (seeders.length >= MAX_CRAFTERS && this._managerSettings.useCrafterLimit)
+        seeders.pop()
     }
 
     this._seeders = seeders
     this._jars = jars
+
+    // If we're over the limit, trim the crafters
+    if (this.crafterCount > MAX_CRAFTERS && this._managerSettings.useCrafterLimit)
+      this.trimCraftersVip()
+
+    this.manualCrafterCounts = {
+      seeders: seeders.length,
+      jars: jars.length,
+    }
   }
 
   // TODO: Store the distribution method as a function variable instead of this switch statement
@@ -756,6 +772,11 @@ export class ProduceManager {
       else
         break
     }
+
+    this.manualCrafterCounts = {
+      seeders: this._seeders.length,
+      jars: this._jars.length,
+    }
   }
 
   // Manual override till we fully replace the old system
@@ -873,6 +894,7 @@ export class ProduceManager {
 
   set manualCrafterCounts(counts: ICrafterCounts) {
     this._manualCrafterCounts = counts
+    this._craftersNeedUpdate = true
   }
 
   get crafterData(): ICrafterData[] {

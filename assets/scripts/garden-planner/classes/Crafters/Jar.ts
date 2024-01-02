@@ -20,6 +20,8 @@ export class Jar implements ICrafter {
 
   outputSlots: CropItem[] = []
 
+  _waitingSlot: CropItem | null = null
+
   maxOutputSlots: number = 3
 
   acceptedItems: ItemType[] = [ItemType.Crop]
@@ -57,6 +59,42 @@ export class Jar implements ICrafter {
     }
   }
 
+  insertToOutputSlots(item: CropItem): boolean {
+    if (item.count === 0)
+      throw new Error(`Item being inserted has a count of 0 ${item.type} ${item.name}`)
+
+    // Add to existing items first
+    const matchingItems = this.getMatchingOutputSlots(item)
+      .filter(outputItem => (outputItem.count < outputItem.maxStack || !this.settings.useStackLimit))
+      // Prioritise items closest to max stack
+      .sort((a, b) => a.count - b.count)
+
+    if (matchingItems.length > 0) {
+      for (const matchingItem of matchingItems) {
+        const amountToAdd = (this.settings.useStackLimit) ? Math.min(item.count, item.maxStack - matchingItem.count) : item.count
+        matchingItem.add(amountToAdd)
+        item.take(amountToAdd)
+
+        if (item.count === 0)
+          return true
+      }
+    }
+
+    do {
+      const amountToAdd = (this.settings.useStackLimit) ? Math.min(item.count, item.maxStack) : item.count
+      const newItem = item.take(amountToAdd) as CropItem
+
+      this.outputSlots.push(newItem)
+
+      if (item.count === 0)
+        return true
+      if (item.count < 0)
+        throw new Error(`Item count is somehow less than 0, ${item.type} ${item.name}`)
+    } while (this.outputSlots.length < this.maxOutputSlots || !this.settings.useHopperLimit)
+
+    return false
+  }
+
   /**
    * Processes the items in the jar until the specified day.
    * @param tillDay The day until which the items should be processed. 0 or less means to ignore the day limit.
@@ -65,6 +103,12 @@ export class Jar implements ICrafter {
     // Available time dictates how many items can be processed later on
     // 0 or less means to ignore the day limit
     const dayInMinutes = (tillDay > 0) ? tillDay * DAY_IN_MINUTES : Number.POSITIVE_INFINITY
+
+    if (this._waitingSlot) {
+      this._goldGenerated += this._waitingSlot.price * this._waitingSlot.count
+      this.insertToOutputSlots(this._waitingSlot)
+      this._waitingSlot = null
+    }
 
     try {
       for (const hopperItem of this.hopperSlots) {
@@ -82,6 +126,7 @@ export class Jar implements ICrafter {
           return
 
         matchingOutputItems.forEach((outputItem) => {
+          // Guard clauses
           switch (true) {
             case hopperItem.count === 0:
             case availableProcesses === 0:
@@ -100,7 +145,8 @@ export class Jar implements ICrafter {
 
           const newPreserveItem = this.createPreserveItem(hopperItem, amountToProcess)
           hopperItem.take(amountToProcess)
-          outputItem.add(amountToProcess)
+
+          this.insertToOutputSlots(newPreserveItem)
 
           this._lifeTimeMinutes += timeToProcess
           this._elapsedTimeMinutes += timeToProcess
@@ -125,7 +171,7 @@ export class Jar implements ICrafter {
           amountToProcess = Math.min(amountToProcess, availableProcesses)
           const newPreserveItem = this.createPreserveItem(hopperItem, amountToProcess)
           hopperItem.take(amountToProcess)
-          this.outputSlots.push(newPreserveItem)
+          this.insertToOutputSlots(newPreserveItem)
 
           const timeToProcess = amountToProcess * preserveProcessMinutes
           this._lifeTimeMinutes += timeToProcess
@@ -133,6 +179,25 @@ export class Jar implements ICrafter {
           this._goldGenerated += newPreserveItem.price * newPreserveItem.count
 
           availableProcesses -= amountToProcess
+        }
+
+        // If there's time left and an item can be processed, add it to the waiting slot
+        if (this._lifeTimeMinutes < (tillDay * DAY_IN_MINUTES)) {
+          const nextHopperItem = this.hopperSlots[0]
+
+          if (nextHopperItem && nextHopperItem.count > 0) {
+            const nextCrop = crops[nextHopperItem.cropType]
+            const { preserveProcessMinutes } = nextCrop.conversionInfo
+
+            const hasRoomForAProcess = this.outputSlots.length < this.maxOutputSlots
+
+            if (hasRoomForAProcess) {
+              nextHopperItem.take(1)
+              this._waitingSlot = nextHopperItem
+              this._lifeTimeMinutes += preserveProcessMinutes
+              this._elapsedTimeMinutes += preserveProcessMinutes
+            }
+          }
         }
       }
     }
@@ -296,6 +361,10 @@ export class Jar implements ICrafter {
     return this._dedicatedCrop
   }
 
+  get waitingSlot(): CropItem | null {
+    return this._waitingSlot
+  }
+
   set dedicatedCrop(dedicatedCropData: IDedicatedCrop | null) {
     this._dedicatedCrop = dedicatedCropData
   }
@@ -326,6 +395,13 @@ export class Jar implements ICrafter {
   }
 
   get hasItemsInside(): boolean {
-    return this.hopperSlots.length > 0 || this.outputSlots.length > 0
+    return this.hopperSlots.length > 0 || this.outputSlots.length > 0 || this._waitingSlot !== null
+  }
+
+  // Clears the crafter of all items
+  flush(): void {
+    this.hopperSlots = []
+    this.outputSlots = []
+    this._waitingSlot = null
   }
 }

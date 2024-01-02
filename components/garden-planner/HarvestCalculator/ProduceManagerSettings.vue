@@ -12,6 +12,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'updateDistributionMethod', value: DistributionMethod): void
+  (e: 'updateCrafterCounts', value: ICrafterCounts): void
+  (e: 'updateCrafterSettings', value: ICrafterSettings): void
+  (e: 'updateManagerSettings', value: IManagerSettings): void
 }>()
 
 const clientManagerSettings = ref(props.managerSettings)
@@ -23,9 +26,34 @@ function onUpdateDistributionMethod() {
   emit('updateDistributionMethod', clientDistributionMethod.value)
 }
 
+function onUpdateCrafterCounts() {
+  emit('updateCrafterCounts', clientCrafterCounts.value)
+}
+
+function onUpdateCrafterSettings() {
+  emit('updateCrafterSettings', clientCrafterSettings.value)
+}
+
+function onUpdateManagerSettings() {
+  emit('updateManagerSettings', clientManagerSettings.value)
+}
+
 function isDedicated() {
   return clientDistributionMethod.value === DistributionMethod.Dedicated
 }
+
+watchEffect(() => {
+  console.log(props.crafterCounts.jars)
+
+  clientManagerSettings.value = props.managerSettings
+  clientCrafterSettings.value = props.crafterSettings
+  clientCrafterCounts.value = props.crafterCounts
+  clientDistributionMethod.value = props.distributionMethod
+
+  console.log('props', props)
+  console.log('jars', clientCrafterCounts.value.jars)
+  console.log('seeders', clientCrafterCounts.value.seeders)
+})
 
 const methodText = computed(() => {
   switch (clientDistributionMethod.value) {
@@ -34,6 +62,12 @@ const methodText = computed(() => {
     case DistributionMethod.Vip:
       return 'First crop in priority gets as much of its crops placed in any available crafter before moving on.'
   }
+})
+
+const spreadCropsOptionTxt = computed(() => {
+  return clientManagerSettings.value.spreadCrops
+    ? 'Attempts to spread crops evenly across all crafters'
+    : 'Fills crafters one stack at a time'
 })
 </script>
 
@@ -60,10 +94,11 @@ const methodText = computed(() => {
             </p>
             <div class="flex gap-2 items-center">
               <input
-                v-model="clientCrafterCounts.seeders"
-                type="number" class="input"
-                min="0" max="999"
-                :disabled="isDedicated()"
+                v-model.lazy="clientCrafterCounts.seeders"
+                type="number"
+                class="input" min="0"
+                max="999" :disabled="isDedicated()"
+                @change="onUpdateCrafterCounts"
               >
             </div>
           </div>
@@ -79,7 +114,7 @@ const methodText = computed(() => {
             </p>
             <div class="flex gap-2 items-center">
               <input
-                v-model="clientCrafterCounts.jars"
+                v-model.lazy="clientCrafterCounts.jars"
                 type="number" class="input"
                 min="0" max="999"
                 :disabled="isDedicated()"
@@ -120,18 +155,12 @@ const methodText = computed(() => {
           <template #input>
             <input
               v-model="clientManagerSettings.spreadCrops"
-              type="checkbox" class="toggle rounded-md"
+              type="checkbox" class="toggle rounded-md toggle-lg"
+              @change="onUpdateManagerSettings"
             >
           </template>
           <template #labels>
-            <p>
-              <span class="">
-                {{ clientManagerSettings.spreadCrops
-                  ? 'Attempts to spread crops evenly across all crafters'
-                  : 'Fills crafters one stack at a time'
-                }}
-              </span>
-            </p>
+            <p>{{ spreadCropsOptionTxt }}</p>
           </template>
         </OptionCard>
       </div>
