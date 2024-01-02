@@ -17,7 +17,7 @@ useHead({
 </script>
 
 <template>
-  <main v-once class="flex flex-col px-4 py-2 md:px-8 lg:px-16 gap-2 text-justify">
+  <main v-once class="flex flex-col gap-2 px-4 py-2 text-justify md:px-8 lg:px-16">
     <NuxtLink to="/" class="flex items-center gap-2 btn w-fit btn-sm btn-ghost">
       <font-awesome-icon :icon="['fas', 'arrow-left']" class="" />
       <p class="">
@@ -33,11 +33,11 @@ useHead({
           Last Updated: October 14, 2023
         </p>
       </div>
-      <div class="flex flex-col gap-2 text-justify max-w-3xl md:text-base leading-7">
-        <div class="card card-compact bg-palia-dark-blue rounded-md max-w-2xl px-4">
+      <div class="flex flex-col max-w-3xl gap-2 leading-7 text-justify md:text-base">
+        <div class="max-w-2xl px-4 rounded-md card card-compact bg-palia-dark-blue">
           <div class="card-body">
-            <p class="leading-6 text-sm">
-              <span class="font-bold text-base">Update (October 14):</span>
+            <p class="text-sm leading-6">
+              <span class="text-base font-bold">Update (October 14):</span>
               I've been working slower than before on the Garden Planner. I'm busy on other things,
               and my hands are recovering from issues I've been having for a while.
             </p>
@@ -61,12 +61,12 @@ useHead({
     </section>
     <AppDividerAlt />
     <div class="flex flex-col w-full gap-6">
-      <section class="pb-2 flex flex-col gap-4  w-full">
+      <section class="flex flex-col w-full gap-4 pb-2">
         <h2 class="text-2xl font-normal">
           Main Goals
         </h2>
 
-        <div class="flex flex-row flex-wrap gap-4  w-full">
+        <div class="flex flex-row flex-wrap w-full gap-4">
           <RoadmapCard>
             <template #title>
               Presets
@@ -129,7 +129,7 @@ useHead({
           </RoadmapCard>
         </div>
       </section>
-      <section class="pb-2 flex flex-col gap-4">
+      <section class="flex flex-col gap-4 pb-2">
         <div class="grid gap-1">
           <h2 class="text-2xl font-normal">
             Other Goals
@@ -140,7 +140,7 @@ useHead({
           </p>
         </div>
 
-        <div class="flex flex-row flex-wrap gap-4 w-full">
+        <div class="flex flex-row flex-wrap w-full gap-4">
           <RoadmapCard>
             <template #title>
               More Export Options

@@ -176,13 +176,13 @@ function trimLayout(): PlotStatus[][] {
       New Layout
     </template>
     <template #body>
-      <div class="flex flex-col gap-1 bg-palia-dark-blue rounded-md p-2 ">
+      <div class="flex flex-col gap-1 p-2 rounded-md bg-palia-dark-blue ">
         <h3 class="font-bold">
           Dimensions
         </h3>
         <select
           v-model="selectedNewLayout"
-          name="layout-select" class="select select-bordered select-sm w-full max-w-xs"
+          name="layout-select" class="w-full max-w-xs select select-bordered select-sm"
           aria-label="Select Layout"
           @change="onLayoutSelect()"
         >
@@ -216,24 +216,24 @@ function trimLayout(): PlotStatus[][] {
           Pick a pre-determined size here, or make a custom one
         </p>
       </div>
-      <div class="flex flex-col gap-2 bg-palia-dark-blue rounded-md p-2">
-        <div class=" py-2 flex flex-col gap-3">
-          <div class="w-full flex flex-col items-center">
+      <div class="flex flex-col gap-2 p-2 rounded-md bg-palia-dark-blue">
+        <div class="flex flex-col gap-3 py-2 ">
+          <div class="flex flex-col items-center w-full">
             <p class="text-sm">
               Each tile represents a 3x3 garden, click to toggle
             </p>
-            <div class=" flex flex-col gap-1 py-4 px-2 rounded-md w-fit">
+            <div class="flex flex-col gap-1 px-2 py-4 rounded-md  w-fit">
               <div v-for="(plotRow, plotRowIndex) of plotLayout" :key="plotRowIndex" class="flex gap-1">
                 <div
                   v-for="(plot, index) of plotRow" :key="index"
-                  class="btn btn-square rounded-none btn-accent btn-xs cursor-pointer transition-all"
+                  class="transition-all rounded-none cursor-pointer btn btn-square btn-accent btn-xs"
                   :class="plot === PlotStatus.active ? 'border-misc-saturated' : 'bg-misc bg-opacity-70'" @click="togglePlot(plotRowIndex, index)"
                 />
               </div>
             </div>
 
             <p class="flex gap-1 font-bold">
-              <span class="flex items-center align-middle gap-1">
+              <span class="flex items-center gap-1 align-middle">
                 {{ activePlots }} Plots
                 out of
                 {{ allowIllegalLayout ? 27 : 9 }}
@@ -241,9 +241,9 @@ function trimLayout(): PlotStatus[][] {
             </p>
           </div>
           <div :class="selectedNewLayout === 'custom' ? '' : 'hidden'" class="flex flex-col gap-2 w-fit md:w-full">
-            <label for="row-input" class="items-center justify-start grid grid-cols-2 gap-2 w-fit">
-              <p class="select-none text-sm ">Rows</p>
-              <div class="join col-span-1 rounded-md">
+            <label for="row-input" class="grid items-center justify-start grid-cols-2 gap-2 w-fit">
+              <p class="text-sm select-none ">Rows</p>
+              <div class="col-span-1 rounded-md join">
                 <button
                   class="join-item btn btn-sm btn-square btn-primary"
                   @click="() => {
@@ -255,7 +255,7 @@ function trimLayout(): PlotStatus[][] {
                 >-</button>
                 <input
                   v-model="rowInput" type="number" name="row-input"
-                  class="join-item input input-sm max-w-16 text-center input-primary" min="1" max="9" step="1"
+                  class="text-center join-item input input-sm max-w-16 input-primary" min="1" max="9" step="1"
                   :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()"
                 >
                 <button
@@ -267,9 +267,9 @@ function trimLayout(): PlotStatus[][] {
                 >+</button>
               </div>
             </label>
-            <label for="col-input" class="items-center justify-start grid grid-cols-2 gap-2 w-fit">
-              <p class="select-none text-sm">Columns</p>
-              <div class="join col-span-1 rounded-md">
+            <label for="col-input" class="grid items-center justify-start grid-cols-2 gap-2 w-fit">
+              <p class="text-sm select-none">Columns</p>
+              <div class="col-span-1 rounded-md join">
                 <button
                   class="join-item btn btn-sm btn-square btn-primary"
                   @click="() => {
@@ -281,7 +281,7 @@ function trimLayout(): PlotStatus[][] {
                 >-</button>
                 <input
                   v-model="colInput" type="number" name="col-input"
-                  class="join-item input input-sm input-primary max-w-16 text-center" min="1" max="9" step="1"
+                  class="text-center join-item input input-sm input-primary max-w-16" min="1" max="9" step="1"
                   :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()"
                 >
                 <button
@@ -295,23 +295,23 @@ function trimLayout(): PlotStatus[][] {
               </div>
             </label>
           </div>
-          <div v-if="selectedNewLayout === 'custom'" class="w-full flex flex-col gap-1  bg-misc-secondary px-2 rounded-md  py-2">
-            <label class="label flex items-start border-white w-fit gap-2">
+          <div v-if="selectedNewLayout === 'custom'" class="flex flex-col w-full gap-1 px-2 py-2 rounded-md bg-misc-secondary">
+            <label class="flex items-start gap-2 border-white label w-fit">
               <span class="text-sm">Allow Illegal Layout</span>
               <div class="flex flex-col">
                 <input
                   v-model="allowIllegalLayout" type="checkbox" name="allow-illegal-layout"
-                  class="toggle  rounded-sm"
+                  class="rounded-sm toggle"
                 >
               </div>
             </label>
-            <p class="text-xs opacity-40 font-thin">
+            <p class="text-xs font-thin opacity-40">
               Increase the maximum amount of overall plots from 9 to 27
             </p>
           </div>
         </div>
       </div>
-      <div class="text-xs max-w-xs">
+      <div class="max-w-xs text-xs">
         <p>Note: Empty rows and columns will be trimmed from the final output</p>
       </div>
       <div class="flex flex-col gap-1">

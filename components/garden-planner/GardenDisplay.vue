@@ -69,19 +69,19 @@ function handleDragEnter(row: number, col: number, plot: Plot) {
 
 <template>
   <div
-    class="h-full flex flex-col items-center"
+    class="flex flex-col items-center h-full"
     :class="[(isTakingScreenshot.get && gardenTilesAreWide) ? 'max-w-[1680px]'
       : isTakingScreenshot.get ? 'max-w-[1680px]' : 'max-w-[100vw]']"
   >
     <div
-      class="rounded-xl  my-4 md:my-0  lg:ml-0 lg:mr-auto px-3 lg:px-2"
+      class="px-3 my-4 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
       :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'"
       @contextmenu.prevent.self=""
     >
-      <div ref="plotsDisplay" class="w-full overflow-auto grid gap-2">
-        <div v-for="(plotRow, plotRowIndex) in gardenTiles" :key="plotRowIndex" class="plotRow flex gap-2">
-          <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="plot flex flex-col gap-0 relative">
-            <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="plotTileRow flex cols-3 gap-0">
+      <div ref="plotsDisplay" class="grid w-full gap-2 overflow-auto">
+        <div v-for="(plotRow, plotRowIndex) in gardenTiles" :key="plotRowIndex" class="flex gap-2 plotRow">
+          <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="relative flex flex-col gap-0 plot">
+            <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="flex gap-0 plotTileRow cols-3">
               <div v-for="(tile, index) in row" :key="index" class="plotTile">
                 <CropTile
                   :tile="tile as Tile" :is-disabled="!plot.isActive" :bonus-hovered="hoveredBonus"

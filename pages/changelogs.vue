@@ -17,14 +17,14 @@ useHead({
 </script>
 
 <template>
-  <main v-once class="flex flex-col px-2 sm:px-4 py-2 lg:px-14 gap-2 text-justify">
+  <main v-once class="flex flex-col gap-2 px-2 py-2 text-justify sm:px-4 lg:px-14">
     <NuxtLink to="/" class="flex items-center gap-2 btn w-fit btn-sm btn-ghost">
       <font-awesome-icon :icon="['fas', 'arrow-left']" class="" />
       <p class="">
         Return
       </p>
     </NuxtLink>
-    <section class="pb-2 flex flex-col gap-2">
+    <section class="flex flex-col gap-2 pb-2">
       <div class="py-4">
         <h1 class="text-2xl font-bold md:text-3xl">
           Garden Planner Changelogs
@@ -76,7 +76,7 @@ useHead({
               I meant to add a fix to the screenshot feature but it did not pan out.
             </p>
             <div class="divider" />
-            <h3 class="font-bold text-lg">
+            <h3 class="text-lg font-bold">
               Crafter Support
             </h3>
             <p>
@@ -102,7 +102,7 @@ useHead({
               This was where the house planner came in, as a way to gauge how users react to experimental features.
             </p>
             <div class="divider" />
-            <h3 class="font-bold text-lg">
+            <h3 class="text-lg font-bold">
               House Planner
             </h3>
             <p>
@@ -138,7 +138,7 @@ useHead({
             <li><span class="italic">Palia Clock —</span>Adds an in-game timer for convenience</li>
             <li><span class="italic">Mechanic —</span> Added growth boost support (options)</li>
             <li>UX Improvements:</li>
-            <ul class=" list-disc list-inside pl-3">
+            <ul class="pl-3 list-disc list-inside ">
               <li>You can drag crops/fertilisers to their tile</li>
               <li>You can now click on the save codes to copy to clipboard</li>
               <li><span class="italic">(Desktop) —</span> Hovering over a tile now previews the crop/fertiliser being placed</li>
@@ -320,7 +320,7 @@ useHead({
               </h3>
               <p class="indent-6">
                 New save version includes shortened crop codes, with all crops having their codes reduced by 1 character (except for Cotton).
-                Fertilisers are indicated by the dot <span class="border border-solid border-info rounded-lg px-2 font-bold">.</span> prefix, followed by their code.
+                Fertilisers are indicated by the dot <span class="px-2 font-bold border border-solid rounded-lg border-info">.</span> prefix, followed by their code.
               </p>
               <p>
                 As a core feature of the Garden Planner is 'Shareability',
@@ -399,13 +399,13 @@ useHead({
                 Website Internal Structure
               </h3>
               <p class="indent-6">
-                The planner ran on <span class="font-bold italic ">Vue</span>,
+                The planner ran on <span class="italic font-bold ">Vue</span>,
                 the front-end framework I'm highly familiar working with that lets me develop this client app at a comfortable pace.
                 Some of the ideas I have in mind in the long term though would likely benefit from having the planner have server-side capabilities,
                 such as an internal link shortener, or an <span class="font-bold">API for other developers to use</span>.
               </p>
               <p class="indent-6">
-                Due to that, I've decided to save myself potential future troubles by migrating from Vue to <span class="font-bold italic">Nuxt</span>
+                Due to that, I've decided to save myself potential future troubles by migrating from Vue to <span class="italic font-bold">Nuxt</span>
                 as early as possible before the planner becomes open to the public.
                 This also lets me better analyse the website performance of the planner, allowing me to deliver a better experience for you all.
               </p>
