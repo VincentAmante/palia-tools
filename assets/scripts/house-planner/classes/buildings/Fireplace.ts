@@ -33,6 +33,8 @@ export default class Fireplace extends Building {
   price = {
     base: 4000,
     perExtraBuilding: 500,
+    increaseIncrement: 0,
+    increaseInterval: 0,
   }
 
   materials = {

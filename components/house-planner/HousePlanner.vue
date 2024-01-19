@@ -64,14 +64,13 @@ const totalPrice = computed(() => {
       return
 
     if (building.type in buildingTypes) {
-      const price = building.price
       buildingTypes[building.type].count += 1
-      buildingTypes[building.type].price += price.base + (price.perExtraBuilding * (buildingTypes[building.type].count - 1))
+      buildingTypes[building.type].price = building.getPrice(buildingTypes[building.type].count)
     }
     else {
       buildingTypes[building.type] = {
         count: 1,
-        price: building.price.base,
+        price: building.getPrice(1),
       }
     }
   })

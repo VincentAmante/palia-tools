@@ -86,6 +86,22 @@ useHead({
               Assets
             </template>
           </CreditName>
+          <CreditName>
+            <template #name>
+              Palia Wiki
+            </template>
+            <template #for>
+              Information
+            </template>
+          </CreditName>
+          <CreditName>
+            <template #name>
+              Paliapedia
+            </template>
+            <template #for>
+              Information
+            </template>
+          </CreditName>
         </div>
         <p class="max-w-4xl text-center">
           Huge thanks to the Palia Team and Singularity 6 for developing the game, Palia's Commmunity Teams for various assistance with the planner, and players who provided information through discussions online,

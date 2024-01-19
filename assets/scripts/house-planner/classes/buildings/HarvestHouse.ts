@@ -24,6 +24,8 @@ export class HarvestHouse extends Building {
   price = {
     base: 15000,
     perExtraBuilding: 5000,
+    increaseIncrement: 5000,
+    increaseInterval: 2,
   }
 
   materials = {
@@ -162,4 +164,31 @@ export class HarvestHouse extends Building {
       South: false,
       West: true,
     }
+
+  getPrice(count: number): number {
+    const harvestHouseCount = count - 1
+
+    const initialPrice = this.price.base
+    const perExtraBuilding = this.price.perExtraBuilding
+    const increaseIncrement = this.price.increaseIncrement
+    const increaseInterval = this.price.increaseInterval
+
+    let currentCost = initialPrice
+
+    let priceIncrease = 0
+    if (increaseIncrement > 0 && increaseInterval > 0) {
+      for (let i = 1; i < harvestHouseCount; i++) {
+        if (i % increaseInterval === 0)
+          priceIncrease += increaseIncrement
+
+        currentCost += (initialPrice + (perExtraBuilding + priceIncrease))
+      }
+    }
+
+    if (harvestHouseCount < 1)
+      return 0
+
+    // First harvest house is free
+    return currentCost
+  }
 }

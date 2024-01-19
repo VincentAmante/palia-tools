@@ -35,6 +35,8 @@ export abstract class Building {
   readonly price = {
     base: 0,
     perExtraBuilding: 0,
+    increaseIncrement: 0,
+    increaseInterval: 0,
   }
 
   readonly materials = {
@@ -534,7 +536,24 @@ export abstract class Building {
   }
 
   getPrice(count: number): number {
-    return this.price.base * count + (this.price.perExtraBuilding * (count - 1))
+    const initialPrice = this.price.base
+    const perExtraBuilding = this.price.perExtraBuilding
+    const increaseIncrement = this.price.increaseIncrement
+    const increaseInterval = this.price.increaseInterval
+
+    let currentCost = initialPrice
+
+    let priceIncrease = 0
+    if (increaseIncrement > 0 && increaseInterval > 0) {
+      for (let i = 1; i < count; i++) {
+        if (i % increaseInterval === 0)
+          priceIncrease += increaseIncrement
+
+        currentCost += (initialPrice + (perExtraBuilding + priceIncrease))
+      }
+    }
+
+    return currentCost
   }
 
   get copy(): Building {

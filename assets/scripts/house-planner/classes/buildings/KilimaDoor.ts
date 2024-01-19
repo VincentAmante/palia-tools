@@ -33,7 +33,9 @@ export default class KilimaDoor extends Building {
 
   price = {
     base: 1000,
-    perExtraBuilding: 50,
+    perExtraBuilding: 100,
+    increaseIncrement: 50,
+    increaseInterval: 11,
   }
 
   materials = {

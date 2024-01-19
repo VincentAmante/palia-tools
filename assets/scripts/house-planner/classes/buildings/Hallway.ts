@@ -21,6 +21,8 @@ export class Hallway extends Building {
   price = {
     base: 3000,
     perExtraBuilding: 100,
+    increaseIncrement: 100,
+    increaseInterval: 10,
   }
 
   materials = {
