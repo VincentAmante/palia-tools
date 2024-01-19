@@ -3,12 +3,12 @@ import { ref, watchEffect } from 'vue'
 import { useStorage } from '@vueuse/core'
 import LazyHCInfo from './garden-planner/HarvestCalculator/HCInfo.vue'
 import HCTags from './garden-planner/HarvestCalculator/HCTags.vue'
-import LazyHCDay from './garden-planner/HarvestCalculator/HCDay.vue'
 import OptionCard from './garden-planner/HarvestCalculator/OptionCard.vue'
 import CropOptions from './garden-planner/HarvestCalculator/CropOptions.vue'
 import CrafterDataDisplay from './garden-planner/HarvestCalculator/CrafterDataDisplay.vue'
 import ProduceManagerSettings from './garden-planner/HarvestCalculator/ProduceManagerSettings.vue'
 import ShippingBinTotal from './garden-planner/HarvestCalculator/ShippingBinTotal.vue'
+import ShippingBinDay from './garden-planner/HarvestCalculator/ShippingBinDay.vue'
 import type { ICalculateValueResult, ICropOption, ICropOptions, ISimulateYieldResult } from '@/assets/scripts/garden-planner/imports'
 import { CropType, Garden } from '@/assets/scripts/garden-planner/imports'
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/Garden'
@@ -44,12 +44,6 @@ const options = useStorage('approximator-options-NOV1023', {
   useGrowthBoost: false,
   level: 0,
 })
-
-// const harvestData = computed<ISimulateYieldResult>(() => {
-//   return props.layout.simulateYield({
-//     ...options.value,
-//   })
-// })
 
 const harvestData = ref<ISimulateYieldResult | undefined>(props.layout.simulateYield({
   ...options.value,
@@ -253,6 +247,7 @@ watchEffect(() => {
           </div>
         </div>
       </div>
+
       <div
         v-if="(activeTab !== 'info' || isTakingScreenshot.get)"
         class="px-4 py-2 "
@@ -320,6 +315,7 @@ watchEffect(() => {
           </div>
         </div>
       </div>
+
       <div v-show="(isTakingScreenshot.get) || activeTab === 'display'" class="flex flex-col px-4">
         <HCTags
           :use-star-seeds="options.useStarSeeds"
@@ -356,11 +352,6 @@ watchEffect(() => {
             v-if="(isTakingScreenshot.get) || activeDisplayTab === 'overview'"
             class="flex flex-col gap-2 pb-3"
           >
-            <!-- <LazyHCTotal
-              :processed-yields="processedYields as ICalculateValueResult"
-              :harvest-data="harvestDataDebounced as ISimulateYieldResult"
-              :crop-options="cropOptions as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>"
-            /> -->
             <ShippingBinTotal
               :shipping-bin="shippingBin as IShippingBin"
             />
@@ -369,12 +360,9 @@ watchEffect(() => {
             </div>
           </div>
 
-          <LazyHCDay
+          <ShippingBinDay
             v-if="(!(isTakingScreenshot.get) && activeDisplayTab === 'day' && harvestDataDebounced)"
-            class="pb-4"
-            :processed-yields="processedYields as ICalculateValueResult"
-            :harvest-data="harvestDataDebounced as ISimulateYieldResult"
-            :crop-options="cropOptions as Record<CropType, { starType: ProduceOptions; baseType: ProduceOptions }>"
+            :logs="shippingBin.logs"
           />
           <div
             v-if="(!(isTakingScreenshot.get) && activeDisplayTab === 'crafter' && harvestDataDebounced)"
@@ -389,27 +377,30 @@ watchEffect(() => {
 
       <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'" class="flex flex-col gap-2 px-4 transition-all max-h-96 ">
         <div class="gap-2 tabs">
-          <div
+          <button
+            aria-label="Garden Tab"
             class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'main' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('main')"
           >
             Garden
-          </div>
-          <div
+          </button>
+          <button
+            aria-label="Crop Tab"
             class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'crop' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('crop')"
           >
             Crop
-          </div>
-          <div
+          </button>
+          <button
+            aria-label="Crafter Tab"
             class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'crafter' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('crafter')"
           >
             Crafter
-          </div>
+          </button>
         </div>
 
         <!-- box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset; -->

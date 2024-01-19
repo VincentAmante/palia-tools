@@ -10,7 +10,6 @@ import CropCode from './enums/cropCode'
 import crops, { getCodeFromCrop, getCropFromCode, getCropFromType } from './cropList'
 import Garden from './classes/Garden'
 import Fertiliser from './classes/Fertiliser'
-import FertiliserType from './enums/fertiliser'
 import fertilisers, { getCodeFromFertiliser, getFertiliserFromCode, getFertiliserFromType } from './fertiliserList'
 import type { ICalculateValueResult, ISimulateYieldResult } from './utils/gardenHelpers'
 import { Jar } from './classes/Crafters/Jar'
@@ -27,7 +26,16 @@ import {
   ProduceManager,
 } from './classes/Crafters/ProduceManager'
 
+import type {
+  IDayLog,
+  IShippingBin,
+} from './classes/ShippingBin'
+import ShippingBin from './classes/ShippingBin'
+
 import type { PlotStat } from './types/plotStat'
+
+import ItemType from './enums/itemType'
+import FertiliserType from './enums/fertiliser'
 
 export {
   Crop,
@@ -60,4 +68,8 @@ export {
   type PlotStat,
   type ICrafterSettings,
   type ICrafterCounts,
+  ShippingBin,
+  type IDayLog,
+  type IShippingBin,
+  ItemType,
 }

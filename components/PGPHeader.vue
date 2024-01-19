@@ -7,8 +7,7 @@
           <div class="flex-1 mx-2">
             <NuxtLink to="/" class="flex items-center gap-2">
               <nuxt-img
-                format="webp" src="/logo.webp"
-                width="48px" height="48px" alt="Palia Garden Planner Logo"
+                format="webp" src="/logo.webp" width="48px" height="48px" alt="Palia Garden Planner Logo"
                 class="max-w-[3rem]"
               />
               <div class="flex flex-col gap-0 leading-tight">
@@ -40,6 +39,17 @@
                     Credits
                   </NuxtLink>
                 </li>
+                <li>
+                  <NuxtLink
+                    class="text-harvest-boost"
+                    target="_blank"
+                    rel="noopener"
+                    to="https://paliapedia.com/tools/garden"
+                  >
+                    <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="" />
+                    Layout Generator
+                  </NuxtLink>
+                </li>
                 <li class="dropdown dropdown-hover dropdown-bottom dropdown-end">
                   <label tabindex="0">
                     <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xl" />
@@ -48,9 +58,7 @@
                   <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                     <li class="text-sm">
                       <NuxtLink
-                        to="https://palia.anniebananie.io"
-                        class="flex flex-wrap items-center"
-                        rel="noopener"
+                        to="https://palia.anniebananie.io" class="flex flex-wrap items-center" rel="noopener"
                         target="_blank"
                       >
                         <font-awesome-icon :icon="['fas', 'gift']" class="text-xl" />
@@ -60,10 +68,7 @@
                     </li>
                     <li class="text-sm">
                       <NuxtLink
-                        to="https://palia.th.gl/"
-                        class="flex flex-wrap items-center"
-                        rel="noopener"
-
+                        to="https://palia.th.gl/" class="flex flex-wrap items-center" rel="noopener"
                         target="_blank"
                       >
                         <font-awesome-icon :icon="['fas', 'map']" class="text-xl" />
@@ -72,29 +77,19 @@
                       </NuxtLink>
                     </li>
                     <li class="text-sm">
-                      <NuxtLink
-                        to="https://paliapedia.com/"
-                        class="flex"
-                        rel="noopener"
-                        target="_blank"
-                      >
+                      <NuxtLink to="https://paliapedia.com/" class="flex" rel="noopener" target="_blank">
                         <nuxt-img
                           src="/externals/paliapedia.svg" width="18px" height="18px"
-                          class="max-w-[1.5rem] inline-block text-lg"
-                          alt="Paliapedia Logo"
+                          class="max-w-[1.5rem] inline-block text-lg" alt="Paliapedia Logo"
                         />
                         Paliapedia
                       </NuxtLink>
                     </li>
                     <li class="text-sm">
-                      <NuxtLink
-                        to="https://paliaparty.app/" class="flex" rel="noopener"
-                        target="_blank"
-                      >
+                      <NuxtLink to="https://paliaparty.app/" class="flex" rel="noopener" target="_blank">
                         <nuxt-img
                           src="/externals/palia-party.webp" width="18px" height="18px"
-                          class="max-w-[1.5rem] inline-block text-lg"
-                          alt="Palia Party Logo"
+                          class="max-w-[1.5rem] inline-block text-lg" alt="Palia Party Logo"
                         />
                         Palia Party
                       </NuxtLink>
@@ -105,20 +100,14 @@
             </div>
           </div>
           <div class="flex-none lg:hidden">
-            <label
-              for="menu" class="btn btn-square btn-ghost"
-              aria-label="menu toggle"
-            >
+            <label for="menu" class="btn btn-square btn-ghost" aria-label="menu toggle">
               <font-awesome-icon :icon="['fas', 'bars']" class="text-xl" />
             </label>
           </div>
         </div>
       </div>
       <div class="overflow-x-hidden drawer-side">
-        <label
-          for="menu" class="drawer-overlay"
-          aria-label="close menu"
-        />
+        <label for="menu" class="drawer-overlay" aria-label="close menu" />
         <ul class="relative h-full gap-2 p-4 menu w-80 bg-base-200">
           <li class="flex items-end w-full lg:hidden">
             <label for="menu">
@@ -141,6 +130,17 @@
               Credits
             </NuxtLink>
           </li>
+          <li class="text-lg font-bold normal-case">
+            <NuxtLink
+              class="text-harvest-boost"
+              target="_blank"
+              rel="noopener"
+              to="https://paliapedia.com/tools/garden"
+            >
+              <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="" />
+              Layout Generator
+            </NuxtLink>
+          </li>
           <li>
             <div class="flex flex-col items-start text-lg font-bold">
               <p class="flex items-center gap-2">
@@ -158,37 +158,26 @@
                   </NuxtLink>
                 </li>
                 <li class="text-sm">
-                  <NuxtLink
-                    to="https://palia.th.gl/" class="flex flex-wrap items-center" rel="noopener"
-                    target="_blank"
-                  >
+                  <NuxtLink to="https://palia.th.gl/" class="flex flex-wrap items-center" rel="noopener" target="_blank">
                     <font-awesome-icon :icon="['fas', 'map']" class="text-xl" />
                     Interactive Map
                     <span class="text-xs">(The Hidden Gaming Lair)</span>
                   </NuxtLink>
                 </li>
                 <li class="text-sm">
-                  <NuxtLink
-                    to="https://paliapedia.com/" class="flex" rel="noopener"
-                    target="_blank"
-                  >
+                  <NuxtLink to="https://paliapedia.com/" class="flex" rel="noopener" target="_blank">
                     <nuxt-img
                       src="/externals/paliapedia.svg" width="18px" height="18px"
-                      class="max-w-[1.5rem] inline-block text-lg"
-                      alt="Paliapedia Logo"
+                      class="max-w-[1.5rem] inline-block text-lg" alt="Paliapedia Logo"
                     />
                     Paliapedia
                   </NuxtLink>
                 </li>
                 <li class="text-sm">
-                  <NuxtLink
-                    to="https://paliaparty.app/" class="flex" rel="noopener"
-                    target="_blank"
-                  >
+                  <NuxtLink to="https://paliaparty.app/" class="flex" rel="noopener" target="_blank">
                     <nuxt-img
                       src="/externals/palia-party.webp" width="18px" height="18px"
-                      class="max-w-[1.5rem] inline-block text-lg"
-                      alt="Palia Party Logo"
+                      class="max-w-[1.5rem] inline-block text-lg" alt="Palia Party Logo"
                     />
                     Palia Party
                   </NuxtLink>

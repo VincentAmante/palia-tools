@@ -27,7 +27,8 @@
     "pinia": "^2.1.6",
     "sortablejs": "^1.15.1",
     "uniqid": "^5.4.0",
-    "vue-konva": "^3.0.2"
+    "vue-konva": "^3.0.2",
+    "vue-virtual-scroller": "^2.0.0-beta.8"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.40.2",

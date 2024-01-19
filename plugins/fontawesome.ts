@@ -90,6 +90,7 @@ library.add(
   faPeopleGroup,
   faGripVertical,
   faMinus,
+  faFloppyDisk,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS

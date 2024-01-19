@@ -20,7 +20,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="relative flex flex-col items-center justify-center h-full p-2 isolate aspect-square">
+  <li class="relative flex flex-col items-center justify-center h-full p-2 isolate aspect-square">
     <div
       :data-tip="tooltip"
       class="z-50 hidden w-full h-full sm:absolute sm:tooltip"
@@ -43,5 +43,5 @@ defineProps({
     <p class="absolute bottom-0 left-0">
       <font-awesome-icon v-if="star" class="text-sm text-quality-increase" :icon="['fas', 'star']" />
     </p>
-  </div>
+  </li>
 </template>
