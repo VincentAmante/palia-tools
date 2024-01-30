@@ -1,7 +1,7 @@
 import Crop from './classes/crop'
 import CropType from './enums/crops'
 import Bonus from './enums/bonus'
-import CropCode from './enums/cropcode'
+import CropCode from './enums/_cropCode'
 import CropSize from './enums/crop-size'
 
 const crops = {
