@@ -1,7 +1,7 @@
 import Crop from './classes/crop'
 import CropType from './enums/crops'
 import Bonus from './enums/bonus'
-import CropCode from './enums/_cropCode'
+import CropCode from './enums/cropCode'
 import CropSize from './enums/crop-size'
 
 const crops = {
@@ -419,6 +419,76 @@ const crops = {
       cropTooltip: 'Spicy Pepper: Quality Increase. 2x2, needs 2 of a bonus for the buff to activate',
       cropBackgroundColor: 'bg-quality-increase',
       paliapediaName: 'spicypepper',
+    },
+  ),
+  [CropType.Cabbage]: new Crop(
+    CropType.Cabbage,
+    Bonus.WaterRetain,
+    CropSize.Single,
+    '/crops/cabbage.webp',
+    {
+      base: 1,
+      growthTime: 1,
+    },
+    {
+      crop: 0,
+      cropStar: 0,
+      seed: 0,
+      seedStar: 0,
+      hasPreserve: true,
+      preserve: 0,
+      preserveStar: 0,
+    },
+    {
+      cropsPerSeed: 0,
+      seedsPerConversion: 0,
+      cropsPerPreserve: 0,
+      seedProcessMinutes: 0,
+      preserveProcessMinutes: 0,
+    },
+    {
+      preserve: '/jars/cabbage.webp',
+      seed: '/seeds/cabbage.webp',
+    },
+    {
+      cropCode: CropCode.Cabbage,
+      cropTooltip: 'Cabbage: Water Retention',
+      cropBackgroundColor: 'bg-water-retain',
+    },
+  ),
+  [CropType.BokChoy]: new Crop(
+    CropType.BokChoy,
+    Bonus.WeedPrevention,
+    CropSize.Single,
+    '/crops/bok-choy.webp',
+    {
+      base: 1,
+      growthTime: 1,
+    },
+    {
+      crop: 0,
+      cropStar: 0,
+      seed: 0,
+      seedStar: 0,
+      hasPreserve: true,
+      preserve: 0,
+      preserveStar: 0,
+    },
+    {
+      cropsPerSeed: 1,
+      seedsPerConversion: 0,
+      cropsPerPreserve: 0,
+      seedProcessMinutes: 0,
+      preserveProcessMinutes: 0,
+    },
+    {
+      preserve: '/jars/bok-choy.webp',
+      seed: '/seeds/bok-choy.webp',
+    },
+    {
+      cropCode: CropCode.BokChoy,
+      cropTooltip: 'Bok Choy: Weed Prevention',
+      cropBackgroundColor: 'bg-weed-prevention',
     },
   ),
   [CropType.None]: null,

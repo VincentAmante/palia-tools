@@ -1,6 +1,6 @@
 import { CropItem, ItemType } from '../items/item'
 
-import crops from '../../_cropList'
+import crops from '../../cropList'
 import type { ICrafter, InsertItemArgs } from './ICrafter'
 
 export class Seeder implements ICrafter {
