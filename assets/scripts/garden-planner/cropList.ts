@@ -1,8 +1,8 @@
-import Crop from './classes/crop'
-import CropType from './enums/crops'
+import Crop from './classes/Crop'
+import CropType from './enums/cropType'
 import Bonus from './enums/bonus'
 import CropCode from './enums/cropCode'
-import CropSize from './enums/crop-size'
+import CropSize from './enums/cropSize'
 
 const TOMATO = new Crop(
   CropType.Tomato,
@@ -424,20 +424,20 @@ const CABBAGE = new Crop(
   CropSize.Single,
   '/crops/cabbage.webp',
   {
-    base: 2,
-    growthTime: 4,
+    base: 1,
+    growthTime: 1,
   },
   {
-    crop: 30,
-    cropStar: 45,
-    seed: 10,
-    seedStar: 15,
+    crop: 0,
+    cropStar: 0,
+    seed: 0,
+    seedStar: 0,
     hasPreserve: true,
-    preserve: 45,
-    preserveStar: 67,
+    preserve: 0,
+    preserveStar: 0,
   },
   {
-    cropsPerSeed: 1,
+    cropsPerSeed: 0,
     seedsPerConversion: 4,
     cropsPerPreserve: 1,
     seedProcessMinutes: 24,
@@ -539,6 +539,8 @@ const crops = {
   [CropType.Apple]: APPLE,
   [CropType.Corn]: CORN,
   [CropType.SpicyPepper]: SPICY_PEPPER,
+  [CropType.Cabbage]: CABBAGE,
+  [CropType.BokChoy]: BOK_CHOY,
 
   [CropType.None]: NULLCROP,
 } as const

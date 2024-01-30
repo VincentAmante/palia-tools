@@ -355,9 +355,6 @@ watchEffect(() => {
             <ShippingBinTotal
               :shipping-bin="shippingBin as IShippingBin"
             />
-            <div>
-              <p>Hey</p>
-            </div>
           </div>
 
           <ShippingBinDay

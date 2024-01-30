@@ -46,9 +46,9 @@ function seederProcess() {
 </script>
 
 <template>
-  <div class="px-12 py-4 flex flex-col gap-4">
+  <div class="flex flex-col gap-4 px-12 py-4">
     <section
-      class="p-4 bg-warning rounded-md text-neutral font-bold flex flex-col items-center text-center justify-center"
+      class="flex flex-col items-center justify-center p-4 font-bold text-center rounded-md bg-warning text-neutral"
     >
       <font-awesome-icon icon="exclamation-triangle" class="text-4xl" />
       <h1 class="text-2xl uppercase">
@@ -61,7 +61,7 @@ function seederProcess() {
     </section>
     <DevOnly>
       <div class="flex gap-2">
-        <section class="bg-palia-dark-blue p-2 flex flex-col gap-2 rounded-md border-primary border">
+        <section class="flex flex-col gap-2 p-2 border rounded-md bg-palia-dark-blue border-primary">
           <input v-model="crop.count" type="number" class="input">
           <button class="btn btn-primary" @click="addTomato">
             Add Tomato
@@ -73,7 +73,7 @@ function seederProcess() {
           <ul class="grid gap-1">
             <template v-for="(setting, key) in settings" :key="key">
               <li class="flex items-center gap-2">
-                <input v-model="settings[key]" type="checkbox" class="toggle rounded-sm">
+                <input v-model="settings[key]" type="checkbox" class="rounded-sm toggle">
                 {{ key }}
               </li>
             </template>
@@ -89,15 +89,15 @@ function seederProcess() {
               Inserted
             </p>
 
-            <ul class="flex bg-accent rounded-md text-misc p-2 gap-2">
+            <ul class="flex gap-2 p-2 rounded-md bg-accent text-misc">
               <template v-for="(item, index) in jar.hopperSlots" :key="index">
-                <li class="flex items-center relative p-1 bg-primary rounded-md">
-                  <NuxtImg v-if="item" :src="item.image" class="w-12 h-12 aspect-square object-contain" />
-                  <p class="absolute bottom-0 right-0 m-1 rounded-full text-xs p-1 bg-palia-dark-blue bg-opacity-60 text-primary">
+                <li class="relative flex items-center p-1 rounded-md bg-primary">
+                  <NuxtImg v-if="item" :src="item.image" class="object-contain w-12 h-12 aspect-square" />
+                  <p class="absolute bottom-0 right-0 p-1 m-1 text-xs rounded-full bg-palia-dark-blue bg-opacity-60 text-primary">
                     {{ item.count }}
                   </p>
 
-                  <font-awesome-icon v-if="item.isStar" icon="star" class="text-quality-increase-dark absolute bottom-0 left-0 m-1" />
+                  <font-awesome-icon v-if="item.isStar" icon="star" class="absolute bottom-0 left-0 m-1 text-quality-increase-dark" />
                 </li>
               </template>
             </ul>
@@ -106,15 +106,15 @@ function seederProcess() {
             <p>
               Output
             </p>
-            <ul class="flex bg-accent rounded-md text-misc p-2 gap-2">
+            <ul class="flex gap-2 p-2 rounded-md bg-accent text-misc">
               <template v-for="(output, index) in jar.outputSlots" :key="index">
-                <li class="flex items-center relative p-1 bg-primary rounded-md">
-                  <nuxt-img v-if="output" :src="output.image" class="w-12 h-12 aspect-square object-contain" />
-                  <p class="absolute bottom-0 right-0 m-1 rounded-full text-xs p-1 bg-palia-dark-blue bg-opacity-60 text-primary">
+                <li class="relative flex items-center p-1 rounded-md bg-primary">
+                  <nuxt-img v-if="output" :src="output.image" class="object-contain w-12 h-12 aspect-square" />
+                  <p class="absolute bottom-0 right-0 p-1 m-1 text-xs rounded-full bg-palia-dark-blue bg-opacity-60 text-primary">
                     {{ output.count }}
                   </p>
 
-                  <font-awesome-icon v-if="output.isStar" icon="star" class="text-quality-increase-dark absolute bottom-0 left-0 m-1" />
+                  <font-awesome-icon v-if="output.isStar" icon="star" class="absolute bottom-0 left-0 m-1 text-quality-increase-dark" />
                 </li>
               </template>
             </ul>
@@ -123,7 +123,7 @@ function seederProcess() {
             <p>
               Gold / Day
             </p>
-            <p class="flex gap-1 items-center">
+            <p class="flex items-center gap-1">
               <nuxt-img
                 width="16"
                 height="16"
@@ -136,7 +136,7 @@ function seederProcess() {
             </p>
           </div>
         </section>
-        <section class="w-fit mockup-code max-w-xl">
+        <section class="max-w-xl w-fit mockup-code">
           <div class="px-6 py-2">
             <template v-for="(value, key) in jar" :key="key">
               <span class="block">
