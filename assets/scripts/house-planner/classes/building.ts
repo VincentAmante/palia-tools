@@ -17,6 +17,12 @@ interface Dimensions {
   height: number
 }
 
+interface Materials {
+  sapwoodPlanks?: number
+  stoneBricks?: number
+  glassPanes?: number
+}
+
 export abstract class Building {
   protected _id: string = uniqid()
   protected _type: BuildingType = BuildingType.None
@@ -39,9 +45,10 @@ export abstract class Building {
     increaseInterval: 0,
   }
 
-  readonly materials = {
+  readonly materials: Materials = {
     sapwoodPlanks: 0,
     stoneBricks: 0,
+    glassPanes: 0,
   }
 
   protected _openSlots: {
@@ -544,7 +551,7 @@ export abstract class Building {
     let currentCost = initialPrice
 
     let priceIncrease = 0
-    if (increaseIncrement > 0 && increaseInterval > 0) {
+    if (count > 0) {
       for (let i = 1; i < count; i++) {
         if (i % increaseInterval === 0)
           priceIncrease += increaseIncrement

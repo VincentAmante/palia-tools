@@ -1,6 +1,6 @@
 import { CropItem, ItemType } from '../items/item'
 
-import crops from '../../crop-list'
+import crops from '../../cropList'
 import type { ICrafter, InsertItemArgs } from './ICrafter'
 
 export class Jar implements ICrafter {

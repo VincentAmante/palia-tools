@@ -2,7 +2,7 @@
  * File contains methods for converting saves to the latest version
  */
 
-import CropCode from './enums/cropcode'
+import CropCode from './enums/cropCode'
 
 const v0_1CropCodes: { [key in CropCode]: string } = {
   [CropCode.None]: 'Na',
@@ -15,6 +15,10 @@ const v0_1CropCodes: { [key in CropCode]: string } = {
   [CropCode.Cotton]: 'Co',
   [CropCode.Blueberry]: 'Bl',
   [CropCode.Apple]: 'Ap',
+  [CropCode.Corn]: 'Co',
+  [CropCode.SpicyPepper]: 'Sp',
+  [CropCode.NapaCabbage]: 'Cb',
+  [CropCode.BokChoy]: 'Bk',
 }
 
 const v0_2CropCodes: { [key in CropCode]: string } = {
@@ -28,6 +32,10 @@ const v0_2CropCodes: { [key in CropCode]: string } = {
   [CropCode.Cotton]: 'Co',
   [CropCode.Blueberry]: 'B',
   [CropCode.Apple]: 'A',
+  [CropCode.Corn]: 'Cr',
+  [CropCode.SpicyPepper]: 'Sp',
+  [CropCode.NapaCabbage]: 'Cb',
+  [CropCode.BokChoy]: 'Bk',
 }
 
 function convertV0_1CodestoV0_2(save: string): string {

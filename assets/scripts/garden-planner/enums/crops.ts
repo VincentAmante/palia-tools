@@ -11,6 +11,8 @@ enum CropType {
   Apple = 'apple',
   Corn = 'corn',
   SpicyPepper = 'spicy pepper',
+  NapaCabbage = 'napa cabbage',
+  BokChoy = 'bok choy',
 }
 
 export default CropType

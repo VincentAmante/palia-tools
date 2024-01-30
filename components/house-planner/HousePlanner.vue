@@ -5,7 +5,7 @@ import HouseGrid from './HouseGrid.vue'
 import BuildingButton from './BuildingButton.vue'
 import type { Building } from '@/assets/scripts/house-planner/classes/building'
 import type { Direction } from '@/assets/scripts/house-planner/imports'
-import { Fireplace, Hallway, HarvestHouse, KilimaDoor, KilimaPorch, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
+import { BayWindow, Fireplace, Hallway, HarvestHouse, KilimaDoor, KilimaPorch, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
 
 import { useHousePlanConfig } from '@/stores/useHousePlanConfig'
 
@@ -83,18 +83,21 @@ const totalPrice = computed(() => {
 const totalMaterials = computed(() => {
   let sapwoodPlanks = 0
   let stoneBricks = 0
+  let glassPanes = 0
 
   Object.values(buildings.value).forEach((building) => {
     if (!building.isPlaced)
       return
 
-    sapwoodPlanks += building.materials.sapwoodPlanks
-    stoneBricks += building.materials.stoneBricks
+    sapwoodPlanks += building.materials.sapwoodPlanks || 0
+    stoneBricks += building.materials.stoneBricks || 0
+    glassPanes += building.materials.glassPanes || 0
   })
 
   return {
     sapwoodPlanks,
     stoneBricks,
+    glassPanes,
   }
 })
 
@@ -471,6 +474,8 @@ function createNewBuilding(type: BuildingType) {
       return new KilimaPorch({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
     case BuildingType.KilimaDoor:
       return new KilimaDoor({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.BayWindow:
+      return new BayWindow({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
     default:
       return new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
   }
@@ -502,16 +507,16 @@ function fitStageIntoParentContainer() {
 </script>
 
 <template>
-  <div class="flex flex-col lg:flex-row gap-2 justify-evenly">
-    <div class="flex lg:flex-col gap-1 flex-wrap">
+  <div class="flex flex-col gap-2 lg:flex-row justify-evenly">
+    <div class="flex gap-1 lg:flex-col max-h-[580px] overflow-hidden">
       <button
         aria-label="clear"
-        class="relative isolate btn text-sm"
+        class="relative text-sm isolate btn"
         :class="(activeBuilding && activeBuilding.type) === BuildingType.None ? 'btn-active' : ''"
         @click="setActiveBuilding(createNewBuilding(BuildingType.None))"
       >
         <font-awesome-icon :icon="['fas', 'hand']" class="text-xl" />
-        <p class="normal-case font-normal">
+        <p class="font-normal normal-case">
           Cursor
         </p>
       </button>
@@ -563,17 +568,23 @@ function fitStageIntoParentContainer() {
         :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaDoor"
         @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaDoor))"
       />
+      <BuildingButton
+        src="/buildings/icons/bay-window.webp"
+        label="Bay Window"
+        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.BayWindow"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.BayWindow))"
+      />
     </div>
     <section
       ref="stageContainer"
-      class="max-w-full relative isolate overflow-hidden rounded-md outline outline-2 outline-primary aspect-[877.5/487.5]"
+      class="max-w-full relative isolate overflow-hidden  aspect-[877.5/487.5]"
     >
       <DevOnly>
         <p class="absolute left-0 z-50 m-4 text-xs">
           {{ text.text }}
         </p>
       </DevOnly>
-      <p class="absolute right-0 z-30 m-4 bg-palia-blue p-2 text-accent rounded-full px-4 bg-opacity-50">
+      <p class="absolute right-0 z-30 p-2 px-4 m-4 bg-opacity-50 rounded-full bg-palia-blue text-accent">
         {{ countedBuildings }} / 30
       </p>
       <v-stage ref="stage" class="relative isolate" :config="configKonva">
@@ -623,11 +634,11 @@ function fitStageIntoParentContainer() {
     </section>
 
     <section class="flex flex-col gap-2">
-      <div class="flex lg:flex-col gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit">
-        <h2 class="text-xl text-center font-bold">
+      <div class="flex gap-2 p-4 px-8 rounded-md lg:flex-col bg-palia-dark-blue h-fit">
+        <h2 class="text-xl font-bold text-center">
           Costs
         </h2>
-        <ul class="flex lg:grid  gap-4">
+        <ul class="flex gap-4 lg:grid">
           <li class="flex items-center gap-2 text-lg">
             <nuxt-img
               width="16" height="16" src="/gold.webp" class="max-h-[1.5rem]" :srcset="undefined" placeholder
@@ -635,34 +646,50 @@ function fitStageIntoParentContainer() {
             />
             {{ totalPrice.toLocaleString() }}
           </li>
-          <li class="flex items-center gap-2 text-lg">
+          <li
+            v-if="totalMaterials.sapwoodPlanks > 0"
+            class="flex items-center gap-2 text-lg"
+          >
             <nuxt-img
               width="32" height="32" src="/items/sapwood-plank.png" class="max-h-[3rem] aspect-auto object-contain"
               :srcset="undefined" placeholder alt="Gold" format="webp"
             />
             {{ totalMaterials.sapwoodPlanks.toLocaleString() }}
           </li>
-          <li class="flex items-center gap-2 text-lg">
+          <li
+            v-if="totalMaterials.stoneBricks > 0"
+            class="flex items-center gap-2 text-lg"
+          >
             <nuxt-img
               width="32" height="32" src="/items/stone-brick.png" class="max-h-[3rem] aspect-auto object-contain"
               :srcset="undefined" placeholder alt="Gold" format="webp"
             />
             {{ totalMaterials.stoneBricks.toLocaleString() }}
           </li>
+          <li
+            v-if="totalMaterials.glassPanes > 0"
+            class="flex items-center gap-2 text-lg"
+          >
+            <nuxt-img
+              width="32" height="32" src="/items/glass-pane.webp" class="max-h-[3rem] aspect-auto object-contain"
+              :srcset="undefined" placeholder alt="Gold" format="webp"
+            />
+            {{ totalMaterials.glassPanes.toLocaleString() }}
+          </li>
         </ul>
       </div>
-      <div class="flex gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit text-xs">
-        <ul class="flex lg:grid gap-4">
+      <div class="flex gap-2 p-4 px-8 text-xs rounded-md bg-palia-dark-blue h-fit">
+        <ul class="flex gap-4 lg:grid">
           <li>
-            <input v-model="useBuildingLimits" type="checkbox" class="toggle rounded-lg">
+            <input v-model="useBuildingLimits" type="checkbox" class="rounded-lg toggle">
             <p>Use Build Limits</p>
           </li>
           <li>
-            <input v-model="showRoofCollisions" type="checkbox" class="toggle rounded-lg">
+            <input v-model="showRoofCollisions" type="checkbox" class="rounded-lg toggle">
             <p>Show Roof</p>
           </li>
           <li>
-            <input v-model="showLabels" type="checkbox" class="toggle rounded-lg">
+            <input v-model="showLabels" type="checkbox" class="rounded-lg toggle">
             <p>Show Labels</p>
           </li>
         </ul>
@@ -670,8 +697,8 @@ function fitStageIntoParentContainer() {
     </section>
 
     <!-- <DevOnly>
-      <div class=" bg-neutral p-4 rounded-md font-mono mb-4">
-        <p class="text-lg uppercase font-bold">
+      <div class="p-4 mb-4 font-mono rounded-md bg-neutral">
+        <p class="text-lg font-bold uppercase">
           building ids
         </p>
         <ul>

@@ -382,3 +382,7 @@
     font-family: 'Merriweather', serif;
     font-display: swap;
 }
+
+.konvajs-content > canvas {
+  @apply rounded-md
+}

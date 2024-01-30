@@ -11,6 +11,8 @@ enum CropCode {
   Apple = 'A',
   Corn = 'Cr',
   SpicyPepper = 'Sp',
+  NapaCabbage = 'Cb',
+  BokChoy = 'Bk',
 }
 
 export default CropCode
