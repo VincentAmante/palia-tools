@@ -126,10 +126,6 @@ class Crop {
     return this._metadata.cropBackgroundColor
   }
 
-  get paliapediaName(): string {
-    return this._metadata.paliapediaName || ''
-  }
-
   // Assumes player harvests on the day it is harvestable
   isHarvestableOnDay(day: number, hasGrowthBoost: boolean = false) {
     let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo

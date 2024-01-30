@@ -17,7 +17,7 @@ const v0_1CropCodes: { [key in CropCode]: string } = {
   [CropCode.Apple]: 'Ap',
   [CropCode.Corn]: 'Co',
   [CropCode.SpicyPepper]: 'Sp',
-  [CropCode.NappaCabbage]: 'Cb',
+  [CropCode.NapaCabbage]: 'Cb',
   [CropCode.BokChoy]: 'Bk',
 }
 
@@ -34,7 +34,7 @@ const v0_2CropCodes: { [key in CropCode]: string } = {
   [CropCode.Apple]: 'A',
   [CropCode.Corn]: 'Cr',
   [CropCode.SpicyPepper]: 'Sp',
-  [CropCode.NappaCabbage]: 'Cb',
+  [CropCode.NapaCabbage]: 'Cb',
   [CropCode.BokChoy]: 'Bk',
 }
 
