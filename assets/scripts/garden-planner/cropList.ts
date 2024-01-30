@@ -1,8 +1,8 @@
-import Crop from './classes/Crop'
-import CropType from './enums/cropType'
+import Crop from './classes/crop'
+import CropType from './enums/crops'
 import Bonus from './enums/bonus'
 import CropCode from './enums/cropCode'
-import CropSize from './enums/cropSize'
+import CropSize from './enums/crop-size'
 
 const TOMATO = new Crop(
   CropType.Tomato,
@@ -418,6 +418,78 @@ const SPICY_PEPPER = new Crop(
   },
 )
 
+const CABBAGE = new Crop(
+  CropType.Cabbage,
+  Bonus.WaterRetain,
+  CropSize.Single,
+  '/crops/cabbage.webp',
+  {
+    base: 2,
+    growthTime: 4,
+  },
+  {
+    crop: 30,
+    cropStar: 45,
+    seed: 10,
+    seedStar: 15,
+    hasPreserve: true,
+    preserve: 45,
+    preserveStar: 67,
+  },
+  {
+    cropsPerSeed: 1,
+    seedsPerConversion: 4,
+    cropsPerPreserve: 1,
+    seedProcessMinutes: 24,
+    preserveProcessMinutes: 36,
+  },
+  {
+    preserve: '/jars/cabbage.webp',
+    seed: '/seeds/cabbage.webp',
+  },
+  {
+    cropCode: CropCode.Cabbage,
+    cropTooltip: 'Cabbage: Water Retention',
+    cropBackgroundColor: 'bg-water-retain',
+  },
+)
+
+const BOK_CHOY = new Crop(
+  CropType.BokChoy,
+  Bonus.WeedPrevention,
+  CropSize.Single,
+  '/crops/bok-choy.webp',
+  {
+    base: 2,
+    growthTime: 4,
+  },
+  {
+    crop: 30,
+    cropStar: 45,
+    seed: 10,
+    seedStar: 15,
+    hasPreserve: true,
+    preserve: 45,
+    preserveStar: 67,
+  },
+  {
+    cropsPerSeed: 1,
+    seedsPerConversion: 4,
+    cropsPerPreserve: 1,
+    seedProcessMinutes: 24,
+    preserveProcessMinutes: 36,
+  },
+  {
+    preserve: '/jars/bok-choy.webp',
+    seed: '/seeds/bok-choy.webp',
+  },
+  {
+    cropCode: CropCode.BokChoy,
+    cropTooltip: 'Bok Choy: Weed Prevention',
+    cropBackgroundColor: 'bg-weed-prevention',
+  },
+)
+
 const NULLCROP = new Crop(
   CropType.None,
   Bonus.None,
@@ -467,6 +539,7 @@ const crops = {
   [CropType.Apple]: APPLE,
   [CropType.Corn]: CORN,
   [CropType.SpicyPepper]: SPICY_PEPPER,
+
   [CropType.None]: NULLCROP,
 } as const
 
