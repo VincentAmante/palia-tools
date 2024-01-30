@@ -8,6 +8,7 @@ import { SmallHouse } from './classes/buildings/SmallHouse'
 import { NullHouse } from './classes/buildings/NullHouse'
 import { LargeHouse } from './classes/buildings/LargeHouse'
 import Fireplace from './classes/buildings/Fireplace'
+import BayWindow from './classes/buildings/BayWindow'
 import KilimaPorch from './classes/buildings/KilimaPorch'
 import KilimaDoor from './classes/buildings/KilimaDoor'
 import BuildingImage from './classes/parts/Image'
@@ -30,4 +31,5 @@ export {
   Fireplace,
   KilimaPorch,
   KilimaDoor,
+  BayWindow,
 }

@@ -17,7 +17,7 @@ useHead({
 </script>
 
 <template>
-  <main class="flex flex-col px-4 py-2 md:px-8 lg:px-14 gap-2 text-justify">
+  <main class="flex flex-col gap-2 px-4 py-2 text-justify md:px-8 lg:px-14">
     <NuxtLink to="/" class="flex items-center gap-2 btn w-fit btn-sm btn-ghost">
       <font-awesome-icon :icon="['fas', 'arrow-left']" class="" />
       <p class="">
@@ -29,15 +29,15 @@ useHead({
         Credits
       </h1>
     </div>
-    <section class="bg-palia-blue bg-opacity-40 sm:p-4 rounded-md">
-      <div class="sm:border sm:border-misc p-4 pb-8 rounded-md w-full flex flex-col items-center gap-4">
+    <section class="rounded-md bg-palia-blue bg-opacity-40 sm:p-4">
+      <div class="flex flex-col items-center w-full gap-4 p-4 pb-8 rounded-md sm:border sm:border-misc">
         <h2 class="text-2xl">
           Contributors
         </h2>
         <p>
           Thank you to the following people for their assistance to the project!
         </p>
-        <div class="flex flex-row flex-wrap gap-4 justify-center">
+        <div class="flex flex-row flex-wrap justify-center gap-4">
           <CreditName>
             <template #name>
               Arenvanya
@@ -48,10 +48,18 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
+              Aschefield
+            </template>
+            <template #for>
+              Information, Assets
+            </template>
+          </CreditName>
+          <CreditName>
+            <template #name>
               frnkers
             </template>
             <template #for>
-              UI Rework
+              UI Design
             </template>
           </CreditName>
           <CreditName>
@@ -99,7 +107,7 @@ useHead({
               Paliapedia
             </template>
             <template #for>
-              Information
+              Information, Assets
             </template>
           </CreditName>
         </div>

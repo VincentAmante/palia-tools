@@ -11,7 +11,7 @@ enum CropCode {
   Apple = 'A',
   Corn = 'Cr',
   SpicyPepper = 'Sp',
-  Cabbage = 'Cb',
+  NapaCabbage = 'Cb',
   BokChoy = 'Bk',
 }
 

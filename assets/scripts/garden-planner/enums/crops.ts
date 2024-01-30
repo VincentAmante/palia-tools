@@ -11,7 +11,7 @@ enum CropType {
   Apple = 'apple',
   Corn = 'corn',
   SpicyPepper = 'spicy pepper',
-  Cabbage = 'cabbage',
+  NapaCabbage = 'napa cabbage',
   BokChoy = 'bok choy',
 }
 

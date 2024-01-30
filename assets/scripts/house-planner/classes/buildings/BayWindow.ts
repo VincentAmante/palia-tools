@@ -9,13 +9,13 @@ import type { GridSizing } from '../../types/ConfigOptions'
 import { ZLevel } from '../../enums/zLevel'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
-export default class Fireplace extends Building {
-  protected readonly name = 'Fireplace'
-  protected _type: BuildingType = BuildingType.Fireplace
+export default class BayWindow extends Building {
+  protected readonly name = 'Bay Window'
+  protected _type: BuildingType = BuildingType.BayWindow
   protected _needsParent: boolean = true
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
   protected _baseRotation: number = 0
-  protected _baseDimensions: Dimensions = { width: 3, height: 3 }
+  protected _baseDimensions: Dimensions = { width: 2, height: 1 }
   protected _opacity: number = 1
   protected _openSlots: {
     North: boolean
@@ -32,15 +32,16 @@ export default class Fireplace extends Building {
   countsTowardsLimit: boolean = false
 
   price = {
-    base: 4000,
-    perExtraBuilding: 500,
+    base: 2500,
+    perExtraBuilding: 0,
     increaseIncrement: 0,
     increaseInterval: 0,
   }
 
   materials = {
-    sapwoodPlanks: 80,
-    stoneBricks: 30,
+    sapwoodPlanks: 30,
+    stoneBricks: 0,
+    glassPanes: 6,
   }
 
   constructor(gridSizing: GridSizing) {
@@ -79,7 +80,7 @@ export default class Fireplace extends Building {
     {
       ...this._baseCoords,
       ...this._baseDimensions,
-      imageSrc: '/buildings/fireplace.svg',
+      imageSrc: '/buildings/bay-window.svg',
     },
     this._id,
     this._gridSizing,

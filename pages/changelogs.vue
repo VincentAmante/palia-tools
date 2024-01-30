@@ -17,14 +17,14 @@ useHead({
 </script>
 
 <template>
-  <main v-once class="flex flex-col px-2 sm:px-4 py-2 lg:px-14 gap-2 text-justify">
+  <main v-once class="flex flex-col gap-2 px-2 py-2 text-justify sm:px-4 lg:px-14">
     <NuxtLink to="/" class="flex items-center gap-2 btn w-fit btn-sm btn-ghost">
       <font-awesome-icon :icon="['fas', 'arrow-left']" class="" />
       <p class="">
         Return
       </p>
     </NuxtLink>
-    <section class="pb-2 flex flex-col gap-2">
+    <section class="flex flex-col gap-2 pb-2">
       <div class="py-4">
         <h1 class="text-2xl font-bold md:text-3xl">
           Garden Planner Changelogs
@@ -32,7 +32,43 @@ useHead({
       </div>
 
       <div class="grid gap-2">
-        <ChangelogItem checked>
+        <ChangelogItem checked="">
+          <template #title>
+            January 30, 2024 — New Crops, New Building
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">New Crops —</span> Added new crops from the 0.176 patch
+            </li>
+            <li>
+              <span class="italic">New Building —</span> Added the new bay window housing add-on
+            </li>
+            <li class="ml-5 font-bold">
+              <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-warning" />
+              <span>
+                NOTE: Bay Windows on the front of the Harvest House are not yet supported, it'll require a system re-write.
+              </span>
+            </li>
+          </template>
+          <template #default>
+            <p>
+              Hello everyone! This was a bit of a quick addition.
+              Huge thanks to <span class="italic font-bold">Aschefield</span> and <span class="italic font-bold">Adain (Paliapedia)</span> for providing information and assets on the new crops and by-products!
+              Their help certainly sped up syncing the planner with the new patch.
+            </p>
+            <p>
+              There may be a chance I missed some values, so if you notice any discrepancies please do report it to me on Discord <span class="font-bold">(.aisen)</span>.
+              Those of you who are using the House Planner may note an issue with the Bay windows, I'll need to re-work how the planner handles housing add-ons to support it so it would definitely take awhile.
+            </p>
+            <p>
+              Apologies once more for the slow updates, I've been busy :(
+              Please note that anyone willing to make alternative websites or improve on this one is more than welcome to do so.
+              I'm freshly graduated and am currently looking for a job, so I'm not sure how much time I'll have to work on this.
+              Consider updates to be much slower from now on until the situation changes.
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
           <template #title>
             November 13, 2023 — Mild Bugfixes
           </template>
@@ -41,7 +77,9 @@ useHead({
               House Planner
             </li>
             <li>
-              <span class="ml-5">Experimental Release</span> - Added a proof of concept house planner: <NuxtLink class="link" to="/house-planner">
+              <span class="ml-5">Experimental Release</span> - Added a proof of concept house planner: <NuxtLink
+                class="link" to="/house-planner"
+              >
                 Link Here
               </NuxtLink> (Warning: Heavily early stage, not recommended for regular use)
             </li>
@@ -55,7 +93,8 @@ useHead({
               <span class="italic">UI</span> - Slightly tweaked UI for smaller screens and wider gardens
             </li>
             <li>
-              <span class="italic">Compact View (Experimental)</span> - Added experimental compact view to support a potential feature on another website that's not mine to announce :D
+              <span class="italic">Compact View (Experimental)</span> - Added experimental compact view to support a
+              potential feature on another website that's not mine to announce :D
             </li>
             <li class="ml-5">
               See here: <NuxtLink class="link" to="/compact">
@@ -72,11 +111,12 @@ useHead({
               Heya folks, small update this time round with a small focus on features unrelated to the garden planner.
             </p>
             <p>
-              I've worked on the layout for the planner a bit, hopefully to support larger gardens and smaller screens a little.
+              I've worked on the layout for the planner a bit, hopefully to support larger gardens and smaller screens a
+              little.
               I meant to add a fix to the screenshot feature but it did not pan out.
             </p>
             <div class="divider" />
-            <h3 class="font-bold text-lg">
+            <h3 class="text-lg font-bold">
               Crafter Support
             </h3>
             <p>
@@ -93,8 +133,10 @@ useHead({
               Every crafter <span class="italic">will</span> support having different crops placed into each one.
             </p>
             <p>
-              I have been mind-blocked on both how to manage and configure the crafters in a way that can reflect multiple playstyles.
-              Not to mention that on release it'll likely need configuration saving and sharing, which is a whole other can of worms.
+              I have been mind-blocked on both how to manage and configure the crafters in a way that can reflect multiple
+              playstyles.
+              Not to mention that on release it'll likely need configuration saving and sharing, which is a whole other
+              can of worms.
               Overall though, work is progressing on them, I hope to release them in a state that's satisfying.
             </p>
             <p>
@@ -102,7 +144,7 @@ useHead({
               This was where the house planner came in, as a way to gauge how users react to experimental features.
             </p>
             <div class="divider" />
-            <h3 class="font-bold text-lg">
+            <h3 class="text-lg font-bold">
               House Planner
             </h3>
             <p>
@@ -138,10 +180,13 @@ useHead({
             <li><span class="italic">Palia Clock —</span>Adds an in-game timer for convenience</li>
             <li><span class="italic">Mechanic —</span> Added growth boost support (options)</li>
             <li>UX Improvements:</li>
-            <ul class=" list-disc list-inside pl-3">
+            <ul class="pl-3 list-disc list-inside ">
               <li>You can drag crops/fertilisers to their tile</li>
               <li>You can now click on the save codes to copy to clipboard</li>
-              <li><span class="italic">(Desktop) —</span> Hovering over a tile now previews the crop/fertiliser being placed</li>
+              <li>
+                <span class="italic">(Desktop) —</span> Hovering over a tile now previews the crop/fertiliser being
+                placed
+              </li>
               <li>Main options now save automatically per browser</li>
             </ul>
             <li>Moved Credits to its own dedicated page</li>
@@ -155,22 +200,28 @@ useHead({
             </p>
             <p>
               This change is a major UI rework, with the aim of reducing scrolling and making the planner more compact.
-              The initial design of the planner was added as an after-thought, and was not meant to be a long-term solution.
-              Adding new features, and planning out future ones was proving to be a hassle with the current design, so I prioritised its re-work.
+              The initial design of the planner was added as an after-thought, and was not meant to be a long-term
+              solution.
+              Adding new features, and planning out future ones was proving to be a hassle with the current design, so I
+              prioritised its re-work.
             </p>
             <p>
-              The rework is designed by an amazing friend of mine, <span class="font-bold">frnkers</span>, and was translated to code by yours truly.
-              This change allows me to comfortably add new features, and plan out future ones without worrying about the messiness of the UI.
+              The rework is designed by an amazing friend of mine, <span class="font-bold">frnkers</span>, and was
+              translated to code by yours truly.
+              This change allows me to comfortably add new features, and plan out future ones without worrying about the
+              messiness of the UI.
             </p>
             <div class="divider my-0 w-full mx-auto max-w-[16rem] lg:max-w-sm" />
             <p>
               I've also added a couple new features, an in-game timer and growth boost support.
-              Growth boost support is a toggle in the options menu as it's still bugged (and may work differently with fertilisers which is still untested),
+              Growth boost support is a toggle in the options menu as it's still bugged (and may work differently with
+              fertilisers which is still untested),
               a lot of thanks to <span class="font-bold">gazar</span> for providing information regarding this mechanic.
             </p>
             <p>
               The in-game timer is a small nifty addition that mimics the in-game clock.
-              I've initially added a 6 AM alarm (for harvests) but it was proving to be buggy due to how web notifications work.
+              I've initially added a 6 AM alarm (for harvests) but it was proving to be buggy due to how web notifications
+              work.
               The alarm feature will be kept on the shelf until I find a better system for alarms.
             </p>
             <div class="divider my-0 w-full mx-auto max-w-[16rem] lg:max-w-sm" />
@@ -181,7 +232,8 @@ useHead({
               at a more comfortable pace.
             </p>
             <p>
-              If you ever want to contribute to the project's development, just know that the website is open-source and can be accessed in the footer below!
+              If you ever want to contribute to the project's development, just know that the website is open-source and
+              can be accessed in the footer below!
             </p>
           </template>
         </ChangelogItem>
@@ -218,7 +270,9 @@ useHead({
           <template #default>
             This hotfix adds the new crops added in the 0.168 patch.
             It also fixed some incorrect values that I've not detected for a long time.
-            If you notice discrepancies in your harvest/gold values, please do report it to me on Discord <span class="font-bold">(.aisen)</span>
+            If you notice discrepancies in your harvest/gold values, please do report it to me on Discord <span
+              class="font-bold"
+            >(.aisen)</span>
             as I tend to miss some values while working on the planner.
           </template>
         </ChangelogItem>
@@ -232,14 +286,19 @@ useHead({
             <li>Added external tools</li>
           </template>
           <template #default>
-            <span class="font-bold">Illegal Plots: </span>Requested feature, part as a way to support increased plot sizes in the future and as a temporary solution to support partially connected layouts.
+            <span class="font-bold">Illegal Plots: </span>Requested feature, part as a way to support increased plot sizes
+            in the future and as a temporary solution to support partially connected layouts.
             This change allows for layouts that exceed the maximum plot count of 9 (as of the current date).
             <br>
             <span class="font-bold">External Tools: </span>
-            Added external links to other Palia tools, as part of mutual agreements to provide visibility to each other's tools.
-            If you're a developer and would like to have your tool added, feel free to contact me on Discord! <span class="font-bold">(.aisen)</span>
+            Added external links to other Palia tools, as part of mutual agreements to provide visibility to each other's
+            tools.
+            If you're a developer and would like to have your tool added, feel free to contact me on Discord! <span
+              class="font-bold"
+            >(.aisen)</span>
             <br>
-            Recent changes have been slow for various reasons, mostly the development of a small side-project that could be added on here.
+            Recent changes have been slow for various reasons, mostly the development of a small side-project that could
+            be added on here.
             I'll soon return to the roadmap-schedule, potentially updating it to be more accurate.
           </template>
         </ChangelogItem>
@@ -252,10 +311,12 @@ useHead({
             <li>Fixed 2 bugs causing seed replants to not be calculated properly</li>
           </template>
           <template #default>
-            This hotfix tackles a major bug that causes excess seeds to not be properly used in re-plants. It also fixes a bug where re-harvestable plants
+            This hotfix tackles a major bug that causes excess seeds to not be properly used in re-plants. It also fixes a
+            bug where re-harvestable plants
             would have incorrect re-plant days when calculated for days above its regular lifespan.
             <br>
-            The change should increase gold values by a variable amount and should now properly represent accurate replant deductions
+            The change should increase gold values by a variable amount and should now properly represent accurate replant
+            deductions
           </template>
         </ChangelogItem>
 
@@ -266,12 +327,15 @@ useHead({
           <template #summary>
             <li>Adjusted crops consumed per seed for Tomatoes to match the 0.167 patch changes</li>
             <li>
-              Fix to how crops consumed were being calculated that <span class="font-bold">shouldn't make anything different</span>
+              Fix to how crops consumed were being calculated that <span class="font-bold">shouldn't make anything
+                different</span>
               (was only a rounding error for tomato seeds caused by the above change)
             </li>
           </template>
           <template #default>
-            This change was added hastily, so if any bugs occur please report it to me on Discord <span class="font-bold">(.aisen)</span>
+            This change was added hastily, so if any bugs occur please report it to me on Discord <span
+              class="font-bold"
+            >(.aisen)</span>
           </template>
         </ChangelogItem>
 
@@ -282,19 +346,27 @@ useHead({
           <template #summary>
             <li><span class="italic">New Content —</span> Added Fertiliser</li>
             <li><span class="italic">Technical — </span> Upgraded save codes from v0.1 to v0.2 for fertiliser support</li>
-            <li><span class="italic">UI — </span> Shifted garden layout to accomodate fertilisers and be easier on the eyes</li>
+            <li>
+              <span class="italic">UI — </span> Shifted garden layout to accomodate fertilisers and be easier on the
+              eyes
+            </li>
             <li><span class="italic">Technical — </span>Removed save code from images exported using the planner</li>
-            <li><span class="italic">Technical — </span>Changed how the font is loaded to improve server bandwidth usage</li>
+            <li>
+              <span class="italic">Technical — </span>Changed how the font is loaded to improve server bandwidth usage
+            </li>
           </template>
           <template #default>
             <div class="flex flex-col gap-1">
               <p>
                 Today's update adds a core gardening mechanic to the planner - <span class="font-bold">Fertilisers</span>!
-                Important for covering tiles that lack necessary bonuses, fertilisers are a great way to enhance your garden.
+                Important for covering tiles that lack necessary bonuses, fertilisers are a great way to enhance your
+                garden.
               </p>
               <p>
-                Adding fertilisers required a mild overhaul to how saves function, so I've bumped up the save code version to v0.2 which shortens crop codes to allocate more room for fertiliser codes.
-                Your v0.1 codes will still work, just load them in as usual and it'll be parsed correctly (if it doesn't, please report).
+                Adding fertilisers required a mild overhaul to how saves function, so I've bumped up the save code version
+                to v0.2 which shortens crop codes to allocate more room for fertiliser codes.
+                Your v0.1 codes will still work, just load them in as usual and it'll be parsed correctly (if it doesn't,
+                please report).
               </p>
             </div>
 
@@ -303,14 +375,16 @@ useHead({
                 Fertilisers
               </h3>
               <p>
-                Added Fertilisers support, fertilisers apply their specific bonus to the tile it's on for every-day that it is active.
+                Added Fertilisers support, fertilisers apply their specific bonus to the tile it's on for every-day that
+                it is active.
                 The planner will assume that each tile will have its applied fertiliser daily.
               </p>
               <p>
                 Currently,
                 <span class="font-bold">there is no cost reductions for having fertilisers</span>
                 how fertilisers are acquired vary, and as such their costs are not consistent.
-                It's highly likely I'll settle on their sell-price instead, but I'll take some time to decide on that fully.
+                It's highly likely I'll settle on their sell-price instead, but I'll take some time to decide on that
+                fully.
               </p>
             </div>
 
@@ -319,8 +393,12 @@ useHead({
                 v0.2 Saves
               </h3>
               <p class="indent-6">
-                New save version includes shortened crop codes, with all crops having their codes reduced by 1 character (except for Cotton).
-                Fertilisers are indicated by the dot <span class="border border-solid border-info rounded-lg px-2 font-bold">.</span> prefix, followed by their code.
+                New save version includes shortened crop codes, with all crops having their codes reduced by 1 character
+                (except for Cotton).
+                Fertilisers are indicated by the dot <span
+                  class="px-2 font-bold border border-solid rounded-lg border-info"
+                >.</span> prefix, followed by their
+                code.
               </p>
               <p>
                 As a core feature of the Garden Planner is 'Shareability',
@@ -371,9 +449,12 @@ useHead({
                 just mostly nerd stuff that might only be interesting to a small amount of people!
               </p>
               <p>
-                For the rest of you though, I've added a roadmap and this new changelogs section so you can better keep track of what's going on!
-                Accompanying it comes a new sidebar and navbar, which will create room for more pages in the future (Presets/Templates :D).
-                <span class="font-bold">Also, since the internal structure of the website has changed, I'd like to ask for reports on any performance issues
+                For the rest of you though, I've added a roadmap and this new changelogs section so you can better keep
+                track of what's going on!
+                Accompanying it comes a new sidebar and navbar, which will create room for more pages in the future
+                (Presets/Templates :D).
+                <span class="font-bold">Also, since the internal structure of the website has changed, I'd like to ask for
+                  reports on any performance issues
                   you may encounter, especially on mobile devices.</span>
               </p>
             </div>
@@ -383,14 +464,17 @@ useHead({
                 New Pages: Changelogs and Roadmap
               </h3>
               <p class="indent-6">
-                I've mostly been announcing on the official Palia Discord server whenever I've made a new update to the planner, particularly the
+                I've mostly been announcing on the official Palia Discord server whenever I've made a new update to the
+                planner, particularly the
                 chill channel for its slow pace.
                 It's not really the best place to share updates nor a fitting place for them at all,
                 and I'm not interested in making my own Discord server for the planner.
               </p>
               <p class="indent-6">
-                These new changelogs and roadmap pages will allow me to better share what's changed and what's coming up in the future,
-                not only will they be more accessible to everyone, but I can also write in greater detail. (I will though learn to be more concise in the future.)
+                These new changelogs and roadmap pages will allow me to better share what's changed and what's coming up
+                in the future,
+                not only will they be more accessible to everyone, but I can also write in greater detail. (I will though
+                learn to be more concise in the future.)
               </p>
             </div>
 
@@ -399,18 +483,24 @@ useHead({
                 Website Internal Structure
               </h3>
               <p class="indent-6">
-                The planner ran on <span class="font-bold italic ">Vue</span>,
-                the front-end framework I'm highly familiar working with that lets me develop this client app at a comfortable pace.
-                Some of the ideas I have in mind in the long term though would likely benefit from having the planner have server-side capabilities,
+                The planner ran on <span class="italic font-bold ">Vue</span>,
+                the front-end framework I'm highly familiar working with that lets me develop this client app at a
+                comfortable pace.
+                Some of the ideas I have in mind in the long term though would likely benefit from having the planner have
+                server-side capabilities,
                 such as an internal link shortener, or an <span class="font-bold">API for other developers to use</span>.
               </p>
               <p class="indent-6">
-                Due to that, I've decided to save myself potential future troubles by migrating from Vue to <span class="font-bold italic">Nuxt</span>
+                Due to that, I've decided to save myself potential future troubles by migrating from Vue to <span
+                  class="italic font-bold"
+                >Nuxt</span>
                 as early as possible before the planner becomes open to the public.
-                This also lets me better analyse the website performance of the planner, allowing me to deliver a better experience for you all.
+                This also lets me better analyse the website performance of the planner, allowing me to deliver a better
+                experience for you all.
               </p>
               <p>
-                These changes took me a while though, I may have also caused some bugs in the migration, so please inform me of anything broke!
+                These changes took me a while though, I may have also caused some bugs in the migration, so please inform
+                me of anything broke!
               </p>
             </div>
           </template>
