@@ -40,6 +40,9 @@ useHead({
             <li>
               <span class="italic">New Crops —</span> Added new crops from the 0.176 patch
             </li>
+            <li class="ml-5">
+              <span>HOTFIX: Bok-choy star seed price was incorrectly valued at 30 gold instead of the right amount of 22 (Credits: gazar)</span>
+            </li>
             <li>
               <span class="italic">New Building —</span> Added the new bay window housing add-on
             </li>
