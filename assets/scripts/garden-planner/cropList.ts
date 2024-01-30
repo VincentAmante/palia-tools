@@ -467,7 +467,7 @@ const BOK_CHOY = new Crop(
     crop: 30,
     cropStar: 45,
     seed: 15,
-    seedStar: 30,
+    seedStar: 22,
     hasPreserve: true,
     preserve: 45,
     preserveStar: 67,
