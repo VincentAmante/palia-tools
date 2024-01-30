@@ -63,7 +63,7 @@ useHead({
             <p>
               Apologies once more for the slow updates, I've been busy :(
               Please note that anyone willing to make alternative websites or improve on this one is more than welcome to do so.
-              I'm freshly graduated and am currently looking for a job, so I'm not sure how much time I'll have to work on this.
+              I'm currently job-hunting, so I'm not sure how much time I'll have to work on this.
               Consider updates to be much slower from now on until the situation changes.
             </p>
           </template>
