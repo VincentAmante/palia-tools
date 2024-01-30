@@ -539,7 +539,8 @@ const crops = {
   [CropType.Apple]: APPLE,
   [CropType.Corn]: CORN,
   [CropType.SpicyPepper]: SPICY_PEPPER,
-
+  [CropType.Cabbage]: CABBAGE,
+  [CropType.BokChoy]: BOK_CHOY,
   [CropType.None]: NULLCROP,
 } as const
 
@@ -567,6 +568,10 @@ function getCropFromCode(code: CropCode): Crop {
       return crops[CropType.Corn]
     case CropCode.SpicyPepper:
       return crops[CropType.SpicyPepper]
+    case CropCode.Cabbage:
+      return crops[CropType.Cabbage]
+    case CropCode.BokChoy:
+      return crops[CropType.BokChoy]
     default:
       return crops[CropType.None]
   }
