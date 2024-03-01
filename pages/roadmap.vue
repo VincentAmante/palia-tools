@@ -59,7 +59,7 @@ useHead({
         </p>
       </div>
     </section>
-    <div class="divider max-w-xs" />
+    <AppDividerAlt />
     <div class="flex flex-col w-full gap-6">
       <section class="pb-2 flex flex-col gap-4  w-full">
         <h2 class="text-2xl font-normal">

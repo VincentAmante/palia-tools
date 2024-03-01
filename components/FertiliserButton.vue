@@ -79,7 +79,7 @@ const dragHandler = useDragAndDrop()
 
 <template>
   <div
-    v-if="!(fertiliser.type === FertiliserType.None)"
+    v-if="!(fertiliser.type === FertiliserType.None) && !(isTakingScreenshot && count === 0)"
     class="md:tooltip md:tooltip-left tooltip-info" :data-tip="tooltip"
   >
     <button
@@ -87,7 +87,7 @@ const dragHandler = useDragAndDrop()
       class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
       :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
       @dragstart="(e: DragEvent) => dragHandler.startDrag(fertiliser.type)"
-      @dragend="(e: DragEvent) => dragHandler.stopDrag(fertiliser.type)"
+      @dragend="(e: DragEvent) => dragHandler.stopDrag()"
     >
       <font-awesome-icon
         v-if="bonus.icon !== ''"

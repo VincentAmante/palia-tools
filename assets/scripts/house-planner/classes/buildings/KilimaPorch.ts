@@ -10,6 +10,7 @@ import { ZLevel } from '../../enums/zLevel'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
 export default class KilimaPorch extends Building {
+  protected readonly name: string = 'Kilima Porch'
   protected _type: BuildingType = BuildingType.KilimaPorch
   protected _needsParent: boolean = true
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
@@ -31,8 +32,10 @@ export default class KilimaPorch extends Building {
   countsTowardsLimit: boolean = false
 
   price = {
-    base: 4000,
-    perExtraBuilding: 500,
+    base: 1500,
+    perExtraBuilding: 100,
+    increaseIncrement: 100,
+    increaseInterval: 11,
   }
 
   materials = {
@@ -68,30 +71,31 @@ export default class KilimaPorch extends Building {
       },
       this._id,
       this._gridSizing,
-      // true,
+      true,
     ),
-    // new CollisionBox(
-    //   {
-    //     ...this._baseCoords,
-    //     ...this._baseDimensions,
-    //     offsetWidth: 0,
-    //     offsetHeight: 0,
-    //     offsetY: 2,
-    //     zLevel: ZLevel.Ground,
-    //   },
-    //   this._id,
-    //   this._gridSizing,
-    //   // true,
-    // ),
+    new CollisionBox(
+      {
+        ...this._baseCoords,
+        ...this._baseDimensions,
+        offsetWidth: -7,
+        offsetHeight: 0,
+        offsetY: -4,
+        zLevel: ZLevel.Ground,
+      },
+      this._id,
+      this._gridSizing,
+      true,
+    ),
   ]
 
   protected _image: BuildingImage = new BuildingImage(
     {
       ...this._baseCoords,
       ...this._baseDimensions,
-      imageSrc: '/buildings/porch.svg',
+      imageSrc: '/buildings/kilima-porch.svg',
       offsetWidth: 0,
       offsetHeight: 2,
+      offsetY: 2,
     },
     this._id,
     this._gridSizing,

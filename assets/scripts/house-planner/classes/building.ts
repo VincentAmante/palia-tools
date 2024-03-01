@@ -1,3 +1,4 @@
+import Konva from 'konva'
 import uniqid from 'uniqid'
 import { BuildingType } from '../enums/buildingType'
 import { Direction } from '../imports'
@@ -16,9 +17,16 @@ interface Dimensions {
   height: number
 }
 
+interface Materials {
+  sapwoodPlanks?: number
+  stoneBricks?: number
+  glassPanes?: number
+}
+
 export abstract class Building {
   protected _id: string = uniqid()
   protected _type: BuildingType = BuildingType.None
+  protected readonly name: string = 'Building'
   protected _needsParent: boolean = false
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
   protected _baseRotation: number = 0
@@ -33,11 +41,14 @@ export abstract class Building {
   readonly price = {
     base: 0,
     perExtraBuilding: 0,
+    increaseIncrement: 0,
+    increaseInterval: 0,
   }
 
-  readonly materials = {
+  readonly materials: Materials = {
     sapwoodPlanks: 0,
     stoneBricks: 0,
+    glassPanes: 0,
   }
 
   protected _openSlots: {
@@ -101,20 +112,12 @@ export abstract class Building {
   checkCollision(building: Building, excludeIds: string[]): boolean {
     const collisionBoxes = this._collisionBoxes
     const buildingCollisionBoxes = building._collisionBoxes
-    const isAdjacent = this.adjacentBuildingIds.includes(building.id)
+    // const isAdjacent = this.adjacentBuildingIds.includes(building.id)
 
     for (const collisionBox of collisionBoxes) {
       for (const buildingCollisionBox of buildingCollisionBoxes) {
-        // Use snapbox on certain buildings
-
-        if ((collisionBox.zLevel !== buildingCollisionBox.zLevel)) {
-          if (this._snapBox.isIntersectingWith(building._snapBox, excludeIds))
-            return true
-        }
-        else
-          if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds)) {
-            return true
-          }
+        if (collisionBox.isIntersectingWith(buildingCollisionBox, excludeIds))
+          return true
       }
     }
     return false
@@ -171,13 +174,47 @@ export abstract class Building {
     return this._baseCoords.y
   }
 
+  get nameText(): Konva.Label {
+    const text = this.name
+    const FONT_SIZE = 8
+
+    const padding = 5
+
+    const width = typeof this._snapBox.rect.width === 'function' ? this._snapBox.rect.width() : this._snapBox.rect.width
+    const height = typeof this._snapBox.rect.height === 'function' ? this._snapBox.rect.height() : this._snapBox.rect.height
+
+    const label = new Konva.Label({
+      x: this._baseCoords.x - width / 2 - (text.length / 2) * FONT_SIZE / 2,
+      y: this._baseCoords.y - (height / 2) - FONT_SIZE,
+      listening: false,
+    })
+
+    label.add(new Konva.Tag({
+      fill: '#3A4A6B',
+      shadowEnabled: false,
+      cornerRadius: 2,
+      listening: false,
+    }))
+
+    label.add(new Konva.Text({
+      text,
+      fontSize: FONT_SIZE,
+      fontFamily: 'Merriweather',
+      fontStyle: 'italic',
+      fill: '#FFF',
+      padding,
+      verticalAlign: 'middle',
+      listening: false,
+    }))
+
+    return label
+  }
+
   addChild(building: Building, direction: Direction) {
     if (building.id === this._id)
       return
     if (building.id === this._parent?.id)
       return
-
-    // console.log('adding child', building, direction)
 
     this._children[direction] = building
     building.parent = this
@@ -308,7 +345,6 @@ export abstract class Building {
       if (this._children[slotSide as Direction] !== null) {
         if (this._children[slotSide as Direction]!.id === this._parent?.id)
           return
-
         this._children[slotSide as Direction]!.snapToBuilding(this, slotSide as Direction)
       }
     }
@@ -350,7 +386,7 @@ export abstract class Building {
         this.rotateToFace(Direction.North)
         break
       case Direction.East:
-        this._baseCoords.x = x + (width / 2)
+        this._baseCoords.x = x + (width / 2) + (height - width) / 2
         this._baseCoords.y = y
         this.rotateToFace(Direction.East)
         break
@@ -360,7 +396,7 @@ export abstract class Building {
         this.rotateToFace(Direction.South)
         break
       case Direction.West:
-        this._baseCoords.x = x - (width / 2)
+        this._baseCoords.x = x - (width / 2) - (height - width) / 2
         this._baseCoords.y = y
         this.rotateToFace(Direction.West)
         break
@@ -376,8 +412,21 @@ export abstract class Building {
     let closestCoords = Number.POSITIVE_INFINITY
     let closestSide: Direction | null = null
 
+    const order = getBuildingOrder(building.type)
+    const thisOrder = getBuildingOrder(this.type)
+
+    // Special override for fireplaces
+    if (this.type === BuildingType.Fireplace && building.type === BuildingType.Hallway) {
+      return {
+        snapped: false,
+        side: null,
+      }
+    }
+
     for (const [side, isOpen] of Object.entries(building.openSlots)) {
       if (building.children[side as Direction] !== null)
+        continue
+      if ((side === 'East' || side === 'West') && order > thisOrder)
         continue
 
       if (isOpen) {
@@ -493,6 +542,27 @@ export abstract class Building {
     this._image.opacity = value
   }
 
+  getPrice(count: number): number {
+    const initialPrice = this.price.base
+    const perExtraBuilding = this.price.perExtraBuilding
+    const increaseIncrement = this.price.increaseIncrement
+    const increaseInterval = this.price.increaseInterval
+
+    let currentCost = initialPrice
+
+    let priceIncrease = 0
+    if (count > 0) {
+      for (let i = 1; i < count; i++) {
+        if (i % increaseInterval === 0)
+          priceIncrease += increaseIncrement
+
+        currentCost += (initialPrice + (perExtraBuilding + priceIncrease))
+      }
+    }
+
+    return currentCost
+  }
+
   get copy(): Building {
     const building = new (this.constructor as any)(this._gridSizing)
     building._baseCoords = { ...this._baseCoords }
@@ -521,4 +591,31 @@ function getCorners(collisionBox: CollisionBox) {
   const bottomRight = { x: x + width / 2, y: y + height / 2 }
 
   return { topLeft, bottomRight }
+}
+
+function getBuildingOrder(type: BuildingType) {
+  let order = 0
+
+  switch (type) {
+    case BuildingType.LargeHouse:
+    case BuildingType.HarvestHouse:
+      order = 10
+      break
+    case BuildingType.MediumHouse:
+      order = 20
+      break
+    case BuildingType.SmallHouse:
+      order = 30
+      break
+    case BuildingType.Fireplace:
+      order = 35
+      break
+    case BuildingType.Hallway:
+      order = 40
+      break
+    default:
+      order = 100
+  }
+
+  return order
 }

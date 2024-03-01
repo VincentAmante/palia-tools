@@ -10,6 +10,7 @@ import { ZLevel } from '../../enums/zLevel'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
 export class LargeHouse extends Building {
+  protected readonly name = 'Large Room'
   protected _type: BuildingType = BuildingType.LargeHouse
   protected _needsParent: boolean = true
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
@@ -19,6 +20,8 @@ export class LargeHouse extends Building {
   price = {
     base: 10000,
     perExtraBuilding: 1250,
+    increaseIncrement: 750,
+    increaseInterval: 10,
   }
 
   materials = {

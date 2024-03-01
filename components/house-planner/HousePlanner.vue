@@ -5,7 +5,7 @@ import HouseGrid from './HouseGrid.vue'
 import BuildingButton from './BuildingButton.vue'
 import type { Building } from '@/assets/scripts/house-planner/classes/building'
 import type { Direction } from '@/assets/scripts/house-planner/imports'
-import { Fireplace, Hallway, HarvestHouse, KilimaPorch, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
+import { BayWindow, Fireplace, Hallway, HarvestHouse, KilimaDoor, KilimaPorch, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
 
 import { useHousePlanConfig } from '@/stores/useHousePlanConfig'
 
@@ -31,6 +31,8 @@ const text = ref({
   fontFamily: 'Mono',
   fill: 'white',
 })
+
+const buildingsLayer = ref<Konva.Layer | null>(null)
 
 const buildings = ref<Record<string, Building>>(
   {
@@ -62,14 +64,13 @@ const totalPrice = computed(() => {
       return
 
     if (building.type in buildingTypes) {
-      const price = building.price
       buildingTypes[building.type].count += 1
-      buildingTypes[building.type].price += price.base + (price.perExtraBuilding * (buildingTypes[building.type].count - 1))
+      buildingTypes[building.type].price = building.getPrice(buildingTypes[building.type].count)
     }
     else {
       buildingTypes[building.type] = {
         count: 1,
-        price: building.price.base,
+        price: building.getPrice(1),
       }
     }
   })
@@ -82,18 +83,21 @@ const totalPrice = computed(() => {
 const totalMaterials = computed(() => {
   let sapwoodPlanks = 0
   let stoneBricks = 0
+  let glassPanes = 0
 
   Object.values(buildings.value).forEach((building) => {
     if (!building.isPlaced)
       return
 
-    sapwoodPlanks += building.materials.sapwoodPlanks
-    stoneBricks += building.materials.stoneBricks
+    sapwoodPlanks += building.materials.sapwoodPlanks || 0
+    stoneBricks += building.materials.stoneBricks || 0
+    glassPanes += building.materials.glassPanes || 0
   })
 
   return {
     sapwoodPlanks,
     stoneBricks,
+    glassPanes,
   }
 })
 
@@ -105,6 +109,7 @@ const sideToSnap = ref<Direction | null>(null)
 
 const useBuildingLimits = ref(true)
 const showRoofCollisions = ref(true)
+const showLabels = ref(false)
 
 function moveActiveBuilding(x: number, y: number) {
   const snappedX = snapToCellSize(x)
@@ -228,19 +233,6 @@ function onMouseMove() {
   }
 }
 
-// Debounce the mousemove event to prevent lag
-// function debounce(func, interval) {
-//   let lastCall = -1
-//   return function () {
-//     clearTimeout(lastCall)
-//     const args = arguments
-//     const self = this
-//     lastCall = setTimeout(() => {
-//       func.apply(self, args)
-//     }, interval)
-//   }
-// }
-
 type DebouncedFunction<T extends (...args: any[]) => void> = (
   this: ThisParameterType<T>,
   ...args: Parameters<T>
@@ -271,11 +263,42 @@ function debounce<T extends (...args: any[]) => void>(
   }
 }
 
+function tryPlaceBuilding() {
+  if (activeBuilding.value === null)
+    return
+
+  if (!activeBuilding.value.needsParent) {
+    if (!useBuildingLimits.value
+          || (countedBuildings.value < houseConfig.MAX_BUILDINGS)
+          || !activeBuilding.value.countsTowardsLimit)
+      placeBuilding()
+  }
+  else if (parentToSnap.value !== null && sideToSnap.value !== null) {
+    const parent = buildings.value[parentToSnap.value.id]
+    const side = sideToSnap.value
+    const building = activeBuilding.value
+
+    const excludeIds = [...building.childrenIds, parent.id, ...parent.directChildrenIds, ...building.directChildrenIds]
+    const hasOtherCollisions = checkForCollisions(building as Building, excludeIds)
+
+    if (hasOtherCollisions)
+      return
+
+    const topLevelBuilding = parent.topLevelBuilding
+
+    if (
+      !useBuildingLimits.value
+          || (topLevelBuilding.countableBuildings < houseConfig.MAX_CLUSTER_BUILDINGS && countedBuildings.value < houseConfig.MAX_BUILDINGS)
+          || !building.countsTowardsLimit) {
+      if (placeBuilding(excludeIds))
+        parent.addChild(building as Building, side)
+    }
+  }
+}
+
 watch((stage), () => {
   if (typeof stage === 'object') {
     const stageObj = stage.value?.getStage() as Konva.Stage
-
-    stageObj.cache()
 
     stageObj.on('mousemove', () => {
       debounce(onMouseMove, 25)()
@@ -322,34 +345,7 @@ watch((stage), () => {
         }
       }
 
-      if (!activeBuilding.value.needsParent) {
-        if (!useBuildingLimits.value
-          || (countedBuildings.value < houseConfig.MAX_BUILDINGS)
-          || !activeBuilding.value.countsTowardsLimit)
-          placeBuilding()
-      }
-      else if (parentToSnap.value !== null && sideToSnap.value !== null) {
-        const parent = buildings.value[parentToSnap.value.id]
-        const side = sideToSnap.value
-        const building = activeBuilding.value
-
-        const excludeIds = [...building.childrenIds, parent.id, ...parent.directChildrenIds, ...building.directChildrenIds]
-        console.log(excludeIds.includes(building.topLevelBuilding.id) || excludeIds.includes(parent.topLevelBuilding.id))
-        const hasOtherCollisions = checkForCollisions(building as Building, excludeIds)
-
-        if (hasOtherCollisions)
-          return
-
-        const topLevelBuilding = parent.topLevelBuilding
-
-        if (
-          !useBuildingLimits.value
-          || (topLevelBuilding.countableBuildings < houseConfig.MAX_CLUSTER_BUILDINGS && countedBuildings.value < houseConfig.MAX_BUILDINGS)
-          || !building.countsTowardsLimit) {
-          if (placeBuilding(excludeIds))
-            parent.addChild(building as Building, side)
-        }
-      }
+      tryPlaceBuilding()
     })
 
     window.addEventListener('keydown', (e) => {
@@ -363,18 +359,6 @@ watch((stage), () => {
           break
         case 'KeyE':
           building.rotateBuilding(90)
-          break
-        case 'KeyW':
-          building.updateCoords({ x: building.x, y: building.y - houseConfig.CELL_SIZE })
-          break
-        case 'KeyS':
-          building.updateCoords({ x: building.x, y: building.y + houseConfig.CELL_SIZE })
-          break
-        case 'KeyA':
-          building.updateCoords({ x: building.x - houseConfig.CELL_SIZE, y: building.y })
-          break
-        case 'KeyD':
-          building.updateCoords({ x: building.x + houseConfig.CELL_SIZE, y: building.y })
           break
         default:
           break
@@ -488,6 +472,10 @@ function createNewBuilding(type: BuildingType) {
       return new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
     case BuildingType.KilimaPorch:
       return new KilimaPorch({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.KilimaDoor:
+      return new KilimaDoor({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.BayWindow:
+      return new BayWindow({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
     default:
       return new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
   }
@@ -519,16 +507,16 @@ function fitStageIntoParentContainer() {
 </script>
 
 <template>
-  <div class="flex flex-col lg:flex-row gap-2 justify-evenly">
-    <div class="flex lg:flex-col gap-1 flex-wrap">
+  <div class="flex flex-col gap-2 lg:flex-row justify-evenly">
+    <div class="flex gap-1 lg:flex-col max-h-[580px] overflow-hidden">
       <button
         aria-label="clear"
-        class="relative isolate btn text-sm"
+        class="relative text-sm isolate btn"
         :class="(activeBuilding && activeBuilding.type) === BuildingType.None ? 'btn-active' : ''"
         @click="setActiveBuilding(createNewBuilding(BuildingType.None))"
       >
         <font-awesome-icon :icon="['fas', 'hand']" class="text-xl" />
-        <p class="normal-case font-normal">
+        <p class="font-normal normal-case">
           Cursor
         </p>
       </button>
@@ -568,38 +556,35 @@ function fitStageIntoParentContainer() {
         :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Fireplace"
         @click="setActiveBuilding(createNewBuilding(BuildingType.Fireplace))"
       />
-      <!-- <BuildingButton
-          src="/buildings/icons/kilima-porch.webp"
-          label="Kilima Porch"
-          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaPorch"
-          @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaPorch))"
-        /> -->
-      <!-- <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))">
-        Hallway
-      </button>
-      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.LargeHouse))">
-        Large Room
-      </button>
-      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.MediumHouse))">
-        Medium Room
-      </button>
-      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.SmallHouse))">
-        Small Room
-      </button>
-      <button class="btn btn-accent" @click="setActiveBuilding(createNewBuilding(BuildingType.None))">
-        None
-      </button> -->
+      <BuildingButton
+        src="/buildings/icons/kilima-porch.webp"
+        label="Kilima Porch"
+        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaPorch"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaPorch))"
+      />
+      <BuildingButton
+        src="/buildings/icons/kilima-door.webp"
+        label="Kilima Door"
+        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaDoor"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaDoor))"
+      />
+      <BuildingButton
+        src="/buildings/icons/bay-window.webp"
+        label="Bay Window"
+        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.BayWindow"
+        @click="setActiveBuilding(createNewBuilding(BuildingType.BayWindow))"
+      />
     </div>
     <section
       ref="stageContainer"
-      class="max-w-full relative isolate overflow-hidden rounded-md outline outline-2 outline-primary aspect-[877.5/487.5]"
+      class="max-w-full relative isolate overflow-hidden  aspect-[877.5/487.5]"
     >
       <DevOnly>
         <p class="absolute left-0 z-50 m-4 text-xs">
           {{ text.text }}
         </p>
       </DevOnly>
-      <p class="absolute right-0 z-30 m-4 bg-palia-blue p-2 text-accent rounded-full px-4 bg-opacity-50">
+      <p class="absolute right-0 z-30 p-2 px-4 m-4 bg-opacity-50 rounded-full bg-palia-blue text-accent">
         {{ countedBuildings }} / 30
       </p>
       <v-stage ref="stage" class="relative isolate" :config="configKonva">
@@ -618,6 +603,7 @@ function fitStageIntoParentContainer() {
           </template>
         </v-layer>
         <v-layer
+          ref="buildingsLayer"
           :config="{
             listening: false,
           }"
@@ -627,18 +613,32 @@ function fitStageIntoParentContainer() {
             <!-- <v-image :config="building.snapBox" /> -->
           </template>
           <template v-for="plotHarvestHouse in harvestHouses" :key="plotHarvestHouse.id">
-            <v-text :config="plotHarvestHouse.buildingCountText" />
+            <!-- <v-text :config="plotHarvestHouse.buildingCountText" /> -->
+            <v-label :config="plotHarvestHouse.buildingCountText">
+              <v-tag :config="plotHarvestHouse.buildingCountText.getTag()" />
+              <v-text :config="plotHarvestHouse.buildingCountText.getText()" />
+            </v-label>
+          </template>
+          <template v-if="showLabels">
+            <template v-for="building in buildings" :key="building.id">
+              <template v-if="building.type !== BuildingType.None">
+                <v-label :config="building.nameText">
+                  <v-tag :config="building.nameText.getTag()" />
+                  <v-text :config="building.nameText.getText()" />
+                </v-label>
+              </template>
+            </template>
           </template>
         </v-layer>
       </v-stage>
     </section>
 
     <section class="flex flex-col gap-2">
-      <div class="flex lg:flex-col gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit">
-        <h2 class="text-xl text-center font-bold">
+      <div class="flex gap-2 p-4 px-8 rounded-md lg:flex-col bg-palia-dark-blue h-fit">
+        <h2 class="text-xl font-bold text-center">
           Costs
         </h2>
-        <ul class="flex lg:grid  gap-4">
+        <ul class="flex gap-4 lg:grid">
           <li class="flex items-center gap-2 text-lg">
             <nuxt-img
               width="16" height="16" src="/gold.webp" class="max-h-[1.5rem]" :srcset="undefined" placeholder
@@ -646,39 +646,59 @@ function fitStageIntoParentContainer() {
             />
             {{ totalPrice.toLocaleString() }}
           </li>
-          <li class="flex items-center gap-2 text-lg">
+          <li
+            v-if="totalMaterials.sapwoodPlanks > 0"
+            class="flex items-center gap-2 text-lg"
+          >
             <nuxt-img
               width="32" height="32" src="/items/sapwood-plank.png" class="max-h-[3rem] aspect-auto object-contain"
               :srcset="undefined" placeholder alt="Gold" format="webp"
             />
             {{ totalMaterials.sapwoodPlanks.toLocaleString() }}
           </li>
-          <li class="flex items-center gap-2 text-lg">
+          <li
+            v-if="totalMaterials.stoneBricks > 0"
+            class="flex items-center gap-2 text-lg"
+          >
             <nuxt-img
               width="32" height="32" src="/items/stone-brick.png" class="max-h-[3rem] aspect-auto object-contain"
               :srcset="undefined" placeholder alt="Gold" format="webp"
             />
             {{ totalMaterials.stoneBricks.toLocaleString() }}
           </li>
+          <li
+            v-if="totalMaterials.glassPanes > 0"
+            class="flex items-center gap-2 text-lg"
+          >
+            <nuxt-img
+              width="32" height="32" src="/items/glass-pane.webp" class="max-h-[3rem] aspect-auto object-contain"
+              :srcset="undefined" placeholder alt="Gold" format="webp"
+            />
+            {{ totalMaterials.glassPanes.toLocaleString() }}
+          </li>
         </ul>
       </div>
-      <div class="flex gap-2 bg-palia-dark-blue rounded-md p-4 px-8 h-fit text-xs">
-        <ul class="flex lg:grid gap-4">
+      <div class="flex gap-2 p-4 px-8 text-xs rounded-md bg-palia-dark-blue h-fit">
+        <ul class="flex gap-4 lg:grid">
           <li>
-            <input v-model="useBuildingLimits" type="checkbox" class="toggle rounded-lg">
+            <input v-model="useBuildingLimits" type="checkbox" class="rounded-lg toggle">
             <p>Use Build Limits</p>
           </li>
           <li>
-            <input v-model="showRoofCollisions" type="checkbox" class="toggle rounded-lg">
+            <input v-model="showRoofCollisions" type="checkbox" class="rounded-lg toggle">
             <p>Show Roof</p>
+          </li>
+          <li>
+            <input v-model="showLabels" type="checkbox" class="rounded-lg toggle">
+            <p>Show Labels</p>
           </li>
         </ul>
       </div>
     </section>
 
     <!-- <DevOnly>
-      <div class=" bg-neutral p-4 rounded-md font-mono mb-4">
-        <p class="text-lg uppercase font-bold">
+      <div class="p-4 mb-4 font-mono rounded-md bg-neutral">
+        <p class="text-lg font-bold uppercase">
           building ids
         </p>
         <ul>

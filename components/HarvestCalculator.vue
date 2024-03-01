@@ -21,6 +21,10 @@ const props = defineProps({
 
 const isTakingScreenshot = useTakingScreenshot()
 
+const gardenTilesAreWide = computed(() => {
+  return props.layout.plots[0].length > 3
+})
+
 const options = useStorage('approximator-options-OCT1023', {
   days: 0,
   postLevel25: false,
@@ -98,33 +102,100 @@ watchEffect(() => {
 </script>
 
 <template>
-  <section class="collapse collapse-arrow rounded-none lg:rounded-lg w-full lg:h-fit lg:py-0 lg:mx-0 lg:pl-2 xl:px-2 xl:pl-4 z-50 overflow-visible lg:max-w-[47rem] transition-all">
+  <section
+    class="z-50 w-full overflow-visible transition-all rounded-none pointer-events-none lg:max-w-2xl lg:h-fit xl:max-w-3xl"
+    :class="[
+      gardenTilesAreWide ? '!max-w-none px-0' : 'lg:pl-20 xl:pl-2 xl:px-4 lg:px-2',
+      isTakingScreenshot.get && !gardenTilesAreWide ? 'max-w-[46rem] px-4' : '',
+    ]"
+  >
     <div
-      class="bg-primary lg:rounded-lg"
-      :class="isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0 pb-6 lg:pb-0'"
+      class="flex flex-col pointer-events-auto bg-primary"
+      :class="[
+        isTakingScreenshot.get ? 'rounded-lg' : 'pt-2 md:pt-0 pb-6 lg:pb-0',
+        gardenTilesAreWide ? 'rounded-none' : 'lg:rounded-lg ',
+      ]"
     >
       <div class="flex flex-col gap-1">
         <div
-          class="w-full lg:bg-misc lg:rounded-lg lg:rounded-b-none p-1 sm:px-6 flex flex-col lg:flex-row justify-between items-center lg:text-accent"
-          :class="isTakingScreenshot.get ? 'bg-misc px-6 rounded-lg rounded-b-none' : 'text-misc gap-2'"
+          class="flex flex-col items-center justify-between w-full p-1 lg:flex-row lg:bg-misc lg:rounded-lg lg:rounded-b-none sm:px-6 lg:text-accent"
+          :class="[
+            isTakingScreenshot.get ? 'bg-misc px-6 rounded-lg rounded-b-none' : 'text-misc gap-2',
+            gardenTilesAreWide ? '!bg-primary !flex-col' : '',
+          ]"
         >
           <AppDividerAlt
-            class="w-full sm:hidden"
-            :class="isTakingScreenshot.get ? 'hidden' : ''"
+            class="order-1 w-full sm:hidden"
+            :class="isTakingScreenshot.get || gardenTilesAreWide ? 'hidden' : ''"
           />
-          <h2 class="text-2xl py-1 flex items-center flex-wrap gap-1">
+          <h2
+            class="flex flex-wrap items-center order-2 gap-1 py-1 text-2xl"
+            :class="gardenTilesAreWide ? 'text-center text-misc' : ''"
+          >
             Harvest Approximations <span
               class="text-xs font-normal"
             >(WIP)</span>
           </h2>
           <div
+            v-show="(activeTab !== 'info' && !isTakingScreenshot.get)"
+            class="w-full py-2 mx-4 lg:hidden"
+            :class="gardenTilesAreWide ? 'order-first' : 'md:order-default'"
+          >
+            <div class="flex flex-col items-center justify-center py-2 font-semibold rounded-md bg-accent text-misc xl:flex-row md:gap-1">
+              <div
+                class="tooltip tooltip-top"
+                data-tip="The last harvest before approximations are made"
+              >
+                <div class="flex items-center gap-1 ">
+                  Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
+                  <div class="flex items-center gap-1">
+                    <nuxt-img
+                      width="16"
+                      height="16"
+                      src="/gold.webp" class="max-h-[1rem]"
+                      :srcset="undefined"
+                      placeholder
+                      alt="Gold" format="webp"
+                    />{{
+                      processedYields?.totalResult.totalGold.toLocaleString() }}
+                  </div>
+                </div>
+              </div>
+              <div
+                v-show="processedYields?.totalResult.totalGold !== 0"
+                class="divider divider-horizontal after:bg-misc before:bg-misc"
+              />
+              <div
+                v-show="processedYields?.totalResult.totalGold !== 0"
+                class="tooltip tooltip-top"
+                data-tip="Raw average is without processing time"
+              >
+                <p class="flex items-center gap-1">
+                  Raw Average:
+                  <span class="flex items-center gap-1"><nuxt-img
+                    src="/gold.webp"
+                    class="max-h-[1rem]"
+                    format="webp"
+                    alt="Gold"
+                    width="16"
+                    height="16"
+                    :srcset="undefined"
+                  />{{
+                    (Math.round(processedYields.totalResult.totalGold
+                      / processedYields.totalResult.day)).toLocaleString() }}</span>/ day
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
             v-if="!isTakingScreenshot.get"
-            class="tabs w-full justify-evenly lg:w-fit flex flex-nowrap bg-misc rounded-md px-4 md:px-0 py-1 md:gap-2 max-w-[22rem]"
+            class="tabs w-full justify-evenly flex flex-nowrap bg-misc rounded-md px-4 py-1 max-w-[22rem] order-3"
+            :class="gardenTilesAreWide ? 'justify-center py-2' : 'md:px-0 md:gap-2 lg:w-fit '"
           >
             <button
               id="approximator-display-tab"
               aria-label="Display Tab"
-              class="tab px-0 text-2xl" :class="activeTab === 'display' ? 'tab-active' : ''"
+              class="px-0 text-2xl tab" :class="activeTab === 'display' ? 'tab-active' : ''"
               @click="setTab('display')"
             >
               <font-awesome-icon :icon="['fas', 'table']" />
@@ -132,7 +203,7 @@ watchEffect(() => {
             <button
               id="approximator-options-tab"
               aria-label="Options Tab"
-              class="tab px-0 text-2xl " :class="activeTab === 'options' ? 'tab-active' : ''"
+              class="px-0 text-2xl tab " :class="activeTab === 'options' ? 'tab-active' : ''"
               @click="setTab('options')"
             >
               <font-awesome-icon :icon="['fas', 'sliders']" />
@@ -140,7 +211,7 @@ watchEffect(() => {
             <button
               id="approximator-info-tab"
               aria-label="Info Tab"
-              class="tab px-0 text-2xl " :class="activeTab === 'info' ? 'tab-active' : ''"
+              class="px-0 text-2xl tab " :class="activeTab === 'info' ? 'tab-active' : ''"
               @click="setTab('info')"
             >
               <font-awesome-icon :icon="['fas', 'info-circle']" />
@@ -150,16 +221,20 @@ watchEffect(() => {
       </div>
       <div
         v-show="(activeTab !== 'info' || isTakingScreenshot.get)"
-        class="px-4 py-2"
+        class="px-4 py-2 "
+        :class="[
+          isTakingScreenshot.get ? '' : 'hidden lg:block',
+          gardenTilesAreWide ? 'order-first' : '',
+        ]"
       >
-        <div class="bg-accent text-misc rounded-md font-semibold flex flex-col xl:flex-row items-center justify-center md:gap-1 py-2">
+        <div class="flex flex-col items-center justify-center py-2 font-semibold rounded-md bg-accent text-misc xl:flex-row md:gap-1">
           <div
             class="tooltip tooltip-top"
             data-tip="The last harvest before approximations are made"
           >
-            <div class="flex gap-1 items-center ">
+            <div class="flex items-center gap-1 ">
               Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
-              <div class="flex gap-1 items-center">
+              <div class="flex items-center gap-1">
                 <nuxt-img
                   width="16"
                   height="16"
@@ -181,9 +256,9 @@ watchEffect(() => {
             class="tooltip tooltip-top"
             data-tip="Raw average is without processing time"
           >
-            <p class="flex gap-1 items-center">
+            <p class="flex items-center gap-1">
               Raw Average:
-              <span class="flex gap-1 items-center"><nuxt-img
+              <span class="flex items-center gap-1"><nuxt-img
                 src="/gold.webp"
                 class="max-h-[1rem]"
                 format="webp"
@@ -208,16 +283,16 @@ watchEffect(() => {
           :base-chance-normal-seed="options.baseChanceNormalSeed"
           :use-growth-boost="options.useGrowthBoost"
         />
-        <div v-if="!isTakingScreenshot.get" class="tabs gap-2 pt-1">
+        <div v-if="!isTakingScreenshot.get" class="gap-2 pt-1 tabs">
           <div
-            class="tab btn btn-sm rounded-md normal-case"
+            class="normal-case rounded-md tab btn btn-sm"
             :class="activeDisplayTab === 'overview' ? 'tab-active btn-accent' : 'btn-ghost text-misc'"
             @click="setDisplayTab('overview')"
           >
             Overview
           </div>
           <div
-            class="tab btn btn-sm rounded-md normal-case whitespace-nowrap"
+            class="normal-case rounded-md tab btn btn-sm whitespace-nowrap"
             :class="activeDisplayTab === 'day' ? 'tab-active btn-accent' : 'btn-ghost text-misc '"
             @click="setDisplayTab('day')"
           >
@@ -245,17 +320,17 @@ watchEffect(() => {
           />
         </div>
       </div>
-      <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'" class="flex flex-col gap-2 px-4 max-h-96 transition-all ">
-        <div class="tabs gap-2">
+      <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'" class="flex flex-col gap-2 px-4 transition-all max-h-96 ">
+        <div class="gap-2 tabs">
           <div
-            class="tab btn btn-sm rounded-md normal-case"
+            class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'main' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('main')"
           >
             Main
           </div>
           <div
-            class="tab btn btn-sm rounded-md normal-case"
+            class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'crop' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('crop')"
           >
@@ -266,7 +341,7 @@ watchEffect(() => {
         <div class=" max-h-[19.75rem] overflow-y-scroll mb-4 rounded-lg rounded-r-none border border-misc border-opacity-50 p-2">
           <div
             v-if="activeOptionTab === 'main'"
-            class="grid gap-2 pr-2 pb-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
+            class="grid gap-2 pb-4 pr-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
           >
             <OptionCard label="days" name="Days">
               <template #input>
@@ -294,7 +369,7 @@ watchEffect(() => {
 
             <OptionCard label="postLevel25" name="Post Level 25">
               <template #input>
-                <input v-model="options.postLevel25" class="toggle rounded-md" type="checkbox">
+                <input v-model="options.postLevel25" class="rounded-md toggle" type="checkbox">
               </template>
               <template #labels>
                 <p>
@@ -306,7 +381,7 @@ watchEffect(() => {
 
             <OptionCard label="allStarSeeds" name="All Star Seeds">
               <template #input>
-                <input v-model="options.allStarSeeds" class="toggle rounded-md" type="checkbox">
+                <input v-model="options.allStarSeeds" class="rounded-md toggle" type="checkbox">
               </template>
               <template #labels>
                 <p>
@@ -319,21 +394,21 @@ watchEffect(() => {
               <template #input>
                 <div class="join">
                   <button
-                    class="join-item btn btn-sm btn-primary transition-all"
+                    class="transition-all join-item btn btn-sm btn-primary"
                     :class="options.baseChanceStarSeed === 66 ? 'btn-active' : ''"
                     @click="options.baseChanceStarSeed = 66"
                   >
                     66%
                   </button>
                   <button
-                    class="join-item btn btn-sm btn-primary transition-all"
+                    class="transition-all join-item btn btn-sm btn-primary"
                     :class="options.baseChanceStarSeed === 50 ? 'btn-active' : ''"
                     @click="options.baseChanceStarSeed = 50"
                   >
                     50%
                   </button>
                   <button
-                    class="join-item btn btn-sm btn-primary transition-all"
+                    class="transition-all join-item btn btn-sm btn-primary"
                     :class="options.baseChanceStarSeed === 33 ? 'btn-active' : ''"
                     @click="options.baseChanceStarSeed = 33"
                   >
@@ -352,14 +427,14 @@ watchEffect(() => {
               <template #input>
                 <div class="join">
                   <button
-                    class="join-item btn btn-sm btn-primary transition-all"
+                    class="transition-all join-item btn btn-sm btn-primary"
                     :class="options.baseChanceNormalSeed === 0 ? 'btn-active' : ''"
                     @click="options.baseChanceNormalSeed = 0"
                   >
                     0%
                   </button>
                   <button
-                    class="join-item btn btn-sm btn-primary transition-all"
+                    class="transition-all join-item btn btn-sm btn-primary"
                     :class="options.baseChanceNormalSeed === 33 ? 'btn-active' : ''"
                     @click="options.baseChanceNormalSeed = 33"
                   >
@@ -376,7 +451,7 @@ watchEffect(() => {
 
             <OptionCard label="includeReplant" name="Include Replant">
               <template #input>
-                <input v-model="options.includeReplant" class="toggle rounded-md" type="checkbox">
+                <input v-model="options.includeReplant" class="rounded-md toggle" type="checkbox">
               </template>
               <template #labels>
                 <p>
@@ -395,7 +470,7 @@ watchEffect(() => {
             <OptionCard label="includeReplantCost" name="Include Replant Cost">
               <template #input>
                 <input
-                  v-model="options.includeReplantCost" class="toggle rounded-md" type="checkbox"
+                  v-model="options.includeReplantCost" class="rounded-md toggle" type="checkbox"
                   :disabled="!options.includeReplant"
                 >
               </template>
@@ -408,17 +483,17 @@ watchEffect(() => {
 
             <OptionCard label="useGrowthBoost" name="Use Growth Boost">
               <template #input>
-                <input v-model="options.useGrowthBoost" class="toggle rounded-md" type="checkbox">
+                <input v-model="options.useGrowthBoost" class="rounded-md toggle" type="checkbox">
               </template>
               <template #labels>
                 <p>
                   Factors in growth boost when simulating yields, does not account for any RNG and is theoretical
                 </p>
-                <p class="text-warning py-1">
-                  <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
+                <p class="py-1 text-warning">
+                  <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
                   Likely bugged as of 0.169
                   <NuxtLink
-                    class="text-misc pl-1 underline"
+                    class="pl-1 underline text-misc"
                     to="https://docs.google.com/document/d/1f4MQHjEC1RCNpDUz1I3eg2tioD_6yBmW0XWsVxUOJ1Y/edit" target="_blank"
                   >
                     <font-awesome-icon class="text-sm" :icon="['fas', 'arrow-up-right-from-square']" />
@@ -430,11 +505,11 @@ watchEffect(() => {
 
             <OptionCard label="includeFertiliserCosts" name="Include Fertiliser Costs" disabled>
               <template #input>
-                <input class="toggle rounded-md" type="checkbox" disabled>
+                <input class="rounded-md toggle" type="checkbox" disabled>
               </template>
               <template #labels>
                 <p>
-                  <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
+                  <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
                   Not yet supported
                 </p>
               </template>
@@ -445,15 +520,15 @@ watchEffect(() => {
             class="grid gap-1 pb-2"
           >
             <p class="text-xs text-misc">
-              <font-awesome-icon class="text-warning text-sm" :icon="['fas', 'triangle-exclamation']" />
+              <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
               Conversion time is not yet accounted for with seeds and preserves
             </p>
 
-            <div class="grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2 pr-2">
+            <div class="grid gap-2 pr-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
               <template v-for="(crop, type) in crops" :key="type">
                 <div
-                  v-if="crops[type]"
-                  class="grid grid-cols-3 gap-2 items-center justify-start py-2 p-1 rounded-lg bg-accent text-misc h-fit"
+                  v-if="crops[type] && type !== CropType.None"
+                  class="grid items-center justify-start grid-cols-3 gap-2 p-1 py-2 rounded-lg bg-accent text-misc h-fit"
                 >
                   <div class="flex flex-col items-center justify-center pl-1 xl:aspect-square">
                     <nuxt-img
@@ -463,18 +538,18 @@ watchEffect(() => {
                       width="3.5rem"
                       height="3.5rem"
                       :alt="crop?.type"
-                      :src="crop?.image"
+                      :src="crop?.image || '/crops/unknown.webp'"
                     />
-                    <p class="text-sm capitalize font-bold text-center">
+                    <p class="text-sm font-bold text-center capitalize">
                       {{ crop?.type }}
                     </p>
                   </div>
-                  <div class="flex flex-col gap-1 px-2 pb-2 col-span-2">
+                  <div class="flex flex-col col-span-2 gap-1 px-2 pb-2">
                     <div class="flex flex-col text-sm font-bold">
                       <p class="text-xs">
                         Star
                       </p>
-                      <div class="join rounded-md">
+                      <div class="rounded-md join">
                         <button
                           class="join-item btn btn-xs btn-primary"
                           :class="{ 'btn-active': cropOptions[type].starType === 'crop' }"

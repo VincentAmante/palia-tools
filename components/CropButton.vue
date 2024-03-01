@@ -86,7 +86,6 @@ const dragHandler = useDragAndDrop()
       </p>
       <nuxt-img
         v-if="(crop && crop.image != null && crop.image !== '')"
-        v-once
         class="absolute -z-10 max-w-[34px]"
         draggable="false"
         :src="crop.image"

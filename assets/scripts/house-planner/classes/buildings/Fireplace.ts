@@ -10,6 +10,7 @@ import { ZLevel } from '../../enums/zLevel'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
 export default class Fireplace extends Building {
+  protected readonly name = 'Fireplace'
   protected _type: BuildingType = BuildingType.Fireplace
   protected _needsParent: boolean = true
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
@@ -33,6 +34,8 @@ export default class Fireplace extends Building {
   price = {
     base: 4000,
     perExtraBuilding: 500,
+    increaseIncrement: 0,
+    increaseInterval: 0,
   }
 
   materials = {

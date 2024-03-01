@@ -6,17 +6,42 @@ import type Dimensions from '../../../utils/types/dimensions'
 import { BuildingType } from '../../enums/buildingType'
 import { Building } from '../building'
 import type { GridSizing } from '../../types/ConfigOptions'
+import { ZLevel } from '../../enums/zLevel'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
-export class NullHouse extends Building {
-  protected readonly name: string = ''
-  protected _type: BuildingType = BuildingType.None
-  protected _needsParent: boolean = false
+export default class KilimaDoor extends Building {
+  protected readonly name = 'Kilima Door'
+  protected _type: BuildingType = BuildingType.KilimaDoor
+  protected _needsParent: boolean = true
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
   protected _baseRotation: number = 0
-  protected _baseDimensions: Dimensions = { width: 5, height: 5 }
-  protected _opacity: number = 0
+  protected _baseDimensions: Dimensions = { width: 3, height: 2 }
+  protected _opacity: number = 1
+  protected _openSlots: {
+    North: boolean
+    East: boolean
+    South: boolean
+    West: boolean
+  } = {
+      North: false,
+      East: false,
+      South: false,
+      West: false,
+    }
+
   countsTowardsLimit: boolean = false
+
+  price = {
+    base: 1000,
+    perExtraBuilding: 100,
+    increaseIncrement: 50,
+    increaseInterval: 11,
+  }
+
+  materials = {
+    sapwoodPlanks: 80,
+    stoneBricks: 30,
+  }
 
   constructor(gridSizing: GridSizing) {
     super(gridSizing)
@@ -40,9 +65,13 @@ export class NullHouse extends Building {
       {
         ...this._baseCoords,
         ...this._baseDimensions,
+        offsetWidth: 0,
+        offsetHeight: 0,
+        zLevel: ZLevel.Hallway,
       },
       this._id,
       this._gridSizing,
+      true,
     ),
   ]
 
@@ -50,21 +79,9 @@ export class NullHouse extends Building {
     {
       ...this._baseCoords,
       ...this._baseDimensions,
-      imageSrc: '',
+      imageSrc: '/buildings/kilima-door.svg',
     },
     this._id,
     this._gridSizing,
   )
-
-  protected _openSlots: {
-    North: boolean
-    East: boolean
-    South: boolean
-    West: boolean
-  } = {
-      North: true,
-      East: true,
-      South: false,
-      West: true,
-    }
 }

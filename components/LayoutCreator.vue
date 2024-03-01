@@ -163,6 +163,9 @@ function trimLayout(): PlotStatus[][] {
         layout[row].splice(col, 1)
     }
   }
+
+  rowInput.value = layout.length
+  colInput.value = layout[0].length
   return layout
 }
 </script>
@@ -237,34 +240,63 @@ function trimLayout(): PlotStatus[][] {
               </span>
             </p>
           </div>
-          <div :class="selectedNewLayout === 'custom' ? '' : 'hidden'" class="flex flex-col gap-2 w-fit md:flex-row justify-between md:w-full">
-            <label for="row-input" class="items-center justify-start grid grid-cols-3 gap-2">
+          <div :class="selectedNewLayout === 'custom' ? '' : 'hidden'" class="flex flex-col gap-2 w-fit md:w-full">
+            <label for="row-input" class="items-center justify-start grid grid-cols-2 gap-2 w-fit">
               <p class="select-none text-sm ">Rows</p>
-              <div class="join col-span-2">
-                <button class="join-item btn btn-sm btn-square btn-primary" @click="rowInput--">-</button>
+              <div class="join col-span-1 rounded-md">
+                <button
+                  class="join-item btn btn-sm btn-square btn-primary"
+                  @click="() => {
+                    if (rowInput <= 1)
+                      return
+                    rowInput--
+                    enforceLayoutLimits()
+                  }"
+                >-</button>
                 <input
                   v-model="rowInput" type="number" name="row-input"
                   class="join-item input input-sm max-w-16 text-center input-primary" min="1" max="9" step="1"
                   :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()"
                 >
-                <button class="join-item btn btn-sm btn-square btn-primary" @click="rowInput++">+</button>
+                <button
+                  class="join-item btn btn-sm btn-square btn-primary" @click="() => {
+                    if (rowInput >= MAX_ROWS)
+                      return
+                    rowInput++
+                  }"
+                >+</button>
               </div>
             </label>
-            <label for="col-input" class="items-center justify-start grid grid-cols-3 gap-2">
+            <label for="col-input" class="items-center justify-start grid grid-cols-2 gap-2 w-fit">
               <p class="select-none text-sm">Columns</p>
-              <div class="join col-span-2">
-                <button class="join-item btn btn-sm btn-square btn-primary" @click="colInput--">-</button>
+              <div class="join col-span-1 rounded-md">
+                <button
+                  class="join-item btn btn-sm btn-square btn-primary"
+                  @click="() => {
+                    if (colInput <= 1)
+                      return
+                    colInput--
+                    enforceLayoutLimits()
+                  }"
+                >-</button>
                 <input
                   v-model="colInput" type="number" name="col-input"
                   class="join-item input input-sm input-primary max-w-16 text-center" min="1" max="9" step="1"
                   :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()"
                 >
-                <button class="join-item btn btn-sm btn-primary btn-square" @click="colInput++">+</button>
+                <button
+                  class="join-item btn btn-sm btn-primary btn-square" @click="() => {
+                    if (colInput >= MAX_COLS)
+                      return
+                    colInput++
+                    enforceLayoutLimits()
+                  }"
+                >+</button>
               </div>
             </label>
           </div>
-          <div v-if="selectedNewLayout === 'custom'" class="w-full flex flex-col gap-1">
-            <label class="label flex items-start border-white bg-misc-secondary px-2 rounded-md  w-fit gap-2">
+          <div v-if="selectedNewLayout === 'custom'" class="w-full flex flex-col gap-1  bg-misc-secondary px-2 rounded-md  py-2">
+            <label class="label flex items-start border-white w-fit gap-2">
               <span class="text-sm">Allow Illegal Layout</span>
               <div class="flex flex-col">
                 <input
@@ -274,7 +306,7 @@ function trimLayout(): PlotStatus[][] {
               </div>
             </label>
             <p class="text-xs opacity-40 font-thin">
-              Increase max plots beyond limit
+              Increase the maximum amount of overall plots from 9 to 27
             </p>
           </div>
         </div>
