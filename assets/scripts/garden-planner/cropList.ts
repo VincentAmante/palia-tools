@@ -418,38 +418,38 @@ const SPICY_PEPPER = new Crop(
   },
 )
 
-const CABBAGE = new Crop(
-  CropType.Cabbage,
+const NAPA_CABBAGE = new Crop(
+  CropType.NapaCabbage,
   Bonus.WaterRetain,
   CropSize.Single,
-  '/crops/cabbage.webp',
+  '/crops/napa-cabbage.webp',
   {
-    base: 1,
-    growthTime: 1,
+    base: 2,
+    growthTime: 6,
   },
   {
-    crop: 0,
-    cropStar: 0,
-    seed: 0,
-    seedStar: 0,
+    crop: 40,
+    cropStar: 60,
+    seed: 10,
+    seedStar: 15,
     hasPreserve: true,
-    preserve: 0,
-    preserveStar: 0,
+    preserve: 60,
+    preserveStar: 90,
   },
   {
-    cropsPerSeed: 0,
-    seedsPerConversion: 4,
+    cropsPerSeed: 1,
+    seedsPerConversion: 6,
     cropsPerPreserve: 1,
-    seedProcessMinutes: 24,
-    preserveProcessMinutes: 36,
+    seedProcessMinutes: 48,
+    preserveProcessMinutes: 48,
   },
   {
-    preserve: '/jars/cabbage.webp',
-    seed: '/seeds/cabbage.webp',
+    preserve: '/jars/napa-cabbage.webp',
+    seed: '/seeds/napa-cabbage.webp',
   },
   {
-    cropCode: CropCode.Cabbage,
-    cropTooltip: 'Cabbage: Water Retention',
+    cropCode: CropCode.NapaCabbage,
+    cropTooltip: 'Napa Cabbage: Water Retention',
     cropBackgroundColor: 'bg-water-retain',
   },
 )
@@ -461,13 +461,13 @@ const BOK_CHOY = new Crop(
   '/crops/bok-choy.webp',
   {
     base: 2,
-    growthTime: 4,
+    growthTime: 3,
   },
   {
     crop: 30,
     cropStar: 45,
-    seed: 10,
-    seedStar: 15,
+    seed: 15,
+    seedStar: 22,
     hasPreserve: true,
     preserve: 45,
     preserveStar: 67,
@@ -476,12 +476,12 @@ const BOK_CHOY = new Crop(
     cropsPerSeed: 1,
     seedsPerConversion: 4,
     cropsPerPreserve: 1,
-    seedProcessMinutes: 24,
+    seedProcessMinutes: 72,
     preserveProcessMinutes: 36,
   },
   {
     preserve: '/jars/bok-choy.webp',
-    seed: '/seeds/bok-choy.webp',
+    seed: '/seeds/bok-choy.png',
   },
   {
     cropCode: CropCode.BokChoy,
@@ -539,9 +539,8 @@ const crops = {
   [CropType.Apple]: APPLE,
   [CropType.Corn]: CORN,
   [CropType.SpicyPepper]: SPICY_PEPPER,
-  [CropType.Cabbage]: CABBAGE,
+  [CropType.NapaCabbage]: NAPA_CABBAGE,
   [CropType.BokChoy]: BOK_CHOY,
-
   [CropType.None]: NULLCROP,
 } as const
 
@@ -569,6 +568,10 @@ function getCropFromCode(code: CropCode): Crop {
       return crops[CropType.Corn]
     case CropCode.SpicyPepper:
       return crops[CropType.SpicyPepper]
+    case CropCode.NapaCabbage:
+      return crops[CropType.NapaCabbage]
+    case CropCode.BokChoy:
+      return crops[CropType.BokChoy]
     default:
       return crops[CropType.None]
   }
