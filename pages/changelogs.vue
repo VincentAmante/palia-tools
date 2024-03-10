@@ -32,7 +32,73 @@ useHead({
       </div>
 
       <div class="grid gap-2">
-        <ChangelogItem checked="">
+        <ChangelogItem checked>
+          <template #title>
+            March 10, 2024 — New Star Chance Formula
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">New Level System —</span> Added new formula for calculating star chance
+            </li>
+            <li class="ml-5">
+              Removed chance override options in favour of the new formula
+            </li>
+            <li>
+              <span class="italic">Small UI Updates —</span> Tweaked buttons to be more compact. Updated UI library
+              causing some
+              (hopefully harmless) unintended changes
+            </li>
+          </template>
+          <template #default>
+            <p>
+              New attempt at a level-based star-chance system, this time with a formula that can adapt to any level
+              instead of just level 25.
+              This change was originally intended to be part of the crafter update,
+              but since that won't be out for a while (busy reasons, see Jan 30 update) I've decided to release that
+              change now.
+            </p>
+
+            <p class="p-1 px-3 font-mono rounded-md bg-palia-blue">
+              Formula:
+              <code class="">0.25 + (0.25 * useStarSeeds) + (0.02 * level) + (0.5 * hasQualityBoost)</code>
+            </p>
+            <p class="text-sm">
+              See Harvest Calculator Info > Assumptions for brief explanation
+            </p>
+
+            <p>
+              This new formula is arbitrary and based off player observations, and is still not the actual in-game
+              formula.
+              Level 25+ players using star seeds shouldn't notice any difference from the old system provided the same
+              settings are used. Pre-level 25 star-seed layouts should expect the same settings as a level 0.
+            </p>
+            <p>
+              For players not using star seeds, the new system should hopefully provide a slightly more accurate
+              representation of their star chance. Most notably, when you reach level 50, you should expect a 100%
+              star chance with normal seeds. 100% is actually met earlier on at around level 38 as per the planner,
+              whether that's accurate to in-game is debatable, but nevertheless should still be closer than the old
+              formula.
+            </p>
+            <div class="divider" />
+            <p>
+              There's some UI changes made in this patch.
+              A few are small tweaks but most changes are likely due to UI library updating, which caused some
+              unintended changes that hopefully hasn't broken anything.
+            </p>
+            <p>
+              UI changes are planned for the next major update (no ETA), with a specific focus to the harvest
+              calculator.
+              Many of my issues with the incoming updating has been the lack of space to fit everything in,
+              so I'm making a smaller UI update to make the calculator more bearable to look at.
+              In addition, I might look at better ways to display the crop/fertiliser buttons, as the increase of crops
+              is going to make the buttons more cluttered.
+            </p>
+            <p>
+              If you notice anything wrong, please report it to me on Discord <span class="font-bold">(.aisen)</span>
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
           <template #title>
             January 30, 2024 — New Crops, New Building
           </template>
@@ -41,7 +107,8 @@ useHead({
               <span class="italic">New Crops —</span> Added new crops from the 0.176 patch
             </li>
             <li class="ml-5">
-              <span>HOTFIX: Bok choy star seed price was incorrectly valued at 30 gold instead of the right amount of 22 (Credits: gazar)</span>
+              <span>HOTFIX: Bok choy star seed price was incorrectly valued at 30 gold instead of the right amount of 22
+                (Credits: gazar)</span>
             </li>
             <li>
               <span class="italic">New Building —</span> Added the new bay window housing add-on
@@ -49,23 +116,28 @@ useHead({
             <li class="ml-5 font-bold">
               <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-warning" />
               <span>
-                NOTE: Bay Windows on the front of the Harvest House are not yet supported, it'll require a system re-write.
+                NOTE: Bay Windows on the front of the Harvest House are not yet supported, it'll require a system
+                re-write.
               </span>
             </li>
           </template>
           <template #default>
             <p>
               Hello everyone! This was a bit of a quick addition.
-              Huge thanks to <span class="italic font-bold">Aschefield</span> and <span class="italic font-bold">Adain (Paliapedia)</span> for providing information and assets on the new crops and by-products!
+              Huge thanks to <span class="italic font-bold">Aschefield</span> and <span class="italic font-bold">Adain
+                (Paliapedia)</span> for providing information and assets on the new crops and by-products!
               Their help certainly sped up syncing the planner with the new patch.
             </p>
             <p>
-              There may be a chance I missed some values, so if you notice any discrepancies please do report it to me on Discord <span class="font-bold">(.aisen)</span>.
-              Those of you who are using the House Planner may note an issue with the Bay windows, I'll need to re-work how the planner handles housing add-ons to support it so it would definitely take awhile.
+              There may be a chance I missed some values, so if you notice any discrepancies please do report it to me
+              on Discord <span class="font-bold">(.aisen)</span>.
+              Those of you who are using the House Planner may note an issue with the Bay windows, I'll need to re-work
+              how the planner handles housing add-ons to support it so it would definitely take awhile.
             </p>
             <p>
               Apologies once more for the slow updates, I've been busy :(
-              Please note that anyone willing to make alternative websites or improve on this one is more than welcome to do so.
+              Please note that anyone willing to make alternative websites or improve on this one is more than welcome
+              to do so.
               I'm currently searching for a job, so I'm not sure how much time I'll have to work on this.
               Consider updates to be much slower from now on until the situation changes.
             </p>
@@ -136,7 +208,8 @@ useHead({
               Every crafter <span class="italic">will</span> support having different crops placed into each one.
             </p>
             <p>
-              I have been mind-blocked on both how to manage and configure the crafters in a way that can reflect multiple
+              I have been mind-blocked on both how to manage and configure the crafters in a way that can reflect
+              multiple
               playstyles.
               Not to mention that on release it'll likely need configuration saving and sharing, which is a whole other
               can of worms.
@@ -223,7 +296,8 @@ useHead({
             </p>
             <p>
               The in-game timer is a small nifty addition that mimics the in-game clock.
-              I've initially added a 6 AM alarm (for harvests) but it was proving to be buggy due to how web notifications
+              I've initially added a 6 AM alarm (for harvests) but it was proving to be buggy due to how web
+              notifications
               work.
               The alarm feature will be kept on the shelf until I find a better system for alarms.
             </p>
@@ -289,12 +363,14 @@ useHead({
             <li>Added external tools</li>
           </template>
           <template #default>
-            <span class="font-bold">Illegal Plots: </span>Requested feature, part as a way to support increased plot sizes
+            <span class="font-bold">Illegal Plots: </span>Requested feature, part as a way to support increased plot
+            sizes
             in the future and as a temporary solution to support partially connected layouts.
             This change allows for layouts that exceed the maximum plot count of 9 (as of the current date).
             <br>
             <span class="font-bold">External Tools: </span>
-            Added external links to other Palia tools, as part of mutual agreements to provide visibility to each other's
+            Added external links to other Palia tools, as part of mutual agreements to provide visibility to each
+            other's
             tools.
             If you're a developer and would like to have your tool added, feel free to contact me on Discord! <span
               class="font-bold"
@@ -314,11 +390,13 @@ useHead({
             <li>Fixed 2 bugs causing seed replants to not be calculated properly</li>
           </template>
           <template #default>
-            This hotfix tackles a major bug that causes excess seeds to not be properly used in re-plants. It also fixes a
+            This hotfix tackles a major bug that causes excess seeds to not be properly used in re-plants. It also fixes
+            a
             bug where re-harvestable plants
             would have incorrect re-plant days when calculated for days above its regular lifespan.
             <br>
-            The change should increase gold values by a variable amount and should now properly represent accurate replant
+            The change should increase gold values by a variable amount and should now properly represent accurate
+            replant
             deductions
           </template>
         </ChangelogItem>
@@ -348,7 +426,9 @@ useHead({
           </template>
           <template #summary>
             <li><span class="italic">New Content —</span> Added Fertiliser</li>
-            <li><span class="italic">Technical — </span> Upgraded save codes from v0.1 to v0.2 for fertiliser support</li>
+            <li>
+              <span class="italic">Technical — </span> Upgraded save codes from v0.1 to v0.2 for fertiliser support
+            </li>
             <li>
               <span class="italic">UI — </span> Shifted garden layout to accomodate fertilisers and be easier on the
               eyes
@@ -361,14 +441,18 @@ useHead({
           <template #default>
             <div class="flex flex-col gap-1">
               <p>
-                Today's update adds a core gardening mechanic to the planner - <span class="font-bold">Fertilisers</span>!
+                Today's update adds a core gardening mechanic to the planner - <span
+                  class="font-bold"
+                >Fertilisers</span>!
                 Important for covering tiles that lack necessary bonuses, fertilisers are a great way to enhance your
                 garden.
               </p>
               <p>
-                Adding fertilisers required a mild overhaul to how saves function, so I've bumped up the save code version
+                Adding fertilisers required a mild overhaul to how saves function, so I've bumped up the save code
+                version
                 to v0.2 which shortens crop codes to allocate more room for fertiliser codes.
-                Your v0.1 codes will still work, just load them in as usual and it'll be parsed correctly (if it doesn't,
+                Your v0.1 codes will still work, just load them in as usual and it'll be parsed correctly (if it
+                doesn't,
                 please report).
               </p>
             </div>
@@ -423,7 +507,8 @@ useHead({
                 so a UI/UX re-design might not be far in the future.
               </p>
               <p>
-                Outside of that, the new savecode-length makes it impossible to actually store the save in an image file.
+                Outside of that, the new savecode-length makes it impossible to actually store the save in an image
+                file.
                 Due to this, I've removed it entirely from exported images.
               </p>
               <p>
@@ -456,7 +541,8 @@ useHead({
                 track of what's going on!
                 Accompanying it comes a new sidebar and navbar, which will create room for more pages in the future
                 (Presets/Templates :D).
-                <span class="font-bold">Also, since the internal structure of the website has changed, I'd like to ask for
+                <span class="font-bold">Also, since the internal structure of the website has changed, I'd like to ask
+                  for
                   reports on any performance issues
                   you may encounter, especially on mobile devices.</span>
               </p>
@@ -476,7 +562,8 @@ useHead({
               <p class="indent-6">
                 These new changelogs and roadmap pages will allow me to better share what's changed and what's coming up
                 in the future,
-                not only will they be more accessible to everyone, but I can also write in greater detail. (I will though
+                not only will they be more accessible to everyone, but I can also write in greater detail. (I will
+                though
                 learn to be more concise in the future.)
               </p>
             </div>
@@ -489,9 +576,11 @@ useHead({
                 The planner ran on <span class="italic font-bold ">Vue</span>,
                 the front-end framework I'm highly familiar working with that lets me develop this client app at a
                 comfortable pace.
-                Some of the ideas I have in mind in the long term though would likely benefit from having the planner have
+                Some of the ideas I have in mind in the long term though would likely benefit from having the planner
+                have
                 server-side capabilities,
-                such as an internal link shortener, or an <span class="font-bold">API for other developers to use</span>.
+                such as an internal link shortener, or an <span class="font-bold">API for other developers to
+                  use</span>.
               </p>
               <p class="indent-6">
                 Due to that, I've decided to save myself potential future troubles by migrating from Vue to <span
@@ -502,7 +591,8 @@ useHead({
                 experience for you all.
               </p>
               <p>
-                These changes took me a while though, I may have also caused some bugs in the migration, so please inform
+                These changes took me a while though, I may have also caused some bugs in the migration, so please
+                inform
                 me of anything broke!
               </p>
             </div>

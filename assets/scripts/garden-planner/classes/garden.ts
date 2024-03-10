@@ -129,11 +129,10 @@ class Garden {
     const rows = this._layout.length
     const columns = this._layout[0].length
 
-    for (let i = 0; i < rows; i++) {
+    for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
       let row = ''
-      for (let j = 0; j < columns; j++)
-        row += this._layout[i][j].isActive ? '1' : '0'
-
+      for (let colIndex = 0; colIndex < columns; colIndex++)
+        row += this._layout[rowIndex][colIndex].isActive ? '1' : '0'
       layoutCode += `${row}-`
     }
 
@@ -338,23 +337,30 @@ class Garden {
         if (day > crop.getTotalGrowTime(hasGrowthBoost) && !options.includeReplant)
           continue
 
+        const baseStarChance = 0.25 + (options.allStarSeeds ? 0.25 : 0) + (options.level * 0.02)
+
+        /*
         const baseStarChance
-          = (tile.hasStarSeed || options.allStarSeeds) && options.postLevel25
+          = (tile.hasStarSeed || options.allStarSeeds) && (options.postLevel25 || options.level >= 25)
             ? 1
             : tile.hasStarSeed || options.allStarSeeds
               ? options.starChanceOverride ?? 0.66
               : options.baseChanceOverride ?? 0
+              */
 
         const { base, withBonus } = crop.produceInfo
         const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day, hasGrowthBoost)
 
         if (isHarvestable) {
-          let finalStarChance = baseStarChance
+          /* let finalStarChance = baseStarChance
           if (tile.bonuses.includes(Bonus.QualityIncrease)) {
             // TODO: Verify this is correct
             finalStarChance += 0.66
             finalStarChance = Math.min(finalStarChance, 1)
-          }
+          } */
+
+          const finalStarChance = Math.min(1, baseStarChance + (tile.bonuses.includes(Bonus.QualityIncrease) ? 0.5 : 0))
+
           const hasBonus = tile.bonuses.includes(Bonus.HarvestIncrease)
           const starCrops = Math.round(finalStarChance * (hasBonus ? withBonus : base))
           const nonStarCrops = hasBonus ? withBonus - starCrops : base - starCrops
