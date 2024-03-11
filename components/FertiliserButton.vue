@@ -84,7 +84,7 @@ const dragHandler = useDragAndDrop()
   >
     <button
       draggable="true"
-      class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+      class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc"
       :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
       @dragstart="(e: DragEvent) => dragHandler.startDrag(fertiliser.type)"
       @dragend="(e: DragEvent) => dragHandler.stopDrag()"
@@ -100,10 +100,11 @@ const dragHandler = useDragAndDrop()
         v-if="(fertiliser && fertiliser.image != null && fertiliser.image !== '')"
         v-once
         width="34px" height="34px"
-        class="absolute -z-10 max-w-[34px]" :src="fertiliser.image"
+        class="absolute -z-10 max-w-[34px] pointer-events-none" :src="fertiliser.image"
         :class="(fertiliser.type === fertiliser.type) ? 'opacity-100' : 'opacity-90'"
         :alt="fertiliser.type"
         :srcset="undefined"
+        draggable="false"
         placeholder
       />
       <font-awesome-icon

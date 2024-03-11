@@ -315,11 +315,11 @@ function handleMouseLeave() {
           <h3 class="font-semibold text-palia-blue">
             Crops
           </h3>
-          <div class="flex flex-wrap w-full gap-2 pt-2">
+          <div class="flex flex-wrap w-full gap-1 pt-2">
             <button
               id="crop-eraser"
               aria-label="Select Crop Eraser"
-              class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+              class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc"
               :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
               :in-picture-mode="isTakingScreenshot.get"
               @click="selectedItem.select('crop-erase')"
@@ -347,11 +347,12 @@ function handleMouseLeave() {
             <h3 class="font-semibold text-palia-blue">
               Fertilisers per Day
             </h3>
-            <div class="flex flex-wrap gap-2 pt-2">
+            <div class="flex flex-wrap gap-1 pt-2">
               <button
                 id="fertiliser-eraser"
                 aria-label="Select Fertiliser Eraser"
-                class="relative w-12 rounded-md btn-secondary border-misc border-[1px] aspect-square flex flex-col items-center justify-center isolate"
+
+                class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc"
                 :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
                 @click="selectedItem.select('fertiliser-erase')"
               >
@@ -503,7 +504,7 @@ function handleMouseLeave() {
           </div>
         </div>
         <TimeDisplay
-          class="order-9 p-2 py-4  bg-primary"
+          class="order-9 p-2 py-4 bg-primary"
           :class="[
             (isTakingScreenshot.get) ? 'hidden' : 'grid',
             (gardenTilesAreWide) ? 'lg:col-span-3' : 'lg:col-span-2',
