@@ -78,7 +78,10 @@
                 At level 25, star seeds alone can reach 100% star chance (hence an assumed level scaling).
               </li>
               <li class="ml-5">
-                At level 50, normal seeds alone can reach 100% star chance.
+                Each level increases star chance by 2% (which reaches a total of 100% at level 25 w/ star seeds).
+              </li>
+              <li class="ml-5">
+                Around level 50 and under, normal seeds alone can reach 100% star chance.
               </li>
               <li class="ml-5">
                 Normal seeds always have a chance of star crops (hence an assumed 25% base chance).
