@@ -32,7 +32,7 @@ const options = useStorage('approximator-options-MAR1024', {
   includeReplant: true,
   includeReplantCost: true,
   useGrowthBoost: false,
-  level: 25,
+  level: 0,
 })
 
 const harvestData = computed<ISimulateYieldResult>(() => {
