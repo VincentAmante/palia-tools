@@ -44,9 +44,7 @@ useHead({
               Removed chance override options in favour of the new formula
             </li>
             <li>
-              <span class="italic">Small UI Updates —</span> Tweaked buttons to be more compact. Updated UI library
-              causing some
-              (hopefully harmless) unintended changes
+              <span class="italic">Small UI Update —</span> Tweaked buttons to be more compact.
             </li>
           </template>
           <template #default>
@@ -81,9 +79,8 @@ useHead({
             </p>
             <div class="divider" />
             <p>
-              There's some UI changes made in this patch.
-              A few are small tweaks but most changes are likely due to UI library updating, which caused some
-              unintended changes that hopefully hasn't broken anything.
+              Minor UI tweaks in preparation of an internal UI update, as well as minor experimentation with making
+              the planner more compact.
             </p>
             <p>
               UI changes are planned for the next major update (no ETA), with a specific focus to the harvest
