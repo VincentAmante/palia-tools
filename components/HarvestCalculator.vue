@@ -173,7 +173,7 @@ watchEffect(() => {
           </div>
           <div
             v-if="!isTakingScreenshot.get"
-            class=" w-full justify-evenly flex flex-nowrap bg-misc rounded-md px-4 py-1 max-w-[22rem] order-3"
+            class=" w-full justify-evenly flex flex-nowrap bg-misc text-accent rounded-md px-4 py-1 max-w-[22rem] order-3"
             :class="gardenTilesAreWide ? 'justify-center py-2' : 'md:px-0 md:gap-2 lg:w-fit'"
           >
             <button
