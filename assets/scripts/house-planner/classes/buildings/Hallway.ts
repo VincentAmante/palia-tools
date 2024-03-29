@@ -18,6 +18,8 @@ export class Hallway extends Building {
   protected _baseDimensions: Dimensions = { width: 3, height: 3 }
   protected _opacity: number = 1
 
+  countsTowardsLimit: boolean = false
+
   price = {
     base: 3000,
     perExtraBuilding: 100,
