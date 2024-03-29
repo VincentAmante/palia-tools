@@ -34,6 +34,19 @@ useHead({
       <div class="grid gap-2">
         <ChangelogItem checked>
           <template #title>
+            March 29, 2024 — Hallway Patch
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">0.178 Parity —</span> Made hallways not count towards the limit
+            </li>
+            <li class="ml-5">
+              Since this wasn't included in the patch notes, I'm monitoring for any changes that may occur in the future
+            </li>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
+          <template #title>
             March 10, 2024 — New Star Chance Formula
           </template>
           <template #summary>
