@@ -27,7 +27,7 @@ useHead({
     <section class="flex flex-col gap-2 pb-2">
       <div class="py-4">
         <h1 class="text-2xl font-bold md:text-3xl">
-          Garden Planner Changelogs
+          Site Changelogs
         </h1>
       </div>
 
@@ -41,7 +41,8 @@ useHead({
               <span class="italic">0.178 Parity —</span> Made hallways not count towards the limit
             </li>
             <li class="ml-5">
-              Since this wasn't included in the patch notes, I'm monitoring for any changes that may occur in the future
+              <span class="font-bold">NOTE:</span>
+              This change was not in the patch notes, so please be aware that it may be a bug and may be reverted upon confirmation.
             </li>
           </template>
         </ChangelogItem>
