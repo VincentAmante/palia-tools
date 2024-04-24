@@ -17,15 +17,18 @@ definePageMeta({
 
 <template>
   <main class="flex flex-col gap-2 p-4 px-2 lg:px-12">
-    <div class="flex flex-col items-center p-2 pt-4 mb-2 rounded-md bg-warning lg:mx-8">
+    <div class="flex flex-col items-center p-2 pt-4 mb-2 rounded-md bg-water-retain lg:mx-8">
       <div class="flex flex-col gap-1 text-center text-neutral">
         <font-awesome-icon :icon="['fas', 'screwdriver-wrench']" class="text-xl" />
         <h2 class="text-xl font-black">
-          In Prototype Phase
+          Prototype Development Halted Indefinitely
         </h2>
-        <p class="max-w-xl text-sm font-normal">
-          This tool is released primarily as a proof-of-concept and is not ready for regular use.
+        <p class="max-w-4xl text-sm font-normal">
+          This house planner prototype was released primarily as a proof-of-concept and is bound to have inaccuracies.
           Many features are missing and bugs are to be expected.
+          <span class="font-bold">
+            As of version 0.179, this project's development is halted and is unlikely to support versions beyond 0.179. See below for more info.</span>
+          Page will be maintained for archival purposes.
         </p>
       </div>
     </div>
@@ -65,10 +68,48 @@ definePageMeta({
       </div>
     </section>
     <div class="flex flex-col justify-between gap-2 lg:flex-row lg:mx-2">
+      <section class="mt-4 rounded-md text-palia-dark-blue collapse h-fit collapse-arrow bg-water-retain">
+        <input type="checkbox">
+        <div class="text-2xl font-bold collapse-title">
+          Why development is halted. <span class="text-sm">(2024-04-24)</span>
+        </div>
+        <div class="max-w-xl collapse-content">
+          <div class="flex flex-col gap-2 font-medium">
+            <p class="" />
+            <p>
+              Since the beginning of this project, the housing system has been a challenge to simulate.
+              The project revolved around guesses and asssumptions of how the housing system works, of which many were off the mark.
+              This was fine as the prototype was able to accomplish a base level of house-planning that players were able to make use of.
+            </p>
+            <p>
+              As the project constantly rebuilds itself to support the latest and existing features as well as fix existing issues to be more accurate,
+              it's clear that the prototype's core systems will not be able to achieve much more than what is currently available.
+              <span class="font-bold">
+                The main challenge is that I am attempting to emulate the features of a 3D game in a 2D environment.
+              </span>
+            </p>
+            <p>
+              After seeing the roadmap, with the upcoming structural blocks and structures involving multiple floors,
+              I have decided that future iterations of the house planner is best made with an approach vastly different from the current one.
+              As I am unavailable to devote the amount of time I feel I need for this project, development of the <span class="font-italic">house planner</span> will not continue beyond 0.179 for the foreseeable future.
+            </p>
+
+            <p>
+              <span class="font-bold">My sincerest apologies to anybody who was looking forward to this planner</span>, I was truly excited to make this tool work.
+              I hope that someone else would be able to create a better tool for house planning in the future.
+              I would also like to thank everyone who has supported this project and provided feedback.
+              Perhaps one day I will be able to return to this project with the means to make it work.
+            </p>
+            <p class="font-bold">
+              Regardless, the prototype as-is will remain available, and existing issues will be addressed if possible.
+            </p>
+          </div>
+        </div>
+      </section>
       <section class="mt-4 rounded-md collapse bg-base-200 h-fit collapse-arrow">
         <input type="checkbox">
         <div class="text-2xl font-medium collapse-title">
-          Quick Dev Note
+          About the Project (Old)
         </div>
         <div class="max-w-xl collapse-content">
           <div class="flex flex-col gap-2">
@@ -95,7 +136,7 @@ definePageMeta({
           </div>
         </div>
       </section>
-      <section class="mt-4 rounded-md collapse bg-base-200 h-fit collapse-arrow">
+      <!-- <section class="mt-4 rounded-md collapse bg-base-200 h-fit collapse-arrow">
         <input type="checkbox">
         <div class="text-2xl font-medium collapse-title">
           Goals
@@ -151,7 +192,7 @@ definePageMeta({
             </ul>
           </div>
         </div>
-      </section>
+      </section> -->
     </div>
   </main>
 </template>

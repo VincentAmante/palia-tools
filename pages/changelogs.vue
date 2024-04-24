@@ -34,6 +34,43 @@ useHead({
       <div class="grid gap-2">
         <ChangelogItem checked>
           <template #title>
+            April 24, 2024 — Courtyard Patch and House Planner Halt
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">0.179 Parity —</span> Added the courtyard building
+            </li>
+            <li>
+              <span class="italic">House Planner development now indefinitely halted —</span> Please see the
+              <NuxtLink class="link" to="/house-planner">
+                House Planner page
+              </NuxtLink>  for more information
+            </li>
+          </template>
+          <template #default>
+            <p>
+              With the release of 0.179 comes the Courtyard building, a new housing add-on.
+              Thank you to <span class="italic">CauldronMorgana</span> for confirming certain details about the Courtyard,
+              as well as <span class="italic">TinyDragon</span> for the same reason as well as general housing information.
+            </p>
+            <p>
+              As of this update, the House Planner development is indefinitely halted. I've evaluated that the prototype
+              needs to be reworked from the ground up to better simulate the in-game housing system as well as support
+              the upcoming features (such as the Structure Blocks and 2nd Floor).
+            </p>
+            <p>
+              I've detailed the reasons for the halt on the bottom of the House Planner page.
+              Overall, my prototype was just not feasible and I feel I do not have the time and resources to remake it in a way
+              that fits my standards. For that, I've decided to halt development on the House Planner and simply
+              maintain it for archival purposes.
+            </p>
+            <p>
+              Garden Planner development still continues and I have no plans to halt it.
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
+          <template #title>
             March 29, 2024 — Hallway Patch
           </template>
           <template #summary>

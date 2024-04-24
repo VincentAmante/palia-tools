@@ -96,6 +96,14 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
+              TinyDragon
+            </template>
+            <template #for>
+              Housing Information
+            </template>
+          </CreditName>
+          <CreditName>
+            <template #name>
               Palia Wiki
             </template>
             <template #for>
