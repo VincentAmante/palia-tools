@@ -17,6 +17,49 @@
   opacity: 0;
 }
 
+@layer utilities {
+  .scrollbar-primary::-webkit-scrollbar {
+    @apply h-1 lg:h-0 lg:w-1 rounded-md;
+  }
+
+  .scrollbar-primary::-webkit-scrollbar-thumb {
+    @apply bg-palia-blue rounded-md;
+  }
+
+  .scrollbar-primary::-webkit-scrollbar-track {
+    @apply bg-accent rounded-md;
+  }
+}
+
+/* 
+html {
+  ::-webkit-scrollbar {
+    @apply h-1 lg:h-0 lg:w-1 rounded-md;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-palia-dark-blue rounded-md;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-palia-blue rounded-md;
+  }
+}
+
+body {
+  ::-webkit-scrollbar {
+    @apply h-1 lg:h-0 lg:w-1 rounded-md;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-misc rounded-md;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-accent rounded-md;
+  }
+} */
+
 /* cyrillic-ext */
 @font-face {
   font-family: 'Merriweather';

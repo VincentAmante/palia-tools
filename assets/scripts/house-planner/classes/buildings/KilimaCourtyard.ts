@@ -9,27 +9,24 @@ import type { GridSizing } from '../../types/ConfigOptions'
 import { ZLevel } from '../../enums/zLevel'
 import type Coordinates from '@/assets/scripts/utils/types/coordinates'
 
-export class Hallway extends Building {
-  protected readonly name = 'Hallway'
-  protected _type: BuildingType = BuildingType.Hallway
+export default class KilimaCourtyard extends Building {
+  protected readonly name = 'Kilima Courtyard'
+  protected _type: BuildingType = BuildingType.KilimaCourtyard
   protected _needsParent: boolean = true
   protected _baseCoords: Coordinates = { x: 0, y: 0 }
   protected _baseRotation: number = 0
-  protected _baseDimensions: Dimensions = { width: 3, height: 3 }
+  protected _baseDimensions: Dimensions = { width: 20, height: 23 }
   protected _opacity: number = 1
-
-  countsTowardsLimit: boolean = false
-
   price = {
-    base: 3000,
-    perExtraBuilding: 100,
-    increaseIncrement: 100,
-    increaseInterval: 10,
+    base: 20000,
+    perExtraBuilding: 10000,
+    increaseIncrement: 0,
+    increaseInterval: 1,
   }
 
   materials = {
-    sapwoodPlanks: 80,
-    stoneBricks: 30,
+    sapwoodPlanks: 100,
+    stoneBricks: 35,
   }
 
   constructor(gridSizing: GridSizing) {
@@ -41,9 +38,7 @@ export class Hallway extends Building {
       ...this._baseCoords,
       ...this._baseDimensions,
       offsetX: 0,
-      offsetY: 0,
-      offsetWidth: 0,
-      offsetHeight: 0,
+      offsetY: 3,
     },
     this._id,
     this._gridSizing,
@@ -53,12 +48,25 @@ export class Hallway extends Building {
     new CollisionBox(
       {
         ...this._baseCoords,
-        ...this._baseDimensions,
-        offsetWidth: 0.2,
-        offsetHeight: 1,
-        zLevel: ZLevel.Hallway,
+        height: 20,
+        width: 20,
+        offsetWidth: 0,
+        offsetHeight: 0.5,
+        offsetY: -3,
+        zLevel: ZLevel.Large,
       },
       this._id,
+      this._gridSizing,
+    ),
+    new CollisionBox(
+      {
+        ...this._baseCoords,
+        ...this._baseDimensions,
+        width: 3,
+        height: 3,
+        offsetY: 20,
+      },
+      `${this._id}-hallway`,
       this._gridSizing,
     ),
   ]
@@ -67,7 +75,8 @@ export class Hallway extends Building {
     {
       ...this._baseCoords,
       ...this._baseDimensions,
-      imageSrc: '/buildings/hallway.svg',
+      offsetY: 0,
+      imageSrc: '/buildings/kilima-courtyard.svg',
     },
     this._id,
     this._gridSizing,
@@ -80,8 +89,8 @@ export class Hallway extends Building {
     West: boolean
   } = {
       North: true,
-      East: false,
+      East: true,
       South: false,
-      West: false,
+      West: true,
     }
 }

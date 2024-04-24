@@ -5,7 +5,7 @@ import HouseGrid from './HouseGrid.vue'
 import BuildingButton from './BuildingButton.vue'
 import type { Building } from '@/assets/scripts/house-planner/classes/building'
 import type { Direction } from '@/assets/scripts/house-planner/imports'
-import { BayWindow, Fireplace, Hallway, HarvestHouse, KilimaDoor, KilimaPorch, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
+import { BayWindow, Fireplace, Hallway, HarvestHouse, KilimaCourtyard, KilimaDoor, KilimaPorch, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
 
 import { useHousePlanConfig } from '@/stores/useHousePlanConfig'
 
@@ -200,7 +200,14 @@ function onMouseMove() {
     if (snapData.snapped && hasSpace) {
       sideToSnap.value = snapData.side
       parentToSnap.value = collidingBuilding
-      let hasOtherCollisions = checkForCollisions(activeBuilding.value as Building, [...excludeIds, collidingBuilding.id, ...collidingBuilding.directChildrenIds])
+      let hasOtherCollisions = checkForCollisions(activeBuilding.value as Building, [...excludeIds, collidingBuilding.id, ...collidingBuilding.directChildrenIds.filter((id) => {
+        const building = buildings.value[id]
+        if (building && building.type === BuildingType.KilimaCourtyard
+        && parent.id !== building.id
+        )
+          return false
+        return true
+      })])
 
       if (activeBuilding.value.childrenIds) {
         activeBuilding.value.childrenIds.forEach((childId) => {
@@ -278,7 +285,17 @@ function tryPlaceBuilding() {
     const side = sideToSnap.value
     const building = activeBuilding.value
 
-    const excludeIds = [...building.childrenIds, parent.id, ...parent.directChildrenIds, ...building.directChildrenIds]
+    const excludeIds = [...building.childrenIds, parent.id,
+      ...parent.directChildrenIds.filter((id) => {
+        const building = buildings.value[id]
+        if (building && building.type === BuildingType.KilimaCourtyard
+        && parent.id !== building.id
+        )
+          return false
+        return true
+      }),
+      ...building.directChildrenIds]
+
     const hasOtherCollisions = checkForCollisions(building as Building, excludeIds)
 
     if (hasOtherCollisions)
@@ -375,6 +392,7 @@ function placeBuilding(excludeIds: string[] = []): boolean {
     return false
 
   const excludeList = [...new Set([...building.childrenIds, ...excludeIds, building.id])]
+
   let hasCollision = checkForCollisions(building, [...excludeList])
   building.childrenIds.forEach((childId) => {
     const child = buildings.value[childId]
@@ -384,6 +402,7 @@ function placeBuilding(excludeIds: string[] = []): boolean {
         hasCollision = isColliding
     }
   })
+
   if (hasCollision)
     return false
 
@@ -476,6 +495,8 @@ function createNewBuilding(type: BuildingType) {
       return new KilimaDoor({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
     case BuildingType.BayWindow:
       return new BayWindow({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
+    case BuildingType.KilimaCourtyard:
+      return new KilimaCourtyard({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
     default:
       return new NullHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER })
   }
@@ -507,73 +528,81 @@ function fitStageIntoParentContainer() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 lg:flex-row justify-evenly">
-    <div class="flex gap-1 lg:flex-col max-h-[580px] overflow-hidden">
-      <button
-        aria-label="clear"
-        class="relative text-sm isolate btn"
-        :class="(activeBuilding && activeBuilding.type) === BuildingType.None ? 'btn-active' : ''"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.None))"
-      >
-        <font-awesome-icon :icon="['fas', 'hand']" class="text-xl" />
-        <p class="font-normal normal-case">
-          Cursor
-        </p>
-      </button>
-      <BuildingButton
-        src="/buildings/icons/harvest-house.webp"
-        label="Harvest House"
-        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.HarvestHouse"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.HarvestHouse))"
-      />
-      <BuildingButton
-        src="/buildings/icons/large-room.webp"
-        label="Large Room"
-        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.LargeHouse"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.LargeHouse))"
-      />
-      <BuildingButton
-        src="/buildings/icons/medium-room.webp"
-        label="Medium Room"
-        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.MediumHouse"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.MediumHouse))"
-      />
-      <BuildingButton
-        src="/buildings/icons/small-room.webp"
-        label="Small Room"
-        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.SmallHouse"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.SmallHouse))"
-      />
-      <BuildingButton
-        src="/buildings/icons/hallway.webp"
-        label="Hallway"
-        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Hallway"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))"
-      />
-      <BuildingButton
-        src="/buildings/icons/fireplace.webp"
-        label="Fireplace"
-        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Fireplace"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.Fireplace))"
-      />
-      <BuildingButton
-        src="/buildings/icons/kilima-porch.webp"
-        label="Kilima Porch"
-        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaPorch"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaPorch))"
-      />
-      <BuildingButton
-        src="/buildings/icons/kilima-door.webp"
-        label="Kilima Door"
-        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaDoor"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaDoor))"
-      />
-      <BuildingButton
-        src="/buildings/icons/bay-window.webp"
-        label="Bay Window"
-        :is-active="(activeBuilding && activeBuilding.type) === BuildingType.BayWindow"
-        @click="setActiveBuilding(createNewBuilding(BuildingType.BayWindow))"
-      />
+  <div class="flex flex-col gap-1 lg:flex-row justify-evenly">
+    <div class="p-2 rounded-md bg-palia-dark-blue">
+      <div class="flex gap-2 lg:flex-col max-h-[480px] pr-1 overflow-x-scroll lg:overflow-y-scroll lg:overflow-x-none scrollbar-primary rounded-md border-palia-dark-blue">
+        <button
+          aria-label="clear"
+          class="relative text-sm isolate btn bg-palia-blue"
+          :class="(activeBuilding && activeBuilding.type) === BuildingType.None ? 'btn-active' : ''"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.None))"
+        >
+          <font-awesome-icon :icon="['fas', 'hand']" class="text-xl" />
+          <p class="font-normal normal-case">
+            Cursor
+          </p>
+        </button>
+        <BuildingButton
+          src="/buildings/icons/harvest-house.webp"
+          label="Harvest House"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.HarvestHouse"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.HarvestHouse))"
+        />
+        <BuildingButton
+          src="/buildings/icons/large-room.webp"
+          label="Large Room"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.LargeHouse"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.LargeHouse))"
+        />
+        <BuildingButton
+          src="/buildings/icons/medium-room.webp"
+          label="Medium Room"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.MediumHouse"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.MediumHouse))"
+        />
+        <BuildingButton
+          src="/buildings/icons/small-room.webp"
+          label="Small Room"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.SmallHouse"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.SmallHouse))"
+        />
+        <BuildingButton
+          src="/buildings/icons/hallway.webp"
+          label="Hallway"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Hallway"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))"
+        />
+        <BuildingButton
+          src="/buildings/icons/fireplace.webp"
+          label="Fireplace"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Fireplace"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.Fireplace))"
+        />
+        <BuildingButton
+          src="/buildings/icons/kilima-porch.webp"
+          label="Kilima Porch"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaPorch"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaPorch))"
+        />
+        <BuildingButton
+          src="/buildings/icons/kilima-door.webp"
+          label="Kilima Door"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaDoor"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaDoor))"
+        />
+        <BuildingButton
+          src="/buildings/icons/bay-window.webp"
+          label="Bay Window"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.BayWindow"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.BayWindow))"
+        />
+        <BuildingButton
+          src="/buildings/icons/kilima-courtyard.webp"
+          label="Kilima Courtyard"
+          :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaCourtyard"
+          @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaCourtyard))"
+        />
+      </div>
     </div>
     <section
       ref="stageContainer"

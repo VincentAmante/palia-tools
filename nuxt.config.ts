@@ -4,7 +4,7 @@ export default defineNuxtConfig({
     '~/assets/css/main.css',
     '@fortawesome/fontawesome-svg-core/styles.css',
   ],
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   postcss: {
     plugins: {
       tailwindcss: {},

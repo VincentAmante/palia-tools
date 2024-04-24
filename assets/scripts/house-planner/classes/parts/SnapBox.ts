@@ -64,8 +64,8 @@ export default class SnapBox {
       id: this._id,
 
       shadowEnabled: false,
-      offsetX: toScale((offsetX / 2) + (width + offsetWidth) / 2, gridSizing),
-      offsetY: toScale((offsetY / 2) + (height + offsetHeight) / 2, gridSizing),
+      offsetX: toScale((width + offsetWidth) / 2, gridSizing),
+      offsetY: toScale((height + offsetHeight) / 2, gridSizing),
       perfectDrawEnabled: false,
       rotation,
       hitStrokeWidth: 0,
@@ -92,31 +92,95 @@ export default class SnapBox {
 
   getCoords(direction: Direction): Coordinates {
     const { x, y } = this._baseCoords
-    const { width, height } = this._baseDimensions
-    const offsetX = this._offsetCoords.x / 2
-    const offsetY = this._offsetCoords.y / 2
+    let { width, height } = this._baseDimensions
+    let offsetX = this._offsetCoords.x / 2
+    let offsetY = this._offsetCoords.y / 2
 
-    switch (direction) {
-      case Direction.North:
-        return {
-          x: (x - offsetX),
-          y: (y - (height / 2)),
-        }
-      case Direction.East:
-        return {
-          x: (x - offsetX) + (width / 2),
-          y: (y - offsetY),
-        }
-      case Direction.South:
-        return {
-          x: (x - offsetX),
-          y: (y - offsetY) + (height / 2),
-        }
-      case Direction.West:
-        return {
-          x: (x - offsetX) - (width / 2),
-          y: (y - offsetY),
-        }
+    if (width !== height) {
+      switch (this._rotation) {
+        case 90:
+          width = this._baseDimensions.height
+          height = this._baseDimensions.width
+          offsetX = this._offsetCoords.y / 2 * -1
+          offsetY = this._offsetCoords.x / 2 * -1
+          break
+        case 180:
+          offsetX = this._offsetCoords.x / 2 * -1
+          offsetY = this._offsetCoords.y / 2 * -1
+          break
+        case 270:
+          width = this._baseDimensions.height
+          height = this._baseDimensions.width
+          offsetX = this._offsetCoords.y / 2
+          offsetY = this._offsetCoords.x / 2
+          break
+      }
+
+      // track where the north is based on the rotation
+      let northRotation = Direction.North
+
+      switch (this._rotation) {
+        case 90:
+          northRotation = Direction.East
+          break
+        case 180:
+          northRotation = Direction.South
+          break
+        case 270:
+          northRotation = Direction.West
+          break
+      }
+
+      switch (direction) {
+        case Direction.North:
+          return {
+            x: (x - (offsetX - (northRotation === Direction.North ? offsetX : 0))),
+            y: ((y - (offsetY - (northRotation === Direction.North ? offsetY : 0))) - (height / 2)),
+          }
+        case Direction.East:
+          return {
+            x: (x - (offsetX - (northRotation === Direction.East ? offsetX : 0))) + (width / 2),
+            y: (y - (offsetY - (northRotation === Direction.East ? offsetY : 0))),
+          }
+        case Direction.South:
+          return {
+            x: (x - (offsetX - (northRotation === Direction.South ? offsetX : 0))),
+            y: (y - (offsetY - (northRotation === Direction.South ? offsetY : 0))) + (height / 2),
+          }
+        case Direction.West:
+          // return {
+          //   x: (x - offsetX) - (width / 2),
+          //   y: (y - offsetY),
+          // }
+          return {
+            x: (x - (offsetX - (northRotation === Direction.West ? offsetX : 0))) - (width / 2),
+            y: (y - (offsetY - (northRotation === Direction.West ? offsetY : 0))),
+          }
+      }
+    }
+    else {
+      switch (direction) {
+        case Direction.North:
+          return {
+            x: (x - offsetX),
+            y: (y - (height / 2)),
+          }
+        case Direction.East:
+          return {
+            x: (x - offsetX) + (width / 2),
+            y: (y - offsetY),
+          }
+        case Direction.South:
+          return {
+            x: (x - offsetX),
+            y: (y - offsetY) + (height / 2),
+          }
+        case Direction.West:
+          return {
+            x: (x - offsetX) - (width / 2),
+            y: (y - offsetY),
+          }
+      }
     }
   }
 

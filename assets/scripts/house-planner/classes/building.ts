@@ -423,6 +423,23 @@ export abstract class Building {
       }
     }
 
+    // Special override for kilima courtyard
+    if (building.type === BuildingType.KilimaCourtyard) {
+      switch (this.type) {
+        case BuildingType.Hallway:
+        case BuildingType.BayWindow:
+        case BuildingType.KilimaDoor:
+        case BuildingType.KilimaPorch:
+        case BuildingType.KilimaCourtyard:
+          break
+        default:
+          return {
+            snapped: false,
+            side: null,
+          }
+      }
+    }
+
     for (const [side, isOpen] of Object.entries(building.openSlots)) {
       if (building.children[side as Direction] !== null)
         continue
@@ -605,6 +622,7 @@ function getBuildingOrder(type: BuildingType) {
       order = 20
       break
     case BuildingType.SmallHouse:
+    case BuildingType.KilimaCourtyard:
       order = 30
       break
     case BuildingType.Fireplace:
