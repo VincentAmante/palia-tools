@@ -1,0 +1,21 @@
+<svg width="200" height="230" viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="86" y="197" width="28" height="32" fill="#D4C9B3" stroke="#8B8072" stroke-width="2"/>
+<rect x="95" y="222" width="10" height="7" fill="#D4C9B3" stroke="#8B8072" stroke-width="2"/>
+<mask id="path-3-inside-1_503_76" fill="white">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M200 0H0V200H200V0ZM160 40H40V160H160V40Z"/>
+</mask>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M200 0H0V200H200V0ZM160 40H40V160H160V40Z" fill="#D4C9B3"/>
+<path d="M0 0V-2H-2V0H0ZM200 0H202V-2H200V0ZM0 200H-2V202H0V200ZM200 200V202H202V200H200ZM40 40V38H38V40H40ZM160 40H162V38H160V40ZM40 160H38V162H40V160ZM160 160V162H162V160H160ZM0 2H200V-2H0V2ZM2 200V0H-2V200H2ZM200 198H0V202H200V198ZM198 0V200H202V0H198ZM40 42H160V38H40V42ZM42 160V40H38V160H42ZM160 158H40V162H160V158ZM158 40V160H162V40H158Z" fill="#8B8072" mask="url(#path-3-inside-1_503_76)"/>
+<line x1="8.74228e-08" y1="84" x2="40" y2="84" stroke="#8B8072" stroke-width="2"/>
+<line x1="8.74228e-08" y1="116" x2="40" y2="116" stroke="#8B8072" stroke-width="2"/>
+<line x1="160" y1="84" x2="200" y2="84" stroke="#8B8072" stroke-width="2"/>
+<line x1="160" y1="116" x2="200" y2="116" stroke="#8B8072" stroke-width="2"/>
+<line x1="84" y1="-4.37114e-08" x2="84" y2="38" stroke="#8B8072" stroke-width="2"/>
+<line x1="116" y1="-4.37114e-08" x2="116" y2="38" stroke="#8B8072" stroke-width="2"/>
+<line x1="84" y1="160" x2="84" y2="198" stroke="#8B8072" stroke-width="2"/>
+<line x1="116" y1="160" x2="116" y2="198" stroke="#8B8072" stroke-width="2"/>
+<line x1="1.93934" y1="197.939" x2="39.9393" y2="159.939" stroke="#8B8072" stroke-width="3"/>
+<line x1="159.939" y1="39.9393" x2="197.939" y2="1.93934" stroke="#8B8072" stroke-width="3"/>
+<line x1="160.061" y1="159.939" x2="198.061" y2="197.939" stroke="#8B8072" stroke-width="3"/>
+<line x1="2.06066" y1="1.93934" x2="40.0607" y2="39.9393" stroke="#8B8072" stroke-width="3"/>
+</svg>

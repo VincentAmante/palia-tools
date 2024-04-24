@@ -8,5 +8,6 @@ export enum BuildingType {
   KilimaPorch = 'KilimaPorch',
   KilimaDoor = 'KilimaDoor',
   BayWindow = 'BayWindow',
+  KilimaCourtyard = 'KilimaCourtyard',
   None = 'None',
 }
