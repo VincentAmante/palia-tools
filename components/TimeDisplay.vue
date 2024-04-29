@@ -20,17 +20,19 @@ const timeFormatted = ref(`${hourFormatted.value}:${minuteFormatted.value} ${mer
 
 const INTERVAL_MS = 1000
 
-setInterval(() => {
-  totalSeconds.value = (dayjs().utc().minute() * 60) + dayjs().utc().second()
-  hour.value = Math.floor(totalSeconds.value / SECONDS_PER_HOUR)
-  minute.value = Math.floor(((totalSeconds.value % SECONDS_PER_HOUR) / SECONDS_PER_HOUR) * 60)
+onMounted(() => {
+  setInterval(() => {
+    totalSeconds.value = (dayjs().utc().minute() * 60) + dayjs().utc().second()
+    hour.value = Math.floor(totalSeconds.value / SECONDS_PER_HOUR)
+    minute.value = Math.floor(((totalSeconds.value % SECONDS_PER_HOUR) / SECONDS_PER_HOUR) * 60)
 
-  hourFormatted.value = hour.value > 12 ? hour.value - 12 : (hour.value === 0 ? 12 : hour.value)
-  minuteFormatted.value = minute.value < 10 ? `0${minute.value}` : minute.value
-  meridiem.value = hour.value >= 12 ? 'PM' : 'AM'
+    hourFormatted.value = hour.value > 12 ? hour.value - 12 : (hour.value === 0 ? 12 : hour.value)
+    minuteFormatted.value = minute.value < 10 ? `0${minute.value}` : minute.value
+    meridiem.value = hour.value >= 12 ? 'PM' : 'AM'
 
-  timeFormatted.value = `${hourFormatted.value}:${minuteFormatted.value} ${meridiem.value}`
-}, INTERVAL_MS)
+    timeFormatted.value = `${hourFormatted.value}:${minuteFormatted.value} ${meridiem.value}`
+  }, INTERVAL_MS)
+})
 
 // const {
 //   show,
@@ -60,8 +62,8 @@ setInterval(() => {
 
 <template>
   <div class="gap-2 px-4">
-    <div class="flex flex-col items-center justify-center text-misc bg-accent rounded-md w-full px-3 py-2 md:py-0">
-      <p class="font-bold text-3xl">
+    <div class="flex flex-col items-center justify-center w-full px-3 py-2 rounded-md text-misc bg-accent md:py-0">
+      <p class="text-3xl font-bold">
         {{ timeFormatted }}
       </p>
       <p class="">
@@ -69,10 +71,10 @@ setInterval(() => {
       </p>
     </div>
     <!-- <div
-      class="flex tooltip tooltip-top text-misc bg-accent rounded-md items-center justify-between px-4 py-2 md:py-0"
+      class="flex items-center justify-between px-4 py-2 rounded-md tooltip tooltip-top text-misc bg-accent md:py-0"
     >
       <div
-        class="flex items-center gap-1  tooltip tooltip-top"
+        class="flex items-center gap-1 tooltip tooltip-top"
         data-tip="Experimental, may not work on all platforms"
       >
         <p>6 AM Alarm</p>
