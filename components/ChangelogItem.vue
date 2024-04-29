@@ -8,16 +8,16 @@ defineProps({
 </script>
 
 <template>
-  <articles class="collapse collapse-arrow max-w-3xl py-1 bg-palia-dark-blue text-accent rounded-md  border-[1px] border-opacity-50 border-accent">
+  <article class="collapse collapse-arrow max-w-3xl py-1 bg-palia-dark-blue text-accent rounded-md  border-[1px] border-opacity-50 border-accent">
     <input type="checkbox" name="changelog" :checked="checked">
-    <h2 class="collapse-title text-xl">
+    <h2 class="text-xl collapse-title">
       <slot name="title" required>
         Title missing
       </slot>
     </h2>
-    <div class="collapse-content flex flex-col gap-4 text-sm md:text-base leading-6">
-      <div class="p-4 px-6 bg-palia-blue rounded-lg grid gap-2">
-        <h3 class="font-bold text-lg">
+    <div class="flex flex-col gap-4 text-sm leading-6 collapse-content md:text-base">
+      <div class="grid gap-2 p-4 px-6 rounded-lg bg-palia-blue">
+        <h3 class="text-lg font-bold">
           Changes Summary
         </h3>
         <ul class="list-disc list-inside">
@@ -30,5 +30,5 @@ defineProps({
         <slot />
       </div>
     </div>
-  </articles>
+  </article>
 </template>
