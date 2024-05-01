@@ -11,6 +11,7 @@ import { CropType, Garden, crops } from '@/assets/scripts/garden-planner/imports
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/garden'
 import AppDividerAlt from '@/components/AppDividerAlt.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
+import { useUiSettings } from '~/stores/useUiSettings'
 
 const props = defineProps({
   layout: {
@@ -20,6 +21,7 @@ const props = defineProps({
 })
 
 const isTakingScreenshot = useTakingScreenshot()
+const uiSettings = useUiSettings()
 
 const gardenTilesAreWide = computed(() => {
   return props.layout.plots[0].length > 3
@@ -76,7 +78,7 @@ function setDisplayTab(tab: 'overview' | 'day') {
 }
 
 const activeOptionTab = ref('main')
-function setOptionTab(tab: 'main' | 'crop') {
+function setOptionTab(tab: 'main' | 'crop' | 'ui') {
   activeOptionTab.value = tab
 }
 
@@ -295,6 +297,13 @@ watchEffect(() => {
             @click="setOptionTab('crop')"
           >
             Crop
+          </div>
+          <div
+            class="normal-case rounded-md tab btn btn-sm"
+            :class="activeOptionTab === 'ui' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
+            @click="setOptionTab('ui')"
+          >
+            UI
           </div>
         </div>
         <!-- box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset; -->
@@ -521,6 +530,18 @@ watchEffect(() => {
                 </div>
               </template>
             </div>
+          </div>
+          <div v-if="activeOptionTab === 'ui'" class="grid gap-1 pb-2">
+            <OptionCard label="toggle bonus icon" name="Toggle Bonus Icon">
+              <template #input>
+                <input v-model="uiSettings.showBonusIcons" class="rounded-md toggle" type="checkbox">
+              </template>
+              <template #labels>
+                <p>
+                  Show the received bonuses on the crop tiles
+                </p>
+              </template>
+            </OptionCard>
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import type { PropType } from 'vue'
 import { Bonus, Crop, Fertiliser, Tile, getCodeFromCrop } from '@/assets/scripts/garden-planner/imports'
 
 import { useSelectedItem } from '@/stores/useSelectedItem'
+import { useUiSettings } from '@/stores/useUiSettings'
 
 const props = defineProps({
   tile: Tile,
@@ -25,6 +26,9 @@ const props = defineProps({
     default: 0,
   },
 })
+
+const uiSetting = useUiSettings()
+
 const selectedItem = useSelectedItem()
 const code = computed(() => {
   if (props.tile?.crop === null)
@@ -119,7 +123,7 @@ const border = computed(() => {
     ]"
   >
     <div class="absolute w-full h-full bg-opacity-20 -z-10" :class="bgColour" />
-    <div class="lg:text-3xl font-bold uppercase select-none">
+    <div class="font-bold uppercase select-none lg:text-3xl">
       <nuxt-img
         v-if="(selectedItem.val instanceof Crop && tile?.isHovered)"
         format="webp"
@@ -138,7 +142,10 @@ const border = computed(() => {
         {{ code as string || ' ' }}
       </div>
     </div>
-    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] xl:py-[1px] flex w-full gap-[0.6px] xl:gap-[1.3px] justify-center ">
+    <ul
+      v-if="uiSetting.showBonusIcons"
+      class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] xl:py-[1px] flex w-full gap-[0.6px] xl:gap-[1.3px] justify-center "
+    >
       <li v-show="bonuses?.includes(Bonus.SpeedIncrease)">
         <font-awesome-icon class="text-growth-boost" :icon="['fas', 'forward-fast']" />
       </li>
@@ -172,7 +179,7 @@ const border = computed(() => {
       />
     </div>
     <div
-      class=" transition-all w-full absolute h-full -z-20"
+      class="absolute w-full h-full transition-all -z-20"
       :class="bonusBgColor"
     />
   </div>
