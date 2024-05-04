@@ -34,6 +34,37 @@ useHead({
       <div class="grid gap-2">
         <ChangelogItem checked>
           <template #title>
+            May 04, 2024 — Added Ko-fi Link
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">New Ko-Fi Link —</span> Added way to send tips
+            </li>
+          </template>
+          <template #default>
+            <p>
+              Hi folks! The Garden Planner now has a Ko-fi link for those who wish to send tips.
+              I've had a few requests for this, but I wanted to hold off till I had something more substantial to show
+              for it.
+            </p>
+            <p>
+              However, Garden Planner traffic has been increasing (woohoo!!). I'll soon no longer be able to host the server
+              for free though, so I've decided to add the Ko-fi link now to help me cover the costs.
+              Development continues when I can. I've got new plans for the crafters and how they'll fit in the planner that I hope
+              will finally allow me to release them.
+            </p>
+            <p>
+              Regardless, thank you guys so much for your continued support and use of the planner. I'm glad to see it's
+              been useful to so many of you and I'm proud it's come to a point I have to consider server costs (though stressful).
+              I intend on maintaining the planner for as long as I can, and I hope to continue to improve it.
+            </p>
+            <p>
+              Have a great life everyone! Happy planning!
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem checked>
+          <template #title>
             April 24, 2024 — Courtyard Patch and House Planner Halt
           </template>
           <template #summary>

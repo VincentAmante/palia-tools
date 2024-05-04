@@ -5,6 +5,7 @@ import {
   faArrowLeft,
   faArrowUpRightFromSquare,
   faBars,
+  faBookOpen,
   faCaretDown,
   faChevronLeft,
   faChevronRight,
@@ -85,6 +86,7 @@ library.add(
   faRotateRight,
   faRotateLeft,
   faPeopleGroup,
+  faBookOpen,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS
