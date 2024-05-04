@@ -1,20 +1,22 @@
 <template>
-  <div class="px-2 lg:px-12 flex flex-col gap-2 items-center text-center">
-    <div class="bg-misc-secondary rounded-lg max-w-[1680px] p-4 md:p-2 h-fit flex flex-col md:flex-row items-center justify-center gap-2 w-full">
-      <p class="font-semibold">
-        <font-awesome-icon :icon="['fas', 'question-circle']" class="text-sm" />
-        New to Gardening?
+  <div class="grid md:grid-cols-3 items-center gap-2 px-2 text-center lg:px-12 max-w-[1680px]">
+    <NuxtLink to="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/" target="_blank"
+      class="flex items-center justify-center w-full gap-1 p-4 normal-case rounded-lg bg-opacity-70 bg-op md:col-span-2 md:p-2 h-fit btn bg-palia-dark-blue hover:border-none hover:bg-primary hover:text-palia-dark-blue">
+      <!-- <font-awesome-icon :icon="['fas', 'book-open']" class="mr-1 text-lg" /> -->
+
+      <font-awesome-icon :icon="['fas', 'book-open']" class="mr-1 text-lg" />
+      <p class="items-center gap-2 text-sm font-semibold break-words md:text-base md:flex">
+        Shepp Arenvanya's Guide to Gardening
+        <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="mr-1 text-xs opacity-50" />
       </p>
-      <p class="text-sm font-light">
-        Check out Shepp Arenvanya's guide to gardening in Palia!
+    </NuxtLink>
+    <NuxtLink to="https://ko-fi.com/aisencrown" target="_blank"
+      class="flex items-center justify-center w-full gap-1 p-4 normal-case rounded-lg bg-opacity-70 md:p-2 h-fit btn bg-palia-dark-blue hover:text-palia-dark-blue hover:border-none hover:bg-primary">
+      <nuxt-img src="/externals/kofi.webp" alt="Ko-fi Logo" width="28" class="mr-1" />
+      <p class="flex items-center gap-2 text-sm font-semibold md:text-base">
+        Feel like tipping?
+        <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="mr-1 text-xs opacity-50" />
       </p>
-      <NuxtLink
-        to="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/" target="_blank"
-        class="btn btn-misc w-fit btn-sm text-sm px-6 font-normal rounded-full"
-      >
-        <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="mr-1" />
-        <p>Go to Guide</p>
-      </NuxtLink>
-    </div>
+    </NuxtLink>
   </div>
 </template>
