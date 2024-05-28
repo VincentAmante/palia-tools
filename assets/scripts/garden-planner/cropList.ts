@@ -299,8 +299,8 @@ const BLUEBERRY = new Crop(
   },
   {
     cropCode: CropCode.Blueberry,
-    cropTooltip: 'Berry Bush: Speed Increase. 2x2, needs 2 of a bonus for the buff to activate',
-    cropBackgroundColor: 'bg-growth-boost',
+    cropTooltip: 'Berry Bush: Harvest Increase. 2x2, needs 2 of a bonus for the buff to activate',
+    cropBackgroundColor: 'bg-harvest-boost',
   },
 )
 
@@ -338,8 +338,8 @@ const APPLE = new Crop(
   },
   {
     cropCode: CropCode.Apple,
-    cropTooltip: 'Apple Tree: Speed Increase. 3x3, needs 3 of a bonus for the buff to activate',
-    cropBackgroundColor: 'bg-growth-boost',
+    cropTooltip: 'Apple Tree: Harvest Increase. 3x3, needs 3 of a bonus for the buff to activate',
+    cropBackgroundColor: 'bg-harvest-boost',
   },
 )
 
