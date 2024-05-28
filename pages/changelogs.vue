@@ -34,6 +34,17 @@ useHead({
       <div class="grid gap-2">
         <ChangelogItem checked>
           <template #title>
+            May 28, 2024 — 0.180 Patch Parity
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">Apple & Blueberries Boost Change —</span> Apples and Blueberries now give Harvest
+              Boost instead of Growth Boost
+            </li>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
+          <template #title>
             May 04, 2024 — Added Ko-fi Link
           </template>
           <template #summary>
@@ -48,14 +59,17 @@ useHead({
               for it.
             </p>
             <p>
-              However, Garden Planner traffic has been increasing (woohoo!!). I'll soon no longer be able to host the server
+              However, Garden Planner traffic has been increasing (woohoo!!). I'll soon no longer be able to host the
+              server
               for free though, so I've decided to add the Ko-fi link now to help me cover the costs.
-              Development continues when I can. I've got new plans for the crafters and how they'll fit in the planner that I hope
+              Development continues when I can. I've got new plans for the crafters and how they'll fit in the planner
+              that I hope
               will finally allow me to release them.
             </p>
             <p>
               Regardless, thank you guys so much for your continued support and use of the planner. I'm glad to see it's
-              been useful to so many of you and I'm proud it's come to a point I have to consider server costs (though stressful).
+              been useful to so many of you and I'm proud it's come to a point I have to consider server costs (though
+              stressful).
               I intend on maintaining the planner for as long as I can, and I hope to continue to improve it.
             </p>
             <p>
@@ -63,7 +77,7 @@ useHead({
             </p>
           </template>
         </ChangelogItem>
-        <ChangelogItem checked>
+        <ChangelogItem>
           <template #title>
             April 24, 2024 — Courtyard Patch and House Planner Halt
           </template>
@@ -75,14 +89,16 @@ useHead({
               <span class="italic">House Planner development now indefinitely halted —</span> Please see the
               <NuxtLink class="link" to="/house-planner">
                 House Planner page
-              </NuxtLink>  for more information
+              </NuxtLink> for more information
             </li>
           </template>
           <template #default>
             <p>
               With the release of 0.179 comes the Courtyard building, a new housing add-on.
-              Thank you to <span class="italic">CauldronMorgana</span> for confirming certain details about the Courtyard,
-              as well as <span class="italic">TinyDragon</span> for the same reason as well as general housing information.
+              Thank you to <span class="italic">CauldronMorgana</span> for confirming certain details about the
+              Courtyard,
+              as well as <span class="italic">TinyDragon</span> for the same reason as well as general housing
+              information.
             </p>
             <p>
               As of this update, the House Planner development is indefinitely halted. I've evaluated that the prototype
@@ -91,7 +107,8 @@ useHead({
             </p>
             <p>
               I've detailed the reasons for the halt on the bottom of the House Planner page.
-              Overall, my prototype was just not feasible and I feel I do not have the time and resources to remake it in a way
+              Overall, my prototype was just not feasible and I feel I do not have the time and resources to remake it
+              in a way
               that fits my standards. For that, I've decided to halt development on the House Planner and simply
               maintain it for archival purposes.
             </p>
@@ -110,7 +127,8 @@ useHead({
             </li>
             <li class="ml-5">
               <span class="font-bold">NOTE:</span>
-              This change was not in the patch notes, so please be aware that it may be a bug and may be reverted upon confirmation.
+              This change was not in the patch notes, so please be aware that it may be a bug and may be reverted upon
+              confirmation.
             </li>
           </template>
         </ChangelogItem>

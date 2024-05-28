@@ -267,7 +267,7 @@ const COTTON = new Crop(
 
 const BLUEBERRY = new Crop(
   CropType.Blueberry,
-  Bonus.SpeedIncrease,
+  Bonus.HarvestIncrease,
   CropSize.Bush,
   '/crops/blueberry.webp',
   {
@@ -306,7 +306,7 @@ const BLUEBERRY = new Crop(
 
 const APPLE = new Crop(
   CropType.Apple,
-  Bonus.SpeedIncrease,
+  Bonus.HarvestIncrease,
   CropSize.Tree,
   '/crops/apple.webp',
   {
