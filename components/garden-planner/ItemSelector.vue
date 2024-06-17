@@ -124,7 +124,7 @@ const { pause: pauseRight, resume: resumeRight } = useIntervalFn(() => {
             </li>
           </ul>
         </div>
-        <div class="flex flex-wrap gap-1 p-1 rounded-md w-fit">
+        <div class="flex gap-1 p-1 rounded-md w-fit">
           <div class="hidden pb-1 sm:flex lg:items-center">
             <button
               id="crop-eraser" aria-label="Select Crop Eraser"
