@@ -64,29 +64,25 @@ const dragHandler = useDragAndDrop()
 </script>
 
 <template>
-  <div
+  <button
     v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)"
-    class="md:tooltip md:tooltip-top tooltip-info" :data-tip="tooltip"
+    draggable="true" class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc"
+    :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''" :name="`select ${crop.type}`"
+    @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)"
+    @dragend="(e: DragEvent) => dragHandler.stopDrag()"
   >
-    <button
-      draggable="true" class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc"
-      :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''" :name="`select ${crop.type}`"
-      @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)"
-      @dragend="(e: DragEvent) => dragHandler.stopDrag()"
-    >
-      <font-awesome-icon
-        v-if="bonus.icon !== ''" class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black"
-        :icon="['fas', bonus.icon]" :class="bonus.colour"
-      />
-      <p class="absolute bottom-0 right-0 py-[0.2rem] pr-[0.2rem] text-xs leading-none font-bold text-neutral-700">
-        {{ count }}
-      </p>
-      <nuxt-img
-        v-if="(crop && crop.image != null && crop.image !== '')" class="absolute -z-10 max-w-[34px] "
-        draggable="false" :src="crop.image" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
-        :alt="crop.type" :srcset="undefined" placeholder
-      />
-      <font-awesome-icon v-else class="absolute -z-10 max-w-[45px] text-warning text-3xl " :icon="['fas', 'eraser']" />
-    </button>
-  </div>
+    <font-awesome-icon
+      v-if="bonus.icon !== ''" class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black"
+      :icon="['fas', bonus.icon]" :class="bonus.colour"
+    />
+    <p class="absolute bottom-0 right-0 py-[0.2rem] pr-[0.2rem] text-xs leading-none font-bold text-neutral-700">
+      {{ count }}
+    </p>
+    <nuxt-img
+      v-if="(crop && crop.image != null && crop.image !== '')" class="absolute -z-10 max-w-[34px] "
+      draggable="false" :src="crop.image" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
+      :alt="crop.type" :srcset="undefined" placeholder
+    />
+    <font-awesome-icon v-else class="absolute -z-10 max-w-[45px] text-warning text-3xl " :icon="['fas', 'eraser']" />
+  </button>
 </template>
