@@ -35,7 +35,7 @@ export {
   getFertiliserFromType,
   getCodeFromFertiliser,
   getFertiliserFromCode,
-  ICalculateValueResult,
-  ISimulateYieldResult,
+  type ICalculateValueResult,
+  type ISimulateYieldResult,
 }
 export type { PlotStat }
