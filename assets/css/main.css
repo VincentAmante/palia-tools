@@ -29,6 +29,18 @@
   .scrollbar-primary::-webkit-scrollbar-track {
     @apply bg-accent rounded-md;
   }
+
+  .scrollbar-primary-horizontal::-webkit-scrollbar {
+    @apply w-1 lg:w-0 h-1 lg:h-[2px] rounded-md;
+  }
+
+  .scrollbar-primary-horizontal::-webkit-scrollbar-thumb {
+    @apply bg-palia-blue rounded-md;
+  }
+
+  .scrollbar-primary-horizontal::-webkit-scrollbar-track {
+    @apply bg-accent rounded-md h-1;
+  }
 }
 
 /* 

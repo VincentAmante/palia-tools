@@ -20,6 +20,7 @@ import {
   faHeart,
   faInfoCircle,
   faJar,
+  faList,
   faMap,
   faPaste,
   faPeopleGroup,
@@ -87,6 +88,7 @@ library.add(
   faRotateLeft,
   faPeopleGroup,
   faBookOpen,
+  faList,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS
