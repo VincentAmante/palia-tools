@@ -19,6 +19,7 @@ const props = defineProps({
   isAlt: {
     type: Boolean,
     default: false,
+    required: false,
   },
   index: {
     type: Number,
@@ -119,7 +120,7 @@ const border = computed(() => {
     ]"
   >
     <div class="absolute w-full h-full bg-opacity-20 -z-10" :class="bgColour" />
-    <div class="lg:text-3xl font-bold uppercase select-none">
+    <div class="font-bold uppercase select-none lg:text-3xl">
       <nuxt-img
         v-if="(selectedItem.val instanceof Crop && tile?.isHovered)"
         format="webp"
@@ -172,7 +173,7 @@ const border = computed(() => {
       />
     </div>
     <div
-      class=" transition-all w-full absolute h-full -z-20"
+      class="absolute w-full h-full transition-all  -z-20"
       :class="bonusBgColor"
     />
   </div>

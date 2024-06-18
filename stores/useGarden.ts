@@ -1,20 +1,33 @@
 import { defineStore } from 'pinia'
 import type { PlotStat } from '~/assets/scripts/garden-planner/imports'
-import { Garden } from '~/assets/scripts/garden-planner/imports'
+import { Bonus, Garden } from '~/assets/scripts/garden-planner/imports'
 
 const useGarden = defineStore('garden', () => {
-  const garden = new Garden()
+  const gardenRef = ref(new Garden())
+  const hoveredBonus = ref(Bonus.None)
 
   function update() {
-    garden.calculateBonuses()
+    gardenRef.value.calculateBonuses()
   }
 
-  const plotStat = computed(() => ({ ...garden.calculateStats() } as PlotStat))
+  function setHoveredBonus(bonus: Bonus) {
+    hoveredBonus.value = bonus
+  }
+  const getHoveredBonus = computed(() => hoveredBonus.value)
+
+  const plotStat = computed(() => gardenRef.value.calculateStats() as PlotStat)
+
+  const isGardenWide = computed(() => gardenRef.value.plots[0].length > 3)
+
+  const garden = computed(() => gardenRef.value)
 
   return {
     garden,
     update,
     plotStat,
+    isGardenWide,
+    setHoveredBonus,
+    getHoveredBonus,
   }
 })
 

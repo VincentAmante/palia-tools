@@ -41,6 +41,18 @@
   .scrollbar-primary-horizontal::-webkit-scrollbar-track {
     @apply bg-accent rounded-md h-1;
   }
+
+  .scrollbar-invisible-horizontal::-webkit-scrollbar {
+    @apply w-0 h-1 lg:h-[2px] rounded-md;
+  }
+
+  .scrollbar-invisible-horizontal::-webkit-scrollbar-thumb {
+    @apply bg-transparent rounded-md;
+  }
+
+  .scrollbar-invisible-horizontal::-webkit-scrollbar-track {
+    @apply bg-transparent rounded-md h-1;
+  }
 }
 
 /* 
