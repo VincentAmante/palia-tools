@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { SelectedItem } from '~/stores/useSelectedItem'
 import { SelectedItemType, getSelectedItemType } from '~/stores/useSelectedItem'
-import { Bonus, Crop } from '~/assets/scripts/garden-planner/imports'
+import { Bonus, Crop, getCodeFromCrop, getCodeFromFertiliser } from '~/assets/scripts/garden-planner/imports'
 import type { Fertiliser } from '~/assets/scripts/garden-planner/imports'
 import CropSize from '~/assets/scripts/garden-planner/enums/crop-size'
+import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 
 const props = defineProps<{
   hoveredItem: SelectedItem | null
@@ -115,19 +116,43 @@ const sizeText = computed(() => {
     bonusInfo: '',
   }
 })
+
+// if the item is a crop or fertiliser, show the associated cropCode or fertiliserCode
+const code = computed(() => {
+  if (props.hoveredItem === null)
+    return ''
+
+  switch (getSelectedItemType(props.hoveredItem)) {
+    case (SelectedItemType.Crop):
+      return getCodeFromCrop(props.hoveredItem as Crop)
+    case (SelectedItemType.Fertiliser):
+      return getCodeFromFertiliser(props.hoveredItem as Fertiliser)
+    default:
+      return ''
+  }
+})
+
+const isTakingScreenshot = useTakingScreenshot()
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-1 text-palia-dark-blue">
-    <p
+  <p
+    v-if="!isTakingScreenshot.get"
+    class="gap-1 text-palia-dark-blue"
+  >
+    <span
       v-if="title !== 'Remove crop from tile(s)' && title !== 'Remove fertiliser from tile(s)'"
       class="font-semibold capitalize text-palia-blue"
     >
       {{ title }}
-    </p>
-    <p v-else class="font-semibold text-palia-blue">
+
+      <span v-if="code !== ''" class="hidden sm:inline-block">
+        [{{ code }}]
+      </span>
+    </span>
+    <span v-else class="font-semibold text-palia-blue">
       {{ title }}
-    </p>
+    </span>
     <template v-if="bonus.icon !== ''">
       -
       Grants
@@ -142,9 +167,9 @@ const sizeText = computed(() => {
       </span>
     </template>
     <template v-if="sizeText.sizeText">
-      <p>
+      <span>
         <span class="font-bold">{{ sizeText.sizeText }}</span>, {{ sizeText.bonusInfo }}.
-      </p>
+      </span>
     </template>
-  </div>
+  </p>
 </template>
