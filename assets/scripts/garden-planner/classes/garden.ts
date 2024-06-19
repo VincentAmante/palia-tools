@@ -11,6 +11,7 @@ import FertiliserCode from '../enums/fertilisercode'
 import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliserList'
 import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo, ISimulateYieldResult } from '../utils/garden-helpers'
 import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
+import CropTiles from './cropTiles'
 
 import Plot from './plot'
 import Tile from './tile'
@@ -19,6 +20,7 @@ import type Crop from './crop'
 class Garden {
   private _layout: Plot[][] = []
   private _version: string = '0.2'
+  private _cropTiles = new CropTiles()
 
   constructor() {
     const defaultRows = 3
@@ -161,6 +163,10 @@ class Garden {
     return layoutCode
   }
 
+  updateTiles(): void {
+    this._cropTiles.updateTiles(this._layout)
+  }
+
   // Assign bonuses to a crop based on type and bonuses received
   calculateBonuses(): void {
     const treeTiles: {
@@ -190,57 +196,60 @@ class Garden {
         if (!tile.crop || tile.crop.type === CropType.None)
           continue
 
-        if (tile.crop?.size === CropSize.Tree) {
-          (treeTiles[tile.id] = treeTiles[tile.id] || []).push(tile)
-          if (treeTiles[tile.id].length === 9) {
-            const bonusesReceived = treeTiles[tile.id].flatMap(tile => tile.bonusesReceived)
-            const bonusCounts = bonusesReceived.reduce((acc, bonus) => {
-              if (bonus in acc)
-                acc[bonus]++
-              else
-                acc[bonus] = 1
+        switch (tile.crop?.size) {
+          case CropSize.Tree:
+            (treeTiles[tile.id] = treeTiles[tile.id] || []).push(tile)
+            if (treeTiles[tile.id].length === 9) {
+              const bonusesReceived = treeTiles[tile.id].flatMap(tile => tile.bonusesReceived)
+              const bonusCounts = bonusesReceived.reduce((acc, bonus) => {
+                if (bonus in acc)
+                  acc[bonus]++
+                else
+                  acc[bonus] = 1
 
-              return acc
-            }, {} as Record<string, number>)
+                return acc
+              }, {} as Record<string, number>)
 
-            for (const bonus in bonusCounts) {
-              if (bonusCounts[bonus] >= 3) {
-                for (const appleTile of treeTiles[tile.id])
-                  appleTile.bonuses.push(bonus as Bonus)
+              for (const bonus in bonusCounts) {
+                if (bonusCounts[bonus] >= 3) {
+                  for (const appleTile of treeTiles[tile.id])
+                    appleTile.bonuses.push(bonus as Bonus)
+                }
               }
             }
-          }
-        }
-        else if (tile.crop?.size === CropSize.Bush) {
-          if (tile.id in bushTiles)
-            bushTiles[tile.id].push(tile)
-          else
-            bushTiles[tile.id] = [tile]
+            break
+          case CropSize.Bush:
+            if (tile.id in bushTiles)
+              bushTiles[tile.id].push(tile)
+            else
+              bushTiles[tile.id] = [tile]
 
-          if (bushTiles[tile.id].length === 4) {
-            const bonusesReceived = bushTiles[tile.id].flatMap(tile => tile.bonusesReceived)
-            const bonusCounts = bonusesReceived.reduce((acc, bonus) => {
-              if (bonus in acc)
-                acc[bonus]++
-              else
-                acc[bonus] = 1
+            if (bushTiles[tile.id].length === 4) {
+              const bonusesReceived = bushTiles[tile.id].flatMap(tile => tile.bonusesReceived)
+              const bonusCounts = bonusesReceived.reduce((acc, bonus) => {
+                if (bonus in acc)
+                  acc[bonus]++
+                else
+                  acc[bonus] = 1
 
-              return acc
-            }, {} as Record<string, number>)
+                return acc
+              }, {} as Record<string, number>)
 
-            for (const bonus in bonusCounts) {
-              if (bonusCounts[bonus] >= 2) {
-                for (const blueberryTile of bushTiles[tile.id])
-                  blueberryTile.bonuses.push(bonus as Bonus)
+              for (const bonus in bonusCounts) {
+                if (bonusCounts[bonus] >= 2) {
+                  for (const blueberryTile of bushTiles[tile.id])
+                    blueberryTile.bonuses.push(bonus as Bonus)
+                }
               }
             }
-          }
-        }
-        else {
-          tile.bonuses = tile.bonusesReceived
+            break
+          default:
+            tile.bonuses = tile.bonusesReceived
         }
       }
     }
+
+    this.updateTiles()
   }
 
   /**
@@ -249,10 +258,7 @@ class Garden {
    * @returns
    */
   simulateYield(options: ICalculateYieldOptions) {
-    // console.time('Simulate yield')
-    const layoutFlat = this._layout.flat()
-    // Gets a list of all tiles, and excludes tiles that contain duplicates (i.e. 9 apples tiles should only return 1 tile)
-    const individualCrops = new Map<string, Tile>()
+    const individualCrops = this._cropTiles.individualCrops
 
     const seedsRemainder: {
       [key in CropType]: {
@@ -260,16 +266,6 @@ class Garden {
         star: number
       }
     } = getCropMap()
-
-    layoutFlat.forEach((plot) => {
-      if (!plot.isActive)
-        return
-
-      plot.tiles.flat().forEach((tile) => {
-        if (tile.crop && tile.crop.type !== CropType.None)
-          individualCrops.set(tile.id, tile)
-      })
-    })
 
     if (individualCrops.size <= 0) {
       return {
@@ -339,26 +335,10 @@ class Garden {
 
         const baseStarChance = 0.25 + (options.allStarSeeds ? 0.25 : 0) + (options.level * 0.02)
 
-        /*
-        const baseStarChance
-          = (tile.hasStarSeed || options.allStarSeeds) && (options.postLevel25 || options.level >= 25)
-            ? 1
-            : tile.hasStarSeed || options.allStarSeeds
-              ? options.starChanceOverride ?? 0.66
-              : options.baseChanceOverride ?? 0
-              */
-
         const { base, withBonus } = crop.produceInfo
         const { isHarvestable, doReplant } = crop.isHarvestableOnDay(day, hasGrowthBoost)
 
         if (isHarvestable) {
-          /* let finalStarChance = baseStarChance
-          if (tile.bonuses.includes(Bonus.QualityIncrease)) {
-            // TODO: Verify this is correct
-            finalStarChance += 0.66
-            finalStarChance = Math.min(finalStarChance, 1)
-          } */
-
           const finalStarChance = Math.min(1, baseStarChance + (tile.bonuses.includes(Bonus.QualityIncrease) ? 0.5 : 0))
 
           const hasBonus = tile.bonuses.includes(Bonus.HarvestIncrease)
@@ -600,53 +580,11 @@ class Garden {
    * @returns data about the garden, particularly crop count, fertiliser count, and bonus coverage
    */
   calculateStats() {
-    // Individual crops accounts for crops that are planted on multiple tiles
-    // e.g: 9 apple tiles will only count as 1 apple tree
-    const individualCrops = new Map<string, Tile>()
-
-    const fertiliserCount: Record<string, number> = Object.fromEntries(
-      Object.values(FertiliserType).map(fertiliserType => [fertiliserType, 0]),
-    )
-
-    for (const plot of this._layout.flat()) {
-      if (!plot.isActive)
-        continue
-
-      for (const tile of plot.tiles.flat()) {
-        // Calculated early because fertilisers can be placed on empty crops
-        // and also is not affected by crop type (e.g: trees consume 4 fertilisers)
-        if (tile.fertiliser && tile.fertiliser.type !== FertiliserType.None)
-          fertiliserCount[tile.fertiliser.type]++
-
-        if (tile.crop && tile.crop.type !== CropType.None)
-          individualCrops.set(tile.id, tile)
-      }
-    }
-
-    const bonusCoverage: Record<string, number> = Object.fromEntries(
-      Object.values(Bonus).map(bonus => [bonus, 0]),
-    )
-
-    for (const crop of individualCrops.values()) {
-      for (const bonus of crop.bonuses) {
-        if (bonus !== Bonus.None)
-          bonusCoverage[bonus]++
-      }
-    }
-
-    const cropTypeCount: Record<string, number> = Object.fromEntries(
-      Object.values(CropType).map(cropType => [cropType, 0]),
-    )
-    for (const crop of individualCrops.values()) {
-      if (crop.crop && crop.crop.type !== CropType.None)
-        cropTypeCount[crop.crop.type as CropType]++
-    }
-
     return {
-      cropCount: individualCrops.size,
-      cropTypeCount,
-      cropBonusCoverage: bonusCoverage,
-      fertiliserCount,
+      cropCount: this._cropTiles.cropCount,
+      cropTypeCount: this._cropTiles.cropTypeCount,
+      cropBonusCoverage: this._cropTiles.bonusCoverage,
+      fertiliserCount: this._cropTiles.fertiliserCount,
     } as PlotStat
   }
 }
