@@ -138,7 +138,7 @@ const isTakingScreenshot = useTakingScreenshot()
 <template>
   <p
     v-if="!isTakingScreenshot.get"
-    class="gap-1 text-palia-dark-blue"
+    class="gap-1 text-palia-dark-blue min-h-12 xs:min-h-8 md:min-h-4"
   >
     <span
       v-if="title !== 'Remove crop from tile(s)' && title !== 'Remove fertiliser from tile(s)'"

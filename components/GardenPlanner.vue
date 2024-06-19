@@ -3,13 +3,9 @@ import NewGardenDisplay from './garden-planner/NewGardenDisplay.vue'
 import NewStatsDisplay from './garden-planner/NewStatsDisplay.vue'
 import ItemSelector from '~/components/garden-planner/ItemSelector/ItemSelector.vue'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
-import useGarden from '~/stores/useGarden'
 
 const display = ref<HTMLElement | null>(null)
 const isTakingScreenshot = useTakingScreenshot()
-
-const gardenHandler = useGarden()
-const { getHoveredBonus, isGardenWide } = gardenHandler
 </script>
 
 <template>
@@ -24,12 +20,7 @@ const { getHoveredBonus, isGardenWide } = gardenHandler
         :class="[isTakingScreenshot.get ? 'col-span-7' : '']"
       />
       <NewGardenDisplay />
-      <NewStatsDisplay
-        v-model:hovered-bonus="getHoveredBonus"
-        class="pt-2 pb-2 w-fit "
-        :garden-tiles-are-wide="isGardenWide"
-        :plot-stat-total="gardenHandler.plotStat"
-      />
+      <NewStatsDisplay class="pt-2 pb-2 w-fit" />
     </div>
   </section>
 </template>

@@ -146,7 +146,7 @@ function onDragEnter(row: number, col: number, plot: Plot) {
       :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'"
       @contextmenu.prevent.self=""
     >
-      <div ref="plotsDisplay" class="grid w-full gap-2 overflow-auto">
+      <div ref="plotsDisplay" class="grid w-full gap-2 pr-12 overflow-auto sm:pr-0">
         <div v-for="(plotRow, plotRowIndex) in garden.plots" :key="plotRowIndex" class="flex gap-2 plotRow">
           <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="relative flex flex-col gap-0 plot">
             <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="flex gap-0 plotTileRow cols-3">

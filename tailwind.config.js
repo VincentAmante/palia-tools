@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -28,6 +30,10 @@ module.exports = {
       },
       'water-retain': '#73ABBD',
       'white': '#FFF',
+    },
+    screens: {
+      xs: '475px',
+      ...defaultTheme.screens,
     },
     extend: {
       fontFamily: {
