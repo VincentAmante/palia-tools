@@ -121,7 +121,7 @@ export interface ICropInfo {
   isStar: boolean
 }
 
-export interface ISeedRemainder {
+export interface ISeedTracker {
   count: number
 }
 
@@ -129,7 +129,7 @@ export interface ISeedRemainder {
 export interface IDayHarvest {
   day: number
   crops: Map<ICropName, ICropYield & ICropInfo>
-  seedRemainder: Map<ICropName, ISeedRemainder>
+  seedsRequired: Map<ICropName, ISeedTracker>
 }
 
 export type DayHarvests = Map<number, IDayHarvest>
@@ -140,7 +140,7 @@ export interface IDayHarvests {
 export interface ITotalHarvest {
   lastHarvestDay: number
   crops: Map<ICropName, ICropYield & ICropInfo>
-  seedRemainder: Map<ICropName, ISeedRemainder>
+  seedsRemainder: Map<ICropName, ISeedTracker>
 }
 
 export type TCropTiles = Map<string, Tile>

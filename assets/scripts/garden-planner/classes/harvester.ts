@@ -1,6 +1,6 @@
 import { Bonus, CropType } from '../imports'
 
-import type { DayHarvests, ICropYield, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
+import type { DayHarvests, ICropName, ICropYield, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
 
 export interface IHarvesterOptions {
   days: number | 'L' | 'M'
@@ -55,7 +55,7 @@ export default class Harvester {
   private _totalHarvest: ITotalHarvest = {
     lastHarvestDay: 0,
     crops: new Map(),
-    seedRemainder: new Map(),
+    seedsRemainder: new Map(),
   }
 
   private _lastUsedOptions: IHarvesterOptions | null = null
@@ -77,7 +77,7 @@ export default class Harvester {
     this._totalHarvest = {
       lastHarvestDay: 0,
       crops: new Map(),
-      seedRemainder: new Map(),
+      seedsRemainder: new Map(),
     }
     this._tileCache.clear()
   }
@@ -104,9 +104,12 @@ export default class Harvester {
     if (tiles.size === 0)
       return
 
+    console.time('simulateYield')
+
     const areOptionsEqual = this.areOptionsEqual(options)
     const useGrowthBoost = options.useGrowthBoost
     let dayOfLastHarvest = 0
+    this._tileCache.clear()
 
     switch (options.days) {
       case 'L':
@@ -139,45 +142,99 @@ export default class Harvester {
       const finalStarChance = Math.min(1, baseStarChance + (tile.bonuses.includes(Bonus.QualityIncrease) ? 0.5 : 0))
       const hasHarvestBoost = tile.bonuses.includes(Bonus.HarvestIncrease)
 
-      const cropId = `${crop.type}-${options.useStarSeeds ? 'Star' : 'Base'}`
-      const cacheId = `${cropId}-[${id}]`
+      const baseStarCrops = Math.floor(base * finalStarChance)
+      const baseBaseCrops = base - baseStarCrops
 
-      const cropYield = hasHarvestBoost ? base + extra : base
-      const starCrops = Math.floor(cropYield * finalStarChance)
-      const baseCrops = cropYield - starCrops
+      const extraStarCrops = (hasHarvestBoost) ? Math.floor(extra * finalStarChance) : 0
+      const extraBaseCrops = (hasHarvestBoost) ? extra - extraStarCrops : 0
 
-      this._tileCache.set(cacheId, {
-        base: baseCrops * group.count,
-        extra: starCrops * group.count,
-        total: cropYield * group.count,
-      })
+      const totalStarCrops = baseStarCrops + extraStarCrops
+      const totalBaseCrops = baseBaseCrops + extraBaseCrops
+
+      // no more cache, just store it here
+      const starCrop = {
+        base: baseStarCrops * group.count,
+        extra: extraStarCrops * group.count,
+        total: totalStarCrops * group.count,
+      }
+      const baseCrop = {
+        base: baseBaseCrops * group.count,
+        extra: extraBaseCrops * group.count,
+        total: totalBaseCrops * group.count,
+      }
 
       const lastDayOfCycle = group.harvestableDays[group.harvestableDays.length - 1]
       if (lastDayOfCycle === undefined)
         continue
 
-      const cycles = Math.ceil(dayOfLastHarvest / lastDayOfCycle)
+      const cycles = Math.floor(dayOfLastHarvest / lastDayOfCycle)
       const cycleRemainder = dayOfLastHarvest % lastDayOfCycle
+
+      const seedsRequiredId = `${crop.type}-${options.useStarSeeds ? 'Star' : 'Base'}` as ICropName
 
       for (let cycle = 1; cycle <= cycles; cycle++) {
         group.harvestableDays.forEach((day) => {
           const dayInCycle = day * cycle
-          const harvestDay = dayHarvests.get(dayInCycle) ?? { day: dayInCycle, crops: new Map(), seedRemainder: new Map() }
-          const cropYield = this._tileCache.get(cacheId)
+          const harvestDay = dayHarvests.get(dayInCycle) ?? { day: dayInCycle, crops: new Map(), seedsRequired: new Map() }
 
-          harvestDay.crops.set(cropId, {
-            ...cropYield,
+          harvestDay.crops.set(`${crop.type}-Base`, {
+            ...baseCrop,
             cropType: crop.type,
             isStar: options.useStarSeeds,
           })
 
-          if (cropYield === undefined)
-            return
+          harvestDay.crops.set(`${crop.type}-Star`, {
+            ...starCrop,
+            cropType: crop.type,
+            isStar: options.useStarSeeds,
+          })
+
+          // apply seeds required only on last day of cycle
+          if (dayInCycle % lastDayOfCycle === 0) {
+            harvestDay.seedsRequired.set(seedsRequiredId, {
+              count: group.count,
+            })
+          }
 
           dayHarvests.set(dayInCycle, harvestDay)
         })
       }
+
+      // Add the remainder of the last cycle
+      if (cycleRemainder > 0) { 
+        for (const day of group.harvestableDays) {
+          const dayInCycle = lastDayOfCycle * cycles + day
+          if (dayInCycle > dayOfLastHarvest)
+            break
+
+          const harvestDay = dayHarvests.get(dayInCycle) ?? { day: dayInCycle, crops: new Map(), seedsRequired: new Map() }
+
+          harvestDay.crops.set(`${crop.type}-Base`, {
+            ...baseCrop,
+            cropType: crop.type,
+            isStar: options.useStarSeeds,
+          })
+
+          harvestDay.crops.set(`${crop.type}-Star`, {
+            ...starCrop,
+            cropType: crop.type,
+            isStar: options.useStarSeeds,
+          })
+
+          if (dayInCycle % lastDayOfCycle === 0) {
+            harvestDay.seedsRequired.set(seedsRequiredId, {
+              count: group.count,
+            })
+          }
+
+          dayHarvests.set(dayInCycle, harvestDay)
+        }
+      }
     }
+
+    console.timeEnd('simulateYield')
+
+    console.log(dayHarvests)
   }
 }
 

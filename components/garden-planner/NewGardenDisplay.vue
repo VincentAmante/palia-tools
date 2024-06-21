@@ -4,6 +4,7 @@ import useGarden from '~/stores/useGarden'
 import type { Crop, Fertiliser, Plot, Tile } from '~/assets/scripts/garden-planner/imports'
 import { SelectedItemType, useSelectedItem } from '~/stores/useSelectedItem'
 import { useDragAndDrop } from '~/stores/useDragAndDrop'
+import Harvester from '~/assets/scripts/garden-planner/classes/harvester'
 
 const isTakingScreenshot = useTakingScreenshot()
 const gardenHandler = useGarden()
@@ -41,10 +42,25 @@ function selectTile(event: MouseEvent, row: number, col: number, plot: Plot) {
       plot.addFertiliserToTile(row, col, selectedItem.val as Fertiliser, {
         removeSameId: true,
       })
+      break
   }
 
   update()
 }
+
+const harvester = computed(() => {
+  gardenHandler.garden.testHarvesterYield(new Harvester(), {
+    days: 180,
+    level: 25,
+    useGrowthBoost: true,
+    useStarSeeds: true,
+    includeReplant: true,
+    includeReplantCost: true,
+  })
+
+  console.log('harvested')
+  return 'Harvested'
+})
 
 function onMouseLeave() {
   resetHover()
@@ -143,10 +159,10 @@ function onDragEnter(row: number, col: number, plot: Plot) {
     class="flex flex-col items-center h-full"
     :class="[((isTakingScreenshot.get && isGardenWide) || isTakingScreenshot.get) ? 'max-w-[1680px]' : 'max-w-[100vw]']"
   >
+    {{ harvester }}
     <div
       class="px-3 my-4 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
-      :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'"
-      @contextmenu.prevent.self=""
+      :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'" @contextmenu.prevent.self=""
     >
       <div ref="plotsDisplay" class="grid w-full gap-2 pr-12 overflow-auto sm:pr-0">
         <div v-for="(plotRow, plotRowIndex) in garden.plots" :key="plotRowIndex" class="flex gap-2 plotRow">
@@ -154,15 +170,12 @@ function onDragEnter(row: number, col: number, plot: Plot) {
             <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="flex gap-0 plotTileRow cols-3">
               <div v-for="(tile, index) in row" :key="index" class="plotTile">
                 <CropTile
-                  :tile="tile as Tile"
-                  :is-disabled="!plot.isActive"
-                  :bonus-hovered="useGarden().getHoveredBonus"
-                  :index="(1 + rowIndex) + (index + (rowIndex * 2))"
+                  :tile="tile as Tile" :is-disabled="!plot.isActive"
+                  :bonus-hovered="useGarden().getHoveredBonus" :index="(1 + rowIndex) + (index + (rowIndex * 2))"
                   @mousedown.middle.prevent.stop
                   @click.left="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
                   @click.right="(() => handleRightClick(rowIndex, index, plot as Plot))"
-                  @mouseover="onHover(rowIndex, index, plot as Plot)"
-                  @mouseleave="onMouseLeave"
+                  @mouseover="onHover(rowIndex, index, plot as Plot)" @mouseleave="onMouseLeave"
                   @click.middle="(() => onMiddleClick(rowIndex, index, plot as Plot))"
                   @dragenter="(() => onDragEnter(rowIndex, index, plot as Plot))"
                 />
