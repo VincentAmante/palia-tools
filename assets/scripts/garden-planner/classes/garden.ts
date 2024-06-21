@@ -12,6 +12,8 @@ import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliserList'
 import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo, ISimulateYieldResult } from '../utils/garden-helpers'
 import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
 import CropTiles from './cropTiles'
+import type Harvester from './harvester'
+import { type IHarvesterOptions } from './harvester'
 
 import Plot from './plot'
 import Tile from './tile'
@@ -425,6 +427,10 @@ class Garden {
       harvests: IHarvestInfo[]
       harvestTotal: IHarvestInfo
     }
+  }
+
+  testHarvesterYield(harvester: Harvester, options: IHarvesterOptions) {
+    harvester.simulateYield(this._cropTiles.uniqueTiles, options)
   }
 
   /**

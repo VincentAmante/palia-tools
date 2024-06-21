@@ -167,7 +167,31 @@ class Crop {
     }
   }
 
-  // TODO: Re-do the growth boost logic
+  getHarvestableDays(hasGrowthBoost: boolean = false): number[] {
+    let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+
+    let newReharvestCooldown = reharvestCooldown
+
+    let leftover = 0
+    if (hasGrowthBoost) {
+      leftover = growthTime % 3
+      growthTime = Math.ceil((growthTime / 3) * 2)
+      newReharvestCooldown = Math.ceil((reharvestCooldown / 3) * 2)
+    }
+
+    const harvestableDays = []
+    harvestableDays.push(growthTime)
+    let lastHarvestDay = harvestableDays[harvestableDays.length - 1]
+
+    for (let i = 0; i < reharvestLimit; i++) {
+      harvestableDays.push(Math.max(lastHarvestDay + newReharvestCooldown - leftover, 1))
+      lastHarvestDay = harvestableDays[harvestableDays.length - 1]
+      leftover = harvestableDays[harvestableDays.length - 1] - lastHarvestDay
+    }
+
+    return harvestableDays
+  }
+
   getTotalGrowTime(hasGrowthBoost: boolean = false): number {
     let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
 

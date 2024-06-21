@@ -1,3 +1,4 @@
+import type Tile from '../classes/tile'
 import { CropType } from '../imports'
 
 export interface ICalculateYieldOptions {
@@ -101,3 +102,51 @@ export interface ISimulateYieldResult {
   harvests: IHarvestInfo[]
   harvestTotal: IHarvestInfo
 }
+
+// CropType-Base or CropType-Star
+export type ICropName = `${CropType}-Base` | `${CropType}-Star`
+
+export interface ICropYield {
+  base: number
+
+  // from harvest boost
+  extra: number
+
+  // base + extra
+  total: number
+}
+
+export interface ICropInfo {
+  cropType: CropType
+  isStar: boolean
+}
+
+export interface ISeedRemainder {
+  count: number
+}
+
+// replacers for IDayResult, ICalculateValueResult, ISimulateYieldResult
+export interface IDayHarvest {
+  day: number
+  crops: Map<ICropName, ICropYield & ICropInfo>
+  seedRemainder: Map<ICropName, ISeedRemainder>
+}
+
+export type DayHarvests = Map<number, IDayHarvest>
+export interface IDayHarvests {
+  [key: number]: IDayHarvest
+}
+
+export interface ITotalHarvest {
+  lastHarvestDay: number
+  crops: Map<ICropName, ICropYield & ICropInfo>
+  seedRemainder: Map<ICropName, ISeedRemainder>
+}
+
+export type TCropTiles = Map<string, Tile>
+
+export type TUniqueTiles = Map<string, {
+  tile: Tile
+  count: number
+  harvestableDays: number[]
+}>

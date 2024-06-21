@@ -1,15 +1,19 @@
 import CropType from '../enums/crops'
 import FertiliserType from '../enums/fertiliser'
 import Bonus from '../enums/bonus'
+import type { TCropTiles, TUniqueTiles } from '../utils/garden-helpers'
 import type Tile from './tile'
 import type Plot from './plot'
 
 // Stores information about the tiles
 export default class CropTiles {
-  private _individualCrops: Map<string, Tile>
+  private _individualCrops: TCropTiles
   private _fertiliserCount: Record<string, number>
   private _bonusCoverage: Record<string, number>
   private _cropTypeCount: Record<string, number>
+
+  // Unique crops have the same crop type and bonuses
+  private _uniqueTiles: TUniqueTiles
 
   constructor() {
     this._individualCrops = new Map()
@@ -22,6 +26,7 @@ export default class CropTiles {
     this._cropTypeCount = Object.fromEntries(
       Object.values(CropType).map(cropType => [cropType, 0]),
     )
+    this._uniqueTiles = new Map()
   }
 
   updateTiles(layout: Plot[][]) {
@@ -36,6 +41,7 @@ export default class CropTiles {
     this._cropTypeCount = Object.fromEntries(
       Object.values(CropType).map(cropType => [cropType, 0]),
     )
+    this._uniqueTiles = new Map()
 
     for (const plot of layout.flat()) {
       if (!plot.isActive)
@@ -48,19 +54,43 @@ export default class CropTiles {
       }
     }
 
-    for (const crop of this._individualCrops.values()) {
-      for (const bonus of crop.bonuses) {
+    for (const tile of this._individualCrops.values()) {
+      for (const bonus of tile.bonuses) {
         if (bonus !== Bonus.None)
           this._bonusCoverage[bonus]++
       }
 
-      if (crop.crop && crop.crop.type !== CropType.None)
-        this._cropTypeCount[crop.crop.type as CropType]++
+      if (tile.crop && tile.crop.type !== CropType.None) {
+        this._cropTypeCount[tile.crop.type as CropType]++
+
+        // sort bonuses by name to ensure unique key for
+        // crops with the same type and bonuses
+        const bonusesFiltered = tile.bonuses.filter(bonus => bonus !== Bonus.WaterRetain && bonus !== Bonus.WeedPrevention)
+        const bonusesString = bonusesFiltered.sort().join('-')
+        // No need to include water retain and weed prevention for unique crops
+        const key = `${tile.crop.type}-${bonusesString}`
+        if (this._uniqueTiles.has(key)) {
+          this._uniqueTiles.get(key)!.count++
+        }
+        else {
+          this._uniqueTiles.set(key, {
+            tile,
+            count: 1,
+            harvestableDays: tile.crop.getHarvestableDays(),
+          })
+        }
+      }
     }
+
+    console.log('Unique Tiles:', this._uniqueTiles)
   }
 
   get individualCrops(): Map<string, Tile> {
     return this._individualCrops
+  }
+
+  get uniqueTiles(): TUniqueTiles {
+    return this._uniqueTiles
   }
 
   get fertiliserCount(): Record<string, number> {
