@@ -593,6 +593,10 @@ class Garden {
       fertiliserCount: this._cropTiles.fertiliserCount,
     } as PlotStat
   }
+
+  get uniqueTiles() {
+    return this._cropTiles.uniqueTiles
+  }
 }
 
 /**

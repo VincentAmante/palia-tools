@@ -76,13 +76,10 @@ export default class CropTiles {
           this._uniqueTiles.set(key, {
             tile,
             count: 1,
-            harvestableDays: tile.crop.getHarvestableDays(),
           })
         }
       }
     }
-
-    console.log('Unique Tiles:', this._uniqueTiles)
   }
 
   get individualCrops(): Map<string, Tile> {

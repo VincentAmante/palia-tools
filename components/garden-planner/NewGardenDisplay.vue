@@ -4,11 +4,12 @@ import useGarden from '~/stores/useGarden'
 import type { Crop, Fertiliser, Plot, Tile } from '~/assets/scripts/garden-planner/imports'
 import { SelectedItemType, useSelectedItem } from '~/stores/useSelectedItem'
 import { useDragAndDrop } from '~/stores/useDragAndDrop'
-import Harvester from '~/assets/scripts/garden-planner/classes/harvester'
+import useHarvester from '~/stores/useHarvester'
+import type { TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 
 const isTakingScreenshot = useTakingScreenshot()
 const gardenHandler = useGarden()
-const { garden, update, isGardenWide } = gardenHandler
+const { garden, isGardenWide } = gardenHandler
 
 const plotsDisplay = ref<HTMLDivElement | null>(null)
 const selectedItem = useSelectedItem()
@@ -20,6 +21,25 @@ function resetHover() {
       plot.resetTileHover()
   }
 }
+
+const { harvester } = useHarvester()
+
+watchEffect(() => {
+  console.time('harvester')
+  harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles, {
+    days: 1800,
+    level: 25,
+    useGrowthBoost: true,
+    useStarSeeds: true,
+    includeReplant: true,
+    includeReplantCost: true,
+  })
+  console.timeEnd('harvester')
+})
+
+const update = useDebounceFn(() => {
+  gardenHandler.update()
+}, 50, { maxWait: 100 })
 
 function selectTile(event: MouseEvent, row: number, col: number, plot: Plot) {
   if (event.button === 2)
@@ -47,20 +67,6 @@ function selectTile(event: MouseEvent, row: number, col: number, plot: Plot) {
 
   update()
 }
-
-const harvester = computed(() => {
-  gardenHandler.garden.testHarvesterYield(new Harvester(), {
-    days: 180,
-    level: 25,
-    useGrowthBoost: true,
-    useStarSeeds: true,
-    includeReplant: true,
-    includeReplantCost: true,
-  })
-
-  console.log('harvested')
-  return 'Harvested'
-})
 
 function onMouseLeave() {
   resetHover()
@@ -159,7 +165,6 @@ function onDragEnter(row: number, col: number, plot: Plot) {
     class="flex flex-col items-center h-full"
     :class="[((isTakingScreenshot.get && isGardenWide) || isTakingScreenshot.get) ? 'max-w-[1680px]' : 'max-w-[100vw]']"
   >
-    {{ harvester }}
     <div
       class="px-3 my-4 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
       :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'" @contextmenu.prevent.self=""
@@ -175,7 +180,8 @@ function onDragEnter(row: number, col: number, plot: Plot) {
                   @mousedown.middle.prevent.stop
                   @click.left="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
                   @click.right="(() => handleRightClick(rowIndex, index, plot as Plot))"
-                  @mouseover="onHover(rowIndex, index, plot as Plot)" @mouseleave="onMouseLeave"
+                  @mouseover="onHover(rowIndex, index, plot as Plot)"
+                  @mouseleave="onMouseLeave"
                   @click.middle="(() => onMiddleClick(rowIndex, index, plot as Plot))"
                   @dragenter="(() => onDragEnter(rowIndex, index, plot as Plot))"
                 />

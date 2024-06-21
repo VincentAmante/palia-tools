@@ -123,6 +123,7 @@ export interface ICropInfo {
 
 export interface ISeedTracker {
   count: number
+  type: CropType
 }
 
 // replacers for IDayResult, ICalculateValueResult, ISimulateYieldResult
@@ -148,5 +149,4 @@ export type TCropTiles = Map<string, Tile>
 export type TUniqueTiles = Map<string, {
   tile: Tile
   count: number
-  harvestableDays: number[]
 }>
