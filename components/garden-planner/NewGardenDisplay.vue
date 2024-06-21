@@ -95,13 +95,15 @@ function onHover(row: number, col: number, plot: Plot) {
         })
         break
     }
+
+    update()
   }
 
   else if (pressed.value && isRightClickDown.value) {
     handleRightClick(row, col, plot)
-  }
 
-  update()
+    update()
+  }
 }
 
 onMounted(() => {
