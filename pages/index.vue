@@ -445,7 +445,7 @@ function handleMouseLeave() {
           ]"
         >
           <div class="flex flex-row-reverse items-center w-full gap-2 p-2 text-right rounded-md leading-1">
-            <nuxt-img
+            <img
               format="png" src="/logo.webp"
               class="max-w-[6rem]"
               alt="Palia Garden Planner Logo"

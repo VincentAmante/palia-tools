@@ -25,7 +25,7 @@ defineProps({
       :data-tip="tooltip"
       class="hidden sm:absolute sm:tooltip w-full h-full z-50"
     />
-    <nuxt-img
+    <img
       v-if="imgSrc"
       :src="imgSrc"
       class="max-w-[2rem] object-contain aspect-square"

@@ -6,7 +6,7 @@
         <div class="w-full py-3 navbar sm:px-12 lg:px-22">
           <div class="flex-1 mx-2">
             <NuxtLink to="/" class="flex items-center gap-2">
-              <nuxt-img
+              <img
                 format="webp" src="/logo.webp" width="48px" height="48px" alt="Palia Garden Planner Logo"
                 class="max-w-[3rem]"
               />
@@ -78,7 +78,7 @@
                     </li>
                     <li class="text-sm">
                       <NuxtLink to="https://paliapedia.com/" class="flex" rel="noopener" target="_blank">
-                        <nuxt-img
+                        <img
                           src="/externals/paliapedia.svg" width="18px" height="18px"
                           class="max-w-[1.5rem] inline-block text-lg" alt="Paliapedia Logo"
                         />
@@ -87,7 +87,7 @@
                     </li>
                     <li class="text-sm">
                       <NuxtLink to="https://paliaparty.app/" class="flex" rel="noopener" target="_blank">
-                        <nuxt-img
+                        <img
                           src="/externals/palia-party.webp" width="18px" height="18px"
                           class="max-w-[1.5rem] inline-block text-lg" alt="Palia Party Logo"
                         />
@@ -166,7 +166,7 @@
                 </li>
                 <li class="text-sm">
                   <NuxtLink to="https://paliapedia.com/" class="flex" rel="noopener" target="_blank">
-                    <nuxt-img
+                    <img
                       src="/externals/paliapedia.svg" width="18px" height="18px"
                       class="max-w-[1.5rem] inline-block text-lg" alt="Paliapedia Logo"
                     />
@@ -175,7 +175,7 @@
                 </li>
                 <li class="text-sm">
                   <NuxtLink to="https://paliaparty.app/" class="flex" rel="noopener" target="_blank">
-                    <nuxt-img
+                    <img
                       src="/externals/palia-party.webp" width="18px" height="18px"
                       class="max-w-[1.5rem] inline-block text-lg" alt="Palia Party Logo"
                     />

@@ -96,7 +96,7 @@ const dragHandler = useDragAndDrop()
       <p class="absolute bottom-0 right-0 py-[0.1rem] pr-[0.2rem] text-xs leading-none font-bold text-neutral-700">
         {{ count }}
       </p>
-      <nuxt-img
+      <img
         v-if="(fertiliser && fertiliser.image != null && fertiliser.image !== '')"
         v-once
         width="34px" height="34px"

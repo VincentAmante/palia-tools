@@ -121,20 +121,20 @@ const border = computed(() => {
   >
     <div class="absolute w-full h-full bg-opacity-20 -z-10" :class="bgColour" />
     <div class="font-bold uppercase select-none lg:text-3xl">
-      <nuxt-img
+      <img
         v-if="(selectedItem.val instanceof Crop && tile?.isHovered)"
         format="webp"
         draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[36px] 2xl:max-w-[38px] opacity-50"
         :src="selectedItem.val.image"
         :srcset="undefined"
-      />
-      <nuxt-img
+      >
+      <img
         v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px"
         format="webp"
         draggable="false" class="select-none p-1 max-w-[36px] md:max-w-[36px] 2xl:max-w-[38px]"
         :src="tile?.crop?.image"
         :srcset="undefined"
-      />
+      >
       <div v-else>
         {{ code as string || ' ' }}
       </div>
@@ -157,23 +157,23 @@ const border = computed(() => {
       </li>
     </ul>
     <div class="absolute bottom-0 right-0 p-[2px]">
-      <nuxt-img
+      <img
         v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)"
         :src="selectedItem.val.image"
         format="webp"
         draggable="false" class="select-none max-w-[16px] opacity-50"
         :srcset="undefined"
-      />
-      <nuxt-img
+      >
+      <img
         v-else-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0"
         format="webp"
         draggable="false" class="select-none max-w-[16px]"
         :src="tile?.fertiliser?.image"
         :srcset="undefined"
-      />
+      >
     </div>
     <div
-      class="absolute w-full h-full transition-all  -z-20"
+      class="absolute w-full h-full transition-all -z-20"
       :class="bonusBgColor"
     />
   </div>

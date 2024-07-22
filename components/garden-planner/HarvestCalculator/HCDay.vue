@@ -214,7 +214,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
               </td>
               <td class="">
                 <p class="flex gap-1 font-bold items-center pr-1 justify-end">
-                  <nuxt-img
+                  <img
                     format="webp"
                     src="/gold.webp"
                     class="max-h-[1.5rem]"

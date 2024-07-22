@@ -78,7 +78,7 @@ const dragHandler = useDragAndDrop()
     <p class="absolute bottom-0 right-0 py-[0.2rem] pr-[0.2rem] text-xs leading-none font-bold text-neutral-700">
       {{ count }}
     </p>
-    <nuxt-img
+    <img
       v-if="(crop && crop.image != null && crop.image !== '')" class="absolute -z-10 max-w-[34px] "
       draggable="false" :src="crop.image" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
       :alt="crop.type" :srcset="undefined" placeholder
