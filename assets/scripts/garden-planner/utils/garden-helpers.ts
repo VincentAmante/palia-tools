@@ -1,3 +1,8 @@
+/**
+ * @file garden-helpers.ts
+ * @description Contains types and interfaces used in the garden planner.
+ */
+
 import type Tile from '../classes/tile'
 import { CropType } from '../imports'
 
@@ -105,6 +110,7 @@ export interface ISimulateYieldResult {
 
 // CropType-Base or CropType-Star
 export type ICropName = `${CropType}-Base` | `${CropType}-Star`
+export type ICropNameWithGrowthDiff = `${CropType}-Base` | `${CropType}-Star` | `${CropType}-Base-Growth` | `${CropType}-Star-Growth`
 
 export interface ICropYield {
   base: number
@@ -113,7 +119,10 @@ export interface ICropYield {
   extra: number
 
   // base + extra
-  total: number
+  totalRaw: number
+
+  // with deductions such as replanting
+  totalWithDeductions: number
 }
 
 export interface ICropInfo {
@@ -150,3 +159,20 @@ export type TUniqueTiles = Map<string, {
   tile: Tile
   count: number
 }>
+
+export enum ItemType {
+  Crop = 'crop',
+  Seed = 'seed',
+  Preserve = 'preserve',
+  Fertiliser = 'fertiliser',
+
+  // Optional types
+  Worm = 'worm',
+  Fabric = 'fabric',
+  Weed = 'weed',
+
+  // For unimplemented items
+  Misc = 'misc',
+}
+
+export type CropItem = ItemType.Crop | ItemType.Seed | ItemType.Preserve
