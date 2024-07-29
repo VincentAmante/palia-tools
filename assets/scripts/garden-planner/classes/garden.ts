@@ -280,6 +280,8 @@ class Garden {
       }
     }
 
+    // console.time('simulateYield')
+
     const useGrowthBoost = options.useGrowthBoost
     // max growth time is the maximum growth time of all crops, and then reharvest cooldown multiplied by rehavest limit
     let maxGrowthTime = Math.max(
@@ -419,6 +421,8 @@ class Garden {
           = seedsRemainder[cropType as CropType].star
       }
     }
+
+    // console.timeEnd('simulateYield')
 
     return {
       harvests,

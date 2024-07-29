@@ -11,6 +11,9 @@ import { CropType, Garden, crops } from '@/assets/scripts/garden-planner/imports
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/garden'
 import AppDividerAlt from '@/components/AppDividerAlt.vue'
 import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
+import useHarvester from '~/stores/useHarvester'
+import { getCropMap } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { ICropName, IHarvestInfo } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 
 const props = defineProps({
   layout: {
@@ -35,13 +38,75 @@ const options = useStorage('approximator-options-MAR1024', {
   level: 0,
 })
 
-const harvestData = computed<ISimulateYieldResult>(() => {
-  return props.layout.simulateYield({
-    ...options.value,
-    includeReplantCost: (options.value.includeReplantCost && options.value.includeReplant),
-    level: options.value.level,
-  })
+const harvester = useHarvester()
+
+const harvestData = ref<ISimulateYieldResult>(convertHarvestData())
+
+watchEffect(() => {
+  harvestData.value = convertHarvestData()
 })
+
+function convertHarvestData() {
+  harvester.harvester.simulateYield(props.layout.uniqueTiles, {
+    ...options.value,
+    days: options.value.days || 0,
+    includeReplant: options.value.includeReplant || true,
+    includeReplantCost: options.value.includeReplantCost || true,
+    useStarSeeds: options.value.allStarSeeds || true,
+    useGrowthBoost: options.value.useGrowthBoost || false,
+    level: options.value.level || 0,
+  })
+
+  const harvests: IHarvestInfo[] = []
+  const harvestTotal: IHarvestInfo = {
+    day: 0,
+    crops: getCropMap(),
+    seedsRemainder: getCropMap(),
+  }
+
+  const harvesterDays = harvester.dayHarvests
+  const harvesterTotal = harvester.totalHarvest
+
+  for (const [day, harvestData] of harvesterDays) {
+    const harvest = {
+      day,
+      crops: getCropMap(),
+      seedsRemainder: getCropMap(),
+    }
+
+    for (const cropType of Object.values(CropType)) {
+      const baseCropName = `${cropType}-Base` as ICropName
+      const starCropName = `${cropType}-Star` as ICropName
+
+      const baseCropYield = harvestData.crops.get(baseCropName)?.totalWithDeductions ?? 0
+      const starCropYield = harvestData.crops.get(starCropName)?.totalWithDeductions ?? 0
+
+      harvest.crops[cropType].base = baseCropYield
+      harvest.crops[cropType].star = starCropYield
+    }
+  }
+
+  for (const cropType of Object.values(CropType)) {
+    const baseCropName = `${cropType}-Base` as ICropName
+    const starCropName = `${cropType}-Star` as ICropName
+
+    const baseCropYield = harvesterTotal.crops.get(baseCropName)?.total ?? 0
+    const starCropYield = harvesterTotal.crops.get(starCropName)?.total ?? 0
+
+    harvestTotal.crops[cropType].base = baseCropYield
+    harvestTotal.crops[cropType].star = starCropYield
+  }
+
+  harvestTotal.day = harvesterTotal.lastHarvestDay
+
+  return {
+    harvests,
+    harvestTotal,
+  } as {
+    harvests: IHarvestInfo[]
+    harvestTotal: IHarvestInfo
+  }
+}
 
 type ProduceOptions = 'crop' | 'seed' | 'preserve'
 

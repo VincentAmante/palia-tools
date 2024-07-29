@@ -5,6 +5,7 @@ import type { Crop, Fertiliser, Plot, Tile } from '~/assets/scripts/garden-plann
 import { SelectedItemType, useSelectedItem } from '~/stores/useSelectedItem'
 import { useDragAndDrop } from '~/stores/useDragAndDrop'
 import useHarvester from '~/stores/useHarvester'
+import useProcessor from '~/stores/useProcessor'
 import type { TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 
 const isTakingScreenshot = useTakingScreenshot()
@@ -23,18 +24,27 @@ function resetHover() {
 }
 
 const { harvester } = useHarvester()
+const { processor } = useProcessor()
 
 watchEffect(() => {
-  console.time('harvester')
   harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles, {
-    days: 1800,
+    days: 180,
     level: 25,
-    useGrowthBoost: true,
+    useGrowthBoost: false,
     useStarSeeds: true,
     includeReplant: true,
     includeReplantCost: true,
   })
-  console.timeEnd('harvester')
+
+  // * Use below to display total harvest in console
+  console.log('totalHarvest')
+  console.table(harvester.totalHarvest)
+  for (const [key, crop] of harvester.totalHarvest.crops) {
+    console.log(key)
+    console.table(crop)
+  }
+
+  processor.process()
 })
 
 const update = useDebounceFn(() => {
@@ -47,7 +57,6 @@ function selectTile(event: MouseEvent, row: number, col: number, plot: Plot) {
 
   resetHover()
 
-  // if (selectedItem.type === SelectedItemType.CropErase)
   switch (selectedItem.type) {
     case SelectedItemType.CropErase:
       plot.setTile(row, col, null)
