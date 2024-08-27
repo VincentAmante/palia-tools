@@ -24,7 +24,7 @@ const useMarkdown = ref(false)
     </template>
     <template #body>
       <div class="card card-compact">
-        <div class="card-body bg-palia-dark-blue p-4 px-3 rounded-md flex flex-col relative">
+        <div class="card-body bg-palia-blue-dark p-4 px-3 rounded-md flex flex-col relative">
           <p class="card-title">
             Code
           </p>
@@ -47,7 +47,7 @@ const useMarkdown = ref(false)
         </div>
       </div>
       <div class="card card-compact">
-        <div class="card-body bg-palia-dark-blue p-4 px-3 rounded-md flex flex-col relative">
+        <div class="card-body bg-palia-blue-dark p-4 px-3 rounded-md flex flex-col relative">
           <p class="card-title">
             Link
           </p>

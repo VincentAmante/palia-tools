@@ -62,7 +62,7 @@ html {
   }
   
   ::-webkit-scrollbar-thumb {
-    @apply bg-palia-dark-blue rounded-md;
+    @apply bg-palia-blue-dark rounded-md;
   }
   
   ::-webkit-scrollbar-track {

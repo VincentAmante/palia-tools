@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-  <article class="collapse collapse-arrow max-w-3xl py-1 bg-palia-dark-blue text-accent rounded-md  border-[1px] border-opacity-50 border-accent">
+  <article class="collapse collapse-arrow max-w-3xl py-1 bg-palia-blue-dark text-accent rounded-md  border-[1px] border-opacity-50 border-accent">
     <input type="checkbox" name="changelog" :checked="checked">
     <h2 class="text-xl collapse-title">
       <slot name="title" required>

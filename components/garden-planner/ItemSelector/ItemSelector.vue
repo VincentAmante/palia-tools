@@ -150,10 +150,10 @@ watchEffect(() => {
 
 <template>
   <section class="relative flex flex-col py-2 ">
-    <div class="relative grid px-2 lg:grid-cols-7 ">
+    <div class="relative grid px-2 xl:grid-cols-7 ">
       <section
         v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
-        class="flex flex-col order-1 w-full lg:col-span-4"
+        class="flex flex-col order-1 w-full xl:col-span-4"
         :class="[isTakingScreenshot.get ? 'col-span-4' : '']"
       >
         <div class="flex gap-2">
@@ -165,42 +165,42 @@ watchEffect(() => {
             :class="{ hidden: isTakingScreenshot.get }"
           >
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-dark-blue aspect-square"
-              :class="[bonusToSortBy === null ? 'bg-palia-blue text-accent' : 'hover:bg-opacity-10 text-palia-dark-blue']"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              :class="[bonusToSortBy === null ? 'bg-palia-blue text-accent' : 'hover:bg-opacity-10 text-palia-blue-dark']"
               @click="bonusToSortBy = null"
             >
               <font-awesome-icon class="" :icon="['fas', 'list']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-dark-blue aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
               :class="[bonusToSortBy === Bonus.WaterRetain ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.WaterRetain"
             >
               <font-awesome-icon class="text-water-retain" :icon="['fas', 'droplet']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-dark-blue aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
               :class="[bonusToSortBy === Bonus.HarvestIncrease ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.HarvestIncrease"
             >
               <font-awesome-icon class="text-harvest-boost-dark" :icon="['fas', 'wheat-awn']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-dark-blue aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
               :class="[bonusToSortBy === Bonus.QualityIncrease ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.QualityIncrease"
             >
               <font-awesome-icon class="text-quality-increase-dark" :icon="['fas', 'star']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-dark-blue aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
               :class="[bonusToSortBy === Bonus.WeedPrevention ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.WeedPrevention"
             >
               <font-awesome-icon class="text-weed-prevention" :icon="['fas', 'shield']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-dark-blue aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
               :class="[bonusToSortBy === Bonus.SpeedIncrease ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.SpeedIncrease"
             >
@@ -276,7 +276,7 @@ watchEffect(() => {
         </div>
       </section>
       <section
-        class="flex flex-wrap order-2 lg:justify-end lg:col-span-3"
+        class="flex flex-wrap order-2 xl:justify-end xl:col-span-3"
         :class="[isTakingScreenshot.get ? 'col-span-3' : '']"
       >
         <div v-if="!(isTakingScreenshot.get && totalFertilisers <= 0)">

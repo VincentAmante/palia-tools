@@ -13,15 +13,21 @@ module.exports = {
   ],
   theme: {
     colors: {
-      'palia-blue': '#3A4A6B',
-      'palia-dark-blue': '#2B3750',
-      'misc': '#8B8072',
-      'misc-saturated': '#bfa178',
-      'misc-secondary': '#00000025',
+      'palia-blue': {
+        DEFAULT: '#3A4A6B',
+        dark: '#2B3750',
+      },
+      'misc': {
+        DEFAULT: '#8B8072',
+        dark: '#6E6357',
+        saturated: '#BFA178',
+        secondary: '#00000025',
+      },
       'growth-boost': '#ED915E',
       'quality-increase': {
         DEFAULT: '#E0AA4A',
         dark: '#C68A1F',
+        light: '#F1C87A',
       },
       'weed-prevention': '#D86046',
       'harvest-boost': {

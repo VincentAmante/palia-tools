@@ -176,7 +176,7 @@ function trimLayout(): PlotStatus[][] {
       New Layout
     </template>
     <template #body>
-      <div class="flex flex-col gap-1 bg-palia-dark-blue rounded-md p-2 ">
+      <div class="flex flex-col gap-1 bg-palia-blue-dark rounded-md p-2 ">
         <h3 class="font-bold">
           Dimensions
         </h3>
@@ -216,7 +216,7 @@ function trimLayout(): PlotStatus[][] {
           Pick a pre-determined size here, or make a custom one
         </p>
       </div>
-      <div class="flex flex-col gap-2 bg-palia-dark-blue rounded-md p-2">
+      <div class="flex flex-col gap-2 bg-palia-blue-dark rounded-md p-2">
         <div class=" py-2 flex flex-col gap-3">
           <div class="w-full flex flex-col items-center">
             <p class="text-sm">

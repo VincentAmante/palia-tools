@@ -34,7 +34,7 @@ useHead({
         </p>
       </div>
       <div class="flex flex-col gap-2 text-justify max-w-3xl md:text-base leading-7">
-        <div class="card card-compact bg-palia-dark-blue rounded-md max-w-2xl px-4">
+        <div class="card card-compact bg-palia-blue-dark rounded-md max-w-2xl px-4">
           <div class="card-body">
             <p class="leading-6 text-sm">
               <span class="font-bold text-base">Update (October 14):</span>

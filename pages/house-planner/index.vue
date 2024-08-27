@@ -68,7 +68,7 @@ definePageMeta({
       </div>
     </section>
     <div class="flex flex-col justify-between gap-2 lg:flex-row lg:mx-2">
-      <section class="mt-4 rounded-md text-palia-dark-blue collapse h-fit collapse-arrow bg-water-retain">
+      <section class="mt-4 rounded-md text-palia-blue-dark collapse h-fit collapse-arrow bg-water-retain">
         <input type="checkbox">
         <div class="text-2xl font-bold collapse-title">
           Why development is halted. <span class="text-sm">(2024-04-24)</span>
