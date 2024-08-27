@@ -12,8 +12,10 @@ import {
   faCircleInfo,
   faCircleQuestion,
   faCopy,
+  faDownload,
   faDroplet,
   faEraser,
+  faFloppyDisk,
   faForwardFast,
   faGift,
   faHand,
@@ -23,6 +25,7 @@ import {
   faList,
   faMap,
   faPaste,
+  faPenToSquare,
   faPeopleGroup,
   faPlus,
   faRecycle,
@@ -30,6 +33,7 @@ import {
   faRotateRight,
   faScrewdriverWrench,
   faSeedling,
+  faShareFromSquare,
   faShield,
   faSliders,
   faSquarePlus,
@@ -89,6 +93,11 @@ library.add(
   faPeopleGroup,
   faBookOpen,
   faList,
+  faFloppyDisk,
+  faDownload,
+  faShareFromSquare,
+  faPenToSquare,
+  faTrash,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS

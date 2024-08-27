@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
+import CropModalButton from '~/components/garden-planner/ItemSelector/CropModalButton.vue'
+import MenuBar from '~/components/garden-planner/MenuBar.vue'
 
 useHead({
   title: 'New Page',
@@ -20,7 +22,10 @@ const isTakingScreenshot = useTakingScreenshot()
       Garden Planner
     </h1>
     <GuideCard />
-    <GardenPlanner />
+    <section class="lg:px-12">
+      <MenuBar />
+      <GardenPlanner />
+    </section>
     <DevOnly>
       <div class="fixed bottom-0 right-0 flex flex-col gap-2 p-2 mx-12 my-2 rounded-md w-fit bg-accent bg-opacity-10">
         <p class="text-sm">
@@ -34,5 +39,6 @@ const isTakingScreenshot = useTakingScreenshot()
         </button>
       </div>
     </DevOnly>
+    <CropModalButton />
   </main>
 </template>

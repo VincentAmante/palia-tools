@@ -12,7 +12,7 @@ const plotStat = computed(() => gardenHandler.plotStat)
     <h2 class="sr-only">
       Crop Bonus Statistics
     </h2>
-    <div class="flex gap-[0.35rem] lg:gap-3 xl:gap-4 w-full cursor-help justify-center">
+    <div class="flex gap-[0.35rem] lg:gap-3 xl:gap-4 w-full cursor-help justify-center p-1 xs:bg-primary rounded-lg xs:p-2">
       <CoverageStat
         :total-crops="plotStat.cropCount"
         :covered="plotStat.cropBonusCoverage['Speed Increase']" class="text-growth-boost"
