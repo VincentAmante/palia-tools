@@ -153,6 +153,25 @@ export interface ITotalHarvest {
   seedsRemainder: Map<ICropName, ISeedTracker>
 }
 
+export interface IInventoryItem {
+  count: number
+  img: {
+    src: string
+    alt: string
+  }
+  isStar: boolean
+  baseGoldValue: number
+}
+
+export type IInventory = {
+  [key in
+  ItemType.Crop |
+  ItemType.Seed |
+  ItemType.Preserve |
+  ItemType.Fertiliser
+  ]?: Record<string, IInventoryItem>
+}
+
 export type TCropTiles = Map<string, Tile>
 
 export type TUniqueTiles = Map<string, {

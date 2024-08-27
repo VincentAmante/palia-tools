@@ -49,8 +49,10 @@ export default class Harvester {
   }
 
   simulateYield(tiles: TUniqueTiles, options: IHarvesterOptions): void {
-    if (tiles.size === 0)
+    if (tiles.size === 0) {
+      this.reset()
       return
+    }
 
     this.reset()
     let dayOfLastHarvest = 0

@@ -258,6 +258,11 @@ export default class Processor {
 
     const cropData = this.calculateSettings(harvestData, settings)
 
+    if (cropData.size === 0) {
+      this._output = output
+      return
+    }
+
     for (const [cropName, processData] of cropData) {
       // If not set to process, just add to crops
       if (processData.processType === ItemType.Crop) {

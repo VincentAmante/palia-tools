@@ -27,6 +27,8 @@ const { harvester } = useHarvester()
 const { processor } = useProcessor()
 
 watchEffect(() => {
+  console.log('triggered', new Date())
+
   harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles, {
     days: 180,
     level: 25,
@@ -39,9 +41,12 @@ watchEffect(() => {
   // * Use below to display total harvest in console
   console.log('totalHarvest')
   console.table(harvester.totalHarvest)
-  for (const [key, crop] of harvester.totalHarvest.crops) {
-    console.log(key)
-    console.table(crop)
+
+  if (harvester.totalHarvest.crops.size > 0) {
+    for (const [key, crop] of harvester.totalHarvest.crops) {
+      console.log(key)
+      console.table(crop)
+    }
   }
 
   processor.process()
@@ -171,8 +176,11 @@ function onDragEnter(row: number, col: number, plot: Plot) {
 
 <template>
   <section
-    class="flex flex-col items-center h-full"
-    :class="[((isTakingScreenshot.get && isGardenWide) || isTakingScreenshot.get) ? 'max-w-[1680px]' : 'max-w-[100vw]']"
+    class="flex flex-col items-center h-full "
+    :class="[
+      ((isTakingScreenshot.get && gardenHandler.isGardenWide) || isTakingScreenshot.get) ? 'max-w-[1680px]' : 'max-w-full',
+      (gardenHandler.isGardenWide) ? 'overflow-x-scroll max-w-full' : '',
+    ]"
   >
     <div
       class="px-3 my-4 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
