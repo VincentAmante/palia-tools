@@ -9,7 +9,7 @@
               <img
                 format="webp" src="/logo.webp" width="48px" height="48px" alt="Palia Garden Planner Logo"
                 class="max-w-[3rem]"
-              />
+              >
               <div class="flex flex-col gap-0 leading-tight">
                 <h1 class="text-xl font-bold leading-tight text-left lg:text-2xl">
                   Palia Garden Planner
@@ -81,7 +81,7 @@
                         <img
                           src="/externals/paliapedia.svg" width="18px" height="18px"
                           class="max-w-[1.5rem] inline-block text-lg" alt="Paliapedia Logo"
-                        />
+                        >
                         Paliapedia
                       </NuxtLink>
                     </li>
@@ -90,7 +90,7 @@
                         <img
                           src="/externals/palia-party.webp" width="18px" height="18px"
                           class="max-w-[1.5rem] inline-block text-lg" alt="Palia Party Logo"
-                        />
+                        >
                         Palia Party
                       </NuxtLink>
                     </li>
@@ -169,7 +169,7 @@
                     <img
                       src="/externals/paliapedia.svg" width="18px" height="18px"
                       class="max-w-[1.5rem] inline-block text-lg" alt="Paliapedia Logo"
-                    />
+                    >
                     Paliapedia
                   </NuxtLink>
                 </li>
@@ -178,7 +178,7 @@
                     <img
                       src="/externals/palia-party.webp" width="18px" height="18px"
                       class="max-w-[1.5rem] inline-block text-lg" alt="Palia Party Logo"
-                    />
+                    >
                     Palia Party
                   </NuxtLink>
                 </li>

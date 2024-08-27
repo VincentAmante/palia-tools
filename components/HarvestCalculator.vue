@@ -210,7 +210,7 @@ watchEffect(() => {
                   <div class="flex items-center gap-1">
                     <img
                       width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-                      placeholder alt="Gold" format="webp"
+                      alt="Gold" format="webp"
                     >{{
                       processedYields?.totalResult.totalGold.toLocaleString() }}
                   </div>
