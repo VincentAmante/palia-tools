@@ -27,6 +27,7 @@ const isTakingScreenshot = useTakingScreenshot()
 
       <MenuBar />
     </section>
+    <!-- <DevOnly>
       <div class="fixed bottom-0 right-0 flex flex-col gap-2 p-2 mx-12 my-2 rounded-md w-fit bg-accent bg-opacity-10">
         <p class="text-sm">
           Toggle Screenshot Mode
@@ -38,7 +39,7 @@ const isTakingScreenshot = useTakingScreenshot()
           {{ isTakingScreenshot.get }}
         </button>
       </div>
-    </DevOnly>
+    </DevOnly> -->
     <CropModalButton />
   </main>
 </template>
