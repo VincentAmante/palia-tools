@@ -4,7 +4,7 @@ import CropModalButton from '~/components/garden-planner/ItemSelector/CropModalB
 import MenuBar from '~/components/garden-planner/MenuBar.vue'
 
 useHead({
-  title: 'New Page',
+  title: 'Palia Garden Planner',
   meta: [
     {
       name: 'description',
@@ -23,10 +23,10 @@ const isTakingScreenshot = useTakingScreenshot()
     </h1>
     <GuideCard />
     <section class="lg:px-12">
-      <MenuBar />
       <GardenPlanner />
+
+      <MenuBar />
     </section>
-    <DevOnly>
       <div class="fixed bottom-0 right-0 flex flex-col gap-2 p-2 mx-12 my-2 rounded-md w-fit bg-accent bg-opacity-10">
         <p class="text-sm">
           Toggle Screenshot Mode

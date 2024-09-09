@@ -54,42 +54,53 @@ function openNewLayoutModal() {
 </script>
 
 <template>
-  <section class="flex flex-wrap gap-2 p-2 pb-4 bg-palia-blue-dark rounded-t-md">
-    <button
-      class="normal-case btn btn-sm bg-palia-blue"
-      @click="openSaveModal"
-    >
-      <font-awesome-icon icon="floppy-disk" />
-      Save
-    </button>
-    <button
-      class="normal-case btn btn-sm bg-palia-blue"
-      @click="openLoadModal"
-    >
-      <font-awesome-icon icon="download" />
-      Load
-    </button>
-    <button
-      class="normal-case btn btn-sm bg-palia-blue"
-    >
-      <font-awesome-icon icon="share-from-square" />
-      Share
-    </button>
-
-    <button
-      class="normal-case btn btn-sm bg-palia-blue"
-      @click="openNewLayoutModal"
-    >
-      <font-awesome-icon icon="pen-to-square" />
-      Edit Layout
-    </button>
-    <button
-      class="normal-case btn btn-sm bg-palia-blue"
-      @click="clearGarden"
-    >
-      <font-awesome-icon icon="trash" />
-      Clear Plot
-    </button>
+  <section class="flex flex-wrap justify-between gap-2 p-2 bg-palia-blue-dark rounded-b-md">
+    <div class="flex flex-wrap gap-2 py-2">
+      <button
+        class="h-full normal-case btn bg-palia-blue"
+        @click="openSaveModal"
+      >
+        <font-awesome-icon class="text-lg" icon="floppy-disk" />
+        Save
+      </button>
+      <button
+        class="h-full normal-case btn bg-palia-blue"
+        @click="openLoadModal"
+      >
+        <font-awesome-icon class="text-lg" icon="download" />
+        Load
+      </button>
+      <button
+        class="h-full normal-case btn bg-palia-blue"
+      >
+        <font-awesome-icon class="text-lg" icon="share-from-square" />
+        Export
+      </button>
+    </div>
+    <div class="flex flex-col items-center px-12 py-2 rounded-md bg-palia-blue">
+      <p class="text-4xl">
+        12:58 PM
+      </p>
+      <p class="text-xs">
+        Palian Time
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-2 py-2">
+      <button
+        class="h-full normal-case btn btn-warning text-neutral"
+        @click="openNewLayoutModal"
+      >
+        <font-awesome-icon class="text-lg" icon="pen-to-square" />
+        Edit Layout
+      </button>
+      <button
+        class="h-full normal-case btn btn-error"
+        @click="clearGarden"
+      >
+        <font-awesome-icon class="text-lg" icon="trash" />
+        Clear Plot
+      </button>
+    </div>
     <Teleport to="body">
       <!-- Put all modals here -->
       <SaveModal ref="saveModal" @save-layout="saveLayout()" />

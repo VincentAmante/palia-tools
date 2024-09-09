@@ -1,6 +1,6 @@
 import { Bonus, CropType, getCropFromType } from '../imports'
 
-import type { DayHarvests, ICropName, ICropNameWithGrowthDiff, ICropYield, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
+import type { DayHarvests, ICropName, ICropNameWithGrowthDiff, ICropYield, IInventory, IInventoryItem, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
 
 export interface IHarvesterOptions {
   days: number | 'L' | 'M'
@@ -284,6 +284,41 @@ export default class Harvester {
     // Freeze the objects to prevent modification
     // Object.freeze(this._dayHarvests)
     // Object.freeze(this._totalHarvest)
+  }
+
+  /**
+   * Temporary until the processor is implemented
+   */
+  get asInventory(): IInventory {
+    const inventory: IInventory = {}
+
+    inventory.crop = {}
+    for (const [cropId, cropYield] of this.totalHarvest.crops) {
+      const crop = cropYield.cropType
+      const isStar = (cropId.includes('Star'))
+      const cropInfo = getCropFromType(crop)
+      if (!cropInfo) {
+        console.error('Crop not found')
+        continue
+      }
+
+      if (cropYield.totalWithDeductions <= 0)
+        continue
+
+      const item: IInventoryItem = {
+        count: cropYield.totalWithDeductions,
+        img: {
+          src: cropInfo.image,
+          alt: cropInfo.type,
+        },
+        isStar,
+        baseGoldValue: isStar ? cropInfo.goldValues.cropStar : cropInfo.goldValues.crop,
+      }
+
+      inventory.crop[cropId] = item
+    }
+
+    return inventory
   }
 }
 

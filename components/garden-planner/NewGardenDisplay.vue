@@ -10,7 +10,7 @@ import type { TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-
 
 const isTakingScreenshot = useTakingScreenshot()
 const gardenHandler = useGarden()
-const { garden, isGardenWide } = gardenHandler
+const { garden } = gardenHandler
 
 const plotsDisplay = ref<HTMLDivElement | null>(null)
 const selectedItem = useSelectedItem()
@@ -27,27 +27,25 @@ const { harvester } = useHarvester()
 const { processor } = useProcessor()
 
 watchEffect(() => {
-  console.log('triggered', new Date())
-
   harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles, {
-    days: 180,
+    days: 0,
     level: 25,
     useGrowthBoost: false,
-    useStarSeeds: true,
+    useStarSeeds: false,
     includeReplant: true,
     includeReplantCost: true,
   })
 
   // * Use below to display total harvest in console
-  console.log('totalHarvest')
-  console.table(harvester.totalHarvest)
+  // console.log('totalHarvest')
+  // console.table(harvester.totalHarvest)
 
-  if (harvester.totalHarvest.crops.size > 0) {
-    for (const [key, crop] of harvester.totalHarvest.crops) {
-      console.log(key)
-      console.table(crop)
-    }
-  }
+  // if (harvester.totalHarvest.crops.size > 0) {
+  //   for (const [key, crop] of harvester.totalHarvest.crops) {
+  //     console.log(key)
+  //     console.table(crop)
+  //   }
+  // }
 
   processor.process()
 })

@@ -1,37 +1,38 @@
 <script setup lang="ts">
 import ItemDisplay from './ItemDisplay.vue'
-import type { IInventory, IInventoryItem } from '~/assets/scripts/garden-planner/utils/garden-helpers.ts'
+import type { IInventory } from '~/assets/scripts/garden-planner/utils/garden-helpers.ts'
+import useHarvester from '~/stores/useHarvester'
 
-const SAMPLE_INVENTORY = {
-  crop: {
-    'tomato-base': {
-      count: 10,
-      img: {
-        src: '/crops/tomato.webp',
-        alt: 'Tomato',
-      },
-      isStar: true,
-      baseGoldValue: 23,
-    } as IInventoryItem,
-  } as Record<string, IInventoryItem>,
-} as IInventory
+const harvesterHandler = useHarvester()
 
-const inventory = ref<IInventory | null>(SAMPLE_INVENTORY)
+const inventory = ref<IInventory | null>(null)
+
+onMounted(() => {
+  inventory.value = harvesterHandler.harvester.asInventory
+})
+
+watchEffect(() => {
+  inventory.value = harvesterHandler.harvester.asInventory
+})
 </script>
 
 <template>
-  <section class="p-2">
-    <h2>Total Inventory</h2>
-    <ul v-for="(group, index) in inventory" :key="index" class="flex flex-wrap p-2 rounded-md bg-misc">
-      <ItemDisplay
-        v-for="(item, key) in group"
-        :key="key"
-        :img-src="item.img.src"
-        :img-alt="item.img.alt"
-        :star="item.isStar"
-        :count="item.count"
-        :base-gold-value="item.baseGoldValue"
-      />
+  <section class="">
+    <h2 class="text-sm font-semibold capitalize text-palia-blue-dark">
+      Produce
+    </h2>
+    <ul class="flex flex-wrap gap-1 p-2 bg-opacity-50 rounded-md bg-misc min-h-16 gap-y-2">
+      <template v-for="(group, index) in inventory" :key="index">
+        <ItemDisplay
+          v-for="(item, key) in group"
+          :key="key"
+          :img-src="item.img.src"
+          :img-alt="item.img.alt"
+          :star="item.isStar"
+          :count="item.count"
+          :base-gold-value="item.baseGoldValue"
+        />
+      </template>
     </ul>
   </section>
 </template>
