@@ -169,7 +169,7 @@ watchEffect(() => {
               :class="[bonusToSortBy === null ? 'bg-palia-blue text-accent' : 'hover:bg-opacity-10 text-palia-blue-dark']"
               @click="bonusToSortBy = null"
             >
-              <font-awesome-icon class="" :icon="['fas', 'list']" />
+              <font-awesome-icon class="" :icon="['fas', 'asterisk']" />
             </li>
             <li
               class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
