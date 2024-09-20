@@ -22,27 +22,31 @@ interface ProcessOutputInfo {
 
 type CropProcessSetting = CropItem
 
-interface ProcessorSetting {
+export interface ProcessorSetting {
   cropType: CropType
   isStar: boolean
   processAs: CropProcessSetting
   crafters: number
   targetTime: number
+  isActive: boolean
 }
 
-interface ProcessorSettings {
+export interface ProcessorSettings {
   cropSettings: Map<ICropName, ProcessorSetting>
+
+  // Not currently used
   crafterSetting: number
 }
 
-enum ECrafterSetting {
-  // Manual setting will use the crafter count set in the crop settings
-  Manual = -1,
-  // Auto setting will try to lower the time to process all crops but will not go over max crafters
-  Auto = 0,
+// enum ECrafterSetting {
+//   // Manual setting will use the crafter count set in the crop settings
+//   Manual = -1,
+//   // Auto setting will try to lower the time to process all crops but will not go over max crafters
+//   Auto = 0,
 
-  // Any number greater than 0 is the targeted days to process all crops
-}
+//   // ? Not anymore, trying to automate it especially by setting the target time will be a pain
+//   /// [OLD] Any number greater than 0 is the targeted days to process all crops
+// }
 
 type TCropProcessData = Map<ICropName, {
   totalProcessTime: number
@@ -159,7 +163,8 @@ const TEST_SETTINGS = {
         processAs: ItemType.Seed,
         crafters: 1,
         targetTime: 0,
-      },
+        isActive: true,
+      } as ProcessorSetting,
     ],
     [
       'rice-Base' satisfies ICropName,
@@ -169,7 +174,8 @@ const TEST_SETTINGS = {
         processAs: ItemType.Crop,
         crafters: 0,
         targetTime: 0,
-      },
+        isActive: true,
+      } as ProcessorSetting,
     ],
     [
       'carrot-Star' satisfies ICropName,
@@ -179,7 +185,8 @@ const TEST_SETTINGS = {
         processAs: ItemType.Seed,
         crafters: 1,
         targetTime: 0,
-      },
+        isActive: true,
+      } as ProcessorSetting,
     ],
     [
       'carrot-Base' satisfies ICropName,
@@ -189,7 +196,8 @@ const TEST_SETTINGS = {
         processAs: ItemType.Crop,
         crafters: 0,
         targetTime: 0,
-      },
+        isActive: true,
+      } as ProcessorSetting,
     ],
     [
       'potato-Base' satisfies ICropName,
@@ -199,7 +207,8 @@ const TEST_SETTINGS = {
         processAs: ItemType.Crop,
         crafters: 0,
         targetTime: 0,
-      },
+        isActive: true,
+      } as ProcessorSetting,
     ],
     [
       'potato-Star' satisfies ICropName,
@@ -209,7 +218,8 @@ const TEST_SETTINGS = {
         processAs: ItemType.Preserve,
         crafters: 1,
         targetTime: 0,
-      },
+        isActive: true,
+      } as ProcessorSetting,
     ],
     [
       'blueberry-Base' satisfies ICropName,
@@ -219,7 +229,8 @@ const TEST_SETTINGS = {
         processAs: ItemType.Crop,
         crafters: 0,
         targetTime: 0,
-      },
+        isActive: true,
+      } as ProcessorSetting,
     ],
     [
       'blueberry-Star' satisfies ICropName,
@@ -229,7 +240,8 @@ const TEST_SETTINGS = {
         processAs: ItemType.Crop,
         crafters: 0,
         targetTime: 0,
-      },
+        isActive: true,
+      } as ProcessorSetting,
     ],
   ]),
 } as ProcessorSettings
@@ -282,8 +294,13 @@ export default class Processor {
           throw new Error(`Missing crop data for crop: ${cropName}`)
 
         const processType = processData.processType === ItemType.Seed ? 'seeds' : 'preserves'
-        const { count, remainder } = (processData.processType === ItemType.Seed) ? crop.convertCropToSeed(harvestData.crops.get(cropName)?.totalWithDeductions || 0) : crop.convertCropToPreserve(harvestData.crops.get(cropName)?.totalWithDeductions || 0)
+
+        const { count, remainder } = (processData.processType === ItemType.Seed)
+          ? crop.convertCropToSeed(harvestData.crops.get(cropName)?.totalWithDeductions || 0)
+          : crop.convertCropToPreserve(harvestData.crops.get(cropName)?.totalWithDeductions || 0)
+
         const minutesProcessedFinal = Math.round(processData.totalProcessTime / processData.craftersToUse)
+
         output[processType].set(cropName, {
           count,
           minutesProcessedTotal: processData.totalProcessTime,
@@ -299,7 +316,7 @@ export default class Processor {
       }
     }
 
-    // console.log('output', output)
+    console.log('output', output)
 
     this._output = output
   }
@@ -318,6 +335,7 @@ export default class Processor {
       processType: ItemType.Crop | ItemType.Seed | ItemType.Preserve
       craftersToUse: number
     }>()
+
     const cropsToProcess = new Map<ICropName, {
       totalProcessTime: number
       craftersToUse: number
@@ -327,13 +345,21 @@ export default class Processor {
       const crop = getCropFromType(cropYield.cropType)
       if (!crop)
         throw new Error(`Missing crop data for crop: ${cropName}`)
-      const setting = settings.cropSettings.get(cropName)
+      const setting = settings.cropSettings.get(cropName) || {
+        cropType: cropYield.cropType,
+        isStar: cropYield.isStar,
+        processAs: ItemType.Crop,
+        crafters: 0,
+        targetTime: 0,
+        isActive: false,
+      }
+
       if (!setting)
         throw new Error(`Missing setting for crop: ${cropName}`)
 
       const processSetting = setting.processAs
 
-      // Gets crops outta the way since it won't be processed
+      // Gets crops out of the way since it won't be processed
       if (processSetting === ItemType.Crop) {
         cropData.set(cropName, {
           totalProcessTime: 0,
@@ -366,39 +392,41 @@ export default class Processor {
       })
     }
 
-    const crafterSetting = settings.crafterSetting
+    /// DISABLED AUTO CRAFTERS FOR NOW
 
-    if (crafterSetting === ECrafterSetting.Auto) {
-      const totalTime = Array.from(cropsToProcess.values()).reduce((acc, crop) => acc + crop.totalProcessTime, 0)
-      // console.log(cropsToProcess)
-      const MAX_CRAFTERS = 30
+    // const crafterSetting = settings.crafterSetting
 
-      let availableCrafters = MAX_CRAFTERS - cropsToProcess.size
-      const craftersToDivide = MAX_CRAFTERS - cropsToProcess.size
+    // if (crafterSetting === ECrafterSetting.Auto) {
+    //   const totalTime = Array.from(cropsToProcess.values()).reduce((acc, crop) => acc + crop.totalProcessTime, 0)
+    //   // console.log(cropsToProcess)
+    //   const MAX_CRAFTERS = 30
 
-      for (const [cropName, crop] of cropsToProcess) {
-        if (availableCrafters <= 0)
-          break
+    //   let availableCrafters = MAX_CRAFTERS - cropsToProcess.size
+    //   const craftersToDivide = MAX_CRAFTERS - cropsToProcess.size
 
-        const totalTimePercentage = Math.floor((crop.totalProcessTime / totalTime) * 100)
-        let craftersToAssign = Math.floor((totalTimePercentage / 100) * craftersToDivide)
+    //   for (const [cropName, crop] of cropsToProcess) {
+    //     if (availableCrafters <= 0)
+    //       break
 
-        let newCrafterCount = crop.craftersToUse
-        if (craftersToAssign > availableCrafters)
-          craftersToAssign = availableCrafters
+    //     const totalTimePercentage = Math.floor((crop.totalProcessTime / totalTime) * 100)
+    //     let craftersToAssign = Math.floor((totalTimePercentage / 100) * craftersToDivide)
 
-        if (craftersToAssign > 0) {
-          newCrafterCount = crop.craftersToUse + craftersToAssign
-          availableCrafters -= craftersToAssign
-        }
+    //     let newCrafterCount = crop.craftersToUse
+    //     if (craftersToAssign > availableCrafters)
+    //       craftersToAssign = availableCrafters
 
-        cropData.set(cropName, {
-          totalProcessTime: crop.totalProcessTime,
-          processType: cropData.get(cropName)?.processType || ItemType.Crop,
-          craftersToUse: newCrafterCount,
-        })
-      }
-    }
+    //     if (craftersToAssign > 0) {
+    //       newCrafterCount = crop.craftersToUse + craftersToAssign
+    //       availableCrafters -= craftersToAssign
+    //     }
+
+    //     cropData.set(cropName, {
+    //       totalProcessTime: crop.totalProcessTime,
+    //       processType: cropData.get(cropName)?.processType || ItemType.Crop,
+    //       craftersToUse: newCrafterCount,
+    //     })
+    //   }
+    // }
 
     return cropData
   }

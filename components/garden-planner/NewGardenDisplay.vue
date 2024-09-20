@@ -23,31 +23,13 @@ function resetHover() {
   }
 }
 
-const { harvester } = useHarvester()
-const { processor } = useProcessor()
+const harvester = useHarvester()
+const processor = useProcessor()
 
 watchEffect(() => {
-  harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles, {
-    days: 0,
-    level: 25,
-    useGrowthBoost: false,
-    useStarSeeds: false,
-    includeReplant: true,
-    includeReplantCost: true,
-  })
+  harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles)
 
-  // * Use below to display total harvest in console
-  // console.log('totalHarvest')
-  // console.table(harvester.totalHarvest)
-
-  // if (harvester.totalHarvest.crops.size > 0) {
-  //   for (const [key, crop] of harvester.totalHarvest.crops) {
-  //     console.log(key)
-  //     console.table(crop)
-  //   }
-  // }
-
-  processor.process()
+  processor.simulateProcessing(harvester.totalHarvest)
 })
 
 const update = useDebounceFn(() => {

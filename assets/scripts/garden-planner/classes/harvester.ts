@@ -155,13 +155,13 @@ export default class Harvester {
           harvestDay.crops.set(baseId, {
             ...addCropYields(baseCropYield, baseCrop),
             cropType: crop.type,
-            isStar: options.useStarSeeds,
+            isStar: false,
           })
 
           harvestDay.crops.set(starId, {
             ...addCropYields(starCropYield, starCrop),
             cropType: crop.type,
-            isStar: options.useStarSeeds,
+            isStar: true,
           })
 
           // apply seeds required only on last day of cycle
@@ -193,13 +193,13 @@ export default class Harvester {
           harvestDay.crops.set(`${crop.type}-Base`, {
             ...baseCrop,
             cropType: crop.type,
-            isStar: options.useStarSeeds,
+            isStar: false,
           })
 
           harvestDay.crops.set(`${crop.type}-Star`, {
             ...starCrop,
             cropType: crop.type,
-            isStar: options.useStarSeeds,
+            isStar: true,
           })
 
           if (dayInCycle % lastDayOfCycle === 0) {
@@ -218,9 +218,12 @@ export default class Harvester {
     const seedsRemainder = new Map() as Map<ICropName, number>
 
     for (const [, harvest] of dayHarvests) {
+      // Deduct seeds required for replanting
       if (options.includeReplantCost) {
         for (const seedsRequired of harvest.seedsRequired) {
+          // * Uses the id to deduct from the right seed type (base or star)
           const id = seedsRequired[0]
+
           const crop = getCropFromType(seedsRequired[1].type)
           if (!crop) {
             console.error('Crop not found')
@@ -249,13 +252,16 @@ export default class Harvester {
       // Add the harvest to the total harvest
       for (const [cropId, cropYield] of harvest.crops) {
         const crop = cropYield.cropType
+
         const isStar = cropYield.isStar
+
         const total = this._totalHarvest.crops.get(cropId) ?? {
           base: 0,
           extra: 0,
           totalRaw: 0,
           totalWithDeductions: 0,
         } satisfies ICropYield
+
         this._totalHarvest.crops.set(cropId, {
           ...addCropYields(total, cropYield),
           cropType: crop,

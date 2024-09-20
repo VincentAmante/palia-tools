@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import NewSettings from './NewSettings.vue'
 import TotalInventory from './HarvestCalculator/TotalInventory.vue'
+import useHarvester from '~/stores/useHarvester'
+
+const harvester = useHarvester()
 
 const activeTab = ref('display')
 function setTab(tab: string) {
@@ -42,65 +45,71 @@ function setTab(tab: string) {
       </button>
     </section>
     <section
+      v-if="activeTab === 'display'"
       id="display-tab"
       class="flex flex-col gap-2 pt-1"
     >
       <p class="sr-only">
         Summary Display
       </p>
-      <section class="grid gap-x-2 sm:grid-cols-2">
-        <div class="flex flex-col">
-          <p class="px-1 font-semibold text-palia-blue-dark">
+      <section class="flex flex-col flex-wrap gap-2 sm:flex-row">
+        <div class="flex flex-col justify-start p-2 pr-10 border rounded-md bg-accent">
+          <p class="px-1 text-xs font-semibold opacity-60 text-palia-blue-dark">
             Total
           </p>
-          <p class="flex items-center justify-center gap-2 p-1 text-lg font-semibold text-center border rounded-md border-misc bg-accent text-palia-blue">
+          <p class="flex items-center gap-1 text-3xl font-semibold text-center text-palia-blue">
             <img
               width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
               alt="Gold" format="webp"
             >
             10,000
           </p>
+          <p class="text-xs text-palia-blue-dark">
+            <!-- <span class="opacity-50">After </span> -->
+            <span class="font-bold opacity-80">{{ harvester.totalHarvest.lastHarvestDay }}</span>
+            <span class="opacity-60"> Days of Harvest</span>
+          </p>
         </div>
-        <div class="flex flex-col">
-          <p class="px-1 font-semibold text-palia-blue-dark">
+        <div class="flex flex-col justify-start p-2 pr-10 border rounded-md bg-accent">
+          <p class="px-1 text-xs font-semibold opacity-70 text-palia-blue-dark">
             Average
-            <span class="text-xs font-normal opacity-50">
+            <span class="text-xs font-normal">
               (no processing time)
             </span>
           </p>
-          <p class="flex items-center justify-center gap-2 p-1 text-lg font-semibold text-center border rounded-md border-misc bg-accent text-palia-blue">
+          <p class="flex items-center gap-1 text-3xl font-semibold text-center text-palia-blue">
             <img
               width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
               alt="Gold" format="webp"
             >
             1,000
-            <span class="text-xs">/ Harvest</span>
+            <span class="text-xs">/ Palian Day</span>
           </p>
         </div>
-      </section>
-      <section class="grid grid-cols-3 gap-2">
-        <div class="flex flex-col">
-          <p class="px-1 text-sm font-medium text-misc-dark">
+        <div class="flex flex-col justify-start p-2 pr-10 border rounded-md bg-accent">
+          <p class="px-1 text-xs font-semibold opacity-60 text-palia-blue-dark">
             Minimum Level
           </p>
-          <p class="flex items-center justify-center gap-2 p-1 font-semibold text-center rounded-md bg-accent text-palia-blue">
+          <p class="flex items-center gap-1 text-3xl font-semibold text-center text-palia-blue">
             6
           </p>
         </div>
-        <div class="flex flex-col">
-          <p class="px-1 text-sm font-medium text-misc-dark">
-            Last Harvest Day
+      </section>
+      <section class="flex gap-2">
+        <div class="flex flex-col justify-start p-1 pr-8 border rounded-md bg-accent">
+          <p class="px-1 text-xs opacity-60 text-palia-blue-dark">
+            Minimum Lvl
           </p>
-          <p class="flex items-center justify-center gap-2 p-1 font-semibold text-center rounded-md bg-accent text-palia-blue">
-            Day 180
+          <p class="flex items-center gap-1 px-2 text-xl font-semibold text-center text-palia-blue">
+            {{ harvester.settings.level }}
           </p>
         </div>
-        <div class="flex flex-col">
-          <p class="px-1 text-sm font-medium text-misc-dark">
+        <div class="flex flex-col justify-start p-1 pr-8 border rounded-md bg-accent">
+          <p class="px-1 text-xs opacity-60 text-palia-blue-dark">
             Processing Time
           </p>
-          <p class="flex items-center justify-center gap-2 p-1 font-semibold text-center rounded-md bg-accent text-palia-blue">
-            12hrs 25m
+          <p class="flex items-center gap-1 px-2 text-xl font-semibold text-center text-palia-blue">
+            12hrs 55min
           </p>
         </div>
       </section>
@@ -140,6 +149,7 @@ function setTab(tab: string) {
       </section>
     </section>
     <section
+      v-else-if="activeTab === 'options'"
       id="settings-tab"
     >
       <p class="sr-only">
