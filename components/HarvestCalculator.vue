@@ -143,10 +143,10 @@ watchEffect(() => {
                 <div class="flex items-center gap-1 ">
                   Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
                   <div class="flex items-center gap-1">
-                    <nuxt-img
+                    <img
                       width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-                      placeholder alt="Gold" format="webp"
-                    />{{
+                      alt="Gold" format="webp"
+                    >{{
                       processedYields?.totalResult.totalGold.toLocaleString() }}
                   </div>
                 </div>
@@ -161,10 +161,10 @@ watchEffect(() => {
               >
                 <p class="flex items-center gap-1">
                   Raw Average:
-                  <span class="flex items-center gap-1"><nuxt-img
+                  <span class="flex items-center gap-1"><img
                     src="/gold.webp" class="max-h-[1rem]" format="webp"
                     alt="Gold" width="16" height="16" :srcset="undefined"
-                  />{{
+                  >{{
                     (Math.round(processedYields.totalResult.totalGold
                       / processedYields.totalResult.day)).toLocaleString() }}</span>/ day
                 </p>
@@ -210,10 +210,11 @@ watchEffect(() => {
             <div class="flex items-center gap-1 ">
               Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
               <div class="flex items-center gap-1">
-                <nuxt-img
-                  width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" placeholder
+                <img
+                  width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+
                   alt="Gold" format="webp"
-                />{{
+                >{{
                   processedYields?.totalResult.totalGold.toLocaleString() }}
               </div>
             </div>
@@ -228,10 +229,10 @@ watchEffect(() => {
           >
             <p class="flex items-center gap-1">
               Raw Average:
-              <span class="flex items-center gap-1"><nuxt-img
+              <span class="flex items-center gap-1"><img
                 src="/gold.webp" class="max-h-[1rem]" format="webp"
                 alt="Gold" width="16" height="16" :srcset="undefined"
-              />{{
+              >{{
                 (Math.round(processedYields.totalResult.totalGold
                   / processedYields.totalResult.day)).toLocaleString() }}</span>/ day
             </p>
@@ -451,11 +452,11 @@ watchEffect(() => {
                   class="grid items-center justify-start grid-cols-3 gap-2 p-1 py-2 rounded-lg bg-accent text-misc h-fit"
                 >
                   <div class="flex flex-col items-center justify-center pl-1 xl:aspect-square">
-                    <nuxt-img
+                    <img
                       format="webp" class="w-[3.15rem] object-contain p-1 py-1 aspect-square"
                       :srcset="undefined" width="3.5rem" height="3.5rem" :alt="crop?.type"
                       :src="crop?.image || '/crops/unknown.webp'"
-                    />
+                    >
                     <p class="text-sm font-bold text-center capitalize">
                       {{ crop?.type }}
                     </p>

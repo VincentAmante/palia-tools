@@ -27,14 +27,13 @@ defineProps({
       :data-tip="tooltip"
       class="z-50 hidden w-full h-full sm:absolute sm:tooltip"
     />
-    <nuxt-img
+    <img
       v-if="imgSrc"
       :src="imgSrc"
       width="36px"
       class="object-contain aspect-square"
       :srcset="undefined"
-      placeholder
-    />
+    >
     <p
       class="absolute top-0 right-0 text-xs p-[1px] px-[6px] text-center align-middle rounded-lg text-accent"
       :class="(amount < 0) ? 'bg-error bg-opacity-70' : 'bg-neutral bg-opacity-40'"

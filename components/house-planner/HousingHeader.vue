@@ -6,11 +6,11 @@
         <div class="w-full py-3 navbar sm:px-12 lg:px-22">
           <div class="flex-1 mx-2">
             <NuxtLink to="/" class="flex items-center gap-2">
-              <nuxt-img
+              <img
                 format="webp" src="/housing-logo.webp"
                 width="48px" height="48px" alt="Palia Garden Planner Logo"
                 class="max-w-[3rem]"
-              />
+              >
               <div class="flex flex-col gap-0 leading-tight">
                 <h1 class="text-xl font-bold leading-tight text-left lg:text-2xl">
                   Palia Housing Planner
@@ -67,7 +67,7 @@
                     </li>
                     <li class="text-sm">
                       <NuxtLink to="https://paliapedia.com/" class="flex" rel="noopener">
-                        <nuxt-img
+                        <img
                           src="/externals/paliapedia.svg" width="18px" height="18px"
                           class="max-w-[1.5rem] inline-block text-lg"
                           alt="Paliapedia Logo"
@@ -145,7 +145,7 @@
                 </li>
                 <li class="text-sm">
                   <NuxtLink to="https://paliapedia.com/" class="flex" rel="noopener">
-                    <nuxt-img
+                    <img
                       src="/externals/paliapedia.svg" width="18px" height="18px"
                       class="max-w-[1.5rem] inline-block text-lg"
                       alt="Paliapedia Logo"

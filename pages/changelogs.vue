@@ -34,6 +34,16 @@ useHead({
       <div class="grid gap-2">
         <ChangelogItem checked>
           <template #title>
+            October 10, 2024 — Mild internal tweak
+          </template>
+          <template #summary>
+            <li>
+              Changed how images render to test performance improvements
+            </li>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
+          <template #title>
             May 28, 2024 — 0.180 Patch Parity
           </template>
           <template #summary>
