@@ -11,6 +11,8 @@
             from
             resources such as Arenvanya's
             <NuxtLink
+
+              :prefetch="false"
               href="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
               target="_blank" class="items-center inline-block gap-1 font-bold text-harvest-boost-dark"
             >
@@ -19,6 +21,8 @@
             </NuxtLink>
             and their
             <NuxtLink
+
+              :prefetch="false"
               to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
               target="_blank" class="inline-block gap-1 font-bold text-harvest-boost-dark"
             >

@@ -97,7 +97,11 @@ useHead({
             </li>
             <li>
               <span class="italic">House Planner development now indefinitely halted —</span> Please see the
-              <NuxtLink class="link" to="/house-planner">
+              <NuxtLink
+                class="link"
+                :prefetch="false"
+                to="/house-planner"
+              >
                 House Planner page
               </NuxtLink> for more information
             </li>
@@ -261,6 +265,7 @@ useHead({
             <li>
               <span class="ml-5">Experimental Release</span> - Added a proof of concept house planner: <NuxtLink
                 class="link" to="/house-planner"
+                :prefetch="false"
               >
                 Link Here
               </NuxtLink> (Warning: Heavily early stage, not recommended for regular use)
