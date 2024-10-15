@@ -108,8 +108,8 @@ const paginationButtons = computed<PaginationButton[]>(() => {
 <template>
   <div class="isolate">
     <div class="grid gap-[2px]">
-      <div class="min-h-16 pr-2 rounded-md rounded-b-none bg-accent">
-        <table class="table px-4 bg-accent text-misc rounded-none">
+      <div class="pr-2 rounded-md rounded-b-none min-h-16 bg-accent">
+        <table class="table px-4 rounded-none bg-accent text-misc">
           <tbody class="h-full">
             <th class="sr-only">
               <td>Harvest Day</td>
@@ -120,13 +120,13 @@ const paginationButtons = computed<PaginationButton[]>(() => {
               :key="index"
               class="!border-b-0"
             >
-              <td class="flex gap-0 items-end flex-wrap w-full max-w-md py-2">
+              <td class="flex flex-wrap items-end w-full max-w-md gap-0 py-2">
                 <div class="flex flex-col w-full">
-                  <p class="font-semibold text-xs">
+                  <p class="text-xs font-semibold">
                     Day {{ harvest.day }}
                   </p>
                   <div
-                    class="flex flex-wrap max-w-xl w-fit items-start justify-start gap-2"
+                    class="flex flex-wrap items-start justify-start max-w-xl gap-2 w-fit"
                   >
                     <template v-for="(crop, cropType) of harvest.crops" :key="cropType">
                       <!-- Star Produce -->
@@ -140,7 +140,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
                         <template #icon>
                           <font-awesome-icon
                             v-if="crop.star.produce < 0"
-                            class="text-error text-sm"
+                            class="text-sm text-error"
                             :icon="['fas', 'seedling']"
                           />
                         </template>
@@ -155,7 +155,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
                         star
                       >
                         <template #icon>
-                          <font-awesome-icon class="text-success text-sm" :icon="['fas', 'recycle']" />
+                          <font-awesome-icon class="text-sm text-success" :icon="['fas', 'recycle']" />
                         </template>
                       </CropDisplayAlt>
                       <!-- Star Seed Remainder for Replanting -->
@@ -168,7 +168,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
                       >
                         <template #icon>
                           <font-awesome-icon
-                            class="font-bold text-warning text-sm"
+                            class="text-sm font-bold text-warning"
                             :icon="['fas', 'turn-down']"
                           />
                         </template>
@@ -190,7 +190,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
                         :amount="crop.base.cropRemainder"
                       >
                         <template #icon>
-                          <font-awesome-icon class="text-success text-sm" :icon="['fas', 'recycle']" />
+                          <font-awesome-icon class="text-sm text-success" :icon="['fas', 'recycle']" />
                         </template>
                       </CropDisplayAlt>
 
@@ -203,7 +203,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
                       >
                         <template #icon>
                           <font-awesome-icon
-                            class="font-bold text-warning text-sm"
+                            class="text-sm font-bold text-warning"
                             :icon="['fas', 'turn-down']"
                           />
                         </template>
@@ -213,16 +213,15 @@ const paginationButtons = computed<PaginationButton[]>(() => {
                 </div>
               </td>
               <td class="">
-                <p class="flex gap-1 font-bold items-center pr-1 justify-end">
-                  <nuxt-img
+                <p class="flex items-center justify-end gap-1 pr-1 font-bold">
+                  <img
                     format="webp"
                     src="/gold.webp"
                     class="max-h-[1.5rem]"
                     width="1rem"
                     height="1rem"
                     alt="Gold"
-                    placeholder
-                  />{{
+                  >{{
                     harvest.totalGold.toLocaleString() }}
                 </p>
               </td>
@@ -230,7 +229,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
           </tbody>
         </table>
       </div>
-      <div class="bg-accent text-misc p-2 rounded-b-md flex items-center w-full justify-center gap-2">
+      <div class="flex items-center justify-center w-full gap-2 p-2 bg-accent text-misc rounded-b-md">
         <button @click="prev">
           <font-awesome-icon :icon="['fas', 'chevron-left']" />
         </button>

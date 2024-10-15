@@ -20,17 +20,16 @@ defineProps({
 </script>
 
 <template>
-  <div class="relative isolate h-full aspect-square p-2 flex flex-col items-center justify-center">
+  <div class="relative flex flex-col items-center justify-center h-full p-2 isolate aspect-square">
     <div
       :data-tip="tooltip"
-      class="hidden sm:absolute sm:tooltip w-full h-full z-50"
+      class="z-50 hidden w-full h-full sm:absolute sm:tooltip"
     />
-    <nuxt-img
+    <img
       v-if="imgSrc"
       :src="imgSrc"
       class="max-w-[2rem] object-contain aspect-square"
-      placeholder
-    />
+    >
     <p
       class="absolute top-0 right-0 text-xs p-[1px] px-[6px] text-center align-middle rounded-lg text-accent"
       :class="(amount < 0) ? 'bg-error bg-opacity-70' : 'bg-neutral bg-opacity-40'"
@@ -41,7 +40,7 @@ defineProps({
       <slot name="icon" />
     </p>
     <p class="absolute bottom-0 left-0">
-      <font-awesome-icon v-if="star" class="text-quality-increase text-sm" :icon="['fas', 'star']" />
+      <font-awesome-icon v-if="star" class="text-sm text-quality-increase" :icon="['fas', 'star']" />
     </p>
   </div>
 </template>

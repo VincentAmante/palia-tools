@@ -669,40 +669,41 @@ function fitStageIntoParentContainer() {
         </h2>
         <ul class="flex gap-4 lg:grid">
           <li class="flex items-center gap-2 text-lg">
-            <nuxt-img
-              width="16" height="16" src="/gold.webp" class="max-h-[1.5rem]" :srcset="undefined" placeholder
+            <img
+              width="16" height="16" src="/gold.webp" class="max-h-[1.5rem]"
+              :srcset="undefined"
               alt="Gold" format="webp"
-            />
+            >
             {{ totalPrice.toLocaleString() }}
           </li>
           <li
             v-if="totalMaterials.sapwoodPlanks > 0"
             class="flex items-center gap-2 text-lg"
           >
-            <nuxt-img
+            <img
               width="32" height="32" src="/items/sapwood-plank.png" class="max-h-[3rem] aspect-auto object-contain"
-              :srcset="undefined" placeholder alt="Gold" format="webp"
-            />
+              :srcset="undefined" alt="Gold" format="webp"
+            >
             {{ totalMaterials.sapwoodPlanks.toLocaleString() }}
           </li>
           <li
             v-if="totalMaterials.stoneBricks > 0"
             class="flex items-center gap-2 text-lg"
           >
-            <nuxt-img
+            <img
               width="32" height="32" src="/items/stone-brick.png" class="max-h-[3rem] aspect-auto object-contain"
-              :srcset="undefined" placeholder alt="Gold" format="webp"
-            />
+              :srcset="undefined" alt="Gold" format="webp"
+            >
             {{ totalMaterials.stoneBricks.toLocaleString() }}
           </li>
           <li
             v-if="totalMaterials.glassPanes > 0"
             class="flex items-center gap-2 text-lg"
           >
-            <nuxt-img
+            <img
               width="32" height="32" src="/items/glass-pane.webp" class="max-h-[3rem] aspect-auto object-contain"
-              :srcset="undefined" placeholder alt="Gold" format="webp"
-            />
+              :srcset="undefined" alt="Gold" format="webp"
+            >
             {{ totalMaterials.glassPanes.toLocaleString() }}
           </li>
         </ul>
