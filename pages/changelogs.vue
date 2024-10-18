@@ -34,7 +34,26 @@ useHead({
       <div class="grid gap-2">
         <ChangelogItem checked>
           <template #title>
-            October 10, 2024 — Mild internal tweak
+            October 18, 2024 — 2nd Internal Tweak
+          </template>
+          <template #summary>
+            <li>
+              Changed how images render to test performance improvements
+            </li>
+          </template>
+          <template #default>
+            <p>
+              Hello! The last internal tweak proved to be beneficial in reducing host resource consumption without affecting user experience.
+              As a result, another tweak is being implemented to optimise another aspect of the website.
+            </p>
+            <p>
+              If you have been facing any issues since the update today or the previous one, please contact me on Discord below.
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem checked>
+          <template #title>
+            October 15, 2024 — Mild internal tweak
           </template>
           <template #summary>
             <li>
