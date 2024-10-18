@@ -5,7 +5,9 @@
       <div class="flex flex-col drawer-content">
         <div class="w-full py-3 navbar sm:px-12 lg:px-22">
           <div class="flex-1 mx-2">
-            <NuxtLink to="/" class="flex items-center gap-2">
+            <NuxtLink
+              :prefetch="false" to="/" class="flex items-center gap-2"
+            >
               <img
                 format="webp" src="/housing-logo.webp"
                 width="48px" height="48px" alt="Palia Garden Planner Logo"
@@ -36,12 +38,16 @@
                   </NuxtLink>
                 </li> -->
                 <li>
-                  <NuxtLink to="/changelogs">
+                  <NuxtLink
+                    :prefetch="false" to="/changelogs"
+                  >
                     Changelogs
                   </NuxtLink>
                 </li>
                 <li>
-                  <NuxtLink to="/credits">
+                  <NuxtLink
+                    :prefetch="false" to="/credits"
+                  >
                     Credits
                   </NuxtLink>
                 </li>

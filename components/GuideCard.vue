@@ -1,7 +1,9 @@
 <template>
   <div class="grid md:grid-cols-3 items-center gap-2 px-2 text-center lg:px-12 max-w-[1680px]">
     <NuxtLink
-      to="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/" target="_blank"
+      to="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
+      target="_blank"
+      :prefetch="false"
       class="flex items-center justify-center w-full gap-1 p-4 normal-case rounded-lg bg-opacity-70 bg-op md:col-span-2 md:p-2 h-fit btn bg-palia-dark-blue hover:border-none hover:bg-primary hover:text-palia-dark-blue"
     >
       <!-- <font-awesome-icon :icon="['fas', 'book-open']" class="mr-1 text-lg" /> -->
@@ -13,7 +15,9 @@
       </p>
     </NuxtLink>
     <NuxtLink
-      to="https://ko-fi.com/aisencrown" target="_blank"
+      to="https://ko-fi.com/aisencrown"
+      target="_blank"
+      :prefetch="false"
       class="flex items-center justify-center w-full gap-1 p-4 normal-case rounded-lg bg-opacity-70 md:p-2 h-fit btn bg-palia-dark-blue hover:text-palia-dark-blue hover:border-none hover:bg-primary"
     >
       <img src="/externals/kofi.webp" alt="Ko-fi Logo" width="28" class="mr-1">
