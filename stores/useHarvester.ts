@@ -24,7 +24,7 @@ const useHarvester = defineStore('harvester', () => {
   }
 
   function updateSettings(newSettings: IHarvesterOptions) {
-    harvestSettingsRef.value = newSettings
+    harvestSettingsRef.value = { ...newSettings }
   }
 
   const harvester = computed(() => harvesterRef.value)

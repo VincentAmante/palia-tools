@@ -90,8 +90,8 @@ function convertHarvestData() {
     const baseCropName = `${cropType}-Base` as ICropName
     const starCropName = `${cropType}-Star` as ICropName
 
-    const baseCropYield = harvesterTotal.crops.get(baseCropName)?.total ?? 0
-    const starCropYield = harvesterTotal.crops.get(starCropName)?.total ?? 0
+    const baseCropYield = harvesterTotal.crops.get(baseCropName)?.totalWithDeductions ?? 0
+    const starCropYield = harvesterTotal.crops.get(starCropName)?.totalWithDeductions ?? 0
 
     harvestTotal.crops[cropType].base = baseCropYield
     harvestTotal.crops[cropType].star = starCropYield

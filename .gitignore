@@ -22,3 +22,7 @@ logs
 .env
 .env.*
 !.env.example
+
+# These folders are no longer being updated
+/components/house-planner
+/assets/scripts/house-planner

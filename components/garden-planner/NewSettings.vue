@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ItemDisplayAlt from './HarvestCalculator/ItemDisplayAlt.vue'
 import OptionCard from './HarvestCalculator/OptionCard.vue'
+import SettingsMinutesDisplay from './SettingsMinutesDisplay.vue'
 import useHarvester from '~/stores/useHarvester'
 import type { ProcessorSetting, ProcessorSettings } from '~/assets/scripts/garden-planner/classes/processor'
 import { type ICropName, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
@@ -11,28 +12,33 @@ import type { IHarvesterOptions } from '~/assets/scripts/garden-planner/classes/
 const harvester = useHarvester()
 
 const harvesterSettings = ref({
-  days: -1,
-  includeReplant: true,
-  includeReplantCost: true,
-  level: 25,
-  useGrowthBoost: false,
-  useStarSeeds: true,
+  days: -1 as number | 'L' | 'M',
+  includeReplant: true as boolean,
+  includeReplantCost: true as boolean,
+  level: 25 as number,
+  useGrowthBoost: false as boolean,
+  useStarSeeds: true as boolean,
 } satisfies IHarvesterOptions)
 
 const starBaseChance = ref(0.25 + (harvesterSettings.value.useStarSeeds ? 0.25 : 0) + (harvesterSettings.value.level * 0.02))
 
 watchEffect(() => {
-  if (harvesterSettings.value.level < 0 || Number.isNaN(harvesterSettings.value.level))
+  if (harvesterSettings.value.level < 0)
     harvesterSettings.value.level = 0
 
   starBaseChance.value = 0.25 + (harvesterSettings.value.useStarSeeds ? 0.25 : 0) + (harvesterSettings.value.level * 0.02)
 
   starBaseChance.value = Math.min(1, starBaseChance.value)
 
-  if (harvesterSettings.value.days < -1 || Number.isNaN(harvesterSettings.value.days))
+  if (harvesterSettings.value.days === 'L')
+    harvesterSettings.value.days = -1
+  else if (harvesterSettings.value.days === 'M')
+    harvesterSettings.value.days = 0
+
+  if (harvesterSettings.value.days < -1)
     harvesterSettings.value.days = -1
 
-  harvester.updateSettings(harvesterSettings.value)
+  harvester.updateSettings({ ...harvesterSettings.value })
 })
 
 const processor = useProcessor()
@@ -56,11 +62,28 @@ watchEffect(() => {
       isActive: true,
     }
 
-    processorSettings.value.cropSettings.set(cropId, {
-      ...cropSetting,
-      isActive: true,
-    })
+    processorSettings.value = {
+      ...processorSettings.value,
+      cropSettings: new Map(processorSettings.value.cropSettings).set(cropId, cropSetting),
+    }
+
+    processorSettings.value.cropSettings.get(cropId)!.isActive = true
   }
+})
+
+// Allows us to save settings of unselected crops
+const activeProcessorSettings = computed(() => {
+  const activeSettings = {
+    cropSettings: new Map() as Map<ICropName, ProcessorSetting>,
+    crafterSetting: 0,
+  } satisfies ProcessorSettings
+
+  for (const [cropId, setting] of processorSettings.value.cropSettings) {
+    if (setting.isActive)
+      activeSettings.cropSettings.set(cropId, setting)
+  }
+
+  return activeSettings
 })
 
 function getCropImgSrc(cropType: CropType) {
@@ -79,27 +102,26 @@ function getCropImgSrc(cropType: CropType) {
   }
 }
 
-// Allows us to save settings of unselected crops
-const activeProcessorSettings = computed(() => {
-  const activeSettings = {
-    cropSettings: new Map() as Map<ICropName, ProcessorSetting>,
-    crafterSetting: 0,
-  } satisfies ProcessorSettings
-
-  for (const [cropId, setting] of processorSettings.value.cropSettings) {
-    if (setting.isActive)
-      activeSettings.cropSettings.set(cropId, setting)
-  }
-
-  return activeSettings
-})
-
 const activeTab = ref('Harvest')
 
-watch(activeProcessorSettings, () => {
-  processor.updateSettings(activeProcessorSettings.value)
+function updateSettings() {
+  processor.updateSettings(Object.assign({}, processorSettings.value))
   processor.simulateProcessing(harvester.totalHarvest)
-}, { deep: true })
+}
+
+function onChangeSettings() {
+  updateSettings()
+}
+
+function minutesToHoursAndMinutes(minutes: number) {
+  const hours = Math.floor(minutes / 60)
+  const remainingMinutes = minutes % 60
+
+  return {
+    hours,
+    minutes: remainingMinutes,
+  }
+}
 </script>
 
 <template>
@@ -166,40 +188,62 @@ watch(activeProcessorSettings, () => {
           class="flex flex-col max-h-full gap-1 pb-8 pl-1 pr-2 rounded-b-md bg-accent"
         >
           <li
-            v-for="(setting, cropId) in activeProcessorSettings.cropSettings"
+            v-for="[cropId, setting] in activeProcessorSettings.cropSettings"
             :key="cropId"
-            class="grid items-center grid-cols-10 gap-2 py-1 pb-2  text-misc [&:not(:last-child)]:border-b "
+            class="grid items-center grid-cols-10 gap-2 py-1 pb-3  text-misc [&:not(:last-child)]:border-b "
           >
             <div class="flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
               <ItemDisplayAlt
-                :img-src="getCropImgSrc(setting[1].cropType).src"
-                :img-alt="getCropImgSrc(setting[1].cropType).alt"
-                :star="setting[1].isStar"
+                :img-src="getCropImgSrc(setting.cropType).src"
+                :img-alt="getCropImgSrc(setting.cropType).alt"
+                :star="setting.isStar"
               />
               <p class="hidden font-bold capitalize xl:text-xs 2xl:text-sm xl:block">
-                {{ setting[1].cropType }}
+                {{ setting.cropType }}
               </p>
             </div>
             <div class="flex items-center justify-start w-full h-full col-span-5 md:col-span-6 xl:col-span-5">
               <div class="join ">
                 <button
                   class="btn join-item btn-primary btn-xs md:btn-sm"
-                  :class="(setting[1].processAs === ItemType.Crop) ? 'btn-active' : ''"
-                  @click="setting[1].processAs = ItemType.Crop"
+                  :class="(setting.processAs === ItemType.Crop) ? 'btn-active' : ''"
+                  @click="async () => {
+                    if (setting.processAs === ItemType.Crop)
+                      return
+
+                    setting.processAs = ItemType.Crop
+
+                    await nextTick()
+                    onChangeSettings()
+                  }"
                 >
                   Crop
                 </button>
                 <button
                   class="btn join-item btn-primary btn-xs md:btn-sm"
-                  :class="(setting[1].processAs === ItemType.Seed) ? 'btn-active' : ''"
-                  @click="setting[1].processAs = ItemType.Seed"
+                  :class="(setting.processAs === ItemType.Seed) ? 'btn-active' : ''"
+                  @click="() => {
+                    if (setting.processAs === ItemType.Seed)
+                      return
+
+                    setting.processAs = ItemType.Seed
+
+                    onChangeSettings()
+                  }"
                 >
                   Seed
                 </button>
                 <button
                   class="btn join-item btn-primary btn-xs md:btn-sm"
-                  :class="(setting[1].processAs === ItemType.Preserve) ? 'btn-active' : ''"
-                  @click="setting[1].processAs = ItemType.Preserve"
+                  :class="(setting.processAs === ItemType.Preserve) ? 'btn-active' : ''"
+                  @click="() => {
+                    if (setting.processAs === ItemType.Preserve)
+                      return
+
+                    setting.processAs = ItemType.Preserve
+
+                    onChangeSettings()
+                  }"
                 >
                   Preserve
                 </button>
@@ -207,27 +251,51 @@ watch(activeProcessorSettings, () => {
             </div>
 
             <div
-              v-if="setting[1].processAs !== ItemType.Crop"
-              class="flex items-center justify-start w-full h-full col-span-3 gap-2 pl-2"
+              v-if="setting.processAs !== ItemType.Crop"
+              class="relative flex flex-col items-start justify-start w-full h-full col-span-3 gap-2 pl-2"
             >
               <div class="join">
                 <button
                   class="btn btn-square btn-primary btn-xs lg:btn-sm join-item"
-                  :disabled="setting[1].crafters <= 1"
-                  @click="setting[1].crafters--"
+                  :disabled="setting.crafters <= 1"
+                  @click="() => {
+                    if (setting.crafters <= 1)
+                      return
+
+                    setting.crafters--
+
+                    onChangeSettings()
+                  }"
                 >
                   <font-awesome-icon :icon="['fas', 'chevron-left']" />
                 </button>
                 <input
-                  v-model="setting[1].crafters" class="w-8 text-sm text-center bg-accent text-misc"
+                  v-model="setting.crafters" class="w-8 text-sm text-center bg-accent text-misc"
                   join-item
                   type="number"
                   min="1"
+                  @change="() => {
+                    if (setting.crafters < 1)
+                      setting.crafters = 1
+
+                    onChangeSettings()
+                  }"
                 >
-                <button class="btn btn-square btn-primary btn-xs lg:btn-sm join-item" @click="setting[1].crafters++">
+                <button
+                  class="btn btn-square btn-primary btn-xs lg:btn-sm join-item"
+                  @click="() => {
+                    setting.crafters++
+
+                    onChangeSettings()
+                  }"
+                >
                   <font-awesome-icon :icon="['fas', 'chevron-right']" />
                 </button>
               </div>
+              <SettingsMinutesDisplay
+                class="absolute bottom-0 translate-y-2"
+                :minutes="processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedFinal "
+              />
             </div>
           </li>
         </ul>

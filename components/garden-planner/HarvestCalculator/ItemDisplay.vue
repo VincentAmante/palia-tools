@@ -34,7 +34,7 @@ defineProps({
     class="relative flex flex-col items-center justify-center h-full rounded-md isolate aspect-square bg-accent"
   >
     <div
-      :data-tip="tooltip || `${count * baseGoldValue}g`"
+      :data-tip="tooltip || `${(count * baseGoldValue).toLocaleString()} Gold`"
       class="z-50 hidden w-full h-full sm:absolute sm:tooltip"
     />
     <div class="relative w-full h-full p-2 pt-[10px] rounded-md isolate overflow-clip">
@@ -54,7 +54,7 @@ defineProps({
         class="absolute top-0 right-0 px-[2px] text-xs font-semibold  text-center align-middle rounded-lg "
         :class="(count < 0) ? 'text-error' : ' text-misc-dark'"
       >
-        {{ count }}
+        {{ count.toLocaleString() }}
       </p>
       <p class="absolute bottom-0 right-1">
         <slot name="icon" />

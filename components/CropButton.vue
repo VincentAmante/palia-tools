@@ -82,7 +82,7 @@ const dragHandler = useDragAndDrop()
       v-if="(crop && crop.image != null && crop.image !== '')" class="absolute -z-10 max-w-[34px] "
       draggable="false" :src="crop.image" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
       :alt="crop.type" :srcset="undefined" placeholder
-    />
+    >
     <font-awesome-icon v-else class="absolute -z-10 max-w-[45px] text-warning text-3xl " :icon="['fas', 'eraser']" />
   </button>
 </template>

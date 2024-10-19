@@ -153,6 +153,13 @@ export interface ITotalHarvest {
   seedsRemainder: Map<ICropName, ISeedTracker>
 }
 
+interface IHarvestCyclePhase {
+  index: number
+  phaseLength: number
+  daysToNextPhase: number
+  countPerHarvest: number
+}
+
 export interface IInventoryItem {
   count: number
   img: {
@@ -161,16 +168,11 @@ export interface IInventoryItem {
   }
   isStar: boolean
   baseGoldValue: number
+  itemType: ItemType
+  cropType: CropType
 }
 
-export type IInventory = {
-  [key in
-  ItemType.Crop |
-  ItemType.Seed |
-  ItemType.Preserve |
-  ItemType.Fertiliser
-  ]?: Record<string, IInventoryItem>
-}
+export type TInventory = Map<string, IInventoryItem>
 
 export type TCropTiles = Map<string, Tile>
 

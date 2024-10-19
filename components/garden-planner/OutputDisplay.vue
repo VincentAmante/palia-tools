@@ -2,13 +2,30 @@
 import NewSettings from './NewSettings.vue'
 import TotalInventory from './HarvestCalculator/TotalInventory.vue'
 import useHarvester from '~/stores/useHarvester'
+import useProcessor from '~/stores/useProcessor'
 
 const harvester = useHarvester()
+const processor = useProcessor()
+
+const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
 
 const activeTab = ref('display')
 function setTab(tab: string) {
   activeTab.value = tab
 }
+
+const craftingTime = computed(() => {
+  const timeInMinutes = processor.highestCraftingTime
+
+  const hours = Math.floor(timeInMinutes / 60)
+  const minutes = timeInMinutes % 60
+
+  return {
+    actualValue: timeInMinutes,
+    hours,
+    minutes,
+  }
+})
 </script>
 
 <template>
@@ -45,7 +62,7 @@ function setTab(tab: string) {
       </button>
     </section>
     <section
-      v-if="activeTab === 'display'"
+      v-show="activeTab === 'display'"
       id="display-tab"
       class="flex flex-col gap-2 pt-1"
     >
@@ -62,18 +79,16 @@ function setTab(tab: string) {
               width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
               alt="Gold" format="webp"
             >
-            10,000
-          </p>
-          <p class="text-xs text-palia-blue-dark">
-            <!-- <span class="opacity-50">After </span> -->
-            <span class="font-bold opacity-80">{{ harvester.totalHarvest.lastHarvestDay }}</span>
-            <span class="opacity-60"> Days of Harvest</span>
+            {{ (processor.finalGoldValue || 0).toLocaleString() }}
           </p>
         </div>
         <div class="flex flex-col justify-start p-2 pr-10 border rounded-md bg-accent">
           <p class="px-1 text-xs font-semibold opacity-70 text-palia-blue-dark">
             Average
-            <span class="text-xs font-normal">
+            <span
+              v-if="craftingTime.actualValue <= 0"
+              class="text-xs font-normal"
+            >
               (no processing time)
             </span>
           </p>
@@ -82,16 +97,8 @@ function setTab(tab: string) {
               width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
               alt="Gold" format="webp"
             >
-            1,000
-            <span class="text-xs">/ Palian Day</span>
-          </p>
-        </div>
-        <div class="flex flex-col justify-start p-2 pr-10 border rounded-md bg-accent">
-          <p class="px-1 text-xs font-semibold opacity-60 text-palia-blue-dark">
-            Minimum Level
-          </p>
-          <p class="flex items-center gap-1 text-3xl font-semibold text-center text-palia-blue">
-            6
+            {{ (processor.averageGoldValue || 0).toLocaleString() }}
+            <span class="text-xs">/ {{ processor.highestCraftingTime > 0 ? 'Hour' : 'Palian Day' }}</span>
           </p>
         </div>
       </section>
@@ -109,14 +116,51 @@ function setTab(tab: string) {
             Processing Time
           </p>
           <p class="flex items-center gap-1 px-2 text-xl font-semibold text-center text-palia-blue">
-            12hrs 55min
+            {{ craftingTime.hours }}<span>hrs</span> {{ craftingTime.minutes }}<span>min</span>
+          </p>
+        </div>
+        <div class="flex flex-col justify-start p-1 pr-8 border rounded-md bg-accent">
+          <p class="px-1 text-xs opacity-60 text-palia-blue-dark">
+            Days of Harvest
+          </p>
+          <p class="flex items-center gap-1 px-2 text-xl font-semibold text-center text-palia-blue">
+            {{ harvester.totalHarvest.lastHarvestDay }}
           </p>
         </div>
       </section>
       <section class="text-xs">
         <ul class="flex flex-wrap gap-1 text-palia-blue-dark">
-          <li class="">
-            Star Seeds
+          <li class="text-xs border-none badge bg-quality-increase-dark">
+            <font-awesome-icon
+              class="mr-1"
+              :class="harvester.settings.useStarSeeds ? '' : ' opacity-50'"
+              :icon="['fas', 'star']"
+            />
+            {{ harvester.settings.useStarSeeds ? 'Star Seed' : 'Normal Seed' }}
+          </li>
+          <li
+            v-if="harvester.settings.includeReplant"
+            class="text-xs border-none badge bg-harvest-boost-dark"
+          >
+            <span>
+              <font-awesome-icon :icon="['fas', 'seedling']" class="mr-1" />
+              Include Replant
+            </span>
+            <span v-if="harvester.settings.includeReplantCost">
+              &nbsp;& Cost
+            </span>
+          </li>
+          <li class="text-xs border border-none badge bg-growth-boost">
+            <p>
+              <font-awesome-icon :icon="['fas', 'forward-fast']" class="mr-1" />
+              Growth Boost
+            </p>
+          </li>
+          <li class="text-xs badge">
+            {{ Math.trunc(Math.min(100, starBaseChance * 100)) }}% Star Crop Chance
+          </li>
+          <li class="text-xs badge">
+            No Fertiliser Cost
           </li>
         </ul>
       </section>
@@ -127,11 +171,7 @@ function setTab(tab: string) {
             Seed Collectors
           </p>
           <p class="flex items-center justify-center gap-2 p-1 text-lg font-semibold text-center border rounded-md border-misc bg-accent text-palia-blue">
-            <img
-              width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-              alt="Gold" format="webp"
-            >
-            10,000
+            {{ processor.seedCollectorsCount }}
           </p>
         </div>
         <div class="flex flex-col w-full">
@@ -139,17 +179,13 @@ function setTab(tab: string) {
             Preserve Jars
           </p>
           <p class="flex items-center justify-center gap-2 p-1 text-lg font-semibold text-center border rounded-md border-misc bg-accent text-palia-blue">
-            <img
-              width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-              alt="Gold" format="webp"
-            >
-            10,000
+            {{ processor.preserveJarsCount }}
           </p>
         </div>
       </section>
     </section>
     <section
-      v-else-if="activeTab === 'options'"
+      v-show="activeTab === 'options'"
       id="settings-tab"
     >
       <p class="sr-only">

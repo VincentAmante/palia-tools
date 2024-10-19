@@ -28,7 +28,6 @@ const processor = useProcessor()
 
 watchEffect(() => {
   harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles)
-
   processor.simulateProcessing(harvester.totalHarvest)
 })
 
