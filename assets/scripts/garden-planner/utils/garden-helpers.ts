@@ -143,21 +143,34 @@ export interface IDayHarvest {
 }
 
 export type DayHarvests = Map<number, IDayHarvest>
+
 export interface IDayHarvests {
   [key: number]: IDayHarvest
 }
 
 export interface ITotalHarvest {
   lastHarvestDay: number
-  crops: Map<ICropName, ICropYield & ICropInfo>
+  crops: Map<ICropNameWithGrowthDiff, ICropYield & ICropInfo>
   seedsRemainder: Map<ICropName, ISeedTracker>
+  cycleData: Map<ICropNameWithGrowthDiff, ICropHarvestCycle>
 }
 
-interface IHarvestCyclePhase {
-  index: number
+export interface IHarvestCyclePhase {
+  dayOfHarvest: number
   phaseLength: number
-  daysToNextPhase: number
-  countPerHarvest: number
+  yield: {
+    base: ICropYield & {
+      isAveraged: boolean
+    }
+    star: ICropYield & {
+      isAveraged: boolean
+    }
+  }
+}
+
+export interface ICropHarvestCycle {
+  phasesCount: number
+  phases: IHarvestCyclePhase[]
 }
 
 export interface IInventoryItem {

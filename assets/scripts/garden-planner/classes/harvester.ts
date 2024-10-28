@@ -1,6 +1,6 @@
 import { Bonus, CropType, getCropFromType } from '../imports'
 
-import type { DayHarvests, ICropName, ICropNameWithGrowthDiff, ICropYield, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
+import type { DayHarvests, ICropHarvestCycle, ICropName, ICropNameWithGrowthDiff, ICropYield, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
 
 export interface IHarvesterOptions {
   days: number | 'L' | 'M'
@@ -21,6 +21,7 @@ export default class Harvester {
     lastHarvestDay: 0,
     crops: new Map(),
     seedsRemainder: new Map(),
+    cycleData: new Map(),
   }
 
   get dayHarvests(): DayHarvests {
@@ -36,6 +37,7 @@ export default class Harvester {
       lastHarvestDay: 0,
       crops: new Map(),
       seedsRemainder: new Map(),
+      cycleData: new Map(),
     }
   }
 
@@ -45,7 +47,8 @@ export default class Harvester {
       lastHarvestDay: 0,
       crops: new Map(),
       seedsRemainder: new Map(),
-    }
+      cycleData: new Map(),
+    } as ITotalHarvest
   }
 
   simulateYield(tiles: TUniqueTiles, options: IHarvesterOptions): void {
@@ -55,8 +58,8 @@ export default class Harvester {
     }
 
     this.reset()
-    let dayOfLastHarvest = 0
 
+    let dayOfLastHarvest = 0
     switch (options.days) {
       // This fetches the day in which all crops are harvestable
       case -1:
@@ -78,6 +81,9 @@ export default class Harvester {
     let dayHarvests = new Map() as DayHarvests
 
     const seedsRequiredIdSuffix = options.useStarSeeds ? '-Star' : '-Base'
+
+    // const cycleData = new Map() as Map<ICropNameWithGrowthDiff, ICropHarvestCycle>
+
     /**
      * For each crop, calculate the harvest once and then apply the harvest to each day.
      * This is faster than the old method of calculating the harvest for each day,
@@ -140,7 +146,7 @@ export default class Harvester {
        */
       const lastDayOfCycle = harvestableDays[harvestableDays.length - 1]
 
-      // Just a type check
+      // Just a type check for TS
       if (lastDayOfCycle === undefined)
         continue
 
@@ -155,10 +161,44 @@ export default class Harvester {
        */
       const cycleRemainder = dayOfLastHarvest % lastDayOfCycle
 
+      // console.log('cycleRemainder', cycleRemainder)
+
+      let remainingHarvests = 0
+      if (cycleRemainder > 0) {
+        // console.log('harvestDays', harvestableDays)
+
+        for (let i = 1; i <= cycleRemainder; i++) {
+          if (harvestableDays.includes(i))
+            remainingHarvests++
+        }
+      }
+
+      // save cycle data
+      const cropHarvestCycle = {
+        cropType: tile.crop.type,
+        phasesCount: (cycles * harvestableDays.length) + remainingHarvests,
+        phases: [],
+      } as ICropHarvestCycle
+
+      for (let phase = 0; phase < harvestableDays.length; phase++) {
+        const phaseLength = (phase > 0)
+          ? harvestableDays[phase] - harvestableDays[phase - 1]
+          : harvestableDays[0]
+
+        cropHarvestCycle.phases.push({
+          dayOfHarvest: harvestableDays[phase],
+          phaseLength,
+          yield: {
+            base: { ...baseCrop, isAveraged: false },
+            star: { ...starCrop, isAveraged: false },
+          },
+        })
+      }
+
       /**
        * The id of the seeds required for replanting, differentiated by base or star seeds
        */
-      const seedsRequiredId = `${crop.type}-${seedsRequiredIdSuffix}` as ICropName
+      const seedsRequiredId = `${crop.type}${seedsRequiredIdSuffix}` as ICropName
 
       /**
        * Whether to factor in growth boost for this crop
@@ -169,15 +209,20 @@ export default class Harvester {
        * If growth boost is being factored in, we need to differentiate tiles that have growth boost from those that don't.
        * This is to help separate crops of the same type but different cycle times due to growth boost.
        */
-      const seedsRequiredIdWithGrowth = (differentiateByGrowthBoost ? `${crop.type}-${options.useStarSeeds ? 'Star' : 'Base'}-Growth` : seedsRequiredId) as ICropNameWithGrowthDiff
+      const seedsRequiredIdWithGrowth = (differentiateByGrowthBoost
+        ? `${crop.type}-${options.useStarSeeds ? 'Star' : 'Base'}-Growth`
+        : seedsRequiredId) as ICropNameWithGrowthDiff
 
       const baseId = (differentiateByGrowthBoost ? `${crop.type}-Base-Growth` : `${crop.type}-Base`) as ICropNameWithGrowthDiff
       const starId = (differentiateByGrowthBoost ? `${crop.type}-Star-Growth` : `${crop.type}-Star`) as ICropNameWithGrowthDiff
+
+      this._totalHarvest.cycleData.set(seedsRequiredIdWithGrowth, cropHarvestCycle)
 
       // Now that we've calculated the harvest for one cycle, we simply add the harvest info to all applicable days
       for (let cycle = 1; cycle <= cycles; cycle++) {
         harvestableDays.forEach((day) => {
           const dayInCycle = day * cycle
+
           const harvestDay = dayHarvests.get(dayInCycle) ?? {
             day: dayInCycle,
             crops: new Map(),
@@ -257,6 +302,16 @@ export default class Harvester {
      */
     const seedsRemainder = new Map() as Map<ICropName, number>
 
+    /**
+     * TODO: Think of a better name
+     * - This is a tracker to find the total amount of crops left after seed replants,
+     *   to get the average value of how many crops are usually left on replant days
+     */
+    const cropTotalsForAveraging = new Map() as Map<ICropName, {
+      total: number
+      days: number
+    }>
+
     for (const [, harvest] of dayHarvests) {
       // Deduct seeds required for replanting
       if (options.includeReplantCost) {
@@ -288,6 +343,7 @@ export default class Harvester {
             cropType: seedsRequiredInfo.type,
           }
 
+          const totalWithDeductions = cropData.totalWithDeductions - cropsRequired
           // Deducts the amount of crops required to convert to seeds
           // ! This method cannot pull from the pool of crops harvested from a plant with growth boost
           // ! if the seedsRequired id comes from a plant without growth boost
@@ -296,11 +352,21 @@ export default class Harvester {
           harvest.crops.set(id, {
             ...cropData,
             isStar: options.useStarSeeds,
-            totalWithDeductions: cropData.totalWithDeductions - cropsRequired,
+            totalWithDeductions,
           })
 
           // New seeds generated from the crops harvested
           const seedsGenerated = Math.floor(cropsRequired / cropsPerSeed) * seedsPerConversion
+
+          const cropTotalTracker = cropTotalsForAveraging.get(id) || {
+            total: 0,
+            days: 0,
+          }
+
+          cropTotalsForAveraging.set(id, {
+            total: cropTotalTracker.total + totalWithDeductions,
+            days: cropTotalTracker.days + 1,
+          })
 
           // Remaining seeds after replanting
           const newRemainingSeeds = (remainingSeeds - remainderSeedsToBeUsed) + (seedsGenerated - seedsRequiredCount)
@@ -328,6 +394,33 @@ export default class Harvester {
           cropType: crop,
           isStar,
         })
+      }
+    }
+
+    // Get the average yield on days where crops are harvested
+    if (options.includeReplantCost) {
+      if (cropTotalsForAveraging.size > 0) {
+        for (const [cropId, cropTotal] of cropTotalsForAveraging) {
+          const average = cropTotal.total / cropTotal.days
+          const isStar = cropId.includes('-Star')
+
+          const cropCycleData = this._totalHarvest.cycleData.get(cropId)
+
+          if (cropCycleData === undefined) {
+            console.error('Somehow undefined')
+            return
+          }
+
+          // Change the appropriate yield
+          if (isStar) {
+            cropCycleData.phases.at(-1)!.yield.star.totalWithDeductions = average
+            cropCycleData.phases.at(-1)!.yield.star.isAveraged = true
+          }
+          else {
+            cropCycleData.phases.at(-1)!.yield.base.totalWithDeductions = average
+            cropCycleData.phases.at(-1)!.yield.base.isAveraged = true
+          }
+        }
       }
     }
 
@@ -389,6 +482,13 @@ export default class Harvester {
 
   //   return inventory
   // }
+}
+
+function hasYield(cropYield: ICropYield) {
+  for (const val of Object.values(cropYield)) {
+    if (val > 0)
+      return true
+  }
 }
 
 function addCropYields(cropYield1: ICropYield, cropYield2: ICropYield): ICropYield {
