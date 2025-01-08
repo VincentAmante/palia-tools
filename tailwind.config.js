@@ -45,6 +45,11 @@ module.exports = {
       fontFamily: {
         serif: ['"Roboto Slab"', 'serif'],
       },
+      fontSize: {
+        xxs: ['0.625rem', {
+          lineHeight: '1rem',
+        }],
+      },
     },
   },
   daisyui: {
