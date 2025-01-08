@@ -69,58 +69,66 @@ const craftingTime = computed(() => {
       <p class="sr-only">
         Summary Display
       </p>
-      <section class="flex flex-col flex-wrap gap-2 sm:flex-row">
-        <div class="flex flex-col justify-start p-2 pr-10 border rounded-md bg-accent">
-          <p class="px-1 text-xs font-semibold opacity-60 text-palia-blue-dark">
+      <section class="grid grid-cols-3 gap-1 lg:grid-cols-5">
+        <div class="border rounded-md bg-accent">
+          <p class="w-full px-1 text-xs text-right text-misc-dark">
             Total
           </p>
-          <p class="flex items-center gap-1 text-3xl font-semibold text-center text-palia-blue">
+          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center text-palia-blue">
             <img
-              width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+              width="12" height="12" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
               alt="Gold" format="webp"
             >
             {{ (processor.finalGoldValue || 0).toLocaleString() }}
           </p>
         </div>
-        <div class="flex flex-col justify-start p-2 pr-10 border rounded-md bg-accent">
-          <p class="px-1 text-xs font-semibold opacity-70 text-palia-blue-dark">
-            Average
+        <div class="text-right border rounded-md bg-accent">
+          <p class="w-full px-1 text-xs text-right text-misc-dark">
             <span
               v-if="craftingTime.actualValue <= 0"
-              class="text-xs font-normal"
+              class="text-xs font-normal tooltip"
+              data-tip="Processing time excluded"
             >
-              (no processing time)
+              <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
             </span>
+            Average
           </p>
-          <p class="flex items-center gap-1 text-3xl font-semibold text-center text-palia-blue">
+          <p class="flex items-center justify-end w-full gap-1 text-xl font-semibold text-right text-palia-blue">
             <img
               width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
               alt="Gold" format="webp"
             >
             {{ (processor.averageGoldValue || 0).toLocaleString() }}
-            <span class="text-xs">/ {{ processor.highestCraftingTime > 0 ? 'Hour' : 'Palian Day' }}</span>
+          </p>
+          <p class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue">
+            per
+            <span class="font-semibold">{{ processor.highestCraftingTime > 0 ? 'Hour' : 'Palian Day' }}</span>
           </p>
         </div>
-      </section>
-      <section class="flex gap-2">
-        <div class="flex flex-col justify-start p-1 pr-8 border rounded-md bg-accent">
-          <p class="px-1 text-xs opacity-60 text-palia-blue-dark">
-            Minimum Lvl
+        <div class="border rounded-md bg-accent">
+          <p class="w-full px-1 text-xs text-right text-misc-dark">
+            Processing Time
+          </p>
+          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-right text-palia-blue">
+            <template v-if="((craftingTime.hours + craftingTime.minutes) > 0)">
+              {{ craftingTime.hours }}<span>h</span> {{ craftingTime.minutes }}<span>m</span>
+            </template>
+            <template v-else>
+              <span class="text-warning">N/A</span>
+            </template>
+          </p>
+        </div>
+
+        <div class="border rounded-md bg-accent">
+          <p class="w-full px-1 text-xs text-right text-misc-dark">
+            Minimum <abbr title="Level">Lvl</abbr>
           </p>
           <p class="flex items-center gap-1 px-2 text-xl font-semibold text-center text-palia-blue">
             {{ harvester.settings.level }}
           </p>
         </div>
-        <div class="flex flex-col justify-start p-1 pr-8 border rounded-md bg-accent">
-          <p class="px-1 text-xs opacity-60 text-palia-blue-dark">
-            Processing Time
-          </p>
-          <p class="flex items-center gap-1 px-2 text-xl font-semibold text-center text-palia-blue">
-            {{ craftingTime.hours }}<span>hrs</span> {{ craftingTime.minutes }}<span>min</span>
-          </p>
-        </div>
-        <div class="flex flex-col justify-start p-1 pr-8 border rounded-md bg-accent">
-          <p class="px-1 text-xs opacity-60 text-palia-blue-dark">
+        <div class="border rounded-md bg-accent">
+          <p class="w-full px-1 text-xs text-right text-misc-dark">
             Days of Harvest
           </p>
           <p class="flex items-center gap-1 px-2 text-xl font-semibold text-center text-palia-blue">
@@ -144,13 +152,13 @@ const craftingTime = computed(() => {
           >
             <span>
               <font-awesome-icon :icon="['fas', 'seedling']" class="mr-1" />
-              Include Replant
+              <abbr title="Include">Incl.</abbr> Replant
             </span>
             <span v-if="harvester.settings.includeReplantCost">
               &nbsp;& Cost
             </span>
           </li>
-          <li class="text-xs border border-none badge bg-growth-boost">
+          <li class="text-xs border border-none badge bgY -boost">
             <p>
               <font-awesome-icon :icon="['fas', 'forward-fast']" class="mr-1" />
               Growth Boost
