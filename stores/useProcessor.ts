@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import Processor, { type ProcessorSetting, type ProcessorSettings } from '~/assets/scripts/garden-planner/classes/processor'
 import type { CropType } from '~/assets/scripts/garden-planner/imports'
-import { type ICropName, type ITotalHarvest, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { type ICropName, type ICropNameWithGrowthDiff, type ITotalHarvest, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 
 const useProcessor = defineStore('processor', () => {
   const processorRef = ref(new Processor())
@@ -53,7 +53,7 @@ const useProcessor = defineStore('processor', () => {
 
   const seedCollectorsCount = computed(() => {
     let newSeedCollectorsCount = 0
-    const seedCollectorsList = new Map<ICropName, {
+    const seedCollectorsList = new Map<ICropNameWithGrowthDiff, {
       cropType: CropType
       crafters: number
       isStar: boolean
@@ -74,7 +74,7 @@ const useProcessor = defineStore('processor', () => {
   })
 
   const preserveJarsCount = computed(() => {
-    const preserveJarsList = new Map<ICropName, {
+    const preserveJarsList = new Map<ICropNameWithGrowthDiff, {
       cropType: CropType
       crafters: number
       isStar: boolean

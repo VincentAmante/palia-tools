@@ -1,13 +1,15 @@
 import { getCropFromType } from '../cropList'
+import type { Crop } from '../imports'
 import { CropType } from '../imports'
 import { ItemType } from '../utils/garden-helpers'
-import type { CropItem, ICropName, IInventoryItem, ISeedTracker, ITotalHarvest } from '../utils/garden-helpers'
+import type { CropItem, ICropHarvestCycle, ICropName, ICropNameWithGrowthDiff, IInventoryItem, ISeedTracker, ITotalHarvest } from '../utils/garden-helpers'
+import type { ICropConversions } from './crop'
 
 export interface ProcessorOutput {
-  crops: Map<ICropName, Pick<ProcessOutputInfo, 'count' | 'cropType' | 'itemType'>>
-  seeds: Map<ICropName, ProcessOutputInfo>
-  preserves: Map<ICropName, ProcessOutputInfo>
-  replantSeeds: Map<ICropName, ISeedTracker>
+  crops: Map<ICropNameWithGrowthDiff, Pick<ProcessOutputInfo, 'count' | 'cropType' | 'itemType'>>
+  seeds: Map<ICropNameWithGrowthDiff, ProcessOutputInfo>
+  preserves: Map<ICropNameWithGrowthDiff, ProcessOutputInfo>
+  replantSeeds: Map<ICropNameWithGrowthDiff, ISeedTracker>
 }
 
 export interface ProcessOutputInfo {
@@ -17,7 +19,7 @@ export interface ProcessOutputInfo {
   minutesProcessedTotal: number
 
   // how long this crop took to process with the assigned crafters
-  minutesProcessedFinal: number
+  minutesProcessedEffective: number
 
   // how many crafters were used to process this crop
   crafterCount: number
@@ -39,7 +41,7 @@ export interface ProcessorSetting {
 }
 
 export interface ProcessorSettings {
-  cropSettings: Map<ICropName, ProcessorSetting>
+  cropSettings: Map<ICropNameWithGrowthDiff, ProcessorSetting>
 
   // Not currently used
   crafterSetting: number
@@ -55,7 +57,7 @@ export interface ProcessorSettings {
 //   /// [OLD] Any number greater than 0 is the targeted days to process all crops
 // }
 
-type TCropProcessData = Map<ICropName, {
+type TCropProcessData = Map<ICropNameWithGrowthDiff, {
   totalProcessMinutes: number
   // the function to process the crop
   processType: ItemType.Crop | ItemType.Seed | ItemType.Preserve
@@ -278,7 +280,15 @@ export default class Processor {
     return this._inventory
   }
 
+  reset() {
+    this._inventory = new Map<string, IInventoryItem>()
+    this._highestCraftingTime = 0
+    this._inventory = new Map<string, IInventoryItem>()
+  }
+
   process(harvestData: Readonly<ITotalHarvest> = TEST_TOTAL_HARVEST, processorSettings: Readonly<ProcessorSettings> = TEST_SETTINGS): void {
+    this.reset()
+
     const output: ProcessorOutput = {
       crops: new Map(),
       seeds: new Map(),
@@ -299,6 +309,7 @@ export default class Processor {
 
     for (const [cropName, processData] of cropData) {
       const cropData = harvestData.crops.get(cropName)
+
       const crop = getCropFromType(cropData?.cropType || CropType.None)
 
       // If not set to process, just add to crops
@@ -344,32 +355,34 @@ export default class Processor {
           throw new Error(`Missing crop data for crop: ${cropName}`)
 
         const processType = processData.processType === ItemType.Seed ? 'seeds' : 'preserves'
-
         const outputId = `${cropName}-${processType}`
+        const cycleData = harvestData.cycleData.get(cropName)
+        const isStar = cropName.includes('-Star')
 
-        const { count, remainder } = (processData.processType === ItemType.Seed)
-          ? crop.convertCropToSeed(cropData?.totalWithDeductions || 0)
-          : crop.convertCropToPreserve(cropData?.totalWithDeductions || 0)
+        console.log(cycleData)
 
-        // Divide the processes for a more accurate processing time
-        const divisionsToMake = Math.min(processData.conversionsToMake, processData.craftersToUse)
-        const conversionsDivided = Math.floor(processData.conversionsToMake / divisionsToMake)
-        const remainingProcesses = processData.conversionsToMake % divisionsToMake
+        const {
+          count,
+          remainder,
+          minutesSpentProcessingTotal,
+          minutesSpentProcessingDivided: minutesProcessedEffective,
+        } = processBatch({
+          cropCount,
+          crafterCount: processData.craftersToUse,
+          cropConversionInfo: crop.conversionInfo,
+          processInto: processData.processType,
+        })
+        // TODO: Now move this to per cycle and multiply
 
-        const minutesProcessedFinal
-        // If there are remaining processes, add 1 more process to the final time
-        = (conversionsDivided + (remainingProcesses > 0 ? 1 : 0))
-        * ((processData.processType === ItemType.Seed)
-          ? crop.conversionInfo.seedProcessMinutes
-          : crop.conversionInfo.preserveProcessMinutes)
+        // console.log(`Crop ${crop.type}`, count, remainder, processData.processType, minutesProcessedEffective)
 
-        if (minutesProcessedFinal > this._highestCraftingTime)
-          this._highestCraftingTime = minutesProcessedFinal
+        if (minutesProcessedEffective > this._highestCraftingTime)
+          this._highestCraftingTime = minutesProcessedEffective
 
         output[processType].set(cropName, {
           count,
-          minutesProcessedTotal: processData.totalProcessMinutes,
-          minutesProcessedFinal,
+          minutesProcessedTotal: minutesSpentProcessingTotal,
+          minutesProcessedEffective,
           crafterCount: processData.craftersToUse,
           itemType: processData.processType,
           cropType: crop.type,
@@ -435,14 +448,14 @@ export default class Processor {
 
   /**
    *  Function is responsible for figuring out how many crafters to assign to each crop group.
-   *  This should be manual but can be set to auto.
+   *  This should be manual but can be set to auto (in the future).
    *
    * @param totalHarvest - Harvest data
    * @param settings - Processor settings
    * @returns
    */
   private calculateSettings(totalHarvest: Readonly<ITotalHarvest>, settings: Readonly<ProcessorSettings>): TCropProcessData {
-    const cropData = new Map<ICropName, {
+    const cropData = new Map<ICropNameWithGrowthDiff, {
       totalProcessMinutes: number
       processType: ItemType.Crop | ItemType.Seed | ItemType.Preserve
       craftersToUse: number
@@ -486,6 +499,8 @@ export default class Processor {
         throw new Error(`Missing conversion info for crop: ${cropName}`)
 
       const cropsPerConversion = (processSetting === ItemType.Seed) ? conversionInfo.cropsPerSeed : conversionInfo.cropsPerPreserve
+
+      // ? Consider removing given we're currently not using these
       const conversionTime = (processSetting === ItemType.Seed) ? conversionInfo.seedProcessMinutes : conversionInfo.preserveProcessMinutes
       const conversionsToMake = Math.floor(cropYield.totalWithDeductions / cropsPerConversion)
 
@@ -500,5 +515,148 @@ export default class Processor {
     }
 
     return cropData
+  }
+}
+
+interface IProcessedBatch {
+  count: number
+  remainder: number
+  minutesSpentProcessingDivided: number
+  minutesSpentProcessingTotal: number
+}
+
+interface IProcessBatchInput {
+  cropCount: number
+  crafterCount: number
+  cropConversionInfo: ICropConversions
+  processInto: ItemType.Seed | ItemType.Preserve
+}
+
+/**
+ * Processes a single batch
+ * @param processBatchArgs
+ * @returns
+ */
+function processBatch(processBatchArgs: IProcessBatchInput): IProcessedBatch {
+  const { cropCount, crafterCount, cropConversionInfo, processInto } = processBatchArgs
+
+  let minutesPerConversion = 0
+  let cropsPerConversion = 0
+  let producePerConversion = 0
+
+  if (processInto === ItemType.Seed) {
+    minutesPerConversion = cropConversionInfo.seedProcessMinutes
+    cropsPerConversion = cropConversionInfo.cropsPerSeed
+    producePerConversion = cropConversionInfo.seedsPerConversion
+  }
+  else if (processInto === ItemType.Preserve) {
+    minutesPerConversion = cropConversionInfo.preserveProcessMinutes
+    cropsPerConversion = cropConversionInfo.cropsPerPreserve
+    producePerConversion = 1
+  }
+  else {
+    throw new Error('Neither SEED nor PRESERVE was chosen as the processInto option')
+  }
+
+  const conversionsToMake = Math.floor(cropCount / cropsPerConversion)
+  const remainder = cropCount % cropsPerConversion
+  const count = conversionsToMake * producePerConversion
+
+  const minutesSpentProcessingTotal = conversionsToMake * minutesPerConversion
+
+  const minProcessesPerCrafter = Math.floor(conversionsToMake / crafterCount)
+  const minProcessesPerCrafterRemainder = conversionsToMake % crafterCount
+  const crafterProcesses: number[] = []
+
+  for (let i = 0; i < crafterCount; i++) {
+    const bonus = (i < minProcessesPerCrafterRemainder) ? 1 : 0
+
+    crafterProcesses.push(minProcessesPerCrafter + bonus)
+  }
+
+  const minutesSpentProcessingDivided = crafterProcesses[0] * minutesPerConversion || -1
+
+  // ? account for going over the required slots (max is 30)
+
+  return {
+    count,
+    remainder,
+    minutesSpentProcessingTotal,
+    minutesSpentProcessingDivided,
+  }
+}
+
+interface ICyclePhaseProcessData {
+  totalProduceCount: number
+  remainder: number
+  crafterData: {
+    cropsInsertedCount: number
+    canFinishBeforeNextHarvest: boolean
+    processingTimeMinutes: number
+    processesDone: number
+  }[]
+  canFinishBeforeNextHarvest: boolean
+  idleTimeMins: number
+  excessTimeMins: number
+  totalTimeMins: number
+  lowestCrafterTimeMinutes: number
+  highestCrafterTimeMinutes: number
+}
+
+interface IProcessBatchInput_v2 {
+  crop: Crop
+  isStar: boolean
+  cycleData: ICropHarvestCycle
+  crafterCount: number
+  cropConversionInfo: ICropConversions
+  processInto: ItemType.Seed | ItemType.Preserve
+}
+
+function processBatch_v2(processBatchArgs: IProcessBatchInput_v2) {
+  const { crop, isStar, cycleData, crafterCount, cropConversionInfo, processInto } = processBatchArgs
+  const crafterData = [] as ICyclePhaseProcessData['crafterData']
+
+  let minutesPerConversion = 0
+  let cropsPerConversion = 0
+  let producePerConversion = 0
+
+  if (processInto === ItemType.Seed) {
+    minutesPerConversion = cropConversionInfo.seedProcessMinutes
+    cropsPerConversion = cropConversionInfo.cropsPerSeed
+    producePerConversion = cropConversionInfo.seedsPerConversion
+  }
+  else if (processInto === ItemType.Preserve) {
+    minutesPerConversion = cropConversionInfo.preserveProcessMinutes
+    cropsPerConversion = cropConversionInfo.cropsPerPreserve
+    producePerConversion = 1
+  }
+  else {
+    throw new Error('Neither SEED nor PRESERVE was chosen as the processInto option')
+  }
+
+  const baseOrStar = (isStar ? 'star' : 'base')
+  const phases = cycleData.phases
+
+  const hasGrowthDiffToCalculate = ((cycleData.phases.length > 1)
+  && phases[0].yield[baseOrStar].totalWithDeductions !== phases.at(-1)?.yield[baseOrStar].totalWithDeductions)
+
+  // * Normal in this case = a harvest that hasn't factored in re-harvests
+  const normalCropCount = phases[0].yield[baseOrStar].totalWithDeductions
+  const normalConversionsToMake = Math.floor(normalCropCount / cropsPerConversion)
+  const normalConversionsRemainder = normalCropCount % cropsPerConversion
+
+  const normalPhasesToCalculate = hasGrowthDiffToCalculate ? (phases.length - 1) : phases.length
+
+  for (let i = 0; i < normalPhasesToCalculate; i++) {
+
+  }
+
+  // * Deducted crop count is the average amount of crops when re-harvests are considered
+  const deductedCropCount = phases.at(-1)?.yield[baseOrStar].totalWithDeductions || 0
+  const deductedConversionsToMake = Math.floor(deductedCropCount / cropsPerConversion)
+  const deductedConversionsRemainder = deductedCropCount % cropsPerConversion
+
+  return {
+
   }
 }

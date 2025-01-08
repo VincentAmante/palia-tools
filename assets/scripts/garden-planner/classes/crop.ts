@@ -34,7 +34,7 @@ interface IGoldValues extends IGoldValuesOptions {
   preserveStar: number
 }
 
-interface ICropConversions {
+export interface ICropConversions {
   cropsPerSeed: number
   seedsPerConversion: number
   cropsPerPreserve: number
@@ -104,6 +104,10 @@ class Crop {
 
   get goldValues(): IGoldValues {
     return this._goldValues
+  }
+
+  get cropImage(): string {
+    return this.image
   }
 
   get preserveImage(): string {

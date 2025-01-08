@@ -294,7 +294,7 @@ function minutesToHoursAndMinutes(minutes: number) {
               </div>
               <SettingsMinutesDisplay
                 class="absolute bottom-0 translate-y-2"
-                :minutes="processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedFinal "
+                :minutes="processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective "
               />
             </div>
           </li>
