@@ -439,7 +439,7 @@ definePageMeta({
               alt="Palia Garden Planner Logo"
               :srcset="undefined"
               placeholder
-            />
+            >
             <div class="flex flex-col items-end justify-end w-full text-right text-misc flex-nowrap ws-nowrap">
               <NuxtLink to="/" class="flex items-center justify-start gap-1">
                 <p class="w-full text-2xl font-bold">

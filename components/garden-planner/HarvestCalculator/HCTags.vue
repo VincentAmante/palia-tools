@@ -12,7 +12,7 @@ defineProps({
 <template>
   <div class="flex gap-1 py-[0.5rem] md:py-[0.3rem] text-sm flex-wrap">
     <p class="py-[0.1rem] px-3 rounded-lg text-center flex items-center bg-weed-prevention text-xs">
-      Lvl {{ level }}
+      <abbr title="Level">Lvl</abbr> {{ level }}
     </p>
     <p v-show="useGrowthBoost" class="py-[0.1rem] px-3 rounded-lg text-center flex items-center bg-growth-boost text-xs ">
       <font-awesome-icon :icon="['fas', 'forward-fast']" class="mr-1" />
