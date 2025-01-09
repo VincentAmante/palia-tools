@@ -62,8 +62,8 @@ onMounted(() => {
 
 <template>
   <div class="gap-2 px-4">
-    <div class="flex flex-col items-center justify-center w-full px-3 py-2 rounded-md text-misc bg-accent md:py-0">
-      <p class="text-3xl font-bold">
+    <div class="flex flex-col items-center justify-center w-full px-3 py-2 rounded-md text-accent md:py-0">
+      <p class="text-4xl">
         {{ timeFormatted }}
       </p>
       <p class="">

@@ -15,7 +15,7 @@ defineProps({
     >
       <div class="grid items-center gap-1 md:grid-cols-2">
         <div>
-          <p class="py-1 text-sm font-bold">
+          <p class="py-1 text-sm font-bold text-palia-blue">
             {{ name }}
           </p>
 

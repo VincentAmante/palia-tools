@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import NewSettings from './NewSettings.vue'
 import TotalInventory from './HarvestCalculator/TotalInventory.vue'
+import ItemDisplay from './HarvestCalculator/ItemDisplay.vue'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
 
@@ -66,74 +67,80 @@ const craftingTime = computed(() => {
       id="display-tab"
       class="flex flex-col gap-2 pt-1"
     >
-      <p class="sr-only">
-        Summary Display
-      </p>
-      <section class="grid grid-cols-3 gap-1 lg:grid-cols-5">
-        <div class="border rounded-md bg-accent">
-          <p class="w-full px-1 text-xs text-right text-misc-dark">
-            Total
-          </p>
-          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center text-palia-blue">
-            <img
-              width="12" height="12" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-              alt="Gold" format="webp"
-            >
-            {{ (processor.finalGoldValue || 0).toLocaleString() }}
-          </p>
-        </div>
-        <div class="text-right border rounded-md bg-accent">
-          <p class="w-full px-1 text-xs text-right text-misc-dark">
-            <span
-              v-if="craftingTime.actualValue <= 0"
-              class="text-xs font-normal tooltip"
-              data-tip="Processing time excluded"
-            >
-              <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
-            </span>
-            Average
-          </p>
-          <p class="flex items-center justify-end w-full gap-1 text-xl font-semibold text-right text-palia-blue">
-            <img
-              width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-              alt="Gold" format="webp"
-            >
-            {{ (processor.averageGoldValue || 0).toLocaleString() }}
-          </p>
-          <p class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue">
-            per
-            <span class="font-semibold">{{ processor.highestCraftingTime > 0 ? 'Hour' : 'Palian Day' }}</span>
-          </p>
-        </div>
-        <div class="border rounded-md bg-accent">
-          <p class="w-full px-1 text-xs text-right text-misc-dark">
-            Processing Time
-          </p>
-          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-right text-palia-blue">
-            <template v-if="((craftingTime.hours + craftingTime.minutes) > 0)">
-              {{ craftingTime.hours }}<span>h</span> {{ craftingTime.minutes }}<span>m</span>
-            </template>
-            <template v-else>
-              <span class="text-warning">N/A</span>
-            </template>
-          </p>
-        </div>
-
-        <div class="border rounded-md bg-accent">
-          <p class="w-full px-1 text-xs text-right text-misc-dark">
-            Minimum <abbr title="Level">Lvl</abbr>
-          </p>
-          <p class="flex items-center gap-1 px-2 text-xl font-semibold text-center text-palia-blue">
-            {{ harvester.settings.level }}
-          </p>
-        </div>
-        <div class="border rounded-md bg-accent">
-          <p class="w-full px-1 text-xs text-right text-misc-dark">
-            Days of Harvest
-          </p>
-          <p class="flex items-center gap-1 px-2 text-xl font-semibold text-center text-palia-blue">
-            {{ harvester.totalHarvest.lastHarvestDay }}
-          </p>
+      <section>
+        <p class="text-sm font-semibold text-palia-blue-dark">
+          Overview
+        </p>
+        <div class="grid grid-cols-3 gap-1 xl:grid-cols-5">
+          <div class="p-1 border rounded-md bg-accent border-misc-dark">
+            <p class="w-full px-1 text-xs text-right text-misc-dark">
+              Total
+            </p>
+            <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
+              <img
+                width="12" height="12" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                alt="Gold" format="webp"
+              >
+              {{ (processor.finalGoldValue || 0).toLocaleString() }}
+            </p>
+          </div>
+          <div class="p-1 border rounded-md bg-accent border-misc-dark">
+            <p class="w-full px-1 text-xs text-right text-misc-dark">
+              <span
+                v-if="craftingTime.actualValue <= 0"
+                class="text-xs font-normal tooltip"
+                data-tip="Processing time excluded"
+              >
+                <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
+              </span>
+              Average
+            </p>
+            <p class="flex items-center justify-end w-full gap-1 text-xl font-semibold text-right xl:text-2xl text-palia-blue">
+              <img
+                width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                alt="Gold" format="webp"
+              >
+              <span v-if="processor.highestCraftingTime > 0">
+                &#8776;{{ (processor.averageGoldValue || 0).toLocaleString() }}
+              </span>
+              <span v-else>
+                &#8776;{{ (Math.round((processor.finalGoldValue / harvester.totalHarvest.lastHarvestDay)) || 0).toLocaleString() }}
+              </span>
+            </p>
+            <p class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue">
+              per
+              <span class="font-semibold">{{ processor.highestCraftingTime > 0 ? 'Hour' : 'Growth Tick' }}</span>
+            </p>
+          </div>
+          <div class="p-1 border rounded-md bg-accent border-misc-dark">
+            <p class="w-full text-xs text-right text-misc-dark">
+              Process Time
+            </p>
+            <p class="flex items-end justify-end text-xl font-semibold text-right text-palia-blue xl:text-2xl">
+              <template v-if="((craftingTime.hours + craftingTime.minutes) > 0)">
+                {{ craftingTime.hours }}<span class="pr-1">h</span> {{ craftingTime.minutes }}<span class="">m</span>
+              </template>
+              <template v-else>
+                <span class="text-warning">N/A</span>
+              </template>
+            </p>
+          </div>
+          <div class="p-1 border rounded-md bg-accent border-misc-dark">
+            <p class="w-full px-1 text-xs text-right text-misc-dark">
+              Level
+            </p>
+            <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
+              {{ harvester.settings.level }}
+            </p>
+          </div>
+          <div class="p-1 border rounded-md bg-accent border-misc-dark">
+            <p class="w-full px-1 text-xs text-right text-misc-dark">
+              Days of Harvest
+            </p>
+            <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
+              {{ harvester.totalHarvest.lastHarvestDay }}
+            </p>
+          </div>
         </div>
       </section>
       <section class="text-xs">
@@ -173,22 +180,42 @@ const craftingTime = computed(() => {
         </ul>
       </section>
       <TotalInventory />
-      <section class="flex justify-between gap-2">
+      <section class="grid gap-1 md:grid-cols-2">
         <div class="flex flex-col w-full">
-          <p class="px-1 font-semibold text-palia-blue-dark">
+          <p class="px-1 text-sm font-semibold text-palia-blue-dark">
             Seed Collectors
+            <span v-if="processor.seedCollectorsCount > 0">- {{ processor.seedCollectorsCount }}</span>
           </p>
-          <p class="flex items-center justify-center gap-2 p-1 text-lg font-semibold text-center border rounded-md border-misc bg-accent text-palia-blue">
-            {{ processor.seedCollectorsCount }}
-          </p>
+          <ul class="flex flex-wrap gap-1 p-2 bg-opacity-50 border rounded-md border-misc-dark bg-accent min-h-16 gap-y-2">
+            <ItemDisplay
+              v-for="[name, item] in processor.seedCollectors"
+              :key="name"
+              :img-src="item.img.src"
+              :img-alt="item.img.alt"
+              :star="item.isStar"
+              :count="item.count"
+              :base-gold-value="item.baseGoldValue"
+              tooltip="Seed Collectors to use"
+            />
+          </ul>
         </div>
         <div class="flex flex-col w-full">
-          <p class="px-1 font-semibold text-palia-blue-dark">
+          <p class="px-1 text-sm font-semibold text-palia-blue-dark">
             Preserve Jars
+            <span v-if="processor.preserveJarsCount > 0">- {{ processor.preserveJarsCount }}</span>
           </p>
-          <p class="flex items-center justify-center gap-2 p-1 text-lg font-semibold text-center border rounded-md border-misc bg-accent text-palia-blue">
-            {{ processor.preserveJarsCount }}
-          </p>
+          <ul class="flex flex-wrap gap-1 p-2 bg-opacity-50 border rounded-md bg-accent border-misc-dark min-h-16 gap-y-2">
+            <ItemDisplay
+              v-for="[name, item] in processor.preserveJars"
+              :key="name"
+              :img-src="item.img.src"
+              :img-alt="item.img.alt"
+              :star="item.isStar"
+              :count="item.count"
+              :base-gold-value="item.baseGoldValue"
+              tooltip="Preserve Jars to use"
+            />
+          </ul>
         </div>
       </section>
     </section>

@@ -276,7 +276,7 @@ watchEffect(() => {
               Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
               <div class="flex items-center gap-1">
                 <img
-                  width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" placeholder
+                  width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
                   alt="Gold" format="webp"
                 >{{
                   processedYields?.totalResult.totalGold.toLocaleString() }}

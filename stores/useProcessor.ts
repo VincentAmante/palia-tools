@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import Processor, { type ProcessorSetting, type ProcessorSettings } from '~/assets/scripts/garden-planner/classes/processor'
-import type { CropType } from '~/assets/scripts/garden-planner/imports'
-import { type ICropName, type ICropNameWithGrowthDiff, type ITotalHarvest, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { type ICropName, type ITotalHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 
 const useProcessor = defineStore('processor', () => {
   const processorRef = ref(new Processor())
@@ -52,47 +51,38 @@ const useProcessor = defineStore('processor', () => {
   })
 
   const seedCollectorsCount = computed(() => {
-    let newSeedCollectorsCount = 0
-    const seedCollectorsList = new Map<ICropNameWithGrowthDiff, {
-      cropType: CropType
-      crafters: number
-      isStar: boolean
-    }>()
-
-    for (const [cropName, setting] of settingsRef.value.cropSettings) {
-      if (setting.processAs === ItemType.Seed && setting.isActive) {
-        newSeedCollectorsCount += setting.crafters
-        seedCollectorsList.set(cropName, {
-          cropType: setting.cropType,
-          crafters: setting.crafters,
-          isStar: setting.isStar,
-        })
-      }
-    }
-
-    return newSeedCollectorsCount
+    return processor.value.seedCollectorsCount
   })
 
   const preserveJarsCount = computed(() => {
-    const preserveJarsList = new Map<ICropNameWithGrowthDiff, {
-      cropType: CropType
-      crafters: number
-      isStar: boolean
-    }>()
+    // const preserveJarsList = new Map<ICropNameWithGrowthDiff, {
+    //   cropType: CropType
+    //   crafters: number
+    //   isStar: boolean
+    // }>()
 
-    let newPreserveJarsCount = 0
-    for (const [cropName, setting] of settingsRef.value.cropSettings) {
-      if (setting.processAs === ItemType.Preserve && setting.isActive) {
-        newPreserveJarsCount += setting.crafters
-        preserveJarsList.set(cropName, {
-          cropType: setting.cropType,
-          crafters: setting.crafters,
-          isStar: setting.isStar,
-        })
-      }
-    }
+    // let newPreserveJarsCount = 0
+    // for (const [cropName, setting] of settingsRef.value.cropSettings) {
+    //   if (setting.processAs === ItemType.Preserve && setting.isActive) {
+    //     newPreserveJarsCount += setting.crafters
+    //     preserveJarsList.set(cropName, {
+    //       cropType: setting.cropType,
+    //       crafters: setting.crafters,
+    //       isStar: setting.isStar,
+    //     })
+    //   }
+    // }
 
-    return newPreserveJarsCount
+    // return newPreserveJarsCount
+
+    return processor.value.preserveJarsCount
+  })
+
+  const seedCollectors = computed(() => {
+    return processor.value.seedCollectors
+  })
+  const preserveJars = computed(() => {
+    return processor.value.preserveJars
   })
 
   return {
@@ -107,6 +97,8 @@ const useProcessor = defineStore('processor', () => {
     inventory,
     finalGoldValue,
     averageGoldValue,
+    seedCollectors,
+    preserveJars,
   }
 })
 

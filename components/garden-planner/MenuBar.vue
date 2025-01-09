@@ -78,12 +78,7 @@ function openNewLayoutModal() {
       </button>
     </div>
     <div class="flex flex-col items-center px-12 py-2 rounded-md bg-palia-blue">
-      <p class="text-4xl">
-        12:58 PM
-      </p>
-      <p class="text-xs">
-        Palian Time
-      </p>
+      <TimeDisplay />
     </div>
     <div class="flex flex-wrap gap-2 py-2">
       <button

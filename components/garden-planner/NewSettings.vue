@@ -4,7 +4,7 @@ import OptionCard from './HarvestCalculator/OptionCard.vue'
 import SettingsMinutesDisplay from './SettingsMinutesDisplay.vue'
 import useHarvester from '~/stores/useHarvester'
 import type { ProcessorSetting, ProcessorSettings } from '~/assets/scripts/garden-planner/classes/processor'
-import { type ICropName, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { type ICropNameWithGrowthDiff, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { CropType, getCropFromType } from '~/assets/scripts/garden-planner/imports'
 import useProcessor from '~/stores/useProcessor'
 import type { IHarvesterOptions } from '~/assets/scripts/garden-planner/classes/harvester'
@@ -43,7 +43,7 @@ watchEffect(() => {
 
 const processor = useProcessor()
 const processorSettings = ref({
-  cropSettings: new Map() as Map<ICropName, ProcessorSetting>,
+  cropSettings: new Map() as Map<ICropNameWithGrowthDiff, ProcessorSetting>,
   crafterSetting: 0,
 } satisfies ProcessorSettings)
 
@@ -60,6 +60,7 @@ watchEffect(() => {
       crafters: 1,
       targetTime: 0,
       isActive: true,
+      hasPreserve: (getCropFromType(data.cropType)?.conversionInfo.preserveProcessMinutes || 0) > 0,
     }
 
     processorSettings.value = {
@@ -74,7 +75,7 @@ watchEffect(() => {
 // Allows us to save settings of unselected crops
 const activeProcessorSettings = computed(() => {
   const activeSettings = {
-    cropSettings: new Map() as Map<ICropName, ProcessorSetting>,
+    cropSettings: new Map() as Map<ICropNameWithGrowthDiff, ProcessorSetting>,
     crafterSetting: 0,
   } satisfies ProcessorSettings
 
@@ -126,7 +127,7 @@ function minutesToHoursAndMinutes(minutes: number) {
 
 <template>
   <section id="planner-settings" class="relative flex flex-col gap-1 py-2 ">
-    <ul class="font-bold tabs tabs-boxed w-fit bg-misc-dark join">
+    <ul class="font-semibold tabs tabs-boxed w-fit bg-misc-dark join">
       <li
         class="tab join-item"
         :class="(activeTab === 'Harvest') ? 'tab-active' : ''"
@@ -234,14 +235,13 @@ function minutesToHoursAndMinutes(minutes: number) {
                   Seed
                 </button>
                 <button
+                  v-if="(((getCropFromType(setting.cropType)?.goldValues.preserve) || 0) > 0)"
                   class="btn join-item btn-primary btn-xs md:btn-sm"
                   :class="(setting.processAs === ItemType.Preserve) ? 'btn-active' : ''"
                   @click="() => {
                     if (setting.processAs === ItemType.Preserve)
                       return
-
                     setting.processAs = ItemType.Preserve
-
                     onChangeSettings()
                   }"
                 >
