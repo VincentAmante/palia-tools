@@ -191,6 +191,7 @@ export default class Processor {
 
       // Final processor behaviour goes here
       else if (processData.processType === ItemType.Seed || processData.processType === ItemType.Preserve) {
+        console.log('attempting process')
         const cropCount = cropData?.totalWithDeductions || 0
 
         if (cropCount === 0)
@@ -211,6 +212,17 @@ export default class Processor {
           minutesSpentProcessingDivided: minutesProcessedEffective,
         } = processBatch({
           cropCount,
+          crafterCount: processData.craftersToUse,
+          cropConversionInfo: crop.conversionInfo,
+          processInto: processData.processType,
+        })
+
+        if (!cycleData)
+          return
+
+        processCycle({
+          cycleData,
+          isStar,
           crafterCount: processData.craftersToUse,
           cropConversionInfo: crop.conversionInfo,
           processInto: processData.processType,
@@ -458,7 +470,7 @@ function processBatch(processBatchArgs: IProcessBatchInput): IProcessedBatch {
   }
 }
 
-interface ICyclePhaseProcessData {
+interface IProcessHarvestData {
   totalProduceCount: number
   remainder: number
   crafterData: {
@@ -476,7 +488,7 @@ interface ICyclePhaseProcessData {
 }
 
 interface IProcessHarvestArgs {
-  isStar: boolean
+  qualityId: 'base' | 'star'
   cycleData: ICropHarvestCycle
   currentPhaseIndex: number
   crafterCount: number
@@ -492,43 +504,22 @@ interface IProcessHarvestArgs {
  * @param processHarvestArgs - Necessary details to process a harvest
  * @returns
  */
-function processHarvest(processHarvestArgs: IProcessHarvestArgs): ICyclePhaseProcessData {
+function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarvestData {
   const {
-    isStar,
+    qualityId,
     cycleData,
     currentPhaseIndex,
     crafterCount,
-    cropConversionInfo,
-    processInto,
     minutesPerConversion,
     cropsPerConversion,
     producePerConversion,
   } = processHarvestArgs
-  const crafterData = [] as ICyclePhaseProcessData['crafterData']
+  const crafterData = [] as IProcessHarvestData['crafterData']
 
-  // let minutesPerConversion = 0
-  // let cropsPerConversion = 0
-  // let producePerConversion = 0
-
-  // if (processInto === ItemType.Seed) {
-  //   minutesPerConversion = cropConversionInfo.seedProcessMinutes
-  //   cropsPerConversion = cropConversionInfo.cropsPerSeed
-  //   producePerConversion = cropConversionInfo.seedsPerConversion
-  // }
-  // else if (processInto === ItemType.Preserve) {
-  //   minutesPerConversion = cropConversionInfo.preserveProcessMinutes
-  //   cropsPerConversion = cropConversionInfo.cropsPerPreserve
-  //   producePerConversion = 1
-  // }
-  // else {
-  //   throw new Error('Neither SEED nor PRESERVE was chosen as the processInto option')
-  // }
-
-  const baseOrStar = (isStar ? 'star' : 'base')
   // const phases = cycleData.phases
   const phaseData = cycleData.phases[currentPhaseIndex]
 
-  const cropCount = phaseData.yield[baseOrStar].totalWithDeductions
+  const cropCount = phaseData.yield[qualityId].totalWithDeductions
   const conversionsToMake = Math.floor(cropCount / cropsPerConversion)
   const conversionsRemainder = (cropCount / cropsPerConversion) - conversionsToMake
   const conversionsRemainderInCrops = cropCount % cropsPerConversion
@@ -617,7 +608,81 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): ICyclePhasePro
   }
 }
 
-// Processes the entire cycle of a single crop group 
-function processCycle() {
+interface IProcessCycleArgs {
+  cycleData: ICropHarvestCycle
+  isStar: boolean
+  crafterCount: number
+  cropConversionInfo: ICropConversions
+  processInto: ItemType.Seed | ItemType.Preserve
+}
 
+// interface IProcessHarvestData {
+//   totalProduceCount: number
+//   remainder: number
+//   crafterData: {
+//     cropsInsertedCount: number
+//     canFinishBeforeNextHarvest: boolean
+//     processingTimeMinutes: number
+//     processesDone: number
+//     idleTimeMins: number
+//     excessTimeMins: number
+//   }[]
+//   canFinishBeforeNextHarvest: boolean
+//   totalProcessMinutes: number
+//   lowestCrafterTimeMinutes: number
+//   highestCrafterTimeMinutes: number
+// }
+
+interface IProcessCycleData {
+
+}
+
+// Processes the entire cycle of a single crop group
+function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0) {
+  console.log('processingCycle')
+
+  const { isStar, cropConversionInfo, processInto, cycleData, crafterCount } = processCycleArgs
+  const qualityId = (isStar ? 'star' : 'base')
+
+  let minutesPerConversion = 0
+  let cropsPerConversion = 0
+  let producePerConversion = 0
+
+  if (processInto === ItemType.Seed) {
+    minutesPerConversion = cropConversionInfo.seedProcessMinutes
+    cropsPerConversion = cropConversionInfo.cropsPerSeed
+    producePerConversion = cropConversionInfo.seedsPerConversion
+  }
+  else if (processInto === ItemType.Preserve) {
+    minutesPerConversion = cropConversionInfo.preserveProcessMinutes
+    cropsPerConversion = cropConversionInfo.cropsPerPreserve
+    producePerConversion = 1
+  }
+  else {
+    throw new Error('Neither SEED nor PRESERVE was chosen as the processInto option')
+  }
+
+  // For if a multi-harvest crop has a difference in the last harvest due to replanting deductions
+  const hasReplantDeductionDiff = (cycleData.phases.length > 1)
+  // So far, there's no situation where anything but the last harvest has a different yield
+  && cycleData.phases.at(0)!.yield[qualityId].totalWithDeductions
+  !== cycleData.phases.at(-1)!.yield[qualityId].totalWithDeductions
+
+  const phasesToCalculate = (phasesOverride > 0)
+    ? phasesOverride
+    : cycleData.phases.length - (hasReplantDeductionDiff ? 1 : 0)
+
+  for (let i = 0; i < phasesToCalculate; i++) {
+    const result = processHarvest({
+      qualityId,
+      cycleData,
+      currentPhaseIndex: i,
+      crafterCount,
+      cropConversionInfo,
+      processInto,
+      minutesPerConversion,
+      cropsPerConversion,
+      producePerConversion,
+    })
+  }
 }
