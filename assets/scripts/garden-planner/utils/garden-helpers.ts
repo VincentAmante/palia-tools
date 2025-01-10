@@ -169,7 +169,8 @@ export interface IHarvestCyclePhase {
 }
 
 export interface ICropHarvestCycle {
-  phasesCount: number
+  cropType: CropType
+  totalHarvestsCount: number
   phases: IHarvestCyclePhase[]
 }
 

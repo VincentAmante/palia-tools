@@ -176,7 +176,7 @@ export default class Harvester {
       // save cycle data
       const cropHarvestCycle = {
         cropType: tile.crop.type,
-        phasesCount: (cycles * harvestableDays.length) + remainingHarvests,
+        totalHarvestsCount: (cycles * harvestableDays.length) + remainingHarvests,
         phases: [],
       } as ICropHarvestCycle
 

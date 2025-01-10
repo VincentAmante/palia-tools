@@ -540,8 +540,8 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): ICyclePhasePro
 
   // Gets how much time there is till the next harvest
   let hoursToNextPhase = phaseData.phaseLength
-  if (cycleData.phasesCount > 0) {
-    if (currentPhaseIndex === (cycleData.phasesCount - 1))
+  if (cycleData.phases.length > 1) {
+    if (currentPhaseIndex === (cycleData.phases.length - 1))
       hoursToNextPhase = cycleData.phases[0].phaseLength
     else
       hoursToNextPhase = cycleData.phases[currentPhaseIndex + 1].phaseLength
