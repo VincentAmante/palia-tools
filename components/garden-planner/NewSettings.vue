@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ItemDisplayAlt from './HarvestCalculator/ItemDisplayAlt.vue'
 import OptionCard from './HarvestCalculator/OptionCard.vue'
 import SettingsMinutesDisplay from './SettingsMinutesDisplay.vue'
+import ItemDisplayAlt from './HarvestCalculator/ItemDisplayAlt.vue'
 import useHarvester from '~/stores/useHarvester'
 import type { ProcessorSetting, ProcessorSettings } from '~/assets/scripts/garden-planner/classes/processor'
 import { type ICropNameWithGrowthDiff, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
@@ -54,6 +54,7 @@ watchEffect(() => {
 
   for (const [cropId, data] of harvester.totalHarvest.crops) {
     const cropSetting = processorSettings.value.cropSettings.get(cropId) ?? {
+      count: data.totalWithDeductions,
       cropType: data.cropType,
       isStar: data.isStar,
       processAs: ItemType.Crop,
@@ -62,6 +63,8 @@ watchEffect(() => {
       isActive: true,
       hasPreserve: (getCropFromType(data.cropType)?.conversionInfo.preserveProcessMinutes || 0) > 0,
     }
+
+    cropSetting.count = data.totalWithDeductions
 
     processorSettings.value = {
       ...processorSettings.value,
@@ -80,7 +83,7 @@ const activeProcessorSettings = computed(() => {
   } satisfies ProcessorSettings
 
   for (const [cropId, setting] of processorSettings.value.cropSettings) {
-    if (setting.isActive)
+    if (setting.isActive && setting.count > 0)
       activeSettings.cropSettings.set(cropId, setting)
   }
 
@@ -198,6 +201,7 @@ function minutesToHoursAndMinutes(minutes: number) {
                 :img-src="getCropImgSrc(setting.cropType).src"
                 :img-alt="getCropImgSrc(setting.cropType).alt"
                 :star="setting.isStar"
+                :count="setting.count"
               />
               <p class="hidden font-bold capitalize xl:text-xs 2xl:text-sm xl:block">
                 {{ setting.cropType }}
@@ -206,7 +210,7 @@ function minutesToHoursAndMinutes(minutes: number) {
             <div class="flex items-center justify-start w-full h-full col-span-5 md:col-span-6 xl:col-span-5">
               <div class="join ">
                 <button
-                  class="btn join-item btn-primary btn-xs md:btn-sm"
+                  class="p-2 btn join-item btn-primary btn-square"
                   :class="(setting.processAs === ItemType.Crop) ? 'btn-active' : ''"
                   @click="async () => {
                     if (setting.processAs === ItemType.Crop)
@@ -218,10 +222,13 @@ function minutesToHoursAndMinutes(minutes: number) {
                     onChangeSettings()
                   }"
                 >
-                  Crop
+                  <img
+                    class="w-full h-full"
+                    :src="getCropFromType(setting.cropType)?.cropImage" :alt="`${setting.cropType} Preserve`"
+                  >
                 </button>
                 <button
-                  class="btn join-item btn-primary btn-xs md:btn-sm"
+                  class="p-2 btn join-item btn-primary btn-square"
                   :class="(setting.processAs === ItemType.Seed) ? 'btn-active' : ''"
                   @click="() => {
                     if (setting.processAs === ItemType.Seed)
@@ -232,11 +239,14 @@ function minutesToHoursAndMinutes(minutes: number) {
                     onChangeSettings()
                   }"
                 >
-                  Seed
+                  <img
+                    class="w-full h-full"
+                    :src="getCropFromType(setting.cropType)?.seedImage" :alt="`${setting.cropType} Preserve`"
+                  >
                 </button>
                 <button
                   v-if="(((getCropFromType(setting.cropType)?.goldValues.preserve) || 0) > 0)"
-                  class="btn join-item btn-primary btn-xs md:btn-sm"
+                  class="p-2 btn join-item btn-primary btn-square "
                   :class="(setting.processAs === ItemType.Preserve) ? 'btn-active' : ''"
                   @click="() => {
                     if (setting.processAs === ItemType.Preserve)
@@ -245,7 +255,10 @@ function minutesToHoursAndMinutes(minutes: number) {
                     onChangeSettings()
                   }"
                 >
-                  Preserve
+                  <img
+                    class="h-full"
+                    :src="getCropFromType(setting.cropType)?.preserveImage" :alt="`${setting.cropType} Preserve`"
+                  >
                 </button>
               </div>
             </div>
@@ -256,7 +269,7 @@ function minutesToHoursAndMinutes(minutes: number) {
             >
               <div class="join">
                 <button
-                  class="btn btn-square btn-primary btn-xs lg:btn-sm join-item"
+                  class="btn-xs lg:btn-sm disabled:opacity-50 hover:opacity-60 join-item"
                   :disabled="setting.crafters <= 1"
                   @click="() => {
                     if (setting.crafters <= 1)
@@ -282,7 +295,7 @@ function minutesToHoursAndMinutes(minutes: number) {
                   }"
                 >
                 <button
-                  class="btn btn-square btn-primary btn-xs lg:btn-sm join-item"
+                  class="btn-xs lg:btn-sm disabled:opacity-50 hover:opacity-60 join-item"
                   @click="() => {
                     setting.crafters++
 
