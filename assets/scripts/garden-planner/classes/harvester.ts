@@ -122,6 +122,7 @@ export default class Harvester {
       const totalBaseCrops = baseBaseCrops + extraBaseCrops
 
       // Stores the number of crops harvested, which is usually the same
+
       const starCrop = {
         base: baseStarCrops * group.count,
         extra: extraStarCrops * group.count,
@@ -161,12 +162,8 @@ export default class Harvester {
        */
       const cycleRemainder = dayOfLastHarvest % lastDayOfCycle
 
-      // console.log('cycleRemainder', cycleRemainder)
-
       let remainingHarvests = 0
       if (cycleRemainder > 0) {
-        // console.log('harvestDays', harvestableDays)
-
         for (let i = 1; i <= cycleRemainder; i++) {
           if (harvestableDays.includes(i))
             remainingHarvests++
@@ -221,7 +218,7 @@ export default class Harvester {
       // Now that we've calculated the harvest for one cycle, we simply add the harvest info to all applicable days
       for (let cycle = 1; cycle <= cycles; cycle++) {
         harvestableDays.forEach((day) => {
-          const dayInCycle = day * cycle
+          const dayInCycle = day + ((cycle - 1) * lastDayOfCycle)
 
           const harvestDay = dayHarvests.get(dayInCycle) ?? {
             day: dayInCycle,
@@ -344,6 +341,7 @@ export default class Harvester {
           }
 
           const totalWithDeductions = cropData.totalWithDeductions - cropsRequired
+
           // Deducts the amount of crops required to convert to seeds
           // ! This method cannot pull from the pool of crops harvested from a plant with growth boost
           // ! if the seedsRequired id comes from a plant without growth boost
@@ -402,6 +400,7 @@ export default class Harvester {
       if (cropTotalsForAveraging.size > 0) {
         for (const [cropId, cropTotal] of cropTotalsForAveraging) {
           const average = cropTotal.total / cropTotal.days
+
           const isStar = cropId.includes('-Star')
 
           const cropCycleData = this._totalHarvest.cycleData.get(cropId)
