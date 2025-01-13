@@ -133,6 +133,8 @@ export default class Processor {
   }
 
   process(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>): void {
+    this.process_v2(harvestData, processorSettings)
+
     this.reset()
 
     const output: ProcessorOutput = {
@@ -221,6 +223,7 @@ export default class Processor {
         if (!cycleData)
           return
 
+        // TODO: Factor in deducting idle time for the last cycles
         console.log(processCycle({
           cycleData,
           isStar,
@@ -402,6 +405,166 @@ export default class Processor {
 
     return cropData
   }
+
+  process_v2(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>) {
+    this.reset()
+
+    const output: ProcessorOutput = {
+      crops: new Map(),
+      seeds: new Map(),
+      preserves: new Map(),
+      replantSeeds: Object.assign({}, harvestData.seedsRemainder),
+    }
+
+    const inventory = new Map<string, IInventoryItem>()
+
+    this._settings = Object.assign({}, processorSettings)
+    const settings = this._settings
+
+    const cropData = this.calculateSettings(harvestData, settings)
+
+    if (cropData.size === 0)
+      this._output = output
+
+    for (const [cropName, processData] of cropData) {
+      const cropHarvestData = harvestData.crops.get(cropName)
+
+      const crop = getCropFromType(cropHarvestData?.cropType || CropType.None)
+
+      // If not set to process, just add to crops
+      if (processData.processType === ItemType.Crop) {
+        const count = cropHarvestData?.totalWithDeductions || 0
+
+        if (count > 0) {
+          output.crops.set(cropName, {
+            count,
+            itemType: ItemType.Crop,
+            cropType: crop?.type || CropType.None,
+          })
+
+          if (inventory.has(cropName)) {
+            inventory.get(cropName)!.count += count
+          }
+          else {
+            const baseGoldValue = cropHarvestData?.isStar ? crop?.goldValues.cropStar : crop?.goldValues.crop
+            inventory.set(cropName, {
+              count,
+              img: {
+                src: crop?.image || '',
+                alt: crop?.type || 'Crop',
+              },
+              isStar: cropHarvestData?.isStar || false,
+              baseGoldValue: baseGoldValue || 0,
+              cropType: crop?.type || CropType.None,
+              itemType: ItemType.Crop,
+            })
+          }
+        }
+      }
+      else if (processData.processType === ItemType.Seed || processData.processType === ItemType.Preserve) {
+        const cropCount = cropHarvestData?.totalWithDeductions || 0
+
+        if (cropCount === 0)
+          continue
+
+        if (!crop)
+          throw new Error(`Missing crop data for crop: ${cropName}`)
+
+        const processType = processData.processType === ItemType.Seed ? 'seeds' : 'preserves'
+        const outputId = `${cropName}-${processType}`
+        const isStar = cropName.includes('-Star')
+
+        const cycleData = harvestData.cycleData.get(cropName)
+        if (!cycleData)
+          return
+
+        const cycles = Math.floor(cycleData.totalHarvestsCount / cycleData.phases.length)
+        const cyclesRemainder = cycleData.totalHarvestsCount % cycleData.phases.length
+
+        // ? Should we make an incomplete cycle data to simulate remainders,
+        // ? or do we use the calculations of one processCycle and modify the values to match
+
+        // TODO: Figure out how to multiply the data appropriately
+        // TODO: Add first harvest wait time, and subtract idle time from last harvest
+        // TODO: Figure out where crafter cycle data should go
+
+        // TODO: Try to figure out how idle time and excess time should interact with each other
+
+        let totalProduceCount = 0
+        let totalProcessMinutes = 0
+        let longestProcessMinutes = 0
+        let goldGenerated = 0
+        let firstHarvestDelayMinutes = 0
+
+        let lastCycleData: IProcessCycleData | null = null
+
+        if (cycles > 0) {
+          const cycleOutput = processCycle({
+            cycleData,
+            isStar,
+            crafterCount: processData.craftersToUse,
+            cropConversionInfo: crop.conversionInfo,
+            processInto: processData.processType,
+            goldValues: crop.goldValues,
+          })
+
+          totalProduceCount += cycleOutput.totalProduceCount * cycles
+          totalProcessMinutes += cycleOutput.totalProcessMinutes * cycles
+          longestProcessMinutes += cycleOutput.longestProcessMinutes * cycles
+          goldGenerated += cycleOutput.goldGenerated * cycles
+
+          firstHarvestDelayMinutes += cycleOutput.firstHarvestDelayMinutes
+
+          lastCycleData = cycleOutput
+        }
+
+        if (cyclesRemainder > 0) {
+          const cycleRemainderOutput = processCycle({
+            cycleData,
+            isStar,
+            crafterCount: processData.craftersToUse,
+            cropConversionInfo: crop.conversionInfo,
+            processInto: processData.processType,
+            goldValues: crop.goldValues,
+          }, cyclesRemainder)
+
+          totalProduceCount += cycleRemainderOutput.totalProduceCount
+          totalProcessMinutes += cycleRemainderOutput.totalProcessMinutes
+          longestProcessMinutes += cycleRemainderOutput.longestProcessMinutes
+          goldGenerated += cycleRemainderOutput.goldGenerated
+
+          // In case there was no completed cycle
+          if (firstHarvestDelayMinutes <= 0)
+            firstHarvestDelayMinutes += cycleRemainderOutput.firstHarvestDelayMinutes
+
+          lastCycleData = cycleRemainderOutput
+        }
+
+        // console.log(`longestProcessMinutes: ${longestProcessMinutes}`)
+
+        // Adds a delay caused by the first harvest
+        longestProcessMinutes += firstHarvestDelayMinutes
+
+        // console.log(`longestProcessMinutes with first Harvest Delay: ${longestProcessMinutes}`)
+
+        if (!lastCycleData)
+          throw new Error('No last cycle data')
+        // Subtracts last cycle's idle time
+        longestProcessMinutes -= (
+          lastCycleData.cycleCrafterData.at(-1)!.longestProcessMinutes
+          -= lastCycleData.cycleCrafterData.at(-1)!.longestProcessMinutesNoIdle
+        )
+
+        // console.log(`longestProcessMinutes with idle time subtracted: ${longestProcessMinutes}`)
+
+        // console.log(`gold generated: ${goldGenerated}`)
+        // console.log(`average: ${goldGenerated / (longestProcessMinutes / 60)}`)
+      }
+    }
+
+    this._inventory = inventory
+    this._output = output
+  }
 }
 
 interface IProcessedBatch {
@@ -488,6 +651,7 @@ interface IProcessHarvestData {
   lowestCrafterTimeMinutes: number
   highestCrafterTimeMinutes: number
   longestProcessMinutes: number
+  longestProcessMinutesNoIdle: number
   goldGenerated: number
 }
 
@@ -602,6 +766,8 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
   let highestCrafterTimeMinutes = Number.NEGATIVE_INFINITY
 
   let longestProcessMinutes = Number.NEGATIVE_INFINITY
+  let longestProcessMinutesNoIdle = Number.NEGATIVE_INFINITY
+
   for (const crafter of crafterData) {
     if (!crafter.canFinishBeforeNextHarvest)
       canFinishBeforeNextHarvest = false
@@ -615,10 +781,14 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
     if (crafter.processTimeMinutes > highestCrafterTimeMinutes)
       highestCrafterTimeMinutes = crafter.processTimeMinutes
 
-    // TODO: Consider how to factor in idleTime
     const crafterLongestProcessMinutes = Math.max((hoursToNextPhase * 60), crafter.processTimeMinutes)
+
+    // TODO: Factor in deducting idle time for the last cycles
     if (crafterLongestProcessMinutes > longestProcessMinutes)
       longestProcessMinutes = crafterLongestProcessMinutes
+
+    if (crafter.processTimeMinutes > longestProcessMinutesNoIdle)
+      longestProcessMinutesNoIdle = crafter.processTimeMinutes
   }
 
   return {
@@ -631,6 +801,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
     highestCrafterTimeMinutes,
     goldGenerated,
     longestProcessMinutes,
+    longestProcessMinutesNoIdle,
   }
 }
 
@@ -674,9 +845,11 @@ interface IProcessCycleData {
     canFinishBeforeNextHarvest: boolean
     longestProcessMinutes: number
     crafterData: IProcessHarvestData['crafterData']
+    longestProcessMinutesNoIdle: number
   }[]
   totalProcessMinutes: number
   longestProcessMinutes: number
+  firstHarvestDelayMinutes: number
   goldGenerated: number
 }
 /**
@@ -685,7 +858,7 @@ interface IProcessCycleData {
  * @param phasesOverride
  * @returns
  */
-function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0) {
+function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): IProcessCycleData {
   const { goldValues, isStar, cropConversionInfo, processInto, cycleData, crafterCount } = processCycleArgs
   const qualityId = (isStar ? 'star' : 'base')
 
@@ -693,6 +866,7 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0) {
   let cropsPerConversion = 0
   let producePerConversion = 0
   let produceGoldValue = 0
+  const firstHarvestDelayMinutes = (cycleData.phases[0].phaseLength * 60)
 
   if (processInto === ItemType.Seed) {
     minutesPerConversion = cropConversionInfo.seedProcessMinutes
@@ -728,17 +902,20 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0) {
     canFinishBeforeNextHarvest: boolean
     longestProcessMinutes: number
     crafterData: IProcessHarvestData['crafterData']
+    longestProcessMinutesNoIdle: number
   }[]
   let goldGenerated = 0
 
   for (let i = 0; i < phasesToCalculate; i++) {
+    // TODO: Figure out how to accurately subtract excess time from idle time
     const {
-      totalProduceCount: cycleTotalProduceCount,
+      totalProduceCount: harvestTotalProduceCount,
       crafterData,
-      canFinishBeforeNextHarvest: cycleCanFinishBeforeHarvest,
-      totalProcessMinutes: cycleTotalProcessMinutes,
-      longestProcessMinutes: cycleLongestProcessMinutes,
-      goldGenerated: cycleGoldGenerated,
+      canFinishBeforeNextHarvest: harvestCanFinishBeforeHarvest,
+      totalProcessMinutes: harvestTotalProcessMinutes,
+      longestProcessMinutes: harvestLongestProcessMinutes,
+      goldGenerated: harvestGoldGenerated,
+      longestProcessMinutesNoIdle,
     } = processHarvest({
       qualityId,
       cycleData,
@@ -752,20 +929,21 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0) {
       produceGoldValue,
     })
 
-    totalProduceCount += cycleTotalProduceCount
-    if (!cycleCanFinishBeforeHarvest)
+    totalProduceCount += harvestTotalProduceCount
+    if (!harvestCanFinishBeforeHarvest)
       canFinishBeforeNextHarvest = false
 
-    totalProcessMinutes += cycleTotalProcessMinutes
-    longestProcessMinutes += cycleLongestProcessMinutes
+    totalProcessMinutes += harvestTotalProcessMinutes
+    longestProcessMinutes += harvestLongestProcessMinutes
 
     cycleCrafterData.push({
-      canFinishBeforeNextHarvest: cycleCanFinishBeforeHarvest,
-      longestProcessMinutes: cycleLongestProcessMinutes,
+      canFinishBeforeNextHarvest,
+      longestProcessMinutes: harvestLongestProcessMinutes,
       crafterData,
+      longestProcessMinutesNoIdle,
     })
 
-    goldGenerated += cycleGoldGenerated
+    goldGenerated += harvestGoldGenerated
   }
 
   return {
@@ -774,9 +952,6 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0) {
     totalProcessMinutes,
     longestProcessMinutes,
     goldGenerated,
+    firstHarvestDelayMinutes,
   }
-}
-
-function process_v2() {
-
 }
