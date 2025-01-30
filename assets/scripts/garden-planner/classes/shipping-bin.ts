@@ -34,11 +34,9 @@ export class ShippingBin {
 
   add(day: string, item: Item): void {
     /**
-     * I've considered making it so that the player is limited in how much they
-     *  can sell in a day based on item stack size (as there's a limited amount of slots)
-     *  but I think it's better to just let the player figure out how to manage their shipping bin
+     * Considerations were made to limit based on stack size,
+     * but it'll be ignored for now so that the output is more compact.
      */
-
     const id = `${item.name}:${(item.isStar) ? 'star' : 'normal'}`
     if (!this._binInfo[day])
       this._binInfo[day] = {}

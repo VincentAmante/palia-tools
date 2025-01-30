@@ -1,8 +1,9 @@
 /**
  * ! NOTE
- * ! This file is due for a revision when the plot-system re-write is done
- * ! This change will affect the way crops and fertilisers are placed on plots
- * ! Also yes, this file needs a LOT of revision
+ * ! The current implementation of plots do not allow off-set connections (e.g: only 2/3 of a side connected)
+ * ! An alternative implementation will be required for such a case within a separate file
+ *
+ * TODO: Improve the current implementation to be more efficient
  */
 
 import uniqid from 'uniqid'
@@ -23,7 +24,7 @@ class Plot {
   private _tiles: Tile[][] = []
   private _id: string = uniqid()
 
-  // Contains references to adjacent plots for the purpose of calculating bonuses
+  // Tracks the plot's neighbours for bonus calculations and cross-plot crop/fert placement
   private _adjacentPlots: {
     north: Plot | null
     south: Plot | null
@@ -72,6 +73,13 @@ class Plot {
     return this._tiles[x][y]
   }
 
+  /**
+   * Gets all tiles within a given size of the plot.
+   * @param row - The starting row index.
+   * @param col - The starting column index.
+   * @param size - The size of the crop, which determines how many tiles to include.
+   * @returns An array of tiles within the given size.
+   */
   getTilesBySize(row: number, col: number, size: CropSize): Tile[] {
     const tiles: Tile[] = []
 
@@ -501,8 +509,8 @@ class Plot {
   /**
    *  Returns the tiles adjacent to the given tile, including tiles from adjacent plots
    * @param row
-   * @param col
-   * @returns
+   * @param col - column
+   * @returns an array of tiles that are adjacent to the given tile.
    */
   getAdjacentTiles(row: number, col: number): Tile[] {
     const getAdjacentTiles = (x: number, y: number): Tile[] => {
@@ -583,6 +591,8 @@ class Plot {
   onTileHover(row: number, col: number, selectedItem: Crop | Fertiliser | null | string = null): void {
     if (!this._isActive)
       return
+
+    // Safeguard to prevent infinite loops as this function sometimes gets called recursively
     if (this._tiles[row][col].isHovered)
       return
 
