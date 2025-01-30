@@ -353,7 +353,7 @@ class Garden {
           harvest.crops[crop.type as CropType].star += starCrops
 
           if (doReplant) {
-            if (tile.hasStarSeed || options.allStarSeeds)
+            if (options.allStarSeeds)
               seedsRequired[crop.type as CropType].star++
             else
               seedsRequired[crop.type as CropType].base++
