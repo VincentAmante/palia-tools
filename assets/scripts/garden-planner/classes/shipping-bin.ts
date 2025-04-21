@@ -1,17 +1,19 @@
-/**
- * ShippingBin class
- * - This class will be used in the future to store data about items being sold
- */
-
 import type { Item } from './items/item'
 
 export interface IBinInfo {
   [day: string]: Record<string, Item>
 }
 
+/**
+ * ShippingBin class
+ * - Used to store information on items to be sold
+ */
 export class ShippingBin {
   private _binInfo: IBinInfo = {}
 
+  /**
+   * Sorts the bin by day
+   */
   sortBin() {
     const sortedBin: IBinInfo = {}
     Object.keys(this._binInfo).sort((a, b) => {
@@ -38,6 +40,7 @@ export class ShippingBin {
      * but it'll be ignored for now so that the output is more compact.
      */
     const id = `${item.name}:${(item.isStar) ? 'star' : 'normal'}`
+
     if (!this._binInfo[day])
       this._binInfo[day] = {}
     if (!this._binInfo[day][id])
