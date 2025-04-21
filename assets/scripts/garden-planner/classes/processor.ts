@@ -223,19 +223,6 @@ export default class Processor {
         if (!cycleData)
           return
 
-        // TODO: Factor in deducting idle time for the last cycles
-        console.log(processCycle({
-          cycleData,
-          isStar,
-          crafterCount: processData.craftersToUse,
-          cropConversionInfo: crop.conversionInfo,
-          processInto: processData.processType,
-          goldValues: crop.goldValues,
-        }))
-        // TODO: Now move this to per cycle and multiply
-
-        // console.log(`Crop ${crop.type}`, count, remainder, processData.processType, minutesProcessedEffective)
-
         if (minutesProcessedEffective > this._highestCraftingTime)
           this._highestCraftingTime = minutesProcessedEffective
 
@@ -484,8 +471,8 @@ export default class Processor {
         // ? Should we make an incomplete cycle data to simulate remainders,
         // ? or do we use the calculations of one processCycle and modify the values to match
 
-        // TODO: Figure out how to multiply the data appropriately
-        // TODO: Add first harvest wait time, and subtract idle time from last harvest
+        // // TODO: Figure out how to multiply the data appropriately
+        // // TODO: Add first harvest wait time, and subtract idle time from last harvest
         // TODO: Figure out where crafter cycle data should go
 
         // TODO: Try to figure out how idle time and excess time should interact with each other
@@ -783,7 +770,6 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
 
     const crafterLongestProcessMinutes = Math.max((hoursToNextPhase * 60), crafter.processTimeMinutes)
 
-    // TODO: Factor in deducting idle time for the last cycles
     if (crafterLongestProcessMinutes > longestProcessMinutes)
       longestProcessMinutes = crafterLongestProcessMinutes
 
@@ -852,6 +838,7 @@ interface IProcessCycleData {
   firstHarvestDelayMinutes: number
   goldGenerated: number
 }
+
 /**
  *
  * @param processCycleArgs
