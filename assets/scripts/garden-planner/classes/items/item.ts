@@ -10,9 +10,11 @@ export interface Item {
   readonly isStar: boolean
   readonly maxStack: number
   count: number
+  readonly itemId: string // Unique identifier (e.g., Tomato-Crop-Star)
 
   equals(item: Item): boolean
   add(count: number): void
+  subtract(count: number): void
 
   /**
    * Returns an array of duplicate items that represent how many stacks of this item are in the inventory.
@@ -35,12 +37,14 @@ export class CropItem implements Item {
   readonly isStar: boolean
   readonly maxStack: number
   readonly cropType: CropType
+  readonly itemId: string
   protected _count: number
 
-  constructor(name: string, type: ItemType, image: string, price: number, isStar: boolean, maxStack: number, count: number, cropType: CropType) {
+  constructor(name: string, type: ItemType.Crop | ItemType.Seed | ItemType.Preserve, image: string, price: number, isStar: boolean, maxStack: number, count: number, cropType: CropType) {
     this.name = name
-    if (type !== ItemType.Crop && type !== ItemType.Seed && type !== ItemType.Preserve)
-      throw new Error('Invalid item type')
+    // Type assertion already handled by the parameter type
+    // if (type !== ItemType.Crop && type !== ItemType.Seed && type !== ItemType.Preserve)
+    //   throw new Error('Invalid item type')
 
     this.type = type
     this.image = image
@@ -49,11 +53,12 @@ export class CropItem implements Item {
     this.maxStack = maxStack
     this._count = count
     this.cropType = cropType
+    this.itemId = `${this.cropType}-${this.type}-${this.isStar ? 'Star' : 'Base'}`
   }
 
-  // for crops, equals mean the same crop type and star quality
+  // Items are equal if they have the same unique ID
   equals(item: Item): boolean {
-    return this.name === item.name && this.isStar === item.isStar
+    return this.itemId === item.itemId
   }
 
   get count(): number {
@@ -66,6 +71,10 @@ export class CropItem implements Item {
 
   add(count: number): void {
     this._count += count
+  }
+
+  subtract(count: number): void {
+    this._count -= count
   }
 
   // Converts the count of this item into an array of stacks of this item based on the maxStack value.
