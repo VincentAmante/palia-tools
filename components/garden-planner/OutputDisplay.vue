@@ -84,9 +84,9 @@ const selectedCropProcessingData = computed(() => {
   if (!selectedCropDetail.value || !processor.output?.detailedProcessingInfo)
     return null
 
-  console.log(selectedCropDetail.value)
-  console.log(processor.output.detailedProcessingInfo)
-  console.log(processor.output.detailedProcessingInfo.get(selectedCropDetail.value))
+  // console.log(selectedCropDetail.value)
+  // console.log(processor.output.detailedProcessingInfo)
+  // console.log(processor.output.detailedProcessingInfo.get(selectedCropDetail.value))
   return processor.output.detailedProcessingInfo.get(selectedCropDetail.value)
 })
 
