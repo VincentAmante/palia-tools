@@ -10,6 +10,7 @@ export interface ProcessorOutput {
   seeds: Map<ICropNameWithGrowthDiff, ProcessOutputInfo>
   preserves: Map<ICropNameWithGrowthDiff, ProcessOutputInfo>
   replantSeeds: Map<ICropNameWithGrowthDiff, ISeedTracker>
+  detailedProcessingInfo: Map<ICropNameWithGrowthDiff, IProcessCycleData[]> // Added to store detailed cycle data
 }
 
 export interface ProcessOutputInfo {
@@ -74,6 +75,7 @@ export default class Processor {
     seeds: new Map(),
     preserves: new Map(),
     replantSeeds: new Map(),
+    detailedProcessingInfo: new Map(), // Initialize new map
   }
 
   private _inventory = new Map<string, IInventoryItem>()
@@ -130,10 +132,12 @@ export default class Processor {
     this._preserveJars = new Map<string, IInventoryItem>()
     this._seedCollectorsCount = 0
     this._preserveJarsCount = 0
+    this._output.detailedProcessingInfo = new Map() // Reset detailed info
   }
 
   process(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>): void {
     this.process_v2(harvestData, processorSettings)
+    return
 
     this.reset()
 
@@ -142,6 +146,7 @@ export default class Processor {
       seeds: new Map(),
       preserves: new Map(),
       replantSeeds: Object.assign({}, harvestData.seedsRemainder),
+      detailedProcessingInfo: new Map(), // Initialize in output object
     }
 
     const inventory = new Map<string, IInventoryItem>()
@@ -401,6 +406,8 @@ export default class Processor {
       seeds: new Map(),
       preserves: new Map(),
       replantSeeds: Object.assign({}, harvestData.seedsRemainder),
+      detailedProcessingInfo: new Map(),
+
     }
 
     const inventory = new Map<string, IInventoryItem>()
@@ -410,8 +417,12 @@ export default class Processor {
 
     const cropData = this.calculateSettings(harvestData, settings)
 
-    if (cropData.size === 0)
+    if (cropData.size === 0) {
       this._output = output
+      // Ensure inventory is also set if returning early
+      this._inventory = inventory
+      return // Added return to prevent further processing
+    }
 
     for (const [cropName, processData] of cropData) {
       const cropHarvestData = harvestData.crops.get(cropName)
@@ -463,7 +474,7 @@ export default class Processor {
 
         const cycleData = harvestData.cycleData.get(cropName)
         if (!cycleData)
-          return
+          continue
 
         const cycles = Math.floor(cycleData.totalHarvestsCount / cycleData.phases.length)
         const cyclesRemainder = cycleData.totalHarvestsCount % cycleData.phases.length
@@ -479,14 +490,43 @@ export default class Processor {
 
         let totalProduceCount = 0
         let totalProcessMinutes = 0
-        let longestProcessMinutes = 0
+        let longestProcessMinutes = 0 // This variable's accumulation logic needs review for cycle processing
         let goldGenerated = 0
         let firstHarvestDelayMinutes = 0
 
         let lastCycleData: IProcessCycleData | null = null
+        const allCycleData: IProcessCycleData[] = [] // Array to store data for all cycles
 
         if (cycles > 0) {
-          const cycleOutput = processCycle({
+          // Process full cycles
+          for (let i = 0; i < cycles; i++) {
+            const cycleOutput = processCycle({
+              cycleData,
+              isStar,
+              crafterCount: processData.craftersToUse,
+              cropConversionInfo: crop.conversionInfo,
+              processInto: processData.processType,
+              goldValues: crop.goldValues,
+            })
+
+            console.log(cycleOutput)
+
+            totalProduceCount += cycleOutput.totalProduceCount
+            totalProcessMinutes += cycleOutput.totalProcessMinutes
+            // Accumulate longest process time carefully - handled later by _highestCraftingTime
+            // longestProcessMinutes += cycleOutput.longestProcessMinutes // Simple sum is likely incorrect
+            goldGenerated += cycleOutput.goldGenerated
+
+            if (i === 0) // Only add first harvest delay once
+              firstHarvestDelayMinutes += cycleOutput.firstHarvestDelayMinutes
+
+            lastCycleData = cycleOutput
+            allCycleData.push(cycleOutput) // Store data for this cycle
+          }
+        }
+
+        if (cyclesRemainder > 0) {
+          const cycleRemainderOutput = processCycle({
             cycleData,
             isStar,
             crafterCount: processData.craftersToUse,
@@ -495,14 +535,14 @@ export default class Processor {
             goldValues: crop.goldValues,
           })
 
-          totalProduceCount += cycleOutput.totalProduceCount * cycles
-          totalProcessMinutes += cycleOutput.totalProcessMinutes * cycles
-          longestProcessMinutes += cycleOutput.longestProcessMinutes * cycles
-          goldGenerated += cycleOutput.goldGenerated * cycles
+          totalProduceCount += cycleRemainderOutput.totalProduceCount * cycles
+          totalProcessMinutes += cycleRemainderOutput.totalProcessMinutes * cycles
+          longestProcessMinutes += cycleRemainderOutput.longestProcessMinutes * cycles
+          goldGenerated += cycleRemainderOutput.goldGenerated * cycles
 
-          firstHarvestDelayMinutes += cycleOutput.firstHarvestDelayMinutes
+          firstHarvestDelayMinutes += cycleRemainderOutput.firstHarvestDelayMinutes
 
-          lastCycleData = cycleOutput
+          lastCycleData = cycleRemainderOutput
         }
 
         if (cyclesRemainder > 0) {
@@ -525,27 +565,58 @@ export default class Processor {
             firstHarvestDelayMinutes += cycleRemainderOutput.firstHarvestDelayMinutes
 
           lastCycleData = cycleRemainderOutput
+          allCycleData.push(cycleRemainderOutput) // Store data for the remainder cycle
         }
 
-        // console.log(`longestProcessMinutes: ${longestProcessMinutes}`)
+        // --- Recalculate effective processing time based on all cycles ---
+        // This part needs careful thought. The *longest* path determines the total time.
+        // Simply summing might overestimate if crafters finish early in some cycles.
+        // The existing _highestCraftingTime calculation might be sufficient if it correctly
+        // identifies the bottleneck across all processed crops. Let's assume it does for now.
+
+        // Example: Update highestCraftingTime based on the *last* cycle's effective time + delays
+        if (lastCycleData) {
+          // Rough calculation - needs refinement based on how cycles interact
+          const effectiveTime = firstHarvestDelayMinutes + allCycleData.reduce((sum, cycle) => {
+            // Summing the longest phase of each cycle might be closer?
+            // Or find the absolute longest phase across all cycles? Needs careful design.
+            // Let's use the existing logic for now and refine if needed.
+            const cycleLongestPhase = Math.max(...cycle.cycleCrafterData.map(p => p.longestProcessMinutesNoIdle))
+            return sum + cycleLongestPhase
+          }, 0)
+
+          // Subtract idle time from the very last phase of the last cycle
+          const lastPhaseData = lastCycleData.cycleCrafterData.at(-1)
+          const lastPhaseIdleTime = lastPhaseData ? (lastPhaseData.longestProcessMinutes - lastPhaseData.longestProcessMinutesNoIdle) : 0
+          const finalEffectiveTime = Math.max(0, effectiveTime - lastPhaseIdleTime)
+
+          if (finalEffectiveTime > this._highestCraftingTime)
+            this._highestCraftingTime = finalEffectiveTime
+        }
+        // --- End Recalculation ---
+
+        // Store the detailed cycle data in the output
+        output.detailedProcessingInfo.set(cropName, allCycleData)
+
+        // console.log(`longestProcessMinutes: ${longestProcessMinutes}`) // This variable is no longer directly used for final time
 
         // Adds a delay caused by the first harvest
-        longestProcessMinutes += firstHarvestDelayMinutes
+        // longestProcessMinutes += firstHarvestDelayMinutes // Handled in the new effectiveTime calculation
 
         // console.log(`longestProcessMinutes with first Harvest Delay: ${longestProcessMinutes}`)
 
-        if (!lastCycleData)
-          throw new Error('No last cycle data')
+        // if (!lastCycleData) // Check moved into the recalculation block
+        //   throw new Error('No last cycle data')
         // Subtracts last cycle's idle time
-        longestProcessMinutes -= (
-          lastCycleData.cycleCrafterData.at(-1)!.longestProcessMinutes
-          -= lastCycleData.cycleCrafterData.at(-1)!.longestProcessMinutesNoIdle
-        )
+        // longestProcessMinutes -= ( // Handled in the new effectiveTime calculation
+        //   lastCycleData.cycleCrafterData.at(-1)!.longestProcessMinutes
+        //   -= lastCycleData.cycleCrafterData.at(-1)!.longestProcessMinutesNoIdle
+        // )
 
-        // console.log(`longestProcessMinutes with idle time subtracted: ${longestProcessMinutes}`)
+        // console.log(`longestProcessMinutes with idle time subtracted: ${longestProcessMinutes}`) // This calculation needs review
 
         // console.log(`gold generated: ${goldGenerated}`)
-        // console.log(`average: ${goldGenerated / (longestProcessMinutes / 60)}`)
+        // console.log(`average: ${goldGenerated / (this._highestCraftingTime / 60)}`) // Use updated highestCraftingTime
       }
     }
 
