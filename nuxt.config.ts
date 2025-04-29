@@ -5,7 +5,9 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-svg-core/styles.css',
   ],
 
-  // devtools: { enabled: false },
+  devtools: {
+    enabled: false,
+  },
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -17,6 +19,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/image',
     '@pinia/nuxt',
+    '@nuxt/devtools',
   ],
 
   build: {
