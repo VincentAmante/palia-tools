@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import TotalInventory from './HarvestCalculator/TotalInventory.vue'
 import ItemDisplay from './HarvestCalculator/ItemDisplay.vue'
 import NewSettings from './NewSettings.vue'
+import LazyHCInfo from './HarvestCalculator/HCInfo.vue'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
 import type { ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
@@ -84,10 +85,12 @@ const selectedCropProcessingData = computed(() => {
   if (!selectedCropDetail.value || !processor.output?.detailedProcessingInfo)
     return null
 
-  // console.log(selectedCropDetail.value)
-  // console.log(processor.output.detailedProcessingInfo)
-  // console.log(processor.output.detailedProcessingInfo.get(selectedCropDetail.value))
-  return processor.output.detailedProcessingInfo.get(selectedCropDetail.value)
+
+  const detailedProcessingInfoOutput = processor.output.detailedProcessingInfo.get(selectedCropDetail.value)
+
+  if (detailedProcessingInfoOutput && detailedProcessingInfoOutput.length > 0)
+    return detailedProcessingInfoOutput[0] 
+  else return null
 })
 
 // Computed property for seeds required per replant event
@@ -139,47 +142,29 @@ const selectedCropTotalFullCycles = computed(() => {
       <!-- <p>
         Tab Select
       </p> -->
-      <button
-        id="approximator-display-tab"
-        aria-label="Display Tab"
-        class="text-lg border-none btn-circle btn-sm btn btn-misc"
-        :class="activeTab === 'display' ? 'btn-active' : ''"
-        @click="setTab('display')"
-      >
+      <button id="approximator-display-tab" aria-label="Display Tab"
+        class="text-lg border-none btn-circle btn-sm btn btn-misc" :class="activeTab === 'display' ? 'btn-active' : ''"
+        @click="setTab('display')">
         <FontAwesomeIcon :icon="['fas', 'table-list']" />
       </button>
-      <button
-        id="approximator-options-tab"
-        aria-label="Options Tab"
+
+      <button id="approximator-crop-details-tab" aria-label="Crop Details Tab"
         class="text-lg border-none btn-circle btn-sm btn btn-misc"
-        :class="activeTab === 'options' ? 'btn-active' : ''"
-        @click="setTab('options')"
-      >
+        :class="activeTab === 'crop-details' ? 'btn-active' : ''" @click="setTab('crop-details')">
+        <FontAwesomeIcon :icon="['fas', 'magnifying-glass']" />
+      </button>
+      <button id="approximator-options-tab" aria-label="Options Tab"
+        class="text-lg border-none btn-circle btn-sm btn btn-misc" :class="activeTab === 'options' ? 'btn-active' : ''"
+        @click="setTab('options')">
         <FontAwesomeIcon :icon="['fas', 'sliders']" />
       </button>
-      <button
-        id="approximator-info-tab" aria-label="Info Tab"
-        class="text-lg border-none btn-circle btn-sm btn btn-misc"
-        :class="activeTab === 'info' ? 'btn-active' : ''"
-        @click="setTab('info')"
-      >
+      <button id="approximator-info-tab" aria-label="Info Tab"
+        class="text-lg border-none btn-circle btn-sm btn btn-misc" :class="activeTab === 'info' ? 'btn-active' : ''"
+        @click="setTab('info')">
         <FontAwesomeIcon :icon="['fas', 'info']" />
       </button>
-      <button
-        id="approximator-crop-details-tab"
-        aria-label="Crop Details Tab"
-        class="text-lg border-none btn-circle btn-sm btn btn-misc"
-        :class="activeTab === 'crop-details' ? 'btn-active' : ''"
-        @click="setTab('crop-details')"
-      >
-        <FontAwesomeIcon :icon="['fas', 'magnifying-glass-chart']" />
-      </button>
     </section>
-    <section
-      v-show="activeTab === 'display'"
-      id="display-tab"
-      class="flex flex-col gap-2 pt-1"
-    >
+    <section v-show="activeTab === 'display'" id="display-tab" class="flex flex-col gap-2 pt-1">
       <section>
         <p class="text-sm font-semibold text-palia-blue-dark">
           Overview
@@ -189,35 +174,31 @@ const selectedCropTotalFullCycles = computed(() => {
             <p class="w-full px-1 text-xs text-right text-misc-dark">
               Total
             </p>
-            <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
-              <img
-                width="12" height="12" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-                alt="Gold" format="webp"
-              >
+            <p
+              class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
+              <img width="12" height="12" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+                format="webp">
               {{ (processor.finalGoldValue || 0).toLocaleString() }}
             </p>
           </div>
           <div class="p-1 border rounded-md bg-accent border-misc-dark">
             <p class="w-full px-1 text-xs text-right text-misc-dark">
-              <span
-                v-if="craftingTime.actualValue <= 0"
-                class="text-xs font-normal tooltip"
-                data-tip="Processing time excluded"
-              >
+              <span v-if="craftingTime.actualValue <= 0" class="text-xs font-normal tooltip"
+                data-tip="Processing time excluded">
                 <FontAwesomeIcon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
               </span>
               Average
             </p>
-            <p class="flex items-center justify-end w-full gap-1 text-xl font-semibold text-right xl:text-2xl text-palia-blue">
-              <img
-                width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-                alt="Gold" format="webp"
-              >
+            <p
+              class="flex items-center justify-end w-full gap-1 text-xl font-semibold text-right xl:text-2xl text-palia-blue">
+              <img width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+                format="webp">
               <span v-if="processor.highestCraftingTime > 0">
                 &#8776;{{ (processor.averageGoldValue || 0).toLocaleString() }}
               </span>
               <span v-else>
-                &#8776;{{ (Math.round((processor.finalGoldValue / harvester.totalHarvest.lastHarvestDay)) || 0).toLocaleString() }}
+                &#8776;{{ (Math.round((processor.finalGoldValue / harvester.totalHarvest.lastHarvestDay))
+                  || 0).toLocaleString() }}
               </span>
             </p>
             <p class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue">
@@ -242,7 +223,8 @@ const selectedCropTotalFullCycles = computed(() => {
             <p class="w-full px-1 text-xs text-right text-misc-dark">
               Level
             </p>
-            <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
+            <p
+              class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
               {{ harvester.settings.level }}
             </p>
           </div>
@@ -250,7 +232,8 @@ const selectedCropTotalFullCycles = computed(() => {
             <p class="w-full px-1 text-xs text-right text-misc-dark">
               Days of Harvest
             </p>
-            <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
+            <p
+              class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
               {{ harvester.totalHarvest.lastHarvestDay }}
             </p>
           </div>
@@ -259,17 +242,11 @@ const selectedCropTotalFullCycles = computed(() => {
       <section class="text-xs">
         <ul class="flex flex-wrap gap-1 text-palia-blue-dark">
           <li class="text-xs border-none badge bg-quality-increase-dark">
-            <FontAwesomeIcon
-              class="mr-1"
-              :class="harvester.settings.useStarSeeds ? '' : ' opacity-50'"
-              :icon="['fas', 'star']"
-            />
+            <FontAwesomeIcon class="mr-1" :class="harvester.settings.useStarSeeds ? '' : ' opacity-50'"
+              :icon="['fas', 'star']" />
             {{ harvester.settings.useStarSeeds ? 'Star Seed' : 'Normal Seed' }}
           </li>
-          <li
-            v-if="harvester.settings.includeReplant"
-            class="text-xs border-none badge bg-harvest-boost-dark"
-          >
+          <li v-if="harvester.settings.includeReplant" class="text-xs border-none badge bg-harvest-boost-dark">
             <span>
               <FontAwesomeIcon :icon="['fas', 'seedling']" class="mr-1" />
               <abbr title="Include">Incl.</abbr> Replant
@@ -299,17 +276,11 @@ const selectedCropTotalFullCycles = computed(() => {
             Seed Collectors
             <span v-if="processor.seedCollectorsCount > 0">- {{ processor.seedCollectorsCount }}</span>
           </p>
-          <ul class="flex flex-wrap gap-1 p-2 bg-opacity-50 border rounded-md border-misc-dark bg-accent min-h-16 gap-y-2">
-            <ItemDisplay
-              v-for="[name, item] in processor.seedCollectors"
-              :key="name"
-              :img-src="item.img.src"
-              :img-alt="item.img.alt"
-              :star="item.isStar"
-              :count="item.count"
-              :base-gold-value="item.baseGoldValue"
-              tooltip="Seed Collectors to use"
-            />
+          <ul
+            class="flex flex-wrap gap-1 p-2 bg-opacity-50 border rounded-md border-misc-dark bg-accent min-h-16 gap-y-2">
+            <ItemDisplay v-for="[name, item] in processor.seedCollectors" :key="name" :img-src="item.img.src"
+              :img-alt="item.img.alt" :star="item.isStar" :count="item.count" :base-gold-value="item.baseGoldValue"
+              tooltip="Seed Collectors to use" />
           </ul>
         </div>
         <div class="flex flex-col w-full">
@@ -317,35 +288,23 @@ const selectedCropTotalFullCycles = computed(() => {
             Preserve Jars
             <span v-if="processor.preserveJarsCount > 0">- {{ processor.preserveJarsCount }}</span>
           </p>
-          <ul class="flex flex-wrap gap-1 p-2 bg-opacity-50 border rounded-md bg-accent border-misc-dark min-h-16 gap-y-2">
-            <ItemDisplay
-              v-for="[name, item] in processor.preserveJars"
-              :key="name"
-              :img-src="item.img.src"
-              :img-alt="item.img.alt"
-              :star="item.isStar"
-              :count="item.count"
-              :base-gold-value="item.baseGoldValue"
-              tooltip="Preserve Jars to use"
-            />
+          <ul
+            class="flex flex-wrap gap-1 p-2 bg-opacity-50 border rounded-md bg-accent border-misc-dark min-h-16 gap-y-2">
+            <ItemDisplay v-for="[name, item] in processor.preserveJars" :key="name" :img-src="item.img.src"
+              :img-alt="item.img.alt" :star="item.isStar" :count="item.count" :base-gold-value="item.baseGoldValue"
+              tooltip="Preserve Jars to use" />
           </ul>
         </div>
       </section>
     </section>
-    <section
-      v-show="activeTab === 'options'"
-      id="settings-tab"
-    >
+    <section v-show="activeTab === 'options'" id="settings-tab">
       <p class="sr-only">
         Settings
       </p>
       <NewSettings />
     </section>
-    <section
-      v-show="activeTab === 'crop-details'"
-      id="crop-details-tab"
-      class="flex flex-col gap-2 pt-1 text-palia-blue-dark"
-    >
+    <section v-show="activeTab === 'crop-details'" id="crop-details-tab"
+      class="flex flex-col gap-2 pt-1 text-palia-blue-dark">
       <p class="text-lg font-semibold text-palia-blue-dark">
         Crop Details
       </p>
@@ -355,27 +314,22 @@ const selectedCropTotalFullCycles = computed(() => {
         <p v-if="presentCrops.size === 0" class="text-sm italic text-misc-dark">
           No crops in layout to display details for.
         </p>
-        <button
-          v-for="([cropId, data]) in presentCrops"
-          :key="cropId"
+        <button v-for="([cropId, data]) in presentCrops" :key="cropId"
           class="relative h-auto p-1 border rounded-md btn btn-sm border-misc hover:border-palia-blue focus:border-palia-blue focus:ring-2 focus:ring-palia-blue focus:outline-none"
           :class="{ 'ring-2 ring-palia-blue border-palia-blue': selectedCropDetail === cropId }"
-          @click="selectCropForDetail(cropId)"
-        >
+          @click="selectCropForDetail(cropId)">
           <div class="flex items-center gap-1">
-            <img
-              :src="getCropInfoForDetail(cropId)?.image"
-              :alt="data.cropType"
-              class="object-contain w-6 h-6"
-              width="24" height="24" :srcset="undefined" format="webp"
-            >
+            <img :src="getCropInfoForDetail(cropId)?.image" :alt="data.cropType" class="object-contain w-6 h-6"
+              width="24" height="24" :srcset="undefined" format="webp">
             <span class="text-xs font-semibold">
               {{ data.cropType }}
               <FontAwesomeIcon v-if="data.isStar" :icon="['fas', 'star']" class="text-xs text-yellow-400" />
-              <FontAwesomeIcon v-if="data.hasGrowthBoost" :icon="['fas', 'forward-fast']" class="ml-1 text-xs text-growth-boost" title="Growth Boost Applied" />
+              <FontAwesomeIcon v-if="data.hasGrowthBoost" :icon="['fas', 'forward-fast']"
+                class="ml-1 text-xs text-growth-boost" title="Growth Boost Applied" />
             </span>
           </div>
-          <span class="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 text-xs font-semibold text-white rounded-full bg-palia-blue-dark min-w-[1rem] h-[1rem] flex items-center justify-center">
+          <span
+            class="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 text-xs font-semibold text-white rounded-full bg-palia-blue-dark min-w-[1rem] h-[1rem] flex items-center justify-center">
             {{ data.count }}
           </span>
         </button>
@@ -385,8 +339,10 @@ const selectedCropTotalFullCycles = computed(() => {
       <div v-if="selectedCropDetail && selectedCropCycleData" class="mt-2 space-y-3">
         <h4 class="text-base font-semibold text-palia-blue">
           Details for: {{ selectedCropCycleData.cropType }}
-          <FontAwesomeIcon v-if="selectedCropDetail.includes('-Star')" :icon="['fas', 'star']" class="text-sm text-yellow-400" />
-          <FontAwesomeIcon v-if="selectedCropDetail.includes('-Growth')" :icon="['fas', 'forward-fast']" class="ml-1 text-sm text-growth-boost" title="Growth Boost Applied" />
+          <FontAwesomeIcon v-if="selectedCropDetail.includes('-Star')" :icon="['fas', 'star']"
+            class="text-sm text-yellow-400" />
+          <FontAwesomeIcon v-if="selectedCropDetail.includes('-Growth')" :icon="['fas', 'forward-fast']"
+            class="ml-1 text-sm text-growth-boost" title="Growth Boost Applied" />
         </h4>
 
         <!-- Cycle Info -->
@@ -418,20 +374,25 @@ const selectedCropTotalFullCycles = computed(() => {
           </div>
         </div>
         <!-- Processing Info -->
-        <div v-if="selectedCropProcessingData && selectedCropProcessingData.length > 0" class="p-2 border rounded border-misc-dark bg-accent">
+        <div v-if="selectedCropProcessingData && selectedCropProcessingData.length > 0"
+          class="p-2 border rounded border-misc-dark bg-accent">
           <p class="mb-1 text-sm font-medium ">
             <!-- Processing Details ({{ processor.output[selectedCropProcessingData[0].processInto === 'seed' ? 'seeds' : 'preserves'].get(selectedCropDetail)?.itemType }}) -->
           </p>
-          <div v-for="(cycle, cycleIndex) in selectedCropProcessingData" :key="`cycle-${cycleIndex}`" class="pb-2 mb-3 border-b border-misc last:border-b-0 last:mb-0">
+          <div v-for="(cycle, cycleIndex) in selectedCropProcessingData" :key="`cycle-${cycleIndex}`"
+            class="pb-2 mb-3 border-b border-misc last:border-b-0 last:mb-0">
             <p class="mb-1 text-xs font-semibold">
               Cycle {{ cycleIndex + 1 }} {{ cycleIndex >= selectedCropTotalFullCycles ? '(Partial)' : '' }}
             </p>
-            <div v-for="(phaseData, phaseIndex) in cycle.cycleCrafterData" :key="`cycle-${cycleIndex}-phase-${phaseIndex}`" class="pl-2 mb-2 border-l-2 border-palia-blue-dark">
+            <div v-for="(phaseData, phaseIndex) in cycle.cycleCrafterData"
+              :key="`cycle-${cycleIndex}-phase-${phaseIndex}`" class="pl-2 mb-2 border-l-2 border-palia-blue-dark">
               <p class="text-xs font-medium">
                 Phase {{ phaseIndex + 1 }} ({{ phaseData.crafterData.length }} Crafters)
               </p>
               <p class="text-xs">
-                <span class="font-semibold">Longest Time:</span> {{ formatMinutesToHoursMinutes(phaseData.longestProcessMinutes) }} ({{ formatMinutesToHoursMinutes(phaseData.longestProcessMinutesNoIdle) }} active)
+                <span class="font-semibold">Longest Time:</span> {{
+                  formatMinutesToHoursMinutes(phaseData.longestProcessMinutes) }} ({{
+                  formatMinutesToHoursMinutes(phaseData.longestProcessMinutesNoIdle) }} active)
               </p>
               <div class="mt-1 overflow-x-auto">
                 <table class="w-full text-xs border-collapse">
@@ -484,7 +445,8 @@ const selectedCropTotalFullCycles = computed(() => {
             </div>
           </div>
         </div>
-        <div v-else-if="selectedCropProcessingData === null || selectedCropProcessingData === undefined" class="p-2 border rounded border-misc-dark bg-accent">
+        <div v-else-if="selectedCropProcessingData === null || selectedCropProcessingData === undefined"
+          class="p-2 border rounded border-misc-dark bg-accent">
           <p class="text-sm italic text-misc-dark">
             This crop group was not processed.
           </p>
@@ -500,6 +462,12 @@ const selectedCropTotalFullCycles = computed(() => {
           Select a crop group above to see details.
         </p>
       </div>
+    </section>
+    <section v-show="activeTab === 'info'" id="info-tab">
+      <p>
+        Info
+      </p>
+      <LazyHCInfo class="max-h-[26.5rem]" />
     </section>
   </section>
 </template>
