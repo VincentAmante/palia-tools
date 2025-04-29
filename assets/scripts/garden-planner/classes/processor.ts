@@ -138,164 +138,6 @@ export default class Processor {
   process(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>): void {
     this.process_v2(harvestData, processorSettings)
     return
-
-    this.reset()
-
-    const output: ProcessorOutput = {
-      crops: new Map(),
-      seeds: new Map(),
-      preserves: new Map(),
-      replantSeeds: Object.assign({}, harvestData.seedsRemainder),
-      detailedProcessingInfo: new Map(), // Initialize in output object
-    }
-
-    const inventory = new Map<string, IInventoryItem>()
-
-    this._settings = Object.assign({}, processorSettings)
-    const settings = this._settings
-
-    const cropData = this.calculateSettings(harvestData, settings)
-
-    if (cropData.size === 0) {
-      this._output = output
-      return
-    }
-
-    for (const [cropName, processData] of cropData) {
-      const cropData = harvestData.crops.get(cropName)
-
-      const crop = getCropFromType(cropData?.cropType || CropType.None)
-
-      // If not set to process, just add to crops
-      if (processData.processType === ItemType.Crop) {
-        const count = cropData?.totalWithDeductions || 0
-
-        if (count > 0) {
-          output.crops.set(cropName, {
-            count,
-            itemType: ItemType.Crop,
-            cropType: crop?.type || CropType.None,
-          })
-
-          if (inventory.has(cropName)) {
-            inventory.get(cropName)!.count += count
-          }
-          else {
-            const baseGoldValue = cropData?.isStar ? crop?.goldValues.cropStar : crop?.goldValues.crop
-
-            inventory.set(cropName, {
-              count,
-              img: {
-                src: crop?.image || '',
-                alt: crop?.type || 'Crop',
-              },
-              isStar: cropData?.isStar || false,
-              baseGoldValue: baseGoldValue || 0,
-              cropType: crop?.type || CropType.None,
-              itemType: ItemType.Crop,
-            })
-          }
-        }
-      }
-
-      // Final processor behaviour goes here
-      else if (processData.processType === ItemType.Seed || processData.processType === ItemType.Preserve) {
-        const cropCount = cropData?.totalWithDeductions || 0
-
-        if (cropCount === 0)
-          continue
-
-        if (!crop)
-          throw new Error(`Missing crop data for crop: ${cropName}`)
-
-        const processType = processData.processType === ItemType.Seed ? 'seeds' : 'preserves'
-        const outputId = `${cropName}-${processType}`
-        const cycleData = harvestData.cycleData.get(cropName)
-        const isStar = cropName.includes('-Star')
-
-        const {
-          count,
-          remainder,
-          minutesSpentProcessingTotal,
-          minutesSpentProcessingDivided: minutesProcessedEffective,
-        } = processBatch({
-          cropCount,
-          crafterCount: processData.craftersToUse,
-          cropConversionInfo: crop.conversionInfo,
-          processInto: processData.processType,
-        })
-
-        if (!cycleData)
-          return
-
-        if (minutesProcessedEffective > this._highestCraftingTime)
-          this._highestCraftingTime = minutesProcessedEffective
-
-        output[processType].set(cropName, {
-          count,
-          minutesProcessedTotal: minutesSpentProcessingTotal,
-          minutesProcessedEffective,
-          crafterCount: processData.craftersToUse,
-          itemType: processData.processType,
-          cropType: crop.type,
-        })
-
-        if (inventory.has(outputId)) {
-          const item = inventory.get(outputId) as IInventoryItem
-          item.count += count
-          inventory.set(outputId, item)
-        }
-        else {
-          const imageSrc = processData.processType === ItemType.Seed ? crop.seedImage : crop.preserveImage
-          const imageAlt = processData.processType === ItemType.Seed ? `${crop.type} Seed` : `${crop.type} Preserve`
-          const baseGoldValue = processData.processType === ItemType.Seed
-            ? (cropData?.isStar ? crop.goldValues.seedStar : crop.goldValues.seed)
-            : (cropData?.isStar ? crop.goldValues.preserveStar : crop.goldValues.preserve)
-
-          inventory.set(outputId, {
-            count,
-            img: {
-              src: imageSrc,
-              alt: imageAlt,
-            },
-            isStar: cropData?.isStar || false,
-            baseGoldValue,
-            cropType: crop.type,
-            itemType: processData.processType,
-          })
-        }
-
-        if (remainder > 0) {
-          output.crops.set(cropName, {
-            count: remainder,
-            itemType: ItemType.Crop,
-            cropType: crop.type,
-          })
-
-          if (inventory.has(cropName)) {
-            const item = inventory.get(cropName) as IInventoryItem
-            item.count += remainder
-            inventory.set(cropName, item)
-          }
-          else {
-            inventory.set(cropName, {
-              count: remainder,
-              img: {
-                src: crop.image,
-                alt: crop.type,
-              },
-              isStar: cropData?.isStar || false,
-              baseGoldValue: (cropData?.isStar ? crop.goldValues.cropStar : crop.goldValues.crop),
-              cropType: crop.type,
-              itemType: ItemType.Crop,
-            })
-          }
-        }
-      }
-    }
-
-    this._inventory = inventory
-    this._output = output
   }
 
   /**
@@ -485,7 +327,6 @@ export default class Processor {
         // // TODO: Figure out how to multiply the data appropriately
         // // TODO: Add first harvest wait time, and subtract idle time from last harvest
         // TODO: Figure out where crafter cycle data should go
-
         // TODO: Try to figure out how idle time and excess time should interact with each other
 
         let totalProduceCount = 0
@@ -515,7 +356,7 @@ export default class Processor {
             totalProduceCount += cycleOutput.totalProduceCount
             totalProcessMinutes += cycleOutput.totalProcessMinutes
             // Accumulate longest process time carefully - handled later by _highestCraftingTime
-            // longestProcessMinutes += cycleOutput.longestProcessMinutes // Simple sum is likely incorrect
+            longestProcessMinutes += cycleOutput.longestProcessMinutes // Simple sum is likely incorrect
             goldGenerated += cycleOutput.goldGenerated
 
             if (i === 0) // Only add first harvest delay once
@@ -593,6 +434,9 @@ export default class Processor {
 
           if (finalEffectiveTime > this._highestCraftingTime)
             this._highestCraftingTime = finalEffectiveTime
+
+
+          console.log('finalEffectiveTime', finalEffectiveTime)
         }
         // --- End Recalculation ---
 
@@ -623,74 +467,6 @@ export default class Processor {
 
     this._inventory = inventory
     this._output = output
-  }
-}
-
-interface IProcessedBatch {
-  count: number
-  remainder: number
-  minutesSpentProcessingDivided: number
-  minutesSpentProcessingTotal: number
-}
-
-interface IProcessBatchInput {
-  cropCount: number
-  crafterCount: number
-  cropConversionInfo: ICropConversions
-  processInto: ItemType.Seed | ItemType.Preserve
-}
-
-/**
- * Processes a single batch
- * @param processBatchArgs
- * @returns
- */
-function processBatch(processBatchArgs: IProcessBatchInput): IProcessedBatch {
-  const { cropCount, crafterCount, cropConversionInfo, processInto } = processBatchArgs
-
-  let minutesPerConversion = 0
-  let cropsPerConversion = 0
-  let producePerConversion = 0
-
-  if (processInto === ItemType.Seed) {
-    minutesPerConversion = cropConversionInfo.seedProcessMinutes
-    cropsPerConversion = cropConversionInfo.cropsPerSeed
-    producePerConversion = cropConversionInfo.seedsPerConversion
-  }
-  else if (processInto === ItemType.Preserve) {
-    minutesPerConversion = cropConversionInfo.preserveProcessMinutes
-    cropsPerConversion = cropConversionInfo.cropsPerPreserve
-    producePerConversion = 1
-  }
-  else {
-    throw new Error('Neither SEED nor PRESERVE was chosen as the processInto option')
-  }
-
-  const conversionsToMake = Math.floor(cropCount / cropsPerConversion)
-  const remainder = cropCount % cropsPerConversion
-  const count = conversionsToMake * producePerConversion
-
-  const minutesSpentProcessingTotal = conversionsToMake * minutesPerConversion
-
-  const minProcessesPerCrafter = Math.floor(conversionsToMake / crafterCount)
-  const minProcessesPerCrafterRemainder = conversionsToMake % crafterCount
-  const crafterProcesses: number[] = []
-
-  for (let i = 0; i < crafterCount; i++) {
-    const bonus = (i < minProcessesPerCrafterRemainder) ? 1 : 0
-
-    crafterProcesses.push(minProcessesPerCrafter + bonus)
-  }
-
-  const minutesSpentProcessingDivided = crafterProcesses[0] * minutesPerConversion || -1
-
-  // ? account for going over the required slots (max is 30)
-
-  return {
-    count,
-    remainder,
-    minutesSpentProcessingTotal,
-    minutesSpentProcessingDivided,
   }
 }
 
@@ -872,33 +648,8 @@ interface IProcessCycleArgs {
   processInto: ItemType.Seed | ItemType.Preserve
 }
 
-// interface IProcessHarvestData {
-//   totalProduceCount: number
-//   remainder: number
-//   crafterData: {
-//     cropsInsertedCount: number
-//     canFinishBeforeNextHarvest: boolean
-//     processTimeMinutes: number
-//     processesDone: number
-//     idleTimeMinutes: number
-//     excessTimeMinutes: number
-//   }[]
-//   canFinishBeforeNextHarvest: boolean
-//   totalProcessMinutes: number
-//   lowestCrafterTimeMinutes: number
-//   longestProcessMinutes: number
-// }
-
 interface IProcessCycleData {
   totalProduceCount: number
-  // crafterData: {
-  //   cropsInsertedCount: number
-  //   canFinishBeforeNextHarvest: boolean
-  //   processTimeMinutes: number
-  //   processesDone: number
-  //   idleTimeMinutes: number
-  //   excessTimeMinutes: number
-  // }[][]
   cycleCrafterData: {
     canFinishBeforeNextHarvest: boolean
     longestProcessMinutes: number
