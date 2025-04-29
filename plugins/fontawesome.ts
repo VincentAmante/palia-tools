@@ -24,6 +24,7 @@ import {
   faInfoCircle,
   faJar,
   faList,
+  faMagnifyingGlass,
   faMap,
   faPaste,
   faPenToSquare,
@@ -100,6 +101,7 @@ library.add(
   faPenToSquare,
   faTrash,
   faAsterisk,
+  faMagnifyingGlass,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS
