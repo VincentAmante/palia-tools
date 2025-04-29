@@ -497,18 +497,19 @@ export default class Processor {
         let lastCycleData: IProcessCycleData | null = null
         const allCycleData: IProcessCycleData[] = [] // Array to store data for all cycles
 
+        // It's all the same anyway
+        const cycleOutput = processCycle({
+          cycleData,
+          isStar,
+          crafterCount: processData.craftersToUse,
+          cropConversionInfo: crop.conversionInfo,
+          processInto: processData.processType,
+          goldValues: crop.goldValues,
+        })
+
         if (cycles > 0) {
           // Process full cycles
           for (let i = 0; i < cycles; i++) {
-            const cycleOutput = processCycle({
-              cycleData,
-              isStar,
-              crafterCount: processData.craftersToUse,
-              cropConversionInfo: crop.conversionInfo,
-              processInto: processData.processType,
-              goldValues: crop.goldValues,
-            })
-
             console.log(cycleOutput)
 
             totalProduceCount += cycleOutput.totalProduceCount
