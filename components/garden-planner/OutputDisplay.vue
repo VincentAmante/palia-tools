@@ -88,8 +88,13 @@ const selectedCropProcessingData = computed(() => {
 
   const detailedProcessingInfoOutput = processor.output.detailedProcessingInfo.get(selectedCropDetail.value)
 
-  if (detailedProcessingInfoOutput && detailedProcessingInfoOutput.length > 0)
+  if (detailedProcessingInfoOutput && detailedProcessingInfoOutput.length > 0){
+
+    console.log(detailedProcessingInfoOutput[0])
     return detailedProcessingInfoOutput[0] 
+  }
+
+    
   else return null
 })
 
@@ -212,7 +217,7 @@ const selectedCropTotalFullCycles = computed(() => {
             </p>
             <p class="flex items-end justify-end text-xl font-semibold text-right text-palia-blue xl:text-2xl">
               <template v-if="((craftingTime.hours + craftingTime.minutes) > 0)">
-                {{ craftingTime.hours }}<span class="pr-1">h</span> {{ craftingTime.minutes }}<span class="">m</span>
+                {{ craftingTime.hours.toFixed(0) }}<span class="pr-1">h</span> {{ craftingTime.minutes.toFixed(0) }}<span class="">m</span>
               </template>
               <template v-else>
                 <span class="text-warning">N/A</span>
@@ -374,18 +379,14 @@ const selectedCropTotalFullCycles = computed(() => {
           </div>
         </div>
         <!-- Processing Info -->
-        <div v-if="selectedCropProcessingData && selectedCropProcessingData.length > 0"
+        <div v-if="selectedCropProcessingData && selectedCropProcessingData.cycleCrafterData.length > 0"
           class="p-2 border rounded border-misc-dark bg-accent">
           <p class="mb-1 text-sm font-medium ">
-            <!-- Processing Details ({{ processor.output[selectedCropProcessingData[0].processInto === 'seed' ? 'seeds' : 'preserves'].get(selectedCropDetail)?.itemType }}) -->
+            Processing Details 
+            <!-- ({{ processor.output[selectedCropProcessingData[0].processInto === 'seed' ? 'seeds' : 'preserves'].get(selectedCropDetail)?.itemType }}) -->
           </p>
-          <div v-for="(cycle, cycleIndex) in selectedCropProcessingData" :key="`cycle-${cycleIndex}`"
-            class="pb-2 mb-3 border-b border-misc last:border-b-0 last:mb-0">
-            <p class="mb-1 text-xs font-semibold">
-              Cycle {{ cycleIndex + 1 }} {{ cycleIndex >= selectedCropTotalFullCycles ? '(Partial)' : '' }}
-            </p>
-            <div v-for="(phaseData, phaseIndex) in cycle.cycleCrafterData"
-              :key="`cycle-${cycleIndex}-phase-${phaseIndex}`" class="pl-2 mb-2 border-l-2 border-palia-blue-dark">
+          <div v-for="(phaseData, phaseIndex) in selectedCropProcessingData.cycleCrafterData"
+              :key="`cycle-1-hase-${phaseIndex}`" class="pl-2 mb-2 border-l-2 border-palia-blue-dark">
               <p class="text-xs font-medium">
                 Phase {{ phaseIndex + 1 }} ({{ phaseData.crafterData.length }} Crafters)
               </p>
@@ -443,9 +444,15 @@ const selectedCropTotalFullCycles = computed(() => {
                 </table>
               </div>
             </div>
-          </div>
+          <!-- <div v-for="(cycle, cycleIndex) in selectedCropProcessingData" :key="`cycle-${cycleIndex}`"
+            class="pb-2 mb-3 border-b border-misc last:border-b-0 last:mb-0">
+            <p class="mb-1 text-xs font-semibold">
+              Cycle {{ cycleIndex + 1 }} {{ cycleIndex >= selectedCropTotalFullCycles ? '(Partial)' : '' }}
+            </p>
+
+          </div> -->
         </div>
-        <div v-else-if="selectedCropProcessingData === null || selectedCropProcessingData === undefined"
+        <div v-else-if="selectedCropProcessingData === null || selectedCropProcessingData.cycleCrafterData === undefined"
           class="p-2 border rounded border-misc-dark bg-accent">
           <p class="text-sm italic text-misc-dark">
             This crop group was not processed.
