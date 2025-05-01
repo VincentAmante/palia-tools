@@ -4,7 +4,8 @@
  */
 
 import type Tile from '../classes/tile'
-import { CropType } from '../imports'
+import { CropType, getCropFromCode, getCropFromType } from '../imports'
+import { CropCode } from '../imports'
 
 export interface ICalculateYieldOptions {
   days?: number
@@ -50,9 +51,9 @@ export interface ICropValue {
 
 export function getCropValueMap(options: CalculateValueOptions) {
   const cropValueMap: Record<CropType, { base: ICropValue; star: ICropValue }> = {} as Record<
-      CropType,
-      { base: ICropValue; star: ICropValue }
-    >
+    CropType,
+    { base: ICropValue; star: ICropValue }
+  >
 
   for (const cropType of Object.values(CropType)) {
     cropValueMap[cropType] = {
@@ -111,6 +112,13 @@ export interface ISimulateYieldResult {
 // CropType-Base or CropType-Star
 export type ICropName = `${CropType}-Base` | `${CropType}-Star`
 export type ICropNameWithGrowthDiff = `${CropType}-Base` | `${CropType}-Star` | `${CropType}-Base-Growth` | `${CropType}-Star-Growth`
+
+export interface ICropId {
+  type: CropType
+  code: CropCode
+  isStar: boolean
+  isGrowthBoosted: boolean
+}
 
 export interface ICropYield {
   base: number
@@ -187,6 +195,54 @@ export interface IInventoryItem {
 }
 
 export type TInventory = Map<string, IInventoryItem>
+
+export function parseCropId(cropId: string): ICropId {
+  const [type, star, growth] = cropId.split('-')
+
+  if (!type || !star) {
+    throw new Error(`Invalid cropId format: ${cropId}`)
+  }
+
+  const isStar = star === 'Star'
+  const isGrowthBoosted = growth === 'Growth'
+  const code = getCropFromType(type as CropType)?.cropCode
+  if (!code) {
+    throw new Error(`Invalid crop type: ${type}`)
+  }
+
+  if (type === 'none') {
+    throw new Error('Cannot parse "none" cropId')
+  }
+  if (Object.values(CropType).includes(type as CropType) === false) {
+    throw new Error(`Invalid crop type: ${type}`)
+  }
+
+  return {
+    type: type as CropType,
+    code: code as CropCode,
+    isStar,
+    isGrowthBoosted,
+  }
+}
+
+export function encodeCropId(options: { type: CropType; isStar: boolean; isGrowthBoosted?: boolean }): string {
+  if (!Object.values(CropType).includes(options.type)) {
+    throw new Error(`Invalid crop type: ${options.type}`)
+  }
+  const starPart = options.isStar ? 'Star' : 'Base'
+  const growthPart = options.isGrowthBoosted ? '-Growth' : ''
+  return `${options.type}-${starPart}${growthPart}`
+}
+
+export function encodeCropIdWithCode(options: { code: CropCode; isStar: boolean; isGrowthBoosted?: boolean }): string {
+  if (!Object.values(CropCode).includes(options.code)) {
+    throw new Error(`Invalid crop code: ${options.code}`)
+  }
+  const starPart = options.isStar ? 'Star' : 'Base'
+  const growthPart = options.isGrowthBoosted ? '-Growth' : ''
+  return `${getCropFromCode(options.code).type}-${starPart}${growthPart}`
+}
+
 
 export type TCropTiles = Map<string, Tile>
 
