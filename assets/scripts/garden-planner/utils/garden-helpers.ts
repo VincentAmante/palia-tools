@@ -225,7 +225,7 @@ export function parseCropId(cropId: string): ICropId {
   }
 }
 
-export function encodeCropId(options: { type: CropType; isStar: boolean; isGrowthBoosted?: boolean }): string {
+export function encodeCropId(options: { type: CropType; isStar: boolean; isGrowthBoosted?: boolean }): ICropNameWithGrowthDiff {
   if (!Object.values(CropType).includes(options.type)) {
     throw new Error(`Invalid crop type: ${options.type}`)
   }
@@ -234,7 +234,7 @@ export function encodeCropId(options: { type: CropType; isStar: boolean; isGrowt
   return `${options.type}-${starPart}${growthPart}`
 }
 
-export function encodeCropIdWithCode(options: { code: CropCode; isStar: boolean; isGrowthBoosted?: boolean }): string {
+export function encodeCropIdWithCode(options: { code: CropCode; isStar: boolean; isGrowthBoosted?: boolean }): ICropNameWithGrowthDiff {
   if (!Object.values(CropCode).includes(options.code)) {
     throw new Error(`Invalid crop code: ${options.code}`)
   }

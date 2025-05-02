@@ -6,6 +6,7 @@
 <script setup lang="ts">
 import useGarden from '~/stores/useGarden'
 import { useSaveCode } from '~/stores/useSaveCode'
+import { useSettingsCode } from '~/stores/useSettingsCode'
 import SaveModal from '~/components/garden-planner/SaveModal.vue'
 import LoadModal from '~/components/garden-planner/LoadModal.vue'
 import LayoutCreator from '@/components/LayoutCreator.vue'
@@ -20,15 +21,19 @@ function clearGarden() {
   gardenHandler.update()
 }
 
+
+const saveCode = useSaveCode()
+const settingsCode = useSettingsCode()
+
 function loadLayoutFromCode(code: string) {
   garden.loadLayout(code)
+  settingsCode.set(garden.loadSettingsCode)
+  settingsCode.requestUpdate()
   gardenHandler.update()
 }
 
-const saveCode = useSaveCode()
-
 function saveLayout() {
-  saveCode.set(garden.saveLayout())
+  saveCode.set(garden.saveLayout(settingsCode.code))
 }
 
 const saveModal = ref<InstanceType<typeof SaveModal> | null>(null)
@@ -51,6 +56,15 @@ const createLayoutDialog = ref<InstanceType<typeof LayoutCreator> | null>()
 function openNewLayoutModal() {
   createLayoutDialog.value?.openModal()
 }
+
+const urlParams = useUrlSearchParams('history')
+onMounted(() => {
+  // Load layout from URL parameter if available
+  if (urlParams.layout) {
+    loadLayoutFromCode(urlParams.layout as string)
+  }
+})
+
 </script>
 
 <template>

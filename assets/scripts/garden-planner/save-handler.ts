@@ -3,6 +3,11 @@
  */
 
 import CropCode from './enums/cropCode'
+import type { IHarvesterOptions } from './classes/harvester'
+import type { ProcessorSetting, ProcessorSettings } from './classes/processor'
+import { parseCropId, type ICropNameWithGrowthDiff, encodeCropId, ItemType } from './utils/garden-helpers'
+import { getCropFromCode } from './imports'
+
 
 const v0_1CropCodes: { [key in CropCode]: string } = {
   [CropCode.None]: 'Na',
@@ -55,6 +60,7 @@ function parseSave(save: string) {
   const [version, ...rest] = save.split('_')
   let dimensionInfo = ''
   let cropInfo = ''
+  let settingsInfo = ''
 
   const strippedVersion = version.replace('v', '')
 
@@ -63,12 +69,18 @@ function parseSave(save: string) {
       validatePlotMatrix(rest[0])
       dimensionInfo = rest[0]
       cropInfo = convertV0_1CodestoV0_2(rest[1])
-      return { version, dimensionInfo, cropInfo }
+      return { version, dimensionInfo, cropInfo, settingsInfo }
     case '0.2':
       validatePlotMatrix(rest[0])
       dimensionInfo = rest[0]
       cropInfo = rest[1]
-      return { version, dimensionInfo, cropInfo }
+      return { version, dimensionInfo, cropInfo, settingsInfo }
+    case '0.3':
+      validatePlotMatrix(rest[0])
+      dimensionInfo = rest[0]
+      cropInfo = rest[1]
+      settingsInfo = rest[2]
+      return { version, dimensionInfo, cropInfo, settingsInfo }
     default:
       throw new Error('Invalid save version')
   }
@@ -103,4 +115,166 @@ function validatePlotMatrix(dimensionInfo: string) {
   //   throw new Error(`Too many active plots: ${activePlots} > ${maxPlots}`)
 }
 
-export { convertV0_1CodestoV0_2 as convertV_0_1_to_V_0_2, parseSave }
+function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings): string {
+  let settings = ''
+
+  if (harvesterOptions.days !== -1)
+    settings += `D${harvesterOptions.days}`
+
+  if (!harvesterOptions.includeReplant)
+    settings += 'Nr'
+
+  if (!harvesterOptions.includeReplantCost)
+    settings += 'Nrc'
+
+  if (harvesterOptions.useGrowthBoost)
+    settings += 'Gb'
+
+  if (!harvesterOptions.useStarSeeds)
+    settings += 'Nss'
+
+  if (harvesterOptions.level !== 25)
+    settings += `L${harvesterOptions.level}`
+
+  let cropSettings = ''
+
+  for (const [cropId, setting] of processorSettings.cropSettings) {
+    if (setting.processAs === 'crop')
+      continue
+
+    const cropIdData = parseCropId(cropId)
+
+    // TODO: Convert to cropCode from IGrowthBoost
+    cropSettings += cropIdData.code
+
+    // `.` indicates that the crop is not a star seed.
+    if (!setting.isStar)
+      cropSettings += '.'
+
+    if (cropIdData.isGrowthBoosted)
+      cropSettings += '~'
+
+    // P for preserve, S for seed
+    cropSettings += `${setting.processAs[0].toUpperCase()}`
+
+    // Number of crafters (default is 1)
+    if (setting.crafters !== 1)
+      cropSettings += `${setting.crafters}`
+
+    // // Commented out due to not being used
+    // if (setting.targetTime !== 0)
+    //   settings += `Tt${setting.targetTime}`
+    cropSettings += '-'
+  }
+
+  if (cropSettings.length > 0) {
+    settings += `Cr0${cropSettings}`
+  }
+
+  // check for trailing underscore or trailing dash
+  if (settings[settings.length - 1] === '_' || settings[settings.length - 1] === '-')
+    return settings.slice(0, -1)
+
+
+  return settings
+}
+function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings } {
+  const harvesterOptions: IHarvesterOptions = {
+    days: -1,
+    includeReplant: true,
+    includeReplantCost: true,
+    level: 25,
+    useGrowthBoost: false,
+    useStarSeeds: true,
+  }
+
+  const processorSettings: ProcessorSettings = {
+    cropSettings: new Map(),
+    crafterSetting: 0,
+  }
+
+  const settings = settingsInfo.split('Cr')
+
+  for (let setting of settings) {
+    if (setting.startsWith('0')) {
+      setting = setting.slice(1)
+    
+      const cropSettings = setting.split('-')
+      for (const cropSetting of cropSettings) {
+        console.log('cropSetting', cropSetting)
+
+        if (cropSetting.length === 0) continue
+
+        const codeMatch = cropSetting.match(/^([A-Z][a-z]?)(\.?)(~?)([PS]?)(\d*)/);
+
+        console.log(codeMatch)
+
+        if (!codeMatch) {
+          throw new Error(`Invalid crop setting format: ${cropSetting}`)
+        }
+
+        const code = codeMatch[1] as CropCode
+        const isStar = codeMatch[2] !== '.'
+        const isGrowthBoosted = codeMatch[3] === '~'
+        const processAs = codeMatch[4] === 'P' ? ItemType.Preserve : codeMatch[4] === 'S' ? ItemType.Seed : ItemType.Crop
+        const crafters = codeMatch[5] ? parseInt(codeMatch[5], 10) : 1
+        const type = getCropFromCode(code)!.type
+
+        const cropId = encodeCropId({ type, isStar, isGrowthBoosted: isGrowthBoosted })
+
+        const setting: ProcessorSetting = {
+          count: 0,
+          cropType: type,
+          isStar,
+          processAs,
+          crafters,
+          targetTime: 0,
+          isActive: true,
+          hasPreserve: processAs === 'preserve',
+        }
+
+        processorSettings.cropSettings.set(cropId, setting)
+      }
+    } else {
+      const harvesterSettings = (setting.match(/[A-Z][a-z0-9]*/g) as string[]) || []
+
+      console.log(harvesterSettings)
+
+      const exactHandlers: Record<string, () => void> = {
+        'Nr': () => { harvesterOptions.includeReplant = false; },
+        'Nrc': () => { harvesterOptions.includeReplantCost = false; },
+        'Nss': () => { harvesterOptions.useStarSeeds = false; },
+        'Gb': () => { harvesterOptions.useGrowthBoost = true; },
+      };
+      
+      for (const harvesterSetting of harvesterSettings) {
+        if (exactHandlers[harvesterSetting]) {
+          exactHandlers[harvesterSetting]();
+          continue;
+        }
+      
+        const match = harvesterSetting.match(/^([A-Z])(\d+)$/);
+        if (match) {
+          const [, prefix, value] = match;
+          const number = parseInt(value);
+      
+          switch (prefix) {
+            case 'D':
+              harvesterOptions.days = number;
+              break;
+            case 'L':
+              harvesterOptions.level = number;
+              break;
+          }
+        }
+      }
+    }
+  }
+
+  console.log('Processor Settings:', processorSettings)
+  console.log('Harvester Options:', harvesterOptions)
+
+  return { harvesterOptions, processorSettings }
+}
+
+export { convertV0_1CodestoV0_2 as convertV_0_1_to_V_0_2, parseSave, encodeSettings, decodeSettings }

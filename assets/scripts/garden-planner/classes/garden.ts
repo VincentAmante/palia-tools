@@ -5,7 +5,7 @@ import CropCode from '../enums/cropCode'
 import CropSize from '../enums/crop-size'
 import type { PlotStat } from '../types/plotStat'
 import crops, { getCodeFromCrop, getCropFromCode } from '../cropList'
-import { parseSave } from '../save-handler'
+import { parseSave, encodeSettings, decodeSettings } from '../save-handler'
 import FertiliserType from '../enums/fertiliser'
 import FertiliserCode from '../enums/fertilisercode'
 import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliserList'
@@ -14,15 +14,22 @@ import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
 import CropTiles from './cropTiles'
 import type Harvester from './harvester'
 import { type IHarvesterOptions } from './harvester'
+import type { ProcessorSettings } from './processor'
+
 
 import Plot from './plot'
 import Tile from './tile'
 import type Crop from './crop'
 
+
+
 class Garden {
   private _layout: Plot[][] = []
-  private _version: string = '0.2'
+  private _version: string = '0.3'
   private _cropTiles = new CropTiles()
+  private _settingsCode: string = ''
+  private _settingsHaveBeenLoaded = false
+
 
   constructor() {
     const defaultRows = 3
@@ -62,9 +69,15 @@ class Garden {
   }
 
   loadLayout(layout: string) {
-    const { dimensionInfo, cropInfo: cropsInfo } = parseSave(layout)
+    const { dimensionInfo, cropInfo: cropsInfo, settingsInfo } = parseSave(layout)
+
+    if (settingsInfo){
+      this._settingsCode = settingsInfo || ''
+      this._settingsHaveBeenLoaded = true
+    }
 
     this._layout = []
+
     const dimensions = dimensionInfo.split('-').splice(1)
     const rows = dimensions.length
     const columns = dimensions[0].length
@@ -125,10 +138,11 @@ class Garden {
     }
   }
 
+
   /**
    * @returns a string containing the layout info of the garden
    */
-  saveLayout(): string {
+  saveLayout(settingsCode?: string): string {
     let layoutCode = `v${this._version}_DIM-`
     const rows = this._layout.length
     const columns = this._layout[0].length
@@ -162,8 +176,31 @@ class Garden {
     if (layoutCode.endsWith('-'))
       layoutCode = layoutCode.substring(0, layoutCode.length - 1)
 
+
+    if (settingsCode) {
+      layoutCode += `_${settingsCode}`
+      console.log('added settings code', layoutCode)
+    }
+
     return layoutCode
   }
+  
+  /**
+   * One time update to the settings code, used when loading a saved garden
+   */
+  get loadSettingsCode(): string {
+    console.log('attempting to fetch settings code')
+
+    if (this._settingsHaveBeenLoaded) {
+      this._settingsHaveBeenLoaded = false
+      console.log('settings have been loaded')
+      return this._settingsCode ?? ''
+    }
+
+    console.log('settings have not been loaded')
+    return ''
+  }
+
 
   updateTiles(): void {
     this._cropTiles.updateTiles(this._layout)
@@ -435,6 +472,14 @@ class Garden {
 
   testHarvesterYield(harvester: Harvester, options: IHarvesterOptions) {
     harvester.simulateYield(this._cropTiles.uniqueTiles, options)
+  }
+
+  saveSettings(harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings): string {
+    return encodeSettings(harvesterOptions, processorSettings)
+  }
+
+  loadSettings(settingsInfo: string): { harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings } {
+    return decodeSettings(settingsInfo)
   }
 
   /**

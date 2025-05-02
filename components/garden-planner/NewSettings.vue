@@ -8,8 +8,13 @@ import { type ICropNameWithGrowthDiff, ItemType } from '~/assets/scripts/garden-
 import { CropType, getCropFromType } from '~/assets/scripts/garden-planner/imports'
 import useProcessor from '~/stores/useProcessor'
 import type { IHarvesterOptions } from '~/assets/scripts/garden-planner/classes/harvester'
+import useGarden from '~/stores/useGarden'
+import { useSettingsCode } from '~/stores/useSettingsCode'
+import { storeToRefs } from 'pinia'
 
 const harvester = useHarvester()
+const garden = useGarden()
+const settingsCode = useSettingsCode()
 
 const harvesterSettings = ref({
   days: -1 as number | 'L' | 'M',
@@ -73,6 +78,8 @@ watchEffect(() => {
 
     processorSettings.value.cropSettings.get(cropId)!.isActive = true
   }
+
+  saveGarden()
 })
 
 // Allows us to save settings of unselected crops
@@ -126,40 +133,56 @@ function minutesToHoursAndMinutes(minutes: number) {
     minutes: remainingMinutes,
   }
 }
+
+
+function saveGarden() {
+  const saveString = garden.garden.saveSettings(harvesterSettings.value, processorSettings.value)
+  console.log('Saved Garden:', saveString)
+  settingsCode.set(saveString)
+  // You can add code here to save the saveString to a file or share it
+}
+
+const { updateIsRequested } = storeToRefs(settingsCode)
+
+watch (updateIsRequested, () => {
+  console.log('An update is requested')
+
+  if (updateIsRequested.value) {
+    loadGarden(settingsCode.code)
+    settingsCode.resetUpdateRequest()
+    console.log('Update request reset')
+  }
+
+})
+
+
+function loadGarden(saveString: string) {
+  const { harvesterOptions, processorSettings: loadedProcessorSettings } = garden.garden.loadSettings(saveString)
+
+  harvesterSettings.value = harvesterOptions
+  processorSettings.value = loadedProcessorSettings
+  processor.updateSettings(Object.assign({}, loadedProcessorSettings))
+  processor.simulateProcessing(harvester.totalHarvest)
+  // You can add code here to update the UI with the loaded settings
+}
 </script>
 
 <template>
   <section id="planner-settings" class="relative flex flex-col gap-1 py-2 ">
     <ul class="font-semibold tabs tabs-boxed w-fit bg-misc-dark join">
-      <li
-        class="tab join-item"
-        :class="(activeTab === 'Harvest') ? 'tab-active' : ''"
-        @click="activeTab = 'Harvest'"
-      >
+      <li class="tab join-item" :class="(activeTab === 'Harvest') ? 'tab-active' : ''" @click="activeTab = 'Harvest'">
         <p>Harvest</p>
       </li>
-      <li
-        class="tab join-item"
-        :class="(activeTab === 'Crops') ? 'tab-active' : ''"
-        @click="activeTab = 'Crops'"
-      >
+      <li class="tab join-item" :class="(activeTab === 'Crops') ? 'tab-active' : ''" @click="activeTab = 'Crops'">
         <p>Crops</p>
       </li>
     </ul>
-    <section
-      v-if="activeTab === 'Crops'"
-      class="h-full rounded-md isolate bg-accent"
-    >
-      <div
-        v-if="activeProcessorSettings.cropSettings.size > 0"
-        aria-hidden
-        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-70 h-1/4 max-h-12 bg-gradient-to-b from-transparent to-primary"
-      />
+    <section v-if="activeTab === 'Crops'" class="h-full rounded-md isolate bg-accent">
+      <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
+        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-70 h-1/4 max-h-12 bg-gradient-to-b from-transparent to-primary" />
 
-      <div
-        v-if="activeProcessorSettings.cropSettings.size > 0"
-        class="z-10 grid items-center grid-cols-10 gap-2 px-1 py-2 border-b text-misc bg-accent rounded-t-md"
-      >
+      <div v-if="activeProcessorSettings.cropSettings.size > 0"
+        class="z-10 grid items-center grid-cols-10 gap-2 px-1 py-2 border-b text-misc bg-accent rounded-t-md">
         <div class="relative flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
           <p class="text-sm font-bold">
             Item
@@ -170,49 +193,34 @@ function minutesToHoursAndMinutes(minutes: number) {
             Process As
           </p>
         </div>
-        <div
-          class="flex items-center justify-start w-full h-full col-span-3 gap-2 pl-2"
-        >
+        <div class="flex items-center justify-start w-full h-full col-span-3 gap-2 pl-2">
           <p class="text-sm font-bold">
             Crafters
           </p>
         </div>
       </div>
       <section class="overflow-y-auto max-h-[456px] rounded-b-md pb-2 scrollbar-primary">
-        <div
-          v-if="activeProcessorSettings.cropSettings.size === 0"
-          class="flex items-center justify-center p-2 py-4 font-bold rounded-md text-misc bg-accent"
-        >
+        <div v-if="activeProcessorSettings.cropSettings.size === 0"
+          class="flex items-center justify-center p-2 py-4 font-bold rounded-md text-misc bg-accent">
           <p>
             No crops in garden, add some to begin processing.
           </p>
         </div>
-        <ul
-          v-if="activeProcessorSettings.cropSettings.size > 0"
-          class="flex flex-col max-h-full gap-1 pb-8 pl-1 pr-2 rounded-b-md bg-accent"
-        >
-          <li
-            v-for="[cropId, setting] in activeProcessorSettings.cropSettings"
-            :key="cropId"
-            class="grid items-center grid-cols-10 gap-2 py-1 pb-3  text-misc [&:not(:last-child)]:border-b "
-          >
+        <ul v-if="activeProcessorSettings.cropSettings.size > 0"
+          class="flex flex-col max-h-full gap-1 pb-8 pl-1 pr-2 rounded-b-md bg-accent">
+          <li v-for="[cropId, setting] in activeProcessorSettings.cropSettings" :key="cropId"
+            class="grid items-center grid-cols-10 gap-2 py-1 pb-3  text-misc [&:not(:last-child)]:border-b ">
             <div class="flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
-              <ItemDisplayAlt
-                :img-src="getCropImgSrc(setting.cropType).src"
-                :img-alt="getCropImgSrc(setting.cropType).alt"
-                :star="setting.isStar"
-                :count="setting.count"
-              />
+              <ItemDisplayAlt :img-src="getCropImgSrc(setting.cropType).src"
+                :img-alt="getCropImgSrc(setting.cropType).alt" :star="setting.isStar" :count="setting.count" />
               <p class="hidden font-bold capitalize xl:text-xs 2xl:text-sm xl:block">
                 {{ setting.cropType }}
               </p>
             </div>
             <div class="flex items-center justify-start w-full h-full col-span-5 md:col-span-6 xl:col-span-5">
               <div class="join ">
-                <button
-                  class="p-2 btn join-item btn-primary btn-square"
-                  :class="(setting.processAs === ItemType.Crop) ? 'btn-active' : ''"
-                  @click="async () => {
+                <button class="p-2 btn join-item btn-primary btn-square"
+                  :class="(setting.processAs === ItemType.Crop) ? 'btn-active' : ''" @click="async () => {
                     if (setting.processAs === ItemType.Crop)
                       return
 
@@ -220,109 +228,75 @@ function minutesToHoursAndMinutes(minutes: number) {
 
                     await nextTick()
                     onChangeSettings()
-                  }"
-                >
-                  <img
-                    class="w-full h-full"
-                    :src="getCropFromType(setting.cropType)?.cropImage" :alt="`${setting.cropType} Preserve`"
-                  >
+                  }">
+                  <img class="w-full h-full" :src="getCropFromType(setting.cropType)?.cropImage"
+                    :alt="`${setting.cropType} Preserve`">
                 </button>
-                <button
-                  class="p-2 btn join-item btn-primary btn-square"
-                  :class="(setting.processAs === ItemType.Seed) ? 'btn-active' : ''"
-                  @click="() => {
+                <button class="p-2 btn join-item btn-primary btn-square"
+                  :class="(setting.processAs === ItemType.Seed) ? 'btn-active' : ''" @click="() => {
                     if (setting.processAs === ItemType.Seed)
                       return
 
                     setting.processAs = ItemType.Seed
 
                     onChangeSettings()
-                  }"
-                >
-                  <img
-                    class="w-full h-full"
-                    :src="getCropFromType(setting.cropType)?.seedImage" :alt="`${setting.cropType} Preserve`"
-                  >
+                  }">
+                  <img class="w-full h-full" :src="getCropFromType(setting.cropType)?.seedImage"
+                    :alt="`${setting.cropType} Preserve`">
                 </button>
-                <button
-                  v-if="(((getCropFromType(setting.cropType)?.goldValues.preserve) || 0) > 0)"
+                <button v-if="(((getCropFromType(setting.cropType)?.goldValues.preserve) || 0) > 0)"
                   class="p-2 btn join-item btn-primary btn-square "
-                  :class="(setting.processAs === ItemType.Preserve) ? 'btn-active' : ''"
-                  @click="() => {
+                  :class="(setting.processAs === ItemType.Preserve) ? 'btn-active' : ''" @click="() => {
                     if (setting.processAs === ItemType.Preserve)
                       return
                     setting.processAs = ItemType.Preserve
                     onChangeSettings()
-                  }"
-                >
-                  <img
-                    class="h-full"
-                    :src="getCropFromType(setting.cropType)?.preserveImage" :alt="`${setting.cropType} Preserve`"
-                  >
+                  }">
+                  <img class="h-full" :src="getCropFromType(setting.cropType)?.preserveImage"
+                    :alt="`${setting.cropType} Preserve`">
                 </button>
               </div>
             </div>
 
-            <div
-              v-if="setting.processAs !== ItemType.Crop"
-              class="relative flex flex-col items-start justify-start w-full h-full col-span-3 gap-2 pl-2"
-            >
+            <div v-if="setting.processAs !== ItemType.Crop"
+              class="relative flex flex-col items-start justify-start w-full h-full col-span-3 gap-2 pl-2">
               <div class="join">
-                <button
-                  class="btn-xs lg:btn-sm disabled:opacity-50 hover:opacity-60 join-item"
-                  :disabled="setting.crafters <= 1"
-                  @click="() => {
+                <button class="btn-xs lg:btn-sm disabled:opacity-50 hover:opacity-60 join-item"
+                  :disabled="setting.crafters <= 1" @click="() => {
                     if (setting.crafters <= 1)
                       return
 
                     setting.crafters--
 
                     onChangeSettings()
-                  }"
-                >
+                  }">
                   <font-awesome-icon :icon="['fas', 'chevron-left']" />
                 </button>
-                <input
-                  v-model="setting.crafters" class="w-8 text-sm text-center bg-accent text-misc"
-                  join-item
-                  type="number"
-                  min="1"
-                  @change="() => {
+                <input v-model="setting.crafters" class="w-8 text-sm text-center bg-accent text-misc" join-item
+                  type="number" min="1" @change="() => {
                     if (setting.crafters < 1)
                       setting.crafters = 1
 
                     onChangeSettings()
-                  }"
-                >
-                <button
-                  class="btn-xs lg:btn-sm disabled:opacity-50 hover:opacity-60 join-item"
-                  @click="() => {
-                    setting.crafters++
+                  }">
+                <button class="btn-xs lg:btn-sm disabled:opacity-50 hover:opacity-60 join-item" @click="() => {
+                  setting.crafters++
 
-                    onChangeSettings()
-                  }"
-                >
+                  onChangeSettings()
+                }">
                   <font-awesome-icon :icon="['fas', 'chevron-right']" />
                 </button>
               </div>
-              <SettingsMinutesDisplay
-                class="absolute bottom-0 translate-y-2"
-                :minutes="processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective "
-              />
+              <SettingsMinutesDisplay class="absolute bottom-0 translate-y-2"
+                :minutes="processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
             </div>
           </li>
         </ul>
       </section>
     </section>
-    <section
-      v-else-if="activeTab === 'Harvest'"
-      class="relative h-full isolate"
-    >
-      <div
-        v-if="activeProcessorSettings.cropSettings.size > 0"
-        aria-hidden
-        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-90 h-1/4 max-h-12 bg-gradient-to-b from-transparent to-primary"
-      />
+    <section v-else-if="activeTab === 'Harvest'" class="relative h-full isolate">
+      <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
+        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-90 h-1/4 max-h-12 bg-gradient-to-b from-transparent to-primary" />
       <ul class="grid gap-1 max-h-[488px] overflow-y-auto pr-2 rounded-md scrollbar-primary">
         <OptionCard label="days" name="Days">
           <template #input>
@@ -333,10 +307,8 @@ function minutesToHoursAndMinutes(minutes: number) {
               <button class="join-item btn btn-sm " @click="harvesterSettings.days = 0">
                 Auto
               </button>
-              <input
-                v-model="harvesterSettings.days" class="join-item input input-sm text-lg max-w-[6rem] text-accent" type="number"
-                min="0"
-              >
+              <input v-model="harvesterSettings.days" class="join-item input input-sm text-lg max-w-[6rem] text-accent"
+                type="number" min="0">
               <button class="join-item btn btn-sm " @click="harvesterSettings.days = 30">
                 30
               </button>
@@ -363,10 +335,8 @@ function minutesToHoursAndMinutes(minutes: number) {
               <button class="join-item btn btn-sm text-primary" @click="harvesterSettings.level = 10">
                 10
               </button>
-              <input
-                v-model="harvesterSettings.level" class="input input-sm text-lg max-w-[5rem] join-item text-accent"
-                type="number" min="0"
-              >
+              <input v-model="harvesterSettings.level" class="input input-sm text-lg max-w-[5rem] join-item text-accent"
+                type="number" min="0">
               <button class="join-item btn btn-sm text-primary" @click="harvesterSettings.level = 25">
                 25
               </button>
@@ -381,8 +351,7 @@ function minutesToHoursAndMinutes(minutes: number) {
             </p>
             <p>
               Base Star Chance: <code
-                class="px-2 rounded-sm bg-misc text-accent"
-              >{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</code>
+                class="px-2 rounded-sm bg-misc text-accent">{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</code>
             </p>
             <p>Formula in info</p>
           </template>
@@ -416,10 +385,8 @@ function minutesToHoursAndMinutes(minutes: number) {
 
         <OptionCard label="includeReplantCost" name="Include Replant Cost">
           <template #input>
-            <input
-              v-model="harvesterSettings.includeReplantCost" class="rounded-md toggle" type="checkbox"
-              :disabled="!harvesterSettings.includeReplant"
-            >
+            <input v-model="harvesterSettings.includeReplantCost" class="rounded-md toggle" type="checkbox"
+              :disabled="!harvesterSettings.includeReplant">
           </template>
           <template #labels>
             <p>
@@ -439,11 +406,9 @@ function minutesToHoursAndMinutes(minutes: number) {
             <p class="py-1 text-warning">
               <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
               Likely bugged as of 0.169
-              <NuxtLink
-                class="pl-1 underline text-misc"
+              <NuxtLink class="pl-1 underline text-misc"
                 to="https://docs.google.com/document/d/1f4MQHjEC1RCNpDUz1I3eg2tioD_6yBmW0XWsVxUOJ1Y/edit"
-                target="_blank"
-              >
+                target="_blank">
                 <font-awesome-icon class="text-sm" :icon="['fas', 'arrow-up-right-from-square']" />
                 (Source)
               </NuxtLink>
