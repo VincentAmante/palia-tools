@@ -4,94 +4,84 @@ import { CropType } from '../imports'
 import { ItemType } from '../utils/garden-helpers'
 import type { CropItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IInventoryItem, ISeedTracker, ITotalHarvest } from '../utils/garden-helpers'
 import type { ICropConversions } from './crop'
+import { parseCropId } from '../utils/garden-helpers'
 
+// Interface for the final output of the processor
 export interface ProcessorOutput {
   crops: Map<ICropNameWithGrowthDiff, Pick<ProcessOutputInfo, 'count' | 'cropType' | 'itemType'>>
   seeds: Map<ICropNameWithGrowthDiff, ProcessOutputInfo>
   preserves: Map<ICropNameWithGrowthDiff, ProcessOutputInfo>
   replantSeeds: Map<ICropNameWithGrowthDiff, ISeedTracker>
-  detailedProcessingInfo: Map<ICropNameWithGrowthDiff, IProcessCycleData[]> // Added to store detailed cycle data
+  detailedProcessingInfo: Map<ICropNameWithGrowthDiff, IProcessCycleData[]> // Stores detailed cycle data for analysis
 }
 
+// Interface for processing output information
 export interface ProcessOutputInfo {
   count: number
-
-  // how long this crop takes to process in total
-  minutesProcessedTotal: number
-
-  // how long this crop took to process with the assigned crafters
-  minutesProcessedEffective: number
-
-  // how many crafters were used to process this crop
-  crafterCount: number
-
+  minutesProcessedTotal: number // Total minutes required to process all items
+  minutesProcessedEffective: number // Effective processing time considering parallel processing
+  crafterCount: number // Number of crafters used
   cropType: CropType
-
   itemType: ItemType
 }
 
+// Type definition for crop processing settings
 type CropProcessSetting = CropItem
 
+// Interface for individual crop processing settings
 export interface ProcessorSetting {
   cropType: CropType
   isStar: boolean
   processAs: CropProcessSetting
-  crafters: number
-  targetTime: number
-  isActive: boolean
-  hasPreserve: boolean
-  count: number
+  crafters: number // Number of crafters assigned
+  targetTime: number // Target processing time
+  isActive: boolean // Whether this crop is active in processing
+  hasPreserve: boolean // Whether preserve option is available
+  count: number // Quantity to process
 }
 
+// Interface for all processor settings
 export interface ProcessorSettings {
   cropSettings: Map<ICropNameWithGrowthDiff, ProcessorSetting>
-
-  // Not currently used
-  crafterSetting: number
+  crafterSetting: number // Currently not used
 }
 
-// enum ECrafterSetting {
-//   // Manual setting will use the crafter count set in the crop settings
-//   Manual = -1,
-//   // Auto setting will try to lower the time to process all crops but will not go over max crafters
-//   Auto = 0,
-
-//   // ? Not anymore, trying to automate it especially by setting the target time will be a pain
-//   /// [OLD] Any number greater than 0 is the targeted days to process all crops
-// }
-
+// Type definition for crop processing data
 type TCropProcessData = Map<ICropNameWithGrowthDiff, {
   totalProcessMinutes: number
-  // the function to process the crop
   processType: ItemType.Crop | ItemType.Seed | ItemType.Preserve
-  // How many crafters are set to process this crop
   craftersToUse: number
   conversionsToMake: number
 }>
 
+// Main Processor class handles crop processing calculations
 export default class Processor {
+  // Private output property initialized with empty Maps
   private _output: ProcessorOutput = {
     crops: new Map(),
     seeds: new Map(),
     preserves: new Map(),
     replantSeeds: new Map(),
-    detailedProcessingInfo: new Map(), // Initialize new map
+    detailedProcessingInfo: new Map(), // Initialize new map for detailed processing info
   }
 
+  // Inventory and equipment tracking
   private _inventory = new Map<string, IInventoryItem>()
-
   private _seedCollectors = new Map<string, IInventoryItem>()
   private _preserveJars = new Map<string, IInventoryItem>()
-  private _highestCraftingTime = 0
+  private _highestCraftingTime = 0 // Tracks the longest processing time across all crops
 
+  // Settings for processing
   private _settings: ProcessorSettings = {
     cropSettings: new Map() as Map<ICropNameWithGrowthDiff, ProcessorSetting>,
     crafterSetting: 0,
   }
 
+  // Equipment counts
   private _seedCollectorsCount = 0
   private _preserveJarsCount = 0
 
+  // Getters for private properties
   get output(): ProcessorOutput {
     return this._output
   }
@@ -120,6 +110,7 @@ export default class Processor {
     return this._preserveJarsCount
   }
 
+  // Resets all processing data to initial state
   reset() {
     this._inventory = new Map<string, IInventoryItem>()
     this._highestCraftingTime = 0
@@ -135,18 +126,17 @@ export default class Processor {
     this._output.detailedProcessingInfo = new Map() // Reset detailed info
   }
 
+  // Main processing method that delegates to process_v2
   process(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>): void {
     this.process_v2(harvestData, processorSettings)
     return
   }
 
   /**
-   *  Function is responsible for figuring out how many crafters to assign to each crop group.
-   *  This should be manual but can be set to auto (in the future).
-   *
-   * @param totalHarvest - Harvest data
-   * @param settings - Processor settings
-   * @returns
+   * Calculates processing settings for each crop based on harvest data and user settings
+   * @param totalHarvest - Harvest data to process
+   * @param settings - User-defined processing settings
+   * @returns TCropProcessData - Calculated processing data for each crop
    */
   private calculateSettings(totalHarvest: Readonly<ITotalHarvest>, settings: Readonly<ProcessorSettings>): TCropProcessData {
     const cropData = new Map<ICropNameWithGrowthDiff, {
@@ -156,11 +146,13 @@ export default class Processor {
       conversionsToMake: number
     }>()
 
+    // Iterate through each crop in the harvest data
     for (const [cropName, cropYield] of totalHarvest.crops) {
       const crop = getCropFromType(cropYield.cropType)
       if (!crop)
         throw new Error(`Missing crop data for crop: ${cropName}`)
 
+      // Get user-defined settings for this crop or use defaults
       const setting = settings.cropSettings.get(cropName) || {
         cropType: cropYield.cropType,
         isStar: cropYield.isStar,
@@ -175,7 +167,7 @@ export default class Processor {
 
       const processSetting = setting.processAs
 
-      // Gets crops out of the way since it won't be processed
+      // If processing as crop, no conversion needed
       if (processSetting === ItemType.Crop) {
         cropData.set(cropName, {
           totalProcessMinutes: 0,
@@ -183,17 +175,18 @@ export default class Processor {
           craftersToUse: 0,
           conversionsToMake: 0,
         })
-
         continue
       }
 
+      // Get conversion information for this crop
       const conversionInfo = crop.conversionInfo
-
       if (!conversionInfo)
         throw new Error(`Missing conversion info for crop: ${cropName}`)
 
+      // Determine conversion ratios based on processing type (seed or preserve)
       const cropsPerConversion = (processSetting === ItemType.Seed) ? conversionInfo.cropsPerSeed : conversionInfo.cropsPerPreserve
 
+      // Track seed collectors and preserve jars
       if (processSetting === ItemType.Seed) {
         this._seedCollectors.set(cropName, {
           count: setting.crafters,
@@ -223,12 +216,12 @@ export default class Processor {
         this._preserveJarsCount += setting.crafters
       }
 
-      // ? Consider removing given we're currently not using these
+      // Calculate conversion time and number of conversions needed
       const conversionTime = (processSetting === ItemType.Seed) ? conversionInfo.seedProcessMinutes : conversionInfo.preserveProcessMinutes
       const conversionsToMake = Math.floor(cropYield.totalWithDeductions / cropsPerConversion)
-
       const totalProcessMinutes = conversionsToMake * conversionTime
 
+      // Store calculated data
       cropData.set(cropName, {
         totalProcessMinutes,
         processType: processSetting,
@@ -240,38 +233,48 @@ export default class Processor {
     return cropData
   }
 
+  /**
+   * Main processing function that handles the actual calculation of processing results
+   * @param harvestData - Harvest data to process
+   * @param processorSettings - User-defined processing settings
+   */
   process_v2(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>) {
-    this.reset()
+    this.reset() // Reset all state before starting new processing
 
+    // Initialize output and inventory
     const output: ProcessorOutput = {
       crops: new Map(),
       seeds: new Map(),
       preserves: new Map(),
       replantSeeds: Object.assign({}, harvestData.seedsRemainder),
       detailedProcessingInfo: new Map(),
-
     }
 
     const inventory = new Map<string, IInventoryItem>()
 
+    // Set current settings
     this._settings = Object.assign({}, processorSettings)
     const settings = this._settings
 
+    // Calculate processing data for each crop based on settings and harvest data
     const cropData = this.calculateSettings(harvestData, settings)
 
+    // If no crops need processing, return early
     if (cropData.size === 0) {
       this._output = output
-      // Ensure inventory is also set if returning early
       this._inventory = inventory
-      return // Added return to prevent further processing
+      return
     }
 
+    // Process each crop
     for (const [cropName, processData] of cropData) {
       const cropHarvestData = harvestData.crops.get(cropName)
 
-      const crop = getCropFromType(cropHarvestData?.cropType || CropType.None)
+      const { type: cropType, isStar } = parseCropId(cropName)
 
-      // If not set to process, just add to crops
+      const crop = getCropFromType(cropType)
+
+      // If processing as crop, just add to output
       if (processData.processType === ItemType.Crop) {
         const count = cropHarvestData?.totalWithDeductions || 0
 
@@ -279,9 +282,10 @@ export default class Processor {
           output.crops.set(cropName, {
             count,
             itemType: ItemType.Crop,
-            cropType: crop?.type || CropType.None,
+            cropType: cropType,
           })
 
+          // Update inventory
           if (inventory.has(cropName)) {
             inventory.get(cropName)!.count += count
           }
@@ -293,14 +297,15 @@ export default class Processor {
                 src: crop?.image || '',
                 alt: crop?.type || 'Crop',
               },
-              isStar: cropHarvestData?.isStar || false,
+              isStar,
               baseGoldValue: baseGoldValue || 0,
-              cropType: crop?.type || CropType.None,
+              cropType,
               itemType: ItemType.Crop,
             })
           }
         }
       }
+      // If processing as seed or preserve, handle conversion
       else if (processData.processType === ItemType.Seed || processData.processType === ItemType.Preserve) {
         const cropCount = cropHarvestData?.totalWithDeductions || 0
 
@@ -310,35 +315,30 @@ export default class Processor {
         if (!crop)
           throw new Error(`Missing crop data for crop: ${cropName}`)
 
+        // Determine output type for inventory
         const processType = processData.processType === ItemType.Seed ? 'seeds' : 'preserves'
         const outputId = `${cropName}-${processType}`
         const isStar = cropName.includes('-Star')
 
+        // Get cycle data for this crop
         const cycleData = harvestData.cycleData.get(cropName)
         if (!cycleData)
           continue
 
+        // Calculate number of complete cycles and remainders
         const cycles = Math.floor(cycleData.totalHarvestsCount / cycleData.phases.length)
         const cyclesRemainder = cycleData.totalHarvestsCount % cycleData.phases.length
 
-        // ? Should we make an incomplete cycle data to simulate remainders,
-        // ? or do we use the calculations of one processCycle and modify the values to match
-
-        // // TODO: Figure out how to multiply the data appropriately
-        // // TODO: Add first harvest wait time, and subtract idle time from last harvest
-        // TODO: Figure out where crafter cycle data should go
-        // TODO: Try to figure out how idle time and excess time should interact with each other
-
         let totalProduceCount = 0
         let totalProcessMinutes = 0
-        let longestProcessMinutes = 0 // This variable's accumulation logic needs review for cycle processing
+        let longestProcessMinutes = 0
         let goldGenerated = 0
         let firstHarvestDelayMinutes = 0
 
         let lastCycleData: IProcessCycleData | null = null
-        const allCycleData: IProcessCycleData[] = [] // Array to store data for all cycles
+        const allCycleData: IProcessCycleData[] = [] // Store data for all cycles
 
-        // It's all the same anyway
+        // Process a complete cycle
         const cycleOutput = processCycle({
           cycleData,
           isStar,
@@ -348,45 +348,23 @@ export default class Processor {
           goldValues: crop.goldValues,
         })
 
+        // Process all complete cycles
         if (cycles > 0) {
-          // Process full cycles
           for (let i = 0; i < cycles; i++) {
-            console.log(cycleOutput)
-
             totalProduceCount += cycleOutput.totalProduceCount
             totalProcessMinutes += cycleOutput.totalProcessMinutes
-            // Accumulate longest process time carefully - handled later by _highestCraftingTime
-            longestProcessMinutes += cycleOutput.longestProcessMinutes // Simple sum is likely incorrect
+            longestProcessMinutes += cycleOutput.longestProcessMinutes
             goldGenerated += cycleOutput.goldGenerated
 
-            if (i === 0) // Only add first harvest delay once
+            if (i === 0)
               firstHarvestDelayMinutes += cycleOutput.firstHarvestDelayMinutes
 
             lastCycleData = cycleOutput
-            allCycleData.push(cycleOutput) // Store data for this cycle
+            allCycleData.push(cycleOutput)
           }
         }
 
-        if (cyclesRemainder > 0) {
-          const cycleRemainderOutput = processCycle({
-            cycleData,
-            isStar,
-            crafterCount: processData.craftersToUse,
-            cropConversionInfo: crop.conversionInfo,
-            processInto: processData.processType,
-            goldValues: crop.goldValues,
-          })
-
-          totalProduceCount += cycleRemainderOutput.totalProduceCount * cycles
-          totalProcessMinutes += cycleRemainderOutput.totalProcessMinutes * cycles
-          longestProcessMinutes += cycleRemainderOutput.longestProcessMinutes * cycles
-          goldGenerated += cycleRemainderOutput.goldGenerated * cycles
-
-          firstHarvestDelayMinutes += cycleRemainderOutput.firstHarvestDelayMinutes
-
-          lastCycleData = cycleRemainderOutput
-        }
-
+        // Handle remainder cycles (incomplete cycles)
         if (cyclesRemainder > 0) {
           const cycleRemainderOutput = processCycle({
             cycleData,
@@ -402,74 +380,61 @@ export default class Processor {
           longestProcessMinutes += cycleRemainderOutput.longestProcessMinutes
           goldGenerated += cycleRemainderOutput.goldGenerated
 
-          // In case there was no completed cycle
           if (firstHarvestDelayMinutes <= 0)
             firstHarvestDelayMinutes += cycleRemainderOutput.firstHarvestDelayMinutes
 
           lastCycleData = cycleRemainderOutput
-          allCycleData.push(cycleRemainderOutput) // Store data for the remainder cycle
+          allCycleData.push(cycleRemainderOutput)
         }
 
-        // --- Recalculate effective processing time based on all cycles ---
-        // This part needs careful thought. The *longest* path determines the total time.
-        // Simply summing might overestimate if crafters finish early in some cycles.
-        // The existing _highestCraftingTime calculation might be sufficient if it correctly
-        // identifies the bottleneck across all processed crops. Let's assume it does for now.
-
-        // Example: Update highestCraftingTime based on the *last* cycle's effective time + delays
+        // Calculate effective processing time considering parallel processing
         if (lastCycleData) {
-          // Rough calculation - needs refinement based on how cycles interact
           const effectiveTime = firstHarvestDelayMinutes + allCycleData.reduce((sum, cycle) => {
-            // Summing the longest phase of each cycle might be closer?
-            // Or find the absolute longest phase across all cycles? Needs careful design.
-            // Let's use the existing logic for now and refine if needed.
-            const cycleLongestPhase = Math.max(...cycle.cycleCrafterData.map(p => p.longestProcessMinutesNoIdle))
-            return sum + cycleLongestPhase
+            const cycleTotalProcessMinutes = cycle.cycleCrafterData
+              .map(p => p.longestProcessMinutes)
+              .reduce((sum, phase) => (sum + phase), 0)
+            // console.log('cycleTotalProcessMinutes', cycleTotalProcessMinutes)
+
+            return sum + cycleTotalProcessMinutes
           }, 0)
 
-          // Subtract idle time from the very last phase of the last cycle
+          // TODO: Calculate total effective time
+
+          // console.log('effectiveTime', effectiveTime)
+
+          // Subtract idle time from the last phase of the last cycle
           const lastPhaseData = lastCycleData.cycleCrafterData.at(-1)
           const lastPhaseIdleTime = lastPhaseData ? (lastPhaseData.longestProcessMinutes - lastPhaseData.longestProcessMinutesNoIdle) : 0
+          // console.log('lastPhaseIdleTime', lastPhaseIdleTime)
+
           const finalEffectiveTime = Math.max(0, effectiveTime - lastPhaseIdleTime)
+          // console.log('finalEffectiveTime', finalEffectiveTime)
+
+          output[processType].set(cropName, {
+            count: totalProduceCount,
+            minutesProcessedTotal: 0,
+            minutesProcessedEffective: finalEffectiveTime,
+            crafterCount: 0,
+            cropType: cropType,
+            itemType: processData.processType
+          })
 
           if (finalEffectiveTime > this._highestCraftingTime)
             this._highestCraftingTime = finalEffectiveTime
-
-
-          console.log('finalEffectiveTime', finalEffectiveTime)
         }
-        // --- End Recalculation ---
 
-        // Store the detailed cycle data in the output
+        // Store detailed processing info
         output.detailedProcessingInfo.set(cropName, allCycleData)
-
-        // console.log(`longestProcessMinutes: ${longestProcessMinutes}`) // This variable is no longer directly used for final time
-
-        // Adds a delay caused by the first harvest
-        // longestProcessMinutes += firstHarvestDelayMinutes // Handled in the new effectiveTime calculation
-
-        // console.log(`longestProcessMinutes with first Harvest Delay: ${longestProcessMinutes}`)
-
-        // if (!lastCycleData) // Check moved into the recalculation block
-        //   throw new Error('No last cycle data')
-        // Subtracts last cycle's idle time
-        // longestProcessMinutes -= ( // Handled in the new effectiveTime calculation
-        //   lastCycleData.cycleCrafterData.at(-1)!.longestProcessMinutes
-        //   -= lastCycleData.cycleCrafterData.at(-1)!.longestProcessMinutesNoIdle
-        // )
-
-        // console.log(`longestProcessMinutes with idle time subtracted: ${longestProcessMinutes}`) // This calculation needs review
-
-        // console.log(`gold generated: ${goldGenerated}`)
-        // console.log(`average: ${goldGenerated / (this._highestCraftingTime / 60)}`) // Use updated highestCraftingTime
       }
     }
 
+    // Update class properties with the final output
     this._inventory = inventory
     this._output = output
   }
 }
 
+// Interface for harvest processing data
 interface IProcessHarvestData {
   totalProduceCount: number
   remainder: number
@@ -490,6 +455,7 @@ interface IProcessHarvestData {
   goldGenerated: number
 }
 
+// Interface for harvest processing arguments
 interface IProcessHarvestArgs {
   qualityId: 'base' | 'star'
   cycleData: ICropHarvestCycle
@@ -504,19 +470,9 @@ interface IProcessHarvestArgs {
 }
 
 /**
- * Processes a single harvest
- * @param processHarvestArgs
- * @param processHarvestArgs.qualityId - Whether crop is base or star
- * @param processHarvestArgs.cycleData - Information regarding a crop's harvest timings
- * @param processHarvestArgs.currentPhaseIndex - Which phase is currently being harvested
- * @param processHarvestArgs.crafterCount - How many crafters are allocated to this crop
- * @param processHarvestArgs.minutesPerConversion - How many minutes is required per process
- * @param processHarvestArgs.cropsPerConversion - Crops consumed per process
- * @param processHarvestArgs.producePerConversion - Amount created from each process
- * @param processHarvestArgs.produceGoldValue - Value of each produce
- *
- *
- * @returns totalProduceCount
+ * Processes a single harvest phase
+ * @param processHarvestArgs - Arguments for processing a harvest
+ * @returns IProcessHarvestData - Results of processing the harvest
  */
 function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarvestData {
   const {
@@ -529,23 +485,27 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
     producePerConversion,
     produceGoldValue,
   } = processHarvestArgs
+
   const crafterData = [] as IProcessHarvestData['crafterData']
 
-  // const phases = cycleData.phases
+  // Get data about the current phase
   const phaseData = cycleData.phases[currentPhaseIndex]
-
   const cropCount = phaseData.yield[qualityId].totalWithDeductions
+
+  // Calculate how many conversions can be made
   const conversionsToMake = Math.floor(cropCount / cropsPerConversion)
   const conversionsRemainder = (cropCount / cropsPerConversion) - conversionsToMake
   const conversionsRemainderInCrops = cropCount % cropsPerConversion
 
+  // Distribute conversions among crafters
   const conversionsDivided = Math.floor(conversionsToMake / crafterCount)
-  const conversionsDividedRemainder = (conversionsToMake % crafterCount + conversionsRemainder)
+  const conversionsDividedRemainder = ((conversionsToMake % crafterCount) + conversionsRemainder)
 
+  // Calculate total produce and gold
   const totalProduceCount = (conversionsToMake + conversionsRemainder) * producePerConversion
   const goldGenerated = totalProduceCount * produceGoldValue
 
-  // Gets how much time there is till the next harvest
+  // Calculate time until next harvest phase
   let hoursToNextPhase = phaseData.phaseLength
   if (cycleData.phases.length > 1) {
     if (currentPhaseIndex === (cycleData.phases.length - 1))
@@ -554,6 +514,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
       hoursToNextPhase = cycleData.phases[currentPhaseIndex + 1].phaseLength
   }
 
+  // Initialize crafter data
   for (let i = 0; i < crafterCount; i++) {
     const cropsInsertedCount = conversionsDivided * cropsPerConversion
     const processTimeMinutes = conversionsDivided * minutesPerConversion
@@ -570,7 +531,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
     })
   }
 
-  // Account for remainders
+  // Handle remaining conversions that don't divide evenly among crafters
   if (conversionsDividedRemainder > 0) {
     let crafterIndex = 0
 
@@ -595,11 +556,11 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
     }
   }
 
+  // Aggregate results from all crafters
   let canFinishBeforeNextHarvest = true
   let totalProcessMinutes = 0
   let lowestCrafterTimeMinutes = Number.POSITIVE_INFINITY
   let highestCrafterTimeMinutes = Number.NEGATIVE_INFINITY
-
   let longestProcessMinutes = Number.NEGATIVE_INFINITY
   let longestProcessMinutesNoIdle = Number.NEGATIVE_INFINITY
 
@@ -607,10 +568,13 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
     if (!crafter.canFinishBeforeNextHarvest)
       canFinishBeforeNextHarvest = false
 
+    // Calculate idle and excess time
     crafter.idleTimeMinutes = Math.max(0, (hoursToNextPhase * 60) - crafter.processTimeMinutes)
     crafter.excessTimeMinutes = Math.max(0, crafter.processTimeMinutes - (hoursToNextPhase * 60))
+
     totalProcessMinutes += crafter.processTimeMinutes
 
+    // Track min/max times
     if (crafter.processTimeMinutes < lowestCrafterTimeMinutes)
       lowestCrafterTimeMinutes = crafter.processTimeMinutes
     if (crafter.processTimeMinutes > highestCrafterTimeMinutes)
@@ -625,6 +589,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
       longestProcessMinutesNoIdle = crafter.processTimeMinutes
   }
 
+  // Return the results of processing this harvest
   return {
     totalProduceCount,
     remainder: conversionsRemainderInCrops,
@@ -639,6 +604,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
   }
 }
 
+// Interface for cycle processing arguments
 interface IProcessCycleArgs {
   goldValues: Crop['goldValues']
   cycleData: ICropHarvestCycle
@@ -648,6 +614,7 @@ interface IProcessCycleArgs {
   processInto: ItemType.Seed | ItemType.Preserve
 }
 
+// Interface for cycle processing data
 interface IProcessCycleData {
   totalProduceCount: number
   cycleCrafterData: {
@@ -663,21 +630,23 @@ interface IProcessCycleData {
 }
 
 /**
- *
- * @param processCycleArgs
- * @param phasesOverride
- * @returns
+ * Processes a complete cycle of harvesting and conversion
+ * @param processCycleArgs - Arguments for processing a cycle
+ * @param phasesOverride - Optional override for number of phases to process
+ * @returns IProcessCycleData - Results of processing the cycle
  */
 function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): IProcessCycleData {
   const { goldValues, isStar, cropConversionInfo, processInto, cycleData, crafterCount } = processCycleArgs
   const qualityId = (isStar ? 'star' : 'base')
 
+  // Determine conversion parameters based on processing type
   let minutesPerConversion = 0
   let cropsPerConversion = 0
   let producePerConversion = 0
   let produceGoldValue = 0
   const firstHarvestDelayMinutes = (cycleData.phases[0].phaseLength * 60)
 
+  // Set parameters based on whether we're processing to seed or preserve
   if (processInto === ItemType.Seed) {
     minutesPerConversion = cropConversionInfo.seedProcessMinutes
     cropsPerConversion = cropConversionInfo.cropsPerSeed
@@ -694,16 +663,12 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
     throw new Error('Neither SEED nor PRESERVE was chosen as the processInto option')
   }
 
-  // For if a multi-harvest crop has a difference in the last harvest due to replanting deductions
-  // const hasReplantDeductionDiff = (cycleData.phases.length > 1)
-  //   // So far, there's no situation where anything but the last harvest has a different yield
-  //   && cycleData.phases.at(0)!.yield[qualityId].totalWithDeductions
-  //   !== cycleData.phases.at(-1)!.yield[qualityId].totalWithDeductions
-
+  // Determine how many phases to process
   const phasesToCalculate = (phasesOverride > 0)
     ? phasesOverride
     : cycleData.phases.length
 
+  // Initialize results
   let totalProduceCount = 0
   let canFinishBeforeNextHarvest = true
   let totalProcessMinutes = 0
@@ -716,8 +681,8 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
   }[]
   let goldGenerated = 0
 
+  // Process each phase in the cycle
   for (let i = 0; i < phasesToCalculate; i++) {
-    // TODO: Figure out how to accurately subtract excess time from idle time
     const {
       totalProduceCount: harvestTotalProduceCount,
       crafterData,
@@ -739,6 +704,7 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
       produceGoldValue,
     })
 
+    // Aggregate results
     totalProduceCount += harvestTotalProduceCount
     if (!harvestCanFinishBeforeHarvest)
       canFinishBeforeNextHarvest = false
@@ -746,6 +712,10 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
     totalProcessMinutes += harvestTotalProcessMinutes
     longestProcessMinutes += harvestLongestProcessMinutes
 
+    console.log('longestProcessMinutes', longestProcessMinutes)
+    console.log('harvestLongestProcessMinutes', harvestLongestProcessMinutes)
+
+    // Store detailed data about this phase
     cycleCrafterData.push({
       canFinishBeforeNextHarvest,
       longestProcessMinutes: harvestLongestProcessMinutes,
@@ -756,6 +726,7 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
     goldGenerated += harvestGoldGenerated
   }
 
+  // Return the results for this cycle
   return {
     totalProduceCount,
     cycleCrafterData,
