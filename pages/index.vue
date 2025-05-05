@@ -40,6 +40,6 @@ const isTakingScreenshot = useTakingScreenshot()
         </button>
       </div>
     </DevOnly> -->
-    <CropModalButton />
+    <CropModalButton position="bottom-right" />
   </main>
 </template>
