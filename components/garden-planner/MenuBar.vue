@@ -68,44 +68,30 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="flex flex-wrap justify-between gap-2 p-2 bg-palia-blue-dark rounded-b-md">
-    <div class="flex flex-wrap gap-2 py-2">
-      <button
-        class="h-full normal-case btn bg-palia-blue"
-        @click="openSaveModal"
-      >
+  <section class="flex flex-wrap justify-between gap-1 p-2 sm:gap-2 bg-palia-blue-dark rounded-b-md">
+    <div class="grid flex-wrap w-full grid-cols-3 gap-2 py-1 sm:py-0 lg:py-2 sm:flex sm:w-fit">
+      <button class="h-full normal-case btn bg-palia-blue" @click="openSaveModal">
         <font-awesome-icon class="text-lg" icon="floppy-disk" />
         Save
       </button>
-      <button
-        class="h-full normal-case btn bg-palia-blue"
-        @click="openLoadModal"
-      >
+      <button class="h-full normal-case btn bg-palia-blue" @click="openLoadModal">
         <font-awesome-icon class="text-lg" icon="download" />
         Load
       </button>
-      <button
-        class="h-full normal-case btn bg-palia-blue"
-      >
+      <button class="h-full normal-case btn bg-palia-blue">
         <font-awesome-icon class="text-lg" icon="share-from-square" />
         Export
       </button>
     </div>
-    <div class="flex flex-col items-center px-12 py-2 rounded-md bg-palia-blue">
+    <div class="flex-col items-center w-full px-12 py-1 rounded-md sm:py-2 sm:w-fit sm:flex bg-palia-blue">
       <TimeDisplay />
     </div>
-    <div class="flex flex-wrap gap-2 py-2">
-      <button
-        class="h-full normal-case btn btn-warning text-neutral"
-        @click="openNewLayoutModal"
-      >
+    <div class="grid flex-wrap w-full grid-cols-2 gap-2 py-1 sm:w-fit sm:flex sm:py-2">
+      <button class="h-full normal-case btn btn-warning text-neutral" @click="openNewLayoutModal">
         <font-awesome-icon class="text-lg" icon="pen-to-square" />
         Edit Layout
       </button>
-      <button
-        class="h-full normal-case btn btn-error"
-        @click="clearGarden"
-      >
+      <button class="h-full normal-case btn btn-error" @click="clearGarden">
         <font-awesome-icon class="text-lg" icon="trash" />
         Clear Plot
       </button>
