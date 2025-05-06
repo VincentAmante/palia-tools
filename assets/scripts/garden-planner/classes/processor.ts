@@ -430,13 +430,13 @@ export default class Processor {
         }
 
         // Store detailed processing info
-        console.log(cropName, allCycleData)
         output.detailedProcessingInfo.set(cropName, allCycleData)
       }
     }
 
     console.log('output', output)
 
+    console.log('inventory', inventory)
     // Update class properties with the final output
     this._inventory = inventory
     this._output = output

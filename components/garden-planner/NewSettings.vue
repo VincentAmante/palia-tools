@@ -137,7 +137,6 @@ function minutesToHoursAndMinutes(minutes: number) {
 
 function saveGarden() {
   const saveString = garden.garden.saveSettings(harvesterSettings.value, processorSettings.value)
-  console.log('Saved Garden:', saveString)
   settingsCode.set(saveString)
   // You can add code here to save the saveString to a file or share it
 }
@@ -145,14 +144,10 @@ function saveGarden() {
 const { updateIsRequested } = storeToRefs(settingsCode)
 
 watch (updateIsRequested, () => {
-  console.log('An update is requested')
-
   if (updateIsRequested.value) {
     loadGarden(settingsCode.code)
     settingsCode.resetUpdateRequest()
-    console.log('Update request reset')
   }
-
 })
 
 

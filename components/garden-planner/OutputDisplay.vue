@@ -72,15 +72,11 @@ function getCropInfoForDetail(cropId: ICropNameWithGrowthDiff | null) {
 
 // Computed property for selected crop's cycle data
 const selectedCropCycleData = computed(() => {
-  console.log('selectedCropCycleData')
-  console.log(harvester.totalHarvest.cycleData)
-
   if (!selectedCropDetail.value || !harvester.totalHarvest?.cycleData)
     return null
 
-  const {type, hasGrowthBoost} = parseCropId(selectedCropDetail.value)
+  const { type, hasGrowthBoost } = parseCropId(selectedCropDetail.value)
   const totalHarvestCycleId = `${type}${(harvester.settings.useStarSeeds ? '-Star' : '-Base')}${(harvester.settings.useGrowthBoost && hasGrowthBoost) ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
-  console.log(totalHarvestCycleId)
   return harvester.totalHarvest.cycleData.get(totalHarvestCycleId)
 })
 
@@ -94,7 +90,6 @@ const selectedCropProcessingData = computed(() => {
 
   if (detailedProcessingInfoOutput && detailedProcessingInfoOutput.length > 0) {
 
-    console.log(detailedProcessingInfoOutput[0])
     return detailedProcessingInfoOutput[0]
   }
 
@@ -361,32 +356,25 @@ const selectedCropTotalFullCycles = computed(() => {
             Harvest Cycle
           </p>
           <div class="flex flex-wrap gap-1 text-sm">
-            <div class="font-semibold badge">{{ selectedCropCycleData.phases.length }}
+            <p class="font-semibold badge">{{ selectedCropCycleData.phases.length }}
               <span class="">&nbsp;Harvest<template v-if="selectedCropCycleData.phases.length > 1">s</template></span>
               &nbsp;/&nbsp;
               {{ selectedCropCycleDuration }} Days
-            </div>
-            <div class="font-semibold badge">{{ selectedCropTotalFullCycles }} Cycles</div>
-            <div v-if="selectedCropTotalFullCycles !== selectedCropCycleData.totalHarvestsCount"
-              class="font-semibold badge">{{ selectedCropCycleData.totalHarvestsCount }} Total Harvests</div>
+            </p>
+            <p class="font-semibold badge">{{ selectedCropTotalFullCycles }} Cycle<template v-if="selectedCropTotalFullCycles > 1">s</template></p>
+            <p v-if="selectedCropTotalFullCycles !== selectedCropCycleData.totalHarvestsCount"
+              class="font-semibold badge">
+              {{ selectedCropCycleData.totalHarvestsCount }} Total Harvests</p>
+            <!-- <p class="font-semibold badge" v-if="selectedCropSeedsRequiredPerHarvest">
+              <span class="font-semibold">Seeds per Replant:</span>&nbsp;{{ selectedCropSeedsRequiredPerHarvest.count }}
+            </p>
+            <p class="font-semibold badge" v-else>
+              <span class="font-semibold">Seeds per Replant:</span>&nbsp;N/A
+            </p>
+            <p v-if="(selectedCropSeedsRequiredPerHarvest?.count || 0) !== selectedCropTotalSeedsRequired" class="font-semibold badge"><span class="font-semibold">Total Seeds Used:</span>&nbsp;{{ selectedCropTotalSeedsRequired }}</p> -->
           </div>
         </div>
 
-        <!-- Seed Info -->
-        <div v-if="harvester.settings.includeReplantCost" class="p-2 border rounded border-misc-dark bg-accent">
-          <p class="mb-1 text-sm font-medium text-palia-blue-dark">
-            Replanting Info
-          </p>
-          <div class="grid grid-cols-2 gap-1 text-xs md:grid-cols-4">
-            <div v-if="selectedCropSeedsRequiredPerHarvest">
-              <span class="font-semibold">Seeds per Replant:</span> {{ selectedCropSeedsRequiredPerHarvest.count }}
-            </div>
-            <div v-else>
-              <span class="font-semibold">Seeds per Replant:</span> N/A (Not replanted)
-            </div>
-            <div><span class="font-semibold">Total Seeds Used:</span> {{ selectedCropTotalSeedsRequired }}</div>
-          </div>
-        </div>
         <!-- Processing Info -->
         <div v-if="selectedCropProcessingData && selectedCropProcessingData.cycleCrafterData.length > 0"
           class="p-2 border rounded border-misc-dark bg-accent">

@@ -71,7 +71,7 @@ class Garden {
   loadLayout(layout: string) {
     const { dimensionInfo, cropInfo: cropsInfo, settingsInfo } = parseSave(layout)
 
-    if (settingsInfo){
+    if (settingsInfo) {
       this._settingsCode = settingsInfo || ''
       this._settingsHaveBeenLoaded = true
     }
@@ -177,27 +177,21 @@ class Garden {
       layoutCode = layoutCode.substring(0, layoutCode.length - 1)
 
 
-    if (settingsCode) {
+    if (settingsCode)
       layoutCode += `_${settingsCode}`
-      console.log('added settings code', layoutCode)
-    }
+
 
     return layoutCode
   }
-  
+
   /**
    * One time update to the settings code, used when loading a saved garden
    */
   get loadSettingsCode(): string {
-    console.log('attempting to fetch settings code')
-
     if (this._settingsHaveBeenLoaded) {
       this._settingsHaveBeenLoaded = false
-      console.log('settings have been loaded')
       return this._settingsCode ?? ''
     }
-
-    console.log('settings have not been loaded')
     return ''
   }
 

@@ -201,13 +201,11 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
     
       const cropSettings = setting.split('-')
       for (const cropSetting of cropSettings) {
-        console.log('cropSetting', cropSetting)
 
         if (cropSetting.length === 0) continue
 
         const codeMatch = cropSetting.match(/^([A-Z][a-z]?)(\.?)(~?)([PS]?)(\d*)/);
 
-        console.log(codeMatch)
 
         if (!codeMatch) {
           throw new Error(`Invalid crop setting format: ${cropSetting}`)
@@ -237,9 +235,6 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
       }
     } else {
       const harvesterSettings = (setting.match(/[A-Z][a-z0-9]*/g) as string[]) || []
-
-      console.log(harvesterSettings)
-
       const exactHandlers: Record<string, () => void> = {
         'Nr': () => { harvesterOptions.includeReplant = false; },
         'Nrc': () => { harvesterOptions.includeReplantCost = false; },
@@ -271,8 +266,8 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
     }
   }
 
-  console.log('Processor Settings:', processorSettings)
-  console.log('Harvester Options:', harvesterOptions)
+  // console.log('Processor Settings:', processorSettings)
+  // console.log('Harvester Options:', harvesterOptions)
 
   return { harvesterOptions, processorSettings }
 }
