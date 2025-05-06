@@ -1,5 +1,14 @@
 <script setup lang="ts">
 const modal = ref<HTMLDialogElement | null>(null)
+
+  defineProps({
+    useFullHeight: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
+  })
+
 function showModal() {
   modal.value?.showModal()
 }
@@ -14,7 +23,7 @@ defineExpose({
 
 <template>
   <dialog ref="modal" class="modal">
-    <div class="modal-box flex flex-col gap-2 px-3 py-6">
+    <div class="flex flex-col gap-2 px-3 py-6 modal-box" :class="{ 'h-full': useFullHeight }">
       <div class="flex justify-between">
         <h2 class="text-xl ">
           <slot name="header" />
@@ -25,8 +34,8 @@ defineExpose({
           </button>
         </form>
       </div>
-      <div class="divider my-0" />
-      <div class="modal-body flex flex-col gap-2">
+      <div class="my-0 divider" />
+      <div class="flex flex-col gap-2 modal-body">
         <slot name="body" />
       </div>
     </div>

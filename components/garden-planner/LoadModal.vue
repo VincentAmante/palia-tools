@@ -55,18 +55,17 @@ async function paste() {
 </script>
 
 <template>
-  <PGPModal ref="modal">
+  <PGPModal ref="modal" useFullHeight>
     <template #header>
       Load Layout
     </template>
     <template #body>
-      <div class="tabs">
+      <div class="tabs tabs-boxed">
         <a
-          class="tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
+          class="px-0 tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
           @click="activeTab = 'clipboard-tab'"
-        >Load from Clipboard</a>
-        <a class="tab" :class="{ 'tab-active': activeTab === 'browser-tab' }" @click="activeTab = 'browser-tab'">Load
-          from Browser</a>
+        >From Clipboard</a>
+        <a class="px-0 tab" :class="{ 'tab-active': activeTab === 'browser-tab' }" @click="activeTab = 'browser-tab'">From Browser</a>
       </div>
       <div v-if="activeTab === 'clipboard-tab'" id="clipboard-tab" class="flex flex-col gap-2 mt-4">
         <div class="card card-compact">
@@ -92,8 +91,8 @@ async function paste() {
             <p class="card-title">
               Saved Layouts
             </p>
-            <ul class="flex flex-col w-full gap-2 p-2 overflow-y-auto rounded-sm bg-base-100 max-h-64">
-              <li v-for="(code, index) in filteredSavedGardenCodes" :key="index" class="flex items-start">
+            <ul class="flex flex-col w-full gap-2 p-2 overflow-y-auto rounded-sm bg-base-100 max-h-80 md:max-h-[508px]">
+              <li v-for="(code, index) in filteredSavedGardenCodes" :key="index" class="flex items-center justify-between w-full pb-2 border-b last:border-b-0 border-b-accent border-opacity-20">
                 <div>
                   <p>{{ code.title }}</p>
                   <p class="font-mono leading-none opacity-50 text-xxs">
