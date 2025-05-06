@@ -95,10 +95,10 @@ function onHover(row: number, col: number, plot: Plot) {
   if (pressed.value && !isRightClickDown.value) {
     switch (selectedItem.type) {
       case SelectedItemType.CropErase:
-        plot.setTile(row, col, null)
+        plot.removeCropFromTile(row, col)
         break
       case SelectedItemType.FertiliserErase:
-        plot.removeCropFromTile(row, col)
+        plot.removeFertiliserFromTile(row, col)
         break
       case SelectedItemType.Crop:
         if (plot.getTile(row, col)?.crop?.type !== (selectedItem.val as Crop).type)
