@@ -258,6 +258,7 @@ export default class Processor {
 
     // Calculate processing data for each crop based on settings and harvest data
     const cropData = this.calculateSettings(harvestData, settings)
+    console.log('cropData',cropData)
 
     // If no crops need processing, return early
     if (cropData.size === 0) {
@@ -265,12 +266,14 @@ export default class Processor {
       this._inventory = inventory
       return
     }
+    
+    const harvestUsedStarSeeds = parseCropId(harvestData.cycleData.keys().next().value as ICropNameWithGrowthDiff).isStar
 
     // Process each crop
     for (const [cropName, processData] of cropData) {
       const cropHarvestData = harvestData.crops.get(cropName)
 
-      const { type: cropType, isStar } = parseCropId(cropName)
+      const { type: cropType, isStar, hasGrowthBoost } = parseCropId(cropName)
 
       const crop = getCropFromType(cropType)
 
@@ -318,10 +321,13 @@ export default class Processor {
         // Determine output type for inventory
         const processType = processData.processType === ItemType.Seed ? 'seeds' : 'preserves'
         const outputId = `${cropName}-${processType}`
+
+        const cycleId = `${cropType}-${harvestUsedStarSeeds ? 'Star':'Base'}${hasGrowthBoost ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
+
         const isStar = cropName.includes('-Star')
 
         // Get cycle data for this crop
-        const cycleData = harvestData.cycleData.get(cropName)
+        const cycleData = harvestData.cycleData.get(cycleId)
         if (!cycleData)
           continue
 
@@ -424,9 +430,12 @@ export default class Processor {
         }
 
         // Store detailed processing info
+        console.log(cropName, allCycleData)
         output.detailedProcessingInfo.set(cropName, allCycleData)
       }
     }
+
+    console.log('output', output)
 
     // Update class properties with the final output
     this._inventory = inventory
@@ -712,8 +721,6 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
     totalProcessMinutes += harvestTotalProcessMinutes
     longestProcessMinutes += harvestLongestProcessMinutes
 
-    console.log('longestProcessMinutes', longestProcessMinutes)
-    console.log('harvestLongestProcessMinutes', harvestLongestProcessMinutes)
 
     // Store detailed data about this phase
     cycleCrafterData.push({

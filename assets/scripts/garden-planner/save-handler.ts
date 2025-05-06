@@ -151,7 +151,7 @@ function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: 
     if (!setting.isStar)
       cropSettings += '.'
 
-    if (cropIdData.isGrowthBoosted)
+    if (cropIdData.hasGrowthBoost)
       cropSettings += '~'
 
     // P for preserve, S for seed
@@ -215,12 +215,12 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
 
         const code = codeMatch[1] as CropCode
         const isStar = codeMatch[2] !== '.'
-        const isGrowthBoosted = codeMatch[3] === '~'
+        const hasGrowthBoost = codeMatch[3] === '~'
         const processAs = codeMatch[4] === 'P' ? ItemType.Preserve : codeMatch[4] === 'S' ? ItemType.Seed : ItemType.Crop
         const crafters = codeMatch[5] ? parseInt(codeMatch[5], 10) : 1
         const type = getCropFromCode(code)!.type
 
-        const cropId = encodeCropId({ type, isStar, isGrowthBoosted: isGrowthBoosted })
+        const cropId = encodeCropId({ type, isStar, hasGrowthBoost: hasGrowthBoost })
 
         const setting: ProcessorSetting = {
           count: 0,

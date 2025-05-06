@@ -117,7 +117,7 @@ export interface ICropId {
   type: CropType
   code: CropCode
   isStar: boolean
-  isGrowthBoosted: boolean
+  hasGrowthBoost: boolean
 }
 
 export interface ICropYield {
@@ -204,7 +204,7 @@ export function parseCropId(cropId: string): ICropId {
   }
 
   const isStar = star === 'Star'
-  const isGrowthBoosted = growth === 'Growth'
+  const hasGrowthBoost = growth === 'Growth'
   const code = getCropFromType(type as CropType)?.cropCode
   if (!code) {
     throw new Error(`Invalid crop type: ${type}`)
@@ -221,25 +221,25 @@ export function parseCropId(cropId: string): ICropId {
     type: type as CropType,
     code: code as CropCode,
     isStar,
-    isGrowthBoosted,
+    hasGrowthBoost,
   }
 }
 
-export function encodeCropId(options: { type: CropType; isStar: boolean; isGrowthBoosted?: boolean }): ICropNameWithGrowthDiff {
+export function encodeCropId(options: { type: CropType; isStar: boolean; hasGrowthBoost?: boolean }): ICropNameWithGrowthDiff {
   if (!Object.values(CropType).includes(options.type)) {
     throw new Error(`Invalid crop type: ${options.type}`)
   }
   const starPart = options.isStar ? 'Star' : 'Base'
-  const growthPart = options.isGrowthBoosted ? '-Growth' : ''
+  const growthPart = options.hasGrowthBoost ? '-Growth' : ''
   return `${options.type}-${starPart}${growthPart}`
 }
 
-export function encodeCropIdWithCode(options: { code: CropCode; isStar: boolean; isGrowthBoosted?: boolean }): ICropNameWithGrowthDiff {
+export function encodeCropIdWithCode(options: { code: CropCode; isStar: boolean; hasGrowthBoost?: boolean }): ICropNameWithGrowthDiff {
   if (!Object.values(CropCode).includes(options.code)) {
     throw new Error(`Invalid crop code: ${options.code}`)
   }
   const starPart = options.isStar ? 'Star' : 'Base'
-  const growthPart = options.isGrowthBoosted ? '-Growth' : ''
+  const growthPart = options.hasGrowthBoost ? '-Growth' : ''
   return `${getCropFromCode(options.code).type}-${starPart}${growthPart}`
 }
 
