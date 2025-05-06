@@ -258,7 +258,7 @@ export default class Processor {
 
     // Calculate processing data for each crop based on settings and harvest data
     const cropData = this.calculateSettings(harvestData, settings)
-    console.log('cropData',cropData)
+    console.log('cropData', cropData)
 
     // If no crops need processing, return early
     if (cropData.size === 0) {
@@ -266,7 +266,7 @@ export default class Processor {
       this._inventory = inventory
       return
     }
-    
+
     const harvestUsedStarSeeds = parseCropId(harvestData.cycleData.keys().next().value as ICropNameWithGrowthDiff).isStar
 
     // Process each crop
@@ -322,7 +322,7 @@ export default class Processor {
         const processType = processData.processType === ItemType.Seed ? 'seeds' : 'preserves'
         const outputId = `${cropName}-${processType}`
 
-        const cycleId = `${cropType}-${harvestUsedStarSeeds ? 'Star':'Base'}${hasGrowthBoost ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
+        const cycleId = `${cropType}-${harvestUsedStarSeeds ? 'Star' : 'Base'}${hasGrowthBoost ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
 
         const isStar = cropName.includes('-Star')
 
@@ -399,22 +399,15 @@ export default class Processor {
             const cycleTotalProcessMinutes = cycle.cycleCrafterData
               .map(p => p.longestProcessMinutes)
               .reduce((sum, phase) => (sum + phase), 0)
-            // console.log('cycleTotalProcessMinutes', cycleTotalProcessMinutes)
-
             return sum + cycleTotalProcessMinutes
           }, 0)
 
           // TODO: Calculate total effective time
 
-          // console.log('effectiveTime', effectiveTime)
-
           // Subtract idle time from the last phase of the last cycle
           const lastPhaseData = lastCycleData.cycleCrafterData.at(-1)
           const lastPhaseIdleTime = lastPhaseData ? (lastPhaseData.longestProcessMinutes - lastPhaseData.longestProcessMinutesNoIdle) : 0
-          // console.log('lastPhaseIdleTime', lastPhaseIdleTime)
-
           const finalEffectiveTime = Math.max(0, effectiveTime - lastPhaseIdleTime)
-          // console.log('finalEffectiveTime', finalEffectiveTime)
 
           output[processType].set(cropName, {
             count: totalProduceCount,
@@ -425,9 +418,31 @@ export default class Processor {
             itemType: processData.processType
           })
 
+          const inventoryId = `${cropType}-${isStar ? 'Star' : 'Base'}-${processType === 'seeds' ? 'Seed' : 'Preserve'}`
+          const baseGoldValue = (processType === 'seeds' ? crop.goldValues[`seed${isStar ? 'Star' : ''}`] : crop.goldValues[`preserve${isStar ? 'Star' : ''}`])
+
+          if (inventory.has(inventoryId)) {
+            inventory.get(inventoryId)!.count += totalProduceCount
+          }
+          else {
+            inventory.set(inventoryId, {
+              count: totalProduceCount,
+              img: {
+                src: (processType === 'seeds' ? crop?.seedImage : crop?.preserveImage) || '',
+                alt: `${crop?.type} ${processType}`,
+              },
+              isStar,
+              baseGoldValue: baseGoldValue,
+              cropType,
+              itemType: processType === 'seeds' ? ItemType.Seed : ItemType.Preserve
+            })
+          }
+
           if (finalEffectiveTime > this._highestCraftingTime)
             this._highestCraftingTime = finalEffectiveTime
+
         }
+
 
         // Store detailed processing info
         output.detailedProcessingInfo.set(cropName, allCycleData)
