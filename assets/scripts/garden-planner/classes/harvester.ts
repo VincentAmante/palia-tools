@@ -1,6 +1,6 @@
 import { Bonus, CropType, getCropFromType } from '../imports'
 
-import type { DayHarvests, ICropHarvestCycle, ICropName, ICropNameWithGrowthDiff, ICropYield, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
+import type { DayHarvests, ICropHarvestCycle, ICropName, ICropNameWithGrowthDiff, ICropYield, IHarvestCyclePhase, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
 
 export interface IHarvesterOptions {
   days: number | 'L' | 'M'
@@ -174,8 +174,8 @@ export default class Harvester {
       const cropHarvestCycle = {
         cropType: tile.crop.type,
         totalHarvestsCount: (cycles * harvestableDays.length) + remainingHarvests,
-        phases: [],
-      } as ICropHarvestCycle
+        phases: [] as IHarvestCyclePhase[],
+      } satisfies ICropHarvestCycle
 
       for (let phase = 0; phase < harvestableDays.length; phase++) {
         const phaseLength = (phase > 0)
@@ -195,7 +195,7 @@ export default class Harvester {
       /**
        * The id of the seeds required for replanting, differentiated by base or star seeds
        */
-      const seedsRequiredId = `${crop.type}${seedsRequiredIdSuffix}` as ICropName
+      const seedsRequiredId = `${crop.type}${seedsRequiredIdSuffix}` satisfies ICropName
 
       /**
        * Whether to factor in growth boost for this crop
@@ -208,10 +208,10 @@ export default class Harvester {
        */
       const seedsRequiredIdWithGrowth = (differentiateByGrowthBoost
         ? `${crop.type}-${options.useStarSeeds ? 'Star' : 'Base'}-Growth`
-        : seedsRequiredId) as ICropNameWithGrowthDiff
+        : seedsRequiredId) satisfies ICropNameWithGrowthDiff
 
-      const baseId = (differentiateByGrowthBoost ? `${crop.type}-Base-Growth` : `${crop.type}-Base`) as ICropNameWithGrowthDiff
-      const starId = (differentiateByGrowthBoost ? `${crop.type}-Star-Growth` : `${crop.type}-Star`) as ICropNameWithGrowthDiff
+      const baseId = (differentiateByGrowthBoost ? `${crop.type}-Base-Growth` : `${crop.type}-Base`) satisfies ICropNameWithGrowthDiff
+      const starId = (differentiateByGrowthBoost ? `${crop.type}-Star-Growth` : `${crop.type}-Star`) satisfies ICropNameWithGrowthDiff
 
       this._totalHarvest.cycleData.set(seedsRequiredIdWithGrowth, cropHarvestCycle)
 
@@ -226,8 +226,8 @@ export default class Harvester {
             seedsRequired: new Map(),
           }
 
-          const baseCropYield = harvestDay.crops.get(`${crop.type}-Base`) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } as ICropYield
-          const starCropYield = harvestDay.crops.get(`${crop.type}-Star`) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } as ICropYield
+          const baseCropYield = harvestDay.crops.get(`${crop.type}-Base`) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } satisfies ICropYield
+          const starCropYield = harvestDay.crops.get(`${crop.type}-Star`) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } satisfies ICropYield
 
           harvestDay.crops.set(baseId, {
             ...addCropYields(baseCropYield, baseCrop),

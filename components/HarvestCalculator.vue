@@ -75,8 +75,8 @@ function convertHarvestData() {
     }
 
     for (const cropType of Object.values(CropType)) {
-      const baseCropName = `${cropType}-Base` as ICropName
-      const starCropName = `${cropType}-Star` as ICropName
+      const baseCropName = `${cropType}-Base` satisfies ICropName
+      const starCropName = `${cropType}-Star` satisfies ICropName
 
       const baseCropYield = harvestData.crops.get(baseCropName)?.totalWithDeductions ?? 0
       const starCropYield = harvestData.crops.get(starCropName)?.totalWithDeductions ?? 0
@@ -87,8 +87,8 @@ function convertHarvestData() {
   }
 
   for (const cropType of Object.values(CropType)) {
-    const baseCropName = `${cropType}-Base` as ICropName
-    const starCropName = `${cropType}-Star` as ICropName
+    const baseCropName = `${cropType}-Base` satisfies ICropName
+    const starCropName = `${cropType}-Star` satisfies ICropName
 
     const baseCropYield = harvesterTotal.crops.get(baseCropName)?.totalWithDeductions ?? 0
     const starCropYield = harvesterTotal.crops.get(starCropName)?.totalWithDeductions ?? 0
