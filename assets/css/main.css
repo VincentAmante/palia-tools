@@ -448,6 +448,10 @@ body {
 * {
     font-family: 'Merriweather', serif;
     font-display: swap;
+
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 .konvajs-content > canvas {
