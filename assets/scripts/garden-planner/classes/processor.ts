@@ -646,6 +646,7 @@ interface IProcessCycleData {
     longestProcessMinutes: number
     crafterData: IProcessHarvestData['crafterData']
     longestProcessMinutesNoIdle: number
+    produceCount: number
   }[]
   totalProcessMinutes: number
   longestProcessMinutes: number
@@ -702,13 +703,14 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
     longestProcessMinutes: number
     crafterData: IProcessHarvestData['crafterData']
     longestProcessMinutesNoIdle: number
+    produceCount: number
   }[]
   let goldGenerated = 0
 
   // Process each phase in the cycle
   for (let i = 0; i < phasesToCalculate; i++) {
     const {
-      totalProduceCount: harvestTotalProduceCount,
+      totalProduceCount: harvestProduceCount,
       crafterData,
       canFinishBeforeNextHarvest: harvestCanFinishBeforeHarvest,
       totalProcessMinutes: harvestTotalProcessMinutes,
@@ -729,7 +731,7 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
     })
 
     // Aggregate results
-    totalProduceCount += harvestTotalProduceCount
+    totalProduceCount += harvestProduceCount
     if (!harvestCanFinishBeforeHarvest)
       canFinishBeforeNextHarvest = false
 
@@ -743,6 +745,7 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
       longestProcessMinutes: harvestLongestProcessMinutes,
       crafterData,
       longestProcessMinutesNoIdle,
+      produceCount: harvestProduceCount
     })
 
     goldGenerated += harvestGoldGenerated
