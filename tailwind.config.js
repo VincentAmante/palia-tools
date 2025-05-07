@@ -13,6 +13,16 @@ module.exports = {
   ],
   theme: {
     colors: {
+      'primary': '#D4C9B3',
+      'secondary': '#E1D7C6',
+      'accent': '#EEE3D1',
+      'neutral': '#2e282a',
+      'base-100': '#3A4A6B',
+      'base-200': '#2B3750',
+      'base-300': '#8B8072',
+      'success': '#97AF51',
+      'warning': '#ED915E',
+      'error': '#D86046',
       'palia-blue': {
         DEFAULT: '#3A4A6B',
         dark: '#2B3750',
@@ -52,37 +62,5 @@ module.exports = {
       },
     },
   },
-  daisyui: {
-    themes: [{
-      frnkrs: {
-        'primary': '#D4C9B3',
-        'primary-content': '#8B8072',
-        'secondary': '#E1D7C6',
-        'secondary-content': '#8B8072',
-        'accent': '#EEE3D1',
-        'accent-content': '#8B8072',
-        'neutral': '#2e282a',
-        'base-100': '#3A4A6B',
-        'base-200': '#2B3750',
-        'base-300': '#8B8072',
-        'base-content': '#EEE3D1',
-        'info': '#73ABBD',
-        'success': '#97AF51',
-        'success-content': '#EEE3D1',
-        'warning': '#ED915E',
-        'warning-content': '#EEE3D1',
-        'error': '#D86046',
-        'error-content': '#EEE3D1',
-        '.btn-misc': {
-          'background-color': '#8B8072',
-          'color': '#EEE3D1',
-        },
-        '.btn-misc:hover': {
-          'background-color': '#00000025',
-          'color': '#EEE3D1',
-        },
-      },
-    }],
-  },
-  plugins: [require('daisyui')],
+
 }
