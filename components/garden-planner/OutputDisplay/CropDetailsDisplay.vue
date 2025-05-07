@@ -4,8 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
 import { parseCropId, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
-import type { CropType } from '~/assets/scripts/garden-planner/imports'
+import { CropType } from '~/assets/scripts/garden-planner/imports'
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
+import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue'
 
 import { formatMinutesToHoursMinutes } from '~/utils/formatters' // Assuming a formatter utility exists or needs creation
 
@@ -113,6 +114,14 @@ const selectedCropTotalFullCycles = computed(() => {
   return Math.floor(selectedCropCycleData.value.totalHarvestsCount / selectedCropCycleData.value.phases.length)
 })
 
+const selectedCropAsCrop = computed(() => {
+  if (!selectedCropDetail.value) {
+    return getCropFromType(CropType.None)
+  }
+
+  return getCropFromType(parseCropId(selectedCropDetail.value).type)
+})
+
 // --- End Crop Details Tab Logic ---
 </script>
 <template>
@@ -185,23 +194,42 @@ const selectedCropTotalFullCycles = computed(() => {
 
       <!-- Processing Info -->
       <div v-if="selectedCropProcessingData && selectedCropProcessingData.cycleCrafterData.length > 0"
-        class="p-2 border rounded border-misc-dark bg-accent">
+        class="flex flex-col gap-2 p-2 border rounded border-misc-dark bg-accent">
         <p class="mb-1 text-sm font-medium ">
           Processing Details
           <!-- ({{ processor.output[selectedCropProcessingData[0].processInto === 'seed' ? 'seeds' : 'preserves'].get(selectedCropDetail)?.itemType }}) -->
         </p>
-        <div v-for="(phaseData, phaseIndex) in selectedCropProcessingData.cycleCrafterData"
-          :key="`cycle-1-hase-${phaseIndex}`" class="pl-2 mb-2 border-l-2 border-palia-blue-dark">
-          <p class="text-xs font-medium">
-            Phase {{ phaseIndex + 1 }} ({{ phaseData.crafterData.length }} Crafters)
-          </p>
-          <p class="text-xs">
-            <span class="font-semibold">Longest Time:</span> {{
-              formatMinutesToHoursMinutes(phaseData.longestProcessMinutes) }} ({{
-              formatMinutesToHoursMinutes(phaseData.longestProcessMinutesNoIdle) }} active)
-          </p>
-          <div class="mt-1 overflow-x-auto">
-            <table class="w-full text-xs border-collapse">
+        <div class="pl-2 border-l-2 border-palia-blue-dark"
+          v-for="(phaseData, phaseIndex) in selectedCropProcessingData.cycleCrafterData"
+          :key="`cycle-1-hase-${phaseIndex}`">
+          <div class="">
+            <p class="text-xs font-medium">
+              Phase {{ phaseIndex + 1 }} ({{ phaseData.crafterData.length }} Crafters)
+            </p>
+            <p class="text-xs">
+              <span class="font-semibold">Longest Time:</span> {{
+                formatMinutesToHoursMinutes(phaseData.longestProcessMinutes) }} ({{
+                formatMinutesToHoursMinutes(phaseData.longestProcessMinutesNoIdle) }} active)
+            </p>
+          </div>
+          <div class="grid grid-cols-2 gap-1 sm:grid-cols-3 md:grid-cols-4">
+            <div v-for="(crafter, crafterIndex) in phaseData.crafterData" :key="`crafter-${crafterIndex}`"
+              class="text-white rounded-md bg-palia-blue">
+              <div class="relative p-1 pb-0 tlex flex-colext-white">
+                <div class="flex items-center justify-between">
+                  <div class="max-w-10">
+                    <ItemDisplay :imgSrc='selectedCropAsCrop?.cropImage' :imgAlt="selectedCropAsCrop?.type"
+                      :count="crafter.cropsInsertedCount" />
+                  </div>
+                  <div class="max-w-10">
+                    <ItemDisplay :imgSrc='selectedCropAsCrop?.cropImage' :imgAlt="selectedCropAsCrop?.type"
+                      :count="crafter.cropsInsertedCount" />
+                  </div>
+                </div>
+                <p class="bottom-0 right-0 w-full text-sm text-right opacity-80">{{ crafterIndex + 1 }}</p>
+              </div>
+            </div>
+            <!-- <table class="w-full text-xs border-collapse">
               <thead>
                 <tr class="bg-opacity-50 bg-misc">
                   <th class="p-1 font-semibold border border-misc-dark">
@@ -246,7 +274,8 @@ const selectedCropTotalFullCycles = computed(() => {
                   </td>
                 </tr>
               </tbody>
-            </table>
+            </table> -->
+
           </div>
         </div>
         <!-- <div v-for="(cycle, cycleIndex) in selectedCropProcessingData" :key="`cycle-${cycleIndex}`"
