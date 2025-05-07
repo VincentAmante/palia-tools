@@ -1,61 +1,202 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin 'daisyui';
+@plugin "daisyui/theme" {
+  name: "frnkrs";
+  default: true;
+  prefersdark: true;
+  color-scheme: light;
 
-@layer components {
-  .bg-gradient {
-    background: linear-gradient(180deg, #3A4A6B 43.75%, #467386 100%);
+  /* Base colors */
+  --color-base-100: oklch(41.04% 0.059 264.11);    /* #3A4A6B */
+  --color-base-200: oklch(33.78% 0.047 264.32);      /* #2B3750 */
+  --color-base-300: oklch(60.57% 0.025 73.93);       /* #8B8072 */
+  --color-base-content: oklch(91.97% 0.027 80.25);   /* #EEE3D1 */
+
+  /* Primary colors */
+  --color-primary: oklch(83.90% 0.032 84.59);        /* #D4C9B3 */
+  --color-primary-content: oklch(60.57% 0.025 73.93); /* #8B8072 */
+
+  /* Secondary colors */
+  --color-secondary: oklch(88.26% 0.025 81.12);      /* #E1D7C6 */
+  --color-secondary-content: oklch(60.57% 0.025 73.93); /* #8B8072 */
+
+  /* Accent colors */
+  --color-accent: oklch(91.97% 0.027 80.25);         /* #EEE3D1 */
+  --color-accent-content: oklch(56% 0.02 85); /* #8B8072 */
+
+  /* Neutral colors */
+  --color-neutral: oklch(28.42% 0.010 355.53);        /* #2e282a */
+  --color-neutral-content: oklch(91.97% 0.027 80.25); /* #EEE3D1 */
+
+  /* State colors */
+  --color-info: oklch(70.89% 0.064 220.07);          /* #73ABBD */
+  --color-info-content: oklch(91.97% 0.027 80.25);   /* #EEE3D1 */
+  
+  --color-success: oklch(71.54% 0.124 121.50);       /* #97AF51 */
+  --color-success-content: oklch(91.97% 0.027 80.25); /* #EEE3D1 */
+  
+  --color-warning: oklch(74.23% 0.130 48.85);        /* #ED915E */
+  --color-warning-content: oklch(91.97% 0.027 80.25); /* #EEE3D1 */
+  
+  --color-error: oklch(63.35% 0.157 33.73)          /* #D86046 */
+  --color-error-content: oklch(91.97% 0.027 80.25);  /* #EEE3D1 */
+
+  /* Border radius */
+  --radius-selector: 1rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.25rem;
+
+  /* Base sizes */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* Border size */
+  --border: 1px;
+
+  /* Effects */
+  --depth: 0;
+  --noise: 0;
+}
+
+/* Custom button styles */
+[data-theme="frnkrs"] .btn-misc {
+  background-color: oklch(56% 0.02 85); /* #8B8072 */
+  color: oklch(92% 0.02 85); /* #EEE3D1 */
+}
+
+[data-theme="frnkrs"] .btn-misc:hover {
+  background-color: color-mix(in oklch, oklch(0% 0 0) 15%, transparent);
+  color: oklch(92% 0.02 85); /* #EEE3D1 */
+}
+
+
+@theme {
+  --color-*: initial;
+  
+
+  /* Palia blues */
+  --color-palia-blue: oklch(41.04% 0.059 264.11);   /* #3a4a6b */
+  --color-palia-blue-dark: oklch(33.78% 0.047 264.32); /* #2b3750 */
+
+  /* Misc colors */
+  --color-misc: oklch(60.57% 0.025 73.93);           /* #8b8072 */
+  --color-misc-dark: oklch(50.65% 0.023 69.70);       /* #6e6357 */
+  --color-misc-saturated: oklch(72% 0.08 85);  /* #bfa178 */
+  --color-misc-secondary: color-mix(in oklch, oklch(0% 0 0) 15%, transparent); /* #00000025 */
+
+  /* Growth boost */
+  --color-growth-boost: oklch(74.23% 0.130 48.85);    /* #ed915e */
+
+  /* Quality colors */
+  --color-quality-increase: oklch(77.06% 0.128 79.07); /* #e0aa4a */
+  --color-quality-increase-dark: oklch(67.68% 0.134 75.71); /* #c68a1f */
+  --color-quality-increase-light: oklch(85.19% 0.107 82.51); /* #f1c87a */
+
+  /* Weed prevention */
+  --color-weed-prevention: oklch(63.35% 0.157 33.73); /* #d86046 */
+
+  /* Harvest boost */
+  --color-harvest-boost: oklch(71.54% 0.124 121.50);  /* #97af51 */
+  --color-harvest-boost-dark: oklch(60.24% 0.141 123.79); /* #708e18 */
+
+  /* Water retain */
+  --color-water-retain: oklch(70.89% 0.064 220.07);  /* #73abbd */
+  --color-white: oklch(100% 0 0);              /* #fff */
+
+  /* Breakpoints */
+  --breakpoint-*: initial;
+  --breakpoint-xs: 475px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* Text sizes */
+  --text-xxs: 0.625rem;
+  --text-xxs--line-height: 1rem;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-misc, currentcolor);
+  }
+
+  button, input, select, optgroup, textarea, ::file-selector-button {
+    @apply bg-palia-blue-dark;
   }
 }
 
-.page-enter-active,
-.page-leave-active {
-  transition: all 0.2s ease-in-out;
-}
-.page-enter,
-.page-leave-active {
-  opacity: 0;
+@utility bg-gradient {
+  background: linear-gradient(180deg, #3a4a6b 43.75%, #467386 100%);
 }
 
-@layer utilities {
-  .scrollbar-primary::-webkit-scrollbar {
+@utility scrollbar-primary {
+  &::-webkit-scrollbar {
     @apply h-1 lg:h-0 lg:w-1 rounded-md;
   }
 
-  .scrollbar-primary::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     @apply bg-palia-blue rounded-md;
   }
 
-  .scrollbar-primary::-webkit-scrollbar-track {
+  &::-webkit-scrollbar-track {
     @apply bg-accent rounded-md;
   }
+}
 
-  .scrollbar-primary-horizontal::-webkit-scrollbar {
+@utility scrollbar-primary-horizontal {
+  &::-webkit-scrollbar {
     @apply w-1 lg:w-0 h-1 lg:h-[2px] rounded-md;
   }
 
-  .scrollbar-primary-horizontal::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     @apply bg-palia-blue rounded-md;
   }
 
-  .scrollbar-primary-horizontal::-webkit-scrollbar-track {
+  &::-webkit-scrollbar-track {
     @apply bg-accent rounded-md h-1;
   }
+}
 
-  .scrollbar-invisible-horizontal::-webkit-scrollbar {
+@utility scrollbar-invisible-horizontal {
+  &::-webkit-scrollbar {
     @apply w-0 h-1 lg:h-[2px] rounded-md;
   }
 
-  .scrollbar-invisible-horizontal::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     @apply bg-transparent rounded-md;
   }
 
-  .scrollbar-invisible-horizontal::-webkit-scrollbar-track {
+  &::-webkit-scrollbar-track {
     @apply bg-transparent rounded-md h-1;
   }
 }
 
-/* 
+@layer utilities {
+  .page-enter-active,
+  .page-leave-active {
+    transition: all 0.2s ease-in-out;
+  }
+  .page-enter,
+  .page-leave-active {
+    opacity: 0;
+  }
+}
+
+
 html {
   ::-webkit-scrollbar {
     @apply h-1 lg:h-0 lg:w-1 rounded-md;
@@ -82,7 +223,7 @@ body {
   ::-webkit-scrollbar-track {
     @apply bg-accent rounded-md;
   }
-} */
+}
 
 /* cyrillic-ext */
 @font-face {
@@ -450,8 +591,6 @@ body {
     font-display: swap;
 
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 .konvajs-content > canvas {

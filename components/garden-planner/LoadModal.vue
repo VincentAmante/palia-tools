@@ -91,7 +91,7 @@ async function paste() {
             <p class="card-title">
               Saved Layouts
             </p>
-            <ul class="flex flex-col w-full gap-2 p-2 overflow-y-auto rounded-sm bg-base-100 max-h-80 md:max-h-[508px]">
+            <ul class="flex flex-col w-full gap-2 p-2 overflow-y-auto rounded-xs bg-base-100 max-h-80 md:max-h-[508px]">
               <li v-for="(code, index) in filteredSavedGardenCodes" :key="index" class="flex items-center justify-between w-full pb-2 border-b last:border-b-0 border-b-accent border-opacity-20">
                 <div>
                   <p>{{ code.title }}</p>

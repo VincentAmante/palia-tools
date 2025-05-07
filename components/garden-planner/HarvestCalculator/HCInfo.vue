@@ -27,7 +27,7 @@
             </NuxtLink>
             as well as a mix of observations and testings done by fellow Palians discussed on Discord
           </div>
-          <p class="inline-flex gap-2 p-2 text-sm font-bold border rounded border-misc">
+          <p class="inline-flex gap-2 p-2 text-sm font-bold border rounded-sm border-misc">
             <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-lg text-warning" />
             Final values are still arbitrary and may not reflect your in-game experience.
           </p>
@@ -38,10 +38,10 @@
           How it works (8/9/2023)
         </h3>
         <ol class="grid gap-2 text-sm list-decimal list-inside">
-          <li class="p-2 border rounded border-misc">
+          <li class="p-2 border rounded-sm border-misc">
             The planner estimates crop yields, factoring in [Quality, Harvest] Boosts, and star chance of crops.
           </li>
-          <li class="p-2 border rounded border-misc">
+          <li class="p-2 border rounded-sm border-misc">
             Using the provided yields, it calculates the gold value in the form you wish to sell them
             (Crop/Seed/Preserve)
           </li>
@@ -54,7 +54,7 @@
           Assumptions (3/10/2024)
         </h3>
         <ul class="grid gap-2 text-sm ">
-          <li class="p-2 border rounded border-misc">
+          <li class="p-2 border rounded-sm border-misc">
             <span class="font-black">
               Planner Formula for Star Chance:
             </span>
@@ -66,7 +66,7 @@
               Fully debatable and may be tweaked in the future.
             </p>
           </li>
-          <li class="p-2 border rounded border-misc">
+          <li class="p-2 border rounded-sm border-misc">
             <span class="font-black">
               Assumptions that result in the Planner Formula:
             </span>
@@ -88,21 +88,21 @@
               </li>
             </ul>
           </li>
-          <li class="p-2 font-semibold border rounded border-misc">
+          <li class="p-2 font-semibold border rounded-sm border-misc">
             <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
             Seed/Preserve conversion time is not accounted for (yet).
           </li>
-          <li class="p-2 font-semibold border rounded border-misc">
+          <li class="p-2 font-semibold border rounded-sm border-misc">
             <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
             Weed Chance is not accounted for due to their unreliable or undocumented behaviour.
           </li>
-          <li class="p-2 border rounded border-misc">
+          <li class="p-2 border rounded-sm border-misc">
             Crops are harvested on the day they are ready.
           </li>
-          <li class="p-2 border rounded border-misc">
+          <li class="p-2 border rounded-sm border-misc">
             Crops receive daily watering or has Water Retain.
           </li>
-          <li class="p-2 border rounded border-misc">
+          <li class="p-2 border rounded-sm border-misc">
             Crop boosts last until the final calculation day.
           </li>
         </ul>

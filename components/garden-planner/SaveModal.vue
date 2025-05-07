@@ -91,7 +91,7 @@ function deleteCode(index: number) {
                 <font-awesome-icon :icon="['fas', 'copy']" />
               </button>
               <label class="grid items-center gap-2 py-2 text-xs font-semibold">
-                <input v-model="useMarkdown" type="checkbox" class="rounded-sm toggle toggle-sm">
+                <input v-model="useMarkdown" type="checkbox" class="rounded-xs toggle toggle-sm">
                 <div class="font-normal">Markdown</div>
               </label>
               <!-- <p class="text-xs text-warning">
@@ -134,7 +134,7 @@ function deleteCode(index: number) {
                 Saved Layouts
               </p>
               <div class="h-full overflow-hidden">
-                <ul class="flex flex-col w-full gap-3 p-2 overflow-y-auto rounded-sm bg-base-100 max-h-32 md:max-h-72">
+                <ul class="flex flex-col w-full gap-3 p-2 overflow-y-auto rounded-xs bg-base-100 max-h-32 md:max-h-72">
                   <li v-for="(code, index) in savedGardenCodes" :key="index" class="flex justify-between">
                     <div class="flex flex-col gap-1">
                       <input v-model="code.title" class="w-full max-w-xs py-0 pl-0 input input-ghost input-xs"

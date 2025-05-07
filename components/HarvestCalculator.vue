@@ -169,7 +169,7 @@ watchEffect(() => {
   <section
     class="z-50 w-full overflow-visible transition-all rounded-none pointer-events-none lg:max-w-2xl lg:h-fit xl:max-w-3xl"
     :class="[
-      gardenTilesAreWide ? '!max-w-none px-0' : 'lg:pl-20 xl:pl-2 xl:px-4 lg:px-2',
+      gardenTilesAreWide ? 'max-w-none! px-0' : 'lg:pl-20 xl:pl-2 xl:px-4 lg:px-2',
       isTakingScreenshot.get && !gardenTilesAreWide ? 'max-w-[46rem] px-4' : '',
     ]"
   >
@@ -184,7 +184,7 @@ watchEffect(() => {
           class="flex flex-col items-center justify-between w-full p-1 lg:flex-row lg:bg-misc lg:rounded-lg lg:rounded-b-none sm:px-6 lg:text-accent"
           :class="[
             isTakingScreenshot.get ? 'bg-misc px-6 rounded-lg rounded-b-none' : 'text-misc gap-2',
-            gardenTilesAreWide ? '!bg-primary !flex-col' : '',
+            gardenTilesAreWide ? 'bg-primary! flex-col!' : '',
           ]"
         >
           <AppDividerAlt
@@ -421,7 +421,7 @@ watchEffect(() => {
                 </p>
                 <p>
                   Base Star Chance: <code
-                    class="px-2 rounded-sm bg-misc text-accent"
+                    class="px-2 rounded-xs bg-misc text-accent"
                   >{{ Math.min(100, starBaseChance * 100) }}%</code>
                 </p>
                 <p>Formula in info</p>

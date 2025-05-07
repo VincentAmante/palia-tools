@@ -301,7 +301,7 @@ function trimLayout(): PlotStatus[][] {
               <div class="flex flex-col">
                 <input
                   v-model="allowIllegalLayout" type="checkbox" name="allow-illegal-layout"
-                  class="toggle  rounded-sm"
+                  class="toggle  rounded-xs"
                 >
               </div>
             </label>

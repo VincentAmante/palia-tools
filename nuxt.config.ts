@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
   css: [
     '~/assets/css/main.css',
@@ -10,11 +12,11 @@ export default defineNuxtConfig({
   },
   postcss: {
     plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
+      // tailwindcss: {},
+      // autoprefixer: {},
+      // '@tailwindcss/postcss': {}
     },
   },
-
   modules: [
     '@vueuse/nuxt',
     '@nuxt/image',
@@ -30,6 +32,12 @@ export default defineNuxtConfig({
       '@fortawesome/free-solid-svg-icons',
       '@fortawesome/vue-fontawesome',
     ],
+  },
+
+  vite: {
+    plugins: [
+      tailwindcss()
+    ]
   },
 
   typescript: {

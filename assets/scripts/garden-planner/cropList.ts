@@ -44,7 +44,7 @@ const TOMATO = new Crop(
   {
     cropCode: CropCode.Tomato,
     cropTooltip: 'Tomato: Water Retention',
-    cropBackgroundColor: 'bg-water-retain',
+    cropBackgroundColor: 'bg-water-retain/20',
   },
 )
 
@@ -80,7 +80,7 @@ const POTATO = new Crop(
   {
     cropCode: CropCode.Potato,
     cropTooltip: 'Potato: Water Retention',
-    cropBackgroundColor: 'bg-water-retain',
+    cropBackgroundColor: 'bg-water-retain/20',
   },
 )
 
@@ -117,7 +117,7 @@ const RICE = new Crop(
   {
     cropCode: CropCode.Rice,
     cropTooltip: 'Rice: Harvest Increase',
-    cropBackgroundColor: 'bg-harvest-boost',
+    cropBackgroundColor: 'bg-harvest-boost/20',
   },
 )
 
@@ -153,7 +153,7 @@ const WHEAT = new Crop(
   {
     cropCode: CropCode.Wheat,
     cropTooltip: 'Wheat: Harvest Increase',
-    cropBackgroundColor: 'bg-harvest-boost',
+    cropBackgroundColor: 'bg-harvest-boost/20',
   },
 )
 
@@ -189,7 +189,7 @@ const CARROT = new Crop(
   {
     cropCode: CropCode.Carrot,
     cropTooltip: 'Carrot: Weed Prevention',
-    cropBackgroundColor: 'bg-weed-prevention',
+    cropBackgroundColor: 'bg-weed-prevention/20',
   },
 )
 
@@ -225,7 +225,7 @@ const ONION = new Crop(
   {
     cropCode: CropCode.Onion,
     cropTooltip: 'Onion: Weed Prevention',
-    cropBackgroundColor: 'bg-weed-prevention',
+    cropBackgroundColor: 'bg-weed-prevention/20',
   },
 )
 
@@ -261,7 +261,7 @@ const COTTON = new Crop(
   {
     cropCode: CropCode.Cotton,
     cropTooltip: 'Cotton: Quality Increase',
-    cropBackgroundColor: 'bg-quality-increase',
+    cropBackgroundColor: 'bg-quality-increase/20',
   },
 )
 
@@ -300,7 +300,7 @@ const BLUEBERRY = new Crop(
   {
     cropCode: CropCode.Blueberry,
     cropTooltip: 'Berry Bush: Harvest Increase. 2x2, needs 2 of a bonus for the buff to activate',
-    cropBackgroundColor: 'bg-harvest-boost',
+    cropBackgroundColor: 'bg-harvest-boost/20',
   },
 )
 
@@ -339,7 +339,7 @@ const APPLE = new Crop(
   {
     cropCode: CropCode.Apple,
     cropTooltip: 'Apple Tree: Harvest Increase. 3x3, needs 3 of a bonus for the buff to activate',
-    cropBackgroundColor: 'bg-harvest-boost',
+    cropBackgroundColor: 'bg-harvest-boost/20',
   },
 )
 
@@ -375,7 +375,7 @@ const CORN = new Crop(
   {
     cropCode: CropCode.Corn,
     cropTooltip: 'Corn: Harvest Increase',
-    cropBackgroundColor: 'bg-harvest-boost',
+    cropBackgroundColor: 'bg-harvest-boost/20',
   },
 )
 
@@ -414,7 +414,7 @@ const SPICY_PEPPER = new Crop(
   {
     cropCode: CropCode.SpicyPepper,
     cropTooltip: 'Spicy Pepper: Quality Increase. 2x2, needs 2 of a bonus for the buff to activate',
-    cropBackgroundColor: 'bg-quality-increase',
+    cropBackgroundColor: 'bg-quality-increase/20',
   },
 )
 
@@ -450,7 +450,7 @@ const NAPA_CABBAGE = new Crop(
   {
     cropCode: CropCode.NapaCabbage,
     cropTooltip: 'Napa Cabbage: Water Retention',
-    cropBackgroundColor: 'bg-water-retain',
+    cropBackgroundColor: 'bg-water-retain/20',
   },
 )
 
@@ -486,7 +486,7 @@ const BOK_CHOY = new Crop(
   {
     cropCode: CropCode.BokChoy,
     cropTooltip: 'Bok Choy: Weed Prevention',
-    cropBackgroundColor: 'bg-weed-prevention',
+    cropBackgroundColor: 'bg-weed-prevention/20',
   },
 )
 

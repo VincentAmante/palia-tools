@@ -165,42 +165,42 @@ watchEffect(() => {
             :class="{ hidden: isTakingScreenshot.get }"
           >
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
               :class="[bonusToSortBy === null ? 'bg-palia-blue text-accent' : 'hover:bg-opacity-10 text-palia-blue-dark']"
               @click="bonusToSortBy = null"
             >
               <font-awesome-icon class="" :icon="['fas', 'asterisk']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
               :class="[bonusToSortBy === Bonus.WaterRetain ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.WaterRetain"
             >
               <font-awesome-icon class="text-water-retain" :icon="['fas', 'droplet']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
               :class="[bonusToSortBy === Bonus.HarvestIncrease ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.HarvestIncrease"
             >
               <font-awesome-icon class="text-harvest-boost-dark" :icon="['fas', 'wheat-awn']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
               :class="[bonusToSortBy === Bonus.QualityIncrease ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.QualityIncrease"
             >
               <font-awesome-icon class="text-quality-increase-dark" :icon="['fas', 'star']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
               :class="[bonusToSortBy === Bonus.WeedPrevention ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.WeedPrevention"
             >
               <font-awesome-icon class="text-weed-prevention" :icon="['fas', 'shield']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-sm cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
               :class="[bonusToSortBy === Bonus.SpeedIncrease ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.SpeedIncrease"
             >
@@ -212,7 +212,7 @@ watchEffect(() => {
           <div class="hidden pb-1 sm:flex lg:items-center">
             <button
               id="crop-eraser" aria-label="Select Crop Eraser"
-              class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc"
+              class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc"
               :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
               :in-picture-mode="isTakingScreenshot.get" @click="selectedItem.select('crop-erase')"
               @mouseover="hoveredItem = SelectedItemType.CropErase" @mouseleave="hoveredItem = null"
@@ -222,8 +222,10 @@ watchEffect(() => {
           </div>
           <div class="flex">
             <button
-              aria-label="Scroll Items to left" class="hidden px-2 rounded-r-none btn btn-primary w-fit sm:block disabled:text-transparent"
-              :class="{ '!hidden': isTakingScreenshot.get || (reachedLeft && reachedRight) }" :disabled="reachedLeft" @mousedown="resumeLeft"
+              aria-label="Scroll Items to left" class="hidden px-2 btn-lg rounded-r-none btn btn-primary w-fit sm:block disabled:text-transparent"
+              :class="{ 'hidden!': isTakingScreenshot.get || (reachedLeft && reachedRight) }" 
+               
+              @mousedown="resumeLeft"
               @mouseup="pauseLeft"
               @mouseleave="pauseLeft"
             >
@@ -238,7 +240,7 @@ watchEffect(() => {
                 :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''" -->
               <button
                 id="crop-eraser" aria-label="Select Crop Eraser"
-                class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc sm:hidden"
+                class="relative border rounded-xs btn btn-square btn-lg btn-secondary isolate border-misc sm:hidden"
                 :class="{
                   'bg-white': selectedItem.val === 'crop-erase' && !isTakingScreenshot.get,
                   'hidden': isTakingScreenshot.get,
@@ -263,8 +265,8 @@ watchEffect(() => {
               </template>
             </div>
             <button
-              aria-label="Scroll Right" class="hidden px-2 rounded-l-none btn btn-primary w-fit sm:block disabled:text-transparent"
-              :class="{ '!hidden': isTakingScreenshot.get || (reachedLeft && reachedRight) }"
+              aria-label="Scroll Right" class="hidden px-2 rounded-l-none btn btn-primary btn-lg w-fit sm:block"
+              :class="{ 'hidden!': isTakingScreenshot.get || (reachedLeft && reachedRight) }"
               :disabled="reachedRight"
               @mousedown="resumeRight"
               @mouseup="pauseRight"
@@ -286,7 +288,7 @@ watchEffect(() => {
           <div class="flex flex-wrap gap-1 pt-2">
             <button
               id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
-              class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc"
+              class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc"
               :class="{
                 'bg-white': selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get,
                 'hidden': isTakingScreenshot.get,

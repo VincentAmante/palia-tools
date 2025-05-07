@@ -118,7 +118,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
             <tr
               v-for="(harvest, index) of yieldsPage"
               :key="index"
-              class="!border-b-0"
+              class="border-b-0!"
             >
               <td class="flex flex-wrap items-end w-full max-w-md gap-0 py-2">
                 <div class="flex flex-col w-full">

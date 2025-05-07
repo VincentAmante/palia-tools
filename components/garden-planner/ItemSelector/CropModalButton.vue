@@ -81,7 +81,7 @@ function closeModal() {
     <FertiliserButton class="shadow-xl bg-accent" v-else-if="selectedItem.type === SelectedItemType.Fertiliser"
       :fertiliser="selectedItem.val as Fertiliser" @click="openModal" />
     <button v-else-if="selectedItem.type === SelectedItemType.CropErase" id="crop-eraser"
-      class="relative border rounded-sm shadow-xl btn btn-square btn-secondary isolate border-misc bg-accent"
+      class="relative border rounded-xs shadow-xl btn btn-square btn-secondary isolate border-misc bg-accent"
       aria-label="Crop Eraser"
       :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
       :in-picture-mode="isTakingScreenshot.get" @click="openModal">
@@ -89,7 +89,7 @@ function closeModal() {
     </button>
     <button v-else-if="selectedItem.type === SelectedItemType.FertiliserErase" id="fertiliser-eraser"
       aria-label="Fertiliser Eraser"
-      class="relative border rounded-sm shadow-xl bg-accent btn btn-square btn-secondary isolate border-misc"
+      class="relative border rounded-xs shadow-xl bg-accent btn btn-square btn-secondary isolate border-misc"
       :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
       :in-picture-mode="isTakingScreenshot.get" @click="openModal">
       <font-awesome-icon class="absolute -z-10 max-w-[42px] text-warning text-2xl " :icon="['fas', 'eraser']" />
@@ -113,7 +113,7 @@ function closeModal() {
           </h3>
           <div class="flex flex-wrap gap-1">
             <button id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
-              class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc" :class="{
+              class="relative border rounded-xs btn btn-square btn-secondary isolate border-misc" :class="{
                 'bg-white': selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get,
                 'hidden': isTakingScreenshot.get,
               }" @click="() => {
@@ -140,37 +140,37 @@ function closeModal() {
             </h3>
             <ul class="flex items-center gap-1 text-sm" :class="{ hidden: isTakingScreenshot.get }">
               <li
-                class="flex items-center justify-center p-1 border border-solid rounded-sm cursor-pointer btn btn-square btn-sm border-accent aspect-square"
+                class="flex items-center justify-center p-1 border border-solid rounded-xs cursor-pointer btn btn-square btn-sm border-accent aspect-square"
                 :class="[bonusToSortBy === null ? 'bg-accent text-misc-dark' : 'hover:bg-opacity-10 text-accent']"
                 @click="bonusToSortBy = null">
                 <font-awesome-icon class="" :icon="['fas', 'asterisk']" />
               </li>
               <li
-                class="flex items-center justify-center p-1 border border-solid rounded-sm cursor-pointer btn btn-square btn-sm border-accent aspect-square"
+                class="flex items-center justify-center p-1 border border-solid rounded-xs cursor-pointer btn btn-square btn-sm border-accent aspect-square"
                 :class="[bonusToSortBy === Bonus.WaterRetain ? 'bg-accent' : 'hover:bg-opacity-10']"
                 @click="bonusToSortBy = Bonus.WaterRetain">
                 <font-awesome-icon class="text-water-retain" :icon="['fas', 'droplet']" />
               </li>
               <li
-                class="flex items-center justify-center p-1 border border-solid rounded-sm cursor-pointer btn btn-square btn-sm border-accent aspect-square"
+                class="flex items-center justify-center p-1 border border-solid rounded-xs cursor-pointer btn btn-square btn-sm border-accent aspect-square"
                 :class="[bonusToSortBy === Bonus.HarvestIncrease ? 'bg-accent' : 'hover:bg-opacity-10']"
                 @click="bonusToSortBy = Bonus.HarvestIncrease">
                 <font-awesome-icon class="text-harvest-boost-dark" :icon="['fas', 'wheat-awn']" />
               </li>
               <li
-                class="flex items-center justify-center p-1 border border-solid rounded-sm cursor-pointer btn btn-square btn-sm border-accent aspect-square"
+                class="flex items-center justify-center p-1 border border-solid rounded-xs cursor-pointer btn btn-square btn-sm border-accent aspect-square"
                 :class="[bonusToSortBy === Bonus.QualityIncrease ? 'bg-accent' : 'hover:bg-opacity-10']"
                 @click="bonusToSortBy = Bonus.QualityIncrease">
                 <font-awesome-icon class="text-quality-increase-dark" :icon="['fas', 'star']" />
               </li>
               <li
-                class="flex items-center justify-center p-1 border border-solid rounded-sm cursor-pointer btn btn-square btn-sm border-accent aspect-square"
+                class="flex items-center justify-center p-1 border border-solid rounded-xs cursor-pointer btn btn-square btn-sm border-accent aspect-square"
                 :class="[bonusToSortBy === Bonus.WeedPrevention ? 'bg-accent' : 'hover:bg-opacity-10']"
                 @click="bonusToSortBy = Bonus.WeedPrevention">
                 <font-awesome-icon class="text-weed-prevention" :icon="['fas', 'shield']" />
               </li>
               <li
-                class="flex items-center justify-center p-1 border border-solid rounded-sm cursor-pointer btn btn-square btn-sm border-accent aspect-square"
+                class="flex items-center justify-center p-1 border border-solid rounded-xs cursor-pointer btn btn-square btn-sm border-accent aspect-square"
                 :class="[bonusToSortBy === Bonus.SpeedIncrease ? 'bg-accent' : 'hover:bg-opacity-10']"
                 @click="bonusToSortBy = Bonus.SpeedIncrease">
                 <font-awesome-icon class="text-growth-boost" :icon="['fas', 'forward-fast']" />
@@ -179,7 +179,7 @@ function closeModal() {
           </div>
           <div class="flex flex-wrap gap-1">
             <button id="crop-eraser" aria-label="Select Crop Eraser"
-              class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc sm:hidden" :class="{
+              class="relative border rounded-xs btn btn-square btn-secondary isolate border-misc sm:hidden" :class="{
                 'bg-white': selectedItem.val === 'crop-erase' && !isTakingScreenshot.get,
                 'hidden': isTakingScreenshot.get,
               }" :in-picture-mode="isTakingScreenshot.get" @click="() => {
@@ -201,7 +201,7 @@ function closeModal() {
         </div>
       </section>
     </div>
-    <form method="dialog" class="modal-backdrop">
+    <form method="dialog" class="modal-backdrop opacity-20">
       <button>close</button>
     </form>
   </dialog>

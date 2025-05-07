@@ -15,8 +15,11 @@ const minutes = computed(() => {
 </script>
 
 <template>
-  <p class="text-xs">
-    {{ hours }}<span>Hrs</span>
-    {{ minutes }}<span>Min</span>
+  <p class="text-xs text-palia-blue-dark">
+    <font-awesome-icon :icon="['fas', 'stopwatch']" />
+    <span>
+      {{ hours }}<span aria-label="Hours">Hrs</span>
+      {{ minutes }}<span aria-label="Minutes">Min</span>
+    </span>
   </p>
 </template>

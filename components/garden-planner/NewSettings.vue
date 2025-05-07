@@ -164,7 +164,7 @@ function loadGarden(saveString: string) {
 
 <template>
   <section id="planner-settings" class="relative flex flex-col gap-1 py-2 ">
-    <ul class="font-semibold tabs tabs-boxed w-fit bg-misc-dark join">
+    <ul class="font-semibold tabs tabs-box w-fit join">
       <li class="tab join-item" :class="(activeTab === 'Harvest') ? 'tab-active' : ''" @click="activeTab = 'Harvest'">
         <p>Harvest</p>
       </li>
@@ -174,10 +174,10 @@ function loadGarden(saveString: string) {
     </ul>
     <section v-if="activeTab === 'Crops'" class="h-full rounded-md isolate bg-accent">
       <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
-        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-70 h-1/4 max-h-12 bg-gradient-to-b from-transparent to-primary" />
+        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-70 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary" />
 
       <div v-if="activeProcessorSettings.cropSettings.size > 0"
-        class="z-10 grid items-center grid-cols-10 gap-2 px-1 py-2 border-b text-misc bg-accent rounded-t-md">
+        class="z-10 grid items-center grid-cols-12 gap-2 px-1 py-2 border-b text-misc bg-accent rounded-t-md">
         <div class="relative flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
           <p class="text-sm font-bold">
             Item
@@ -204,7 +204,7 @@ function loadGarden(saveString: string) {
         <ul v-if="activeProcessorSettings.cropSettings.size > 0"
           class="flex flex-col max-h-full gap-1 pb-8 pl-1 pr-2 rounded-b-md bg-accent">
           <li v-for="[cropId, setting] in activeProcessorSettings.cropSettings" :key="cropId"
-            class="grid items-center grid-cols-10 gap-2 py-1 pb-3  text-misc [&:not(:last-child)]:border-b ">
+            class="grid items-center grid-cols-12 gap-2 py-1 pb-3  text-misc not-last:border-b ">
             <div class="flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
               <ItemDisplayAlt :img-src="getCropImgSrc(setting.cropType).src"
                 :img-alt="getCropImgSrc(setting.cropType).alt" :star="setting.isStar" :count="setting.count" />
@@ -213,7 +213,7 @@ function loadGarden(saveString: string) {
               </p>
             </div>
             <div class="flex items-center justify-start w-full h-full col-span-5 md:col-span-6 xl:col-span-5">
-              <div class="join ">
+              <div class="join">
                 <button class="p-2 btn join-item btn-primary btn-square"
                   :class="(setting.processAs === ItemType.Crop) ? 'btn-active' : ''" @click="async () => {
                     if (setting.processAs === ItemType.Crop)
@@ -256,7 +256,7 @@ function loadGarden(saveString: string) {
             <div v-if="setting.processAs !== ItemType.Crop"
               class="relative flex flex-col items-start justify-start w-full h-full col-span-3 gap-2 pl-2">
               <div class="join">
-                <button class="btn-xs lg:btn-sm disabled:opacity-50 hover:opacity-60 join-item"
+                <button class="btn-sm btn join-item disabled:bg-palia-blue-dark!"
                   :disabled="setting.crafters <= 1" @click="() => {
                     if (setting.crafters <= 1)
                       return
@@ -267,14 +267,14 @@ function loadGarden(saveString: string) {
                   }">
                   <font-awesome-icon :icon="['fas', 'chevron-left']" />
                 </button>
-                <input v-model="setting.crafters" class="w-8 text-sm text-center bg-accent text-misc" join-item
+                <input v-model="setting.crafters" class="input input-sm text-center w-10 text-white! join-item"
                   type="number" min="1" @change="() => {
                     if (setting.crafters < 1)
                       setting.crafters = 1
 
                     onChangeSettings()
                   }">
-                <button class="btn-xs lg:btn-sm disabled:opacity-50 hover:opacity-60 join-item" @click="() => {
+                <button class="btn-sm btn join-item disabled:bg-palia-blue-dark!" @click="() => {
                   setting.crafters++
 
                   onChangeSettings()
@@ -282,7 +282,7 @@ function loadGarden(saveString: string) {
                   <font-awesome-icon :icon="['fas', 'chevron-right']" />
                 </button>
               </div>
-              <SettingsMinutesDisplay class="absolute bottom-0 translate-y-2"
+              <SettingsMinutesDisplay class="absolute bottom-0 translate-y-2 "
                 :minutes="processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
             </div>
           </li>
@@ -291,7 +291,7 @@ function loadGarden(saveString: string) {
     </section>
     <section v-else-if="activeTab === 'Harvest'" class="relative h-full isolate">
       <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
-        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-90 h-1/4 max-h-12 bg-gradient-to-b from-transparent to-primary" />
+        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-90 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary" />
       <ul class="grid gap-1 max-h-[488px] overflow-y-auto pr-2 rounded-md scrollbar-primary">
         <OptionCard label="days" name="Days">
           <template #input>
@@ -346,7 +346,7 @@ function loadGarden(saveString: string) {
             </p>
             <p>
               Base Star Chance: <code
-                class="px-2 rounded-sm bg-misc text-accent">{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</code>
+                class="px-2 rounded-xs bg-misc text-accent">{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</code>
             </p>
             <p>Formula in info</p>
           </template>
@@ -354,7 +354,7 @@ function loadGarden(saveString: string) {
 
         <OptionCard label="allStarSeeds" name="All Star Seeds">
           <template #input>
-            <input v-model="harvesterSettings.useStarSeeds" class="rounded-md toggle" type="checkbox">
+            <input v-model="harvesterSettings.useStarSeeds" class="toggle" type="checkbox">
           </template>
           <template #labels>
             <p>
@@ -365,7 +365,7 @@ function loadGarden(saveString: string) {
 
         <OptionCard label="includeReplant" name="Include Replant">
           <template #input>
-            <input v-model="harvesterSettings.includeReplant" class="rounded-md toggle" type="checkbox">
+            <input v-model="harvesterSettings.includeReplant" class="toggle" type="checkbox">
           </template>
           <template #labels>
             <p>
@@ -380,7 +380,7 @@ function loadGarden(saveString: string) {
 
         <OptionCard label="includeReplantCost" name="Include Replant Cost">
           <template #input>
-            <input v-model="harvesterSettings.includeReplantCost" class="rounded-md toggle" type="checkbox"
+            <input v-model="harvesterSettings.includeReplantCost" class="toggle" type="checkbox"
               :disabled="!harvesterSettings.includeReplant">
           </template>
           <template #labels>
@@ -392,7 +392,7 @@ function loadGarden(saveString: string) {
 
         <OptionCard label="useGrowthBoost" name="Use Growth Boost">
           <template #input>
-            <input v-model="harvesterSettings.useGrowthBoost" class="rounded-md toggle" type="checkbox">
+            <input v-model="harvesterSettings.useGrowthBoost" class="toggle" type="checkbox">
           </template>
           <template #labels>
             <p>
@@ -413,7 +413,7 @@ function loadGarden(saveString: string) {
 
         <OptionCard label="includeFertiliserCosts" name="Include Fertiliser Costs" disabled>
           <template #input>
-            <input class="rounded-md toggle" type="checkbox" disabled>
+            <input class="toggle" type="checkbox" disabled>
           </template>
           <template #labels>
             <p>

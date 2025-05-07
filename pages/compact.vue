@@ -308,7 +308,7 @@ definePageMeta({
             <button
               id="crop-eraser"
               aria-label="Select Crop Eraser"
-              class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc"
+              class="relative border rounded-xs btn btn-square btn-secondary isolate border-misc"
               :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
               :in-picture-mode="isTakingScreenshot.get"
               @click="selectedItem.select('crop-erase')"
@@ -340,7 +340,7 @@ definePageMeta({
               <button
                 id="fertiliser-eraser"
                 aria-label="Select Fertiliser Eraser"
-                class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc"
+                class="relative border rounded-xs btn btn-square btn-secondary isolate border-misc"
                 :class="(selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
                 @click="selectedItem.select('fertiliser-erase')"
               >

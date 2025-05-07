@@ -156,7 +156,7 @@ export default class Processor {
       const setting = settings.cropSettings.get(cropName) || {
         cropType: cropYield.cropType,
         isStar: cropYield.isStar,
-        processAs: ItemType.Crop,
+        processAs: ItemType.Crop, 
         crafters: 0,
         targetTime: 0,
         isActive: false,

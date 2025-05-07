@@ -66,7 +66,7 @@ const dragHandler = useDragAndDrop()
 <template>
   <button
     v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)"
-    draggable="true" class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc"
+    draggable="true" class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc"
     :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''" :name="`select ${crop.type}`"
     @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)"
     @dragend="(e: DragEvent) => dragHandler.stopDrag()"
@@ -75,12 +75,12 @@ const dragHandler = useDragAndDrop()
       v-if="bonus.icon !== ''" class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black"
       :icon="['fas', bonus.icon]" :class="bonus.colour"
     />
-    <p v-if="count > 0" class="absolute bottom-0 right-0 py-[0.2rem] pr-[0.2rem] text-xs leading-none font-bold text-neutral-700">
+    <p v-if="count > 0" class="absolute bottom-0 right-0 py-[0.2rem] pr-[0.2rem] text-xs leading-none font-bold text-palia-blue">
       {{ count }}
     </p>
     <img
       v-if="(crop && crop.image != null && crop.image !== '')"
-      class="absolute -z-10 max-w-[34px] "
+      class="absolute -z-10 max-w-[28px] "
       draggable="false"
       :src="crop.cropImage"
       :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"

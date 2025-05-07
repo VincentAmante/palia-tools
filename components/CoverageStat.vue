@@ -30,12 +30,12 @@ const percentString = computed(() => {
 
 <template>
   <div class="coverage-stat flex flex-col items-center  gap-[1px] group relative">
-    <div
-      class="absolute top-0 transition-all border-4 border-white border-opacity-0 border-solid radial-progress bg-accent text-primary group-hover:bg-white group-hover:bg-opacity-80"
+    <!-- <div
+      class="absolute top-0 transition-all border-4 border-white border-opacity-0 border-solid radial-progress bg-accent text-primary group-hover:bg-white/80"
       :style="['--value:100', '--size: clamp(8px, 3.7rem, 17vw)']"
-    />
+    /> -->
     <div
-      class="transition-all border-4 border-white border-opacity-0 border-solid radial-progress"
+      class="radial-progress bg-secondary hover:bg-accent"
       :style="[percent, '--size: clamp(8px, 3.7rem, 17vw)']"
     >
       <div class="relative flex flex-col gap-[0px] pt-1">

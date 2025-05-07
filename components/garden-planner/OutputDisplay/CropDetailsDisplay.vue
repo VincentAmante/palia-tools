@@ -126,17 +126,17 @@ const selectedCropAsCrop = computed(() => {
 </script>
 <template>
   <section class="flex flex-col gap-2 pt-1 text-palia-blue-dark">
-    <p class="text-lg font-semibold text-palia-blue-dark">
+    <p class="text-sm font-semibold text-palia-blue-dark">
       Crop Details
     </p>
 
     <!-- Crop Selector -->
-    <div class="flex flex-wrap gap-2 p-2 border rounded border-misc-dark bg-accent">
-      <p v-if="presentCrops.size === 0" class="text-sm italic text-misc-dark">
+    <div class="flex flex-wrap gap-2 p-2 border rounded-sm border-misc-dark bg-accent">
+      <p v-if="presentCrops.size === 0" class="text-sm  text-misc-dark">
         No crops in layout to display details for.
       </p>
-      <button v-for="([cropId, data]) in presentCrops" :key="cropId"
-        class="relative h-auto p-1 border rounded-md btn btn-sm border-misc hover:border-palia-blue focus:border-palia-blue focus:ring-2 focus:ring-palia-blue focus:outline-none"
+      <!-- <button v-for="([cropId, data]) in presentCrops" :key="cropId"
+        class="relative h-auto p-1 border rounded-md btn btn-sm border-misc hover:border-palia-blue focus:border-palia-blue focus:ring-2 focus:ring-palia-blue focus:outline-hidden"
         :class="{ 'ring-2 ring-palia-blue border-palia-blue': selectedCropDetail === cropId }"
         @click="selectCropForDetail(cropId)">
         <div class="flex items-center gap-1">
@@ -153,21 +153,27 @@ const selectedCropAsCrop = computed(() => {
           class="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 text-xs font-semibold text-white rounded-full bg-palia-blue-dark min-w-[1rem] h-[1rem] flex items-center justify-center">
           {{ data.count }}
         </span>
-      </button>
+      </button> -->
+
+      <template v-for="([cropId, data]) in presentCrops" :key="cropId">
+        <CropButton :crop="getCropFromType(parseCropId(cropId).type)!" :count="data.count"
+          @click="selectCropForDetail(cropId)" :isSelected="cropId === selectedCropDetail" />
+
+      </template>
     </div>
 
     <!-- Details Display -->
-    <div v-if="selectedCropDetail && selectedCropCycleData" class="mt-2 space-y-3">
-      <h4 class="text-base font-semibold text-palia-blue">
-        Details for: {{ selectedCropCycleData.cropType }}
+    <div v-if="selectedCropDetail && selectedCropCycleData" class="py-1 flex flex-col gap-1">
+      <p class="text-sm font-semibold text-palia-blue flex gap-1 items-center">
+        Details for: <span class="capitalize">{{ selectedCropCycleData.cropType }}</span>
         <FontAwesomeIcon v-if="selectedCropDetail.includes('-Star')" :icon="['fas', 'star']"
-          class="text-sm text-yellow-400" />
+          class="text-sm text-quality-increase-dark" />
         <FontAwesomeIcon v-if="selectedCropDetail.includes('-Growth')" :icon="['fas', 'forward-fast']"
           class="ml-1 text-sm text-growth-boost" title="Growth Boost Applied" />
-      </h4>
+      </p>
 
       <!-- Cycle Info -->
-      <div class="p-2 border rounded border-misc-dark bg-accent">
+      <div class="p-2 border rounded-sm border-misc-dark bg-accent">
         <p class="mb-1 text-sm font-medium text-palia-blue-dark">
           Harvest Cycle
         </p>
@@ -194,7 +200,7 @@ const selectedCropAsCrop = computed(() => {
 
       <!-- Processing Info -->
       <div v-if="selectedCropProcessingData && selectedCropProcessingData.cycleCrafterData.length > 0"
-        class="flex flex-col gap-2 p-2 border rounded border-misc-dark bg-accent">
+        class="flex flex-col gap-2 p-2 border rounded-sm border-misc-dark bg-accent">
         <p class="mb-1 text-sm font-medium ">
           Processing Details
           <!-- ({{ processor.output[selectedCropProcessingData[0].processInto === 'seed' ? 'seeds' : 'preserves'].get(selectedCropDetail)?.itemType }}) -->
@@ -287,7 +293,7 @@ const selectedCropAsCrop = computed(() => {
     </div> -->
       </div>
       <div v-else-if="selectedCropProcessingData === null || selectedCropProcessingData.cycleCrafterData === undefined"
-        class="p-2 border rounded border-misc-dark bg-accent">
+        class="p-2 border rounded-sm border-misc-dark bg-accent">
         <p class="text-sm italic text-misc-dark">
           This crop group was not processed.
         </p>

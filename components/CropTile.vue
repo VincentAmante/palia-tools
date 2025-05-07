@@ -42,7 +42,7 @@ const bonuses = computed(() => {
 })
 
 const bgColour = computed(() => {
-  return props.tile?.crop?.cropBackgroundColor || ''
+  return `${props.tile?.crop?.cropBackgroundColor}` || ''
 })
 
 // Highlights tile if it has the bonus being hovered
@@ -119,7 +119,7 @@ const border = computed(() => {
              (tile?.isHovered ? 'bg-primary' : ' bg-secondary'),
     ]"
   >
-    <div class="absolute w-full h-full bg-opacity-20 -z-10" :class="bgColour" />
+    <div class="absolute w-full h-full -z-10" :class="bgColour" />
     <div class="font-bold uppercase select-none lg:text-3xl">
       <img
         v-if="(selectedItem.val instanceof Crop && tile?.isHovered)"

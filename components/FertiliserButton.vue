@@ -62,7 +62,7 @@ const dragHandler = useDragAndDrop()
 
 <template>
   <button v-if="!(fertiliser.type === FertiliserType.None) && !(isTakingScreenshot && count === 0)" draggable="true"
-    class="relative border rounded-sm btn btn-square btn-secondary isolate border-misc"
+    class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc"
     :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''"
     @dragstart="(e: DragEvent) => dragHandler.startDrag(fertiliser.type)"
     @dragend="(e: DragEvent) => dragHandler.stopDrag()">

@@ -22,7 +22,7 @@ defineExpose({
 </script>
 
 <template>
-  <dialog ref="modal" class="modal">
+  <dialog ref="modal" class="modal p-2">
     <div class="flex flex-col gap-2 px-3 py-6 modal-box" :class="{ 'h-full': useFullHeight }">
       <div class="flex justify-between">
         <h2 class="text-xl ">
@@ -39,7 +39,7 @@ defineExpose({
         <slot name="body" />
       </div>
     </div>
-    <form method="dialog" class="modal-backdrop">
+    <form method="dialog" class="modal-backdrop opacity-20">
       <button>close</button>
     </form>
   </dialog>

@@ -38,7 +38,7 @@ defineProps({
       class="z-50 hidden w-full h-full sm:absolute sm:tooltip"
     />
     <div class="relative w-full h-full p-2 pt-[10px] rounded-md isolate overflow-clip">
-      <div class="absolute top-0 left-0 w-full h-full -translate-y-1 rounded-md select-none opacity-40 -z-10 bg-gradient-to-b from-misc to-primary" />
+      <div class="absolute top-0 left-0 w-full h-full -translate-y-1 rounded-md select-none opacity-40 -z-10 bg-linear-to-b from-misc to-primary" />
       <img
         v-if="imgSrc"
         :src="imgSrc"
@@ -52,7 +52,7 @@ defineProps({
       </p>
       <p
         class="absolute top-0 right-0 px-[2px] text-xs font-semibold  text-center align-middle rounded-lg "
-        :class="(count < 0) ? 'text-error' : ' text-misc-dark'"
+        :class="(count < 0) ? 'text-error' : ' text-palia-blue-dark'"
       >
         {{ count.toLocaleString() }}
       </p>
