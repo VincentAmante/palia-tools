@@ -39,7 +39,7 @@ const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
         <section class="h-full" :class="[gardenHandler.isGardenWide ? 'flex flex-col items-center pb-2' : '',
         (selectedTab === 'display+display') ? 'w-full' : ''
         ]">
-          <template v-show="(selectedTab === 'garden+display')">
+          <template v-if="(selectedTab === 'garden+display')">
             <NewGardenDisplay />
             <NewStatsDisplay class="pt-2 sm:mx-auto xs:px-2 w-fit "
               :class="[gardenHandler.isGardenWide ? 'w-fit' : 'lg:w-full']" />
