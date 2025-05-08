@@ -21,6 +21,18 @@ const useGarden = defineStore('garden', () => {
 
   const garden = computed(() => gardenRef.value)
 
+  
+  const isFullUpdateRequestedVal = ref(false)
+  function requestFullUpdate(){
+    isFullUpdateRequestedVal.value = true
+  }
+
+  function resetRequestFullUpdate() {
+    isFullUpdateRequestedVal.value = false
+  }
+
+  const isFullUpdateRequested = computed(() => isFullUpdateRequestedVal.value)
+
   return {
     garden,
     update,
@@ -28,6 +40,9 @@ const useGarden = defineStore('garden', () => {
     isGardenWide,
     setHoveredBonus,
     getHoveredBonus,
+    requestFullUpdate,
+    resetRequestFullUpdate,
+    isFullUpdateRequested,
   }
 })
 

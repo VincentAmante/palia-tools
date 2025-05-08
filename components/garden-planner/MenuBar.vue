@@ -30,6 +30,7 @@ function loadLayoutFromCode(code: string) {
   settingsCode.set(garden.loadSettingsCode)
   settingsCode.requestUpdate()
   gardenHandler.update()
+  gardenHandler.requestFullUpdate()
 }
 
 function saveLayout() {

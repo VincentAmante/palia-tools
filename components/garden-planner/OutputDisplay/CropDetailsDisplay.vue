@@ -218,8 +218,8 @@ const selectedCropAsCrop = computed(() => {
                 formatMinutesToHoursMinutes(phaseData.longestProcessMinutesNoIdle) }} active)
             </p>
           </div>
-          <div class="grid grid-cols-2 gap-1 sm:grid-cols-3 md:grid-cols-4">
-            <div v-for="(crafter, crafterIndex) in phaseData.crafterData" :key="`crafter-${crafterIndex}`"
+          <div class="grid ">
+            <!-- <div v-for="(crafter, crafterIndex) in phaseData.crafterData" :key="`crafter-${crafterIndex}`"
               class="text-white rounded-md bg-palia-blue">
               <div class="relative p-1 pb-0 tlex flex-colext-white">
                 <div class="flex items-center justify-between">
@@ -234,8 +234,8 @@ const selectedCropAsCrop = computed(() => {
                 </div>
                 <p class="bottom-0 right-0 w-full text-sm text-right opacity-80">{{ crafterIndex + 1 }}</p>
               </div>
-            </div>
-            <!-- <table class="w-full text-xs border-collapse">
+            </div> -->
+            <table class="w-full text-xs border-collapse">
               <thead>
                 <tr class="bg-opacity-50 bg-misc">
                   <th class="p-1 font-semibold border border-misc-dark">
@@ -280,7 +280,7 @@ const selectedCropAsCrop = computed(() => {
                   </td>
                 </tr>
               </tbody>
-            </table> -->
+            </table>
 
           </div>
         </div>

@@ -13,36 +13,57 @@ function setTab(tab: string) {
   activeTab.value = tab
 }
 
+defineProps({
+  isMainOutputDisplay: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
+const emit = defineEmits(['tabChanged'])
+watchEffect(() => {
+  emit('tabChanged', selectedTab.value)
+})
 
 </script>
 
 <template>
   <section class="p-2 ">
-    <section class="flex justify-end gap-2 pb-2 border-b border-b-misc">
-      <!-- <p>
-        Tab Select
-      </p> -->
-      <button id="approximator-display-tab" aria-label="Display Tab"
-        class="text-lg border-none btn-circle btn-sm btn btn-misc" :class="activeTab === 'display' ? 'btn-active' : ''"
-        @click="setTab('display')">
-        <FontAwesomeIcon :icon="['fas', 'table-list']" />
-      </button>
+    <section class="flex flex-row-reverse justify-between border-b border-b-misc pb-1">
+      <section class="flex justify-end gap-2">
+        <button id="approximator-display-tab" aria-label="Display Tab"
+          class="text-lg border-none btn-circle btn-sm btn btn-misc"
+          :class="activeTab === 'display' ? 'btn-active' : ''" @click="setTab('display')">
+          <FontAwesomeIcon :icon="['fas', 'table-list']" />
+        </button>
 
-      <button id="approximator-crop-details-tab" aria-label="Crop Details Tab"
-        class="text-lg border-none btn-circle btn-sm btn btn-misc"
-        :class="activeTab === 'crop-details' ? 'btn-active' : ''" @click="setTab('crop-details')">
-        <FontAwesomeIcon :icon="['fas', 'magnifying-glass']" />
-      </button>
-      <button id="approximator-options-tab" aria-label="Options Tab"
-        class="text-lg border-none btn-circle btn-sm btn btn-misc" :class="activeTab === 'options' ? 'btn-active' : ''"
-        @click="setTab('options')">
-        <FontAwesomeIcon :icon="['fas', 'sliders']" />
-      </button>
-      <button id="approximator-info-tab" aria-label="Info Tab"
-        class="text-lg border-none btn-circle btn-sm btn btn-misc" :class="activeTab === 'info' ? 'btn-active' : ''"
-        @click="setTab('info')">
-        <FontAwesomeIcon :icon="['fas', 'info']" />
-      </button>
+        <button id="approximator-crop-details-tab" aria-label="Crop Details Tab"
+          class="text-lg border-none btn-circle btn-sm btn btn-misc"
+          :class="activeTab === 'crop-details' ? 'btn-active' : ''" @click="setTab('crop-details')">
+          <FontAwesomeIcon :icon="['fas', 'magnifying-glass']" />
+        </button>
+        <button id="approximator-options-tab" aria-label="Options Tab"
+          class="text-lg border-none btn-circle btn-sm btn btn-misc"
+          :class="activeTab === 'options' ? 'btn-active' : ''" @click="setTab('options')">
+          <FontAwesomeIcon :icon="['fas', 'sliders']" />
+        </button>
+        <button id="approximator-info-tab" aria-label="Info Tab"
+          class="text-lg border-none btn-circle btn-sm btn btn-misc" :class="activeTab === 'info' ? 'btn-active' : ''"
+          @click="setTab('info')">
+          <FontAwesomeIcon :icon="['fas', 'info']" />
+        </button>
+      </section>
+      <section class="join" v-if="isMainOutputDisplay">
+        <button class="btn join-item btn-sm gap-1 tooltip" data-tip="Garden + Display (default)" @click="selectedTab = 'garden+display'">
+          <FontAwesomeIcon :icon="['fas', 'table-cells']" />
+          <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
+        </button>
+        <button class="btn join-item btn-sm gap-1 tooltip" data-tip="Double Displays" @click="selectedTab = 'display+display'">
+          <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
+          <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
+        </button>
+      </section>
     </section>
     <OverallDisplay v-show="activeTab === 'display'" id="display-tab" />
     <section v-show="activeTab === 'options'" id="settings-tab">

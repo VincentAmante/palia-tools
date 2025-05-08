@@ -40,6 +40,7 @@ import {
   faSliders,
   faSquarePlus,
   faStar,
+  faTableCells,
   faTableCellsLarge,
   faTableList,
   faTools,
@@ -48,7 +49,8 @@ import {
   faTurnDown,
   faWheatAwn,
   faX,
-  faStopwatch
+  faStopwatch,
+  faWindowMaximize
 } from '@fortawesome/free-solid-svg-icons'
 
 import { faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons'
@@ -103,7 +105,9 @@ library.add(
   faTrash,
   faAsterisk,
   faMagnifyingGlass,
-  faStopwatch
+  faStopwatch,
+  faTableCells,
+  faWindowMaximize
 )
 
 // This is important, we are going to let Nuxt worry about the CSS

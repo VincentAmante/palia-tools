@@ -152,7 +152,6 @@ function onMiddleClick(row: number, col: number, plot: Plot) {
 function onDragEnter(row: number, col: number, plot: Plot) {
   dragHandler.onTileEnter(row, col, plot)
 }
-
 </script>
 
 <template>

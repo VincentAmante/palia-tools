@@ -320,10 +320,8 @@ export default class Processor {
 
         // Determine output type for inventory
         const processType = processData.processType === ItemType.Seed ? 'seeds' : 'preserves'
-        const outputId = `${cropName}-${processType}`
 
         const cycleId = `${cropType}-${harvestUsedStarSeeds ? 'Star' : 'Base'}${hasGrowthBoost ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
-
         const isStar = cropName.includes('-Star')
 
         // Get cycle data for this crop
@@ -419,6 +417,7 @@ export default class Processor {
           })
 
           const inventoryId = `${cropType}-${isStar ? 'Star' : 'Base'}-${processType === 'seeds' ? 'Seed' : 'Preserve'}`
+          console.log('inventoryId', inventoryId)
           const baseGoldValue = (processType === 'seeds' ? crop.goldValues[`seed${isStar ? 'Star' : ''}`] : crop.goldValues[`preserve${isStar ? 'Star' : ''}`])
 
           if (inventory.has(inventoryId)) {
@@ -545,13 +544,13 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
     const processesDone = conversionsDivided
     const canFinishBeforeNextHarvest = (processTimeMinutes / 60) > hoursToNextPhase
 
-    crafterData.push({
+    crafterData.push({ 
       cropsInsertedCount,
       processTimeMinutes,
       canFinishBeforeNextHarvest,
       processesDone,
-      idleTimeMinutes: 0,
-      excessTimeMinutes: 0,
+      idleTimeMinutes: Math.min(0, ((hoursToNextPhase * 60) - processTimeMinutes)),
+      excessTimeMinutes: Math.min(0, (processTimeMinutes - (hoursToNextPhase * 60)))
     })
   }
 

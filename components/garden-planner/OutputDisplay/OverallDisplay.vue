@@ -11,8 +11,6 @@ const processor = useProcessor()
 
 const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
 
-const activeTab = ref('display')
-
 const craftingTime = computed(() => {
   const timeInMinutes = processor.highestCraftingTime
 
@@ -28,17 +26,17 @@ const craftingTime = computed(() => {
 
 </script>
 <template>
-  <section class="flex flex-col gap-2 pt-1">
+  <section class="flex flex-col gap-2 pt-1 @container">
     <section>
       <p class="text-sm font-semibold text-palia-blue-dark">
         Overview
       </p>
-      <div class="grid grid-cols-3 gap-1 xl:grid-cols-5">
+      <div class="grid grid-cols-3 gap-1 @lg:grid-cols-5">
         <div class="p-1 border rounded-md bg-accent border-misc-dark">
           <p class="w-full px-1 text-xs text-right text-misc-dark">
             Total
           </p>
-          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
+          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
             <img width="12" height="12" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
               format="webp">
             {{ (processor.finalGoldValue || 0).toLocaleString() }}
@@ -53,7 +51,7 @@ const craftingTime = computed(() => {
             Average
           </p>
           <p
-            class="flex items-center justify-end w-full gap-1 text-xl font-semibold text-right xl:text-2xl text-palia-blue">
+            class="flex items-center justify-end w-full gap-1 text-xl font-semibold text-right @2xl:text-2xl text-palia-blue">
             <img width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
               format="webp">
             <span v-if="processor.highestCraftingTime > 0">
@@ -73,7 +71,7 @@ const craftingTime = computed(() => {
           <p class="w-full text-xs text-right text-misc-dark">
             Process Time
           </p>
-          <p class="flex items-end justify-end text-xl font-semibold text-right text-palia-blue xl:text-2xl">
+          <p class="flex items-end justify-end text-xl font-semibold text-right text-palia-blue @2xl:text-2xl">
             <template v-if="((craftingTime.hours + craftingTime.minutes) > 0)">
               {{ craftingTime.hours.toFixed(0) }}<span class="pr-1">h</span> {{ craftingTime.minutes.toFixed(0)
               }}<span class="">m</span>
@@ -87,7 +85,7 @@ const craftingTime = computed(() => {
           <p class="w-full px-1 text-xs text-right text-misc-dark">
             Level
           </p>
-          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
+          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
             {{ harvester.settings.level }}
           </p>
         </div>
@@ -95,7 +93,7 @@ const craftingTime = computed(() => {
           <p class="w-full px-1 text-xs text-right text-misc-dark">
             Days of Harvest
           </p>
-          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center xl:text-2xl text-palia-blue">
+          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
             {{ harvester.totalHarvest.lastHarvestDay }}
           </p>
         </div>
