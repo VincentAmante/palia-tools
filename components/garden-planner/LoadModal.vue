@@ -60,14 +60,14 @@ async function paste() {
       Load Layout
     </template>
     <template #body>
-      <div class="tabs tabs-boxed">
+      <div class="tabs tabs-box w-fit">
         <a
-          class="px-0 tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
+          class="px-2 tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
           @click="activeTab = 'clipboard-tab'"
         >From Clipboard</a>
-        <a class="px-0 tab" :class="{ 'tab-active': activeTab === 'browser-tab' }" @click="activeTab = 'browser-tab'">From Browser</a>
+        <a class="px-2 tab" :class="{ 'tab-active': activeTab === 'browser-tab' }" @click="activeTab = 'browser-tab'">From Browser</a>
       </div>
-      <div v-if="activeTab === 'clipboard-tab'" id="clipboard-tab" class="flex flex-col gap-2 mt-4">
+      <div v-if="activeTab === 'clipboard-tab'" id="clipboard-tab" class="flex flex-col gap-2">
         <div class="card card-compact">
           <div class="relative flex flex-col p-4 px-3 rounded-md card-body bg-palia-blue-dark">
             <p class="card-title">
@@ -85,17 +85,18 @@ async function paste() {
           Load
         </button>
       </div>
-      <div v-if="activeTab === 'browser-tab'" id="browser-tab" class="mt-4">
+      <div v-if="activeTab === 'browser-tab'" id="browser-tab" class="">
         <div class="card card-compact">
           <div class="relative flex flex-col p-4 px-3 rounded-md card-body bg-palia-blue-dark">
             <p class="card-title">
               Saved Layouts
             </p>
-            <ul class="flex flex-col w-full gap-2 p-2 overflow-y-auto rounded-xs bg-base-100 max-h-80 md:max-h-[508px]">
-              <li v-for="(code, index) in filteredSavedGardenCodes" :key="index" class="flex items-center justify-between w-full pb-2 border-b last:border-b-0 border-b-accent border-opacity-20">
-                <div>
+            <ul class="flex flex-col w-full gap-2 p-2 overflow-y-auto rounded-xs bg-base-100 max-h-90 md:max-h-[496px]">
+              <li v-for="(code, index) in filteredSavedGardenCodes" :key="index" class="flex items-start justify-between w-full pb-2 border-b last:border-b-0 border-b-accent/20">
+                <div class="max-w-2/3 md:max-w-3/4">
                   <p>{{ code.title }}</p>
-                  <p class="font-mono leading-none opacity-50 text-xxs">
+                  <p class="font-mono leading-none opacity-50 text-xxs text-justify line-clamp-3 md:line-clamp-4"
+                  >
                     {{ code.code }}
                   </p>
                 </div>

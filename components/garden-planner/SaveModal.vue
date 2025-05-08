@@ -49,13 +49,13 @@ function deleteCode(index: number) {
       Save Layout
     </template>
     <template #body>
-      <div class="tabs tabs-boxed">
+      <div class="tabs tabs-box w-fit">
         <a class="tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
           @click="activeTab = 'clipboard-tab'">Clipboard</a>
         <a class="tab" :class="{ 'tab-active': activeTab === 'browser-tab' }"
           @click="activeTab = 'browser-tab'">Browser</a>
       </div>
-      <div v-if="activeTab === 'clipboard-tab'" id="clipboard-tab" class="flex flex-col gap-2 mt-4">
+      <div v-if="activeTab === 'clipboard-tab'" id="clipboard-tab" class="flex flex-col gap-2">
         <div class="card card-compact">
           <div class="relative flex flex-col p-4 px-3 rounded-md card-body bg-palia-blue-dark">
             <p class="card-title">
@@ -102,7 +102,7 @@ function deleteCode(index: number) {
           </div>
         </div>
       </div>
-      <div v-if="activeTab === 'browser-tab'" id="browser-tab" class="mt-4">
+      <div v-if="activeTab === 'browser-tab'" id="browser-tab" class="">
         <div class="gap-2 card card-compact">
           <div class="relative flex flex-col p-4 px-3 rounded-md card-body bg-palia-blue-dark">
             <p class="card-title">
@@ -114,7 +114,7 @@ function deleteCode(index: number) {
               </label>
               <input v-model="title" type="text" placeholder="Enter title"
                 class="w-full max-w-xs input input-bordered input-sm">
-              <p class="w-full pt-1 font-mono opacity-50 text-xxs">
+              <p class="pt-1 font-mono text-justify opacity-50 text-xxs wrap-anywhere">
                 {{ saveCode.code }}
               </p>
             </div>
@@ -134,12 +134,12 @@ function deleteCode(index: number) {
                 Saved Layouts
               </p>
               <div class="h-full overflow-hidden">
-                <ul class="flex flex-col w-full gap-3 p-2 overflow-y-auto rounded-xs bg-base-100 max-h-32 md:max-h-72">
-                  <li v-for="(code, index) in savedGardenCodes" :key="index" class="flex justify-between">
+                <ul class="flex flex-col w-full gap-3 p-2 overflow-y-auto rounded-xs bg-base-100 max-h-50 md:max-h-72">
+                  <li v-for="(code, index) in savedGardenCodes" :key="index" class="flex items-start justify-between">
                     <div class="flex flex-col gap-1">
                       <input v-model="code.title" class="w-full max-w-xs py-0 pl-0 input input-ghost input-xs"
                         @change="editTitle(index, code.title)">
-                      <p class="w-full pt-1 font-mono opacity-50 text-xxs leading-0">
+                      <p class="font-mono leading-none opacity-50 text-xxs text-justify line-clamp-3 md:line-clamp-4">
                         {{ code.code }}
                       </p>
                     </div>

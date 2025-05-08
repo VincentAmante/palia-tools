@@ -96,8 +96,7 @@ function closeModal() {
     </button>
   </div>
 
-  <dialog class="modal" ref="modalRef">
-
+  <dialog class="modal items-end p-2" ref="modalRef">
     <div class="modal-box h-2/3">
       <form method="dialog">
         <button class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost">
@@ -113,7 +112,7 @@ function closeModal() {
           </h3>
           <div class="flex flex-wrap gap-1">
             <button id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
-              class="relative border rounded-xs btn btn-square btn-secondary isolate border-misc" :class="{
+              class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc" :class="{
                 'bg-white': selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get,
                 'hidden': isTakingScreenshot.get,
               }" @click="() => {
@@ -179,7 +178,7 @@ function closeModal() {
           </div>
           <div class="flex flex-wrap gap-1">
             <button id="crop-eraser" aria-label="Select Crop Eraser"
-              class="relative border rounded-xs btn btn-square btn-secondary isolate border-misc sm:hidden" :class="{
+              class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc sm:hidden" :class="{
                 'bg-white': selectedItem.val === 'crop-erase' && !isTakingScreenshot.get,
                 'hidden': isTakingScreenshot.get,
               }" :in-picture-mode="isTakingScreenshot.get" @click="() => {
