@@ -8,6 +8,7 @@ import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
 import type { TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 
+
 const isTakingScreenshot = useTakingScreenshot()
 const gardenHandler = useGarden()
 const { garden } = gardenHandler
@@ -151,36 +152,29 @@ function onMiddleClick(row: number, col: number, plot: Plot) {
 function onDragEnter(row: number, col: number, plot: Plot) {
   dragHandler.onTileEnter(row, col, plot)
 }
+
 </script>
 
 <template>
-  <section
-    class="flex flex-col items-center h-full "
-    :class="[
-      ((isTakingScreenshot.get && gardenHandler.isGardenWide) || isTakingScreenshot.get) ? 'max-w-[1680px]' : 'max-w-full',
-      (gardenHandler.isGardenWide) ? 'overflow-x-scroll max-w-full' : '',
-    ]"
-  >
-    <div
-      class="px-3 my-4 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
-      :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'" @contextmenu.prevent.self=""
-    >
+  <section class="flex flex-col items-center h-full " :class="[
+    ((isTakingScreenshot.get && gardenHandler.isGardenWide) || isTakingScreenshot.get) ? 'max-w-[1680px]' : 'max-w-full',
+    (gardenHandler.isGardenWide) ? 'overflow-x-scroll max-w-full' : '',
+  ]">
+    <div class="px-3 my-4 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
+      :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'" @contextmenu.prevent.self="">
       <div ref="plotsDisplay" class="grid w-full gap-2 pr-12 overflow-auto sm:pr-0">
         <div v-for="(plotRow, plotRowIndex) in garden.plots" :key="plotRowIndex" class="flex gap-2 plotRow">
           <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="relative flex flex-col gap-0 plot">
             <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="flex gap-0 plotTileRow cols-3">
               <div v-for="(tile, index) in row" :key="index" class="plotTile">
-                <CropTile
-                  :tile="tile as Tile" :is-disabled="!plot.isActive"
+                <CropTile :tile="tile as Tile" :is-disabled="!plot.isActive"
                   :bonus-hovered="useGarden().getHoveredBonus" :index="(1 + rowIndex) + (index + (rowIndex * 2))"
                   @mousedown.middle.prevent.stop
                   @click.left="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
                   @click.right="(() => handleRightClick(rowIndex, index, plot as Plot))"
-                  @mouseover="onHover(rowIndex, index, plot as Plot)"
-                  @mouseleave="onMouseLeave"
+                  @mouseover="onHover(rowIndex, index, plot as Plot)" @mouseleave="onMouseLeave"
                   @click.middle="(() => onMiddleClick(rowIndex, index, plot as Plot))"
-                  @dragenter="(() => onDragEnter(rowIndex, index, plot as Plot))"
-                />
+                  @dragenter="(() => onDragEnter(rowIndex, index, plot as Plot))" />
               </div>
             </div>
           </div>
