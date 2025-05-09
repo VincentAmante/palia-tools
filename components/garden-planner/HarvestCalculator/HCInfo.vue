@@ -1,7 +1,8 @@
 <template>
-  <div v-once class="flex flex-col gap-2 px-2 py-4 text-neutral">
+  <div v-once class="flex flex-col gap-2 px-2 py-4 text-accent bg-palia-blue-dark rounded-lg overflow-auto max-h-132">
+    <p class="px-2 text-xl font-black">Info</p>
     <div class="grid gap-2 px-2">
-      <div class="p-3 rounded-md bg-accent">
+      <div class="p-3 rounded-md bg-palia-blue">
         <h3 class="text-lg font-bold uppercase">
           Note
         </h3>
@@ -12,7 +13,7 @@
             resources such as Arenvanya's
             <NuxtLink
               href="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
-              target="_blank" class="items-center inline-block gap-1 font-bold text-harvest-boost-dark"
+              target="_blank" class="items-center inline-block gap-1 font-bold text-harvest-boost-dark hover:underline underline-offset-2"
             >
               <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xs" />
               Gardening Guide
@@ -20,28 +21,28 @@
             and their
             <NuxtLink
               to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
-              target="_blank" class="inline-block gap-1 font-bold text-harvest-boost-dark"
+              target="_blank" class="inline-block gap-1 font-bold text-harvest-boost-dark hover:underline underline-offset-2"
             >
               <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xs" />
               Math Spreadsheet
             </NuxtLink>
             as well as a mix of observations and testings done by fellow Palians discussed on Discord
           </div>
-          <p class="inline-flex gap-2 p-2 text-sm font-bold border rounded-sm border-misc">
-            <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-lg text-warning" />
-            Final values are still arbitrary and may not reflect your in-game experience.
+          <p class="inline-flex gap-2 p-2 text-sm bg-warning text-neutral rounded-sm">
+            <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-lg text-neutral" />
+            Final values are estimations and may not reflect actual in-game experience.
           </p>
         </div>
       </div>
-      <div class="p-3 rounded-md bg-accent ">
+      <div class="p-3 rounded-md bg-palia-blue ">
         <h3 class="text-lg font-bold ">
           How it works (8/9/2023)
         </h3>
         <ol class="grid gap-2 text-sm list-decimal list-inside">
-          <li class="p-2 border rounded-sm border-misc">
+          <li class="p-2 border rounded-sm border-info">
             The planner estimates crop yields, factoring in [Quality, Harvest] Boosts, and star chance of crops.
           </li>
-          <li class="p-2 border rounded-sm border-misc">
+          <li class="p-2 border rounded-sm border-info">
             Using the provided yields, it calculates the gold value in the form you wish to sell them
             (Crop/Seed/Preserve)
           </li>
@@ -49,12 +50,12 @@
       </div>
     </div>
     <div class="px-2 pb-3">
-      <div class="grid gap-2 p-3 rounded-md bg-accent">
+      <div class="grid gap-2 p-3 rounded-md bg-palia-blue">
         <h3 class="text-lg font-bold">
           Assumptions (3/10/2024)
         </h3>
         <ul class="grid gap-2 text-sm ">
-          <li class="p-2 border rounded-sm border-misc">
+          <li class="p-2 border rounded-sm border-info">
             <span class="font-black">
               Planner Formula for Star Chance:
             </span>
@@ -66,7 +67,7 @@
               Fully debatable and may be tweaked in the future.
             </p>
           </li>
-          <li class="p-2 border rounded-sm border-misc">
+          <li class="p-2 border rounded-sm border-info">
             <span class="font-black">
               Assumptions that result in the Planner Formula:
             </span>
@@ -88,21 +89,21 @@
               </li>
             </ul>
           </li>
-          <li class="p-2 font-semibold border rounded-sm border-misc">
+          <li class="p-2 font-semibold border rounded-sm border-info">
             <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
             Seed/Preserve conversion time is not accounted for (yet).
           </li>
-          <li class="p-2 font-semibold border rounded-sm border-misc">
+          <li class="p-2 font-semibold border rounded-sm border-info">
             <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
             Weed Chance is not accounted for due to their unreliable or undocumented behaviour.
           </li>
-          <li class="p-2 border rounded-sm border-misc">
+          <li class="p-2 border rounded-sm border-info">
             Crops are harvested on the day they are ready.
           </li>
-          <li class="p-2 border rounded-sm border-misc">
+          <li class="p-2 border rounded-sm border-info">
             Crops receive daily watering or has Water Retain.
           </li>
-          <li class="p-2 border rounded-sm border-misc">
+          <li class="p-2 border rounded-sm border-info">
             Crop boosts last until the final calculation day.
           </li>
         </ul>
