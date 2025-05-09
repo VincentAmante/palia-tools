@@ -38,8 +38,8 @@ const TOMATO = new Crop(
     preserveProcessMinutes: 27,
   },
   {
-    preserve: '/jars/tomato.png',
-    seed: '/seeds/tomato.png',
+    preserve: '/jars/tomato.webp',
+    seed: '/seeds/tomato.webp',
   },
   {
     cropCode: CropCode.Tomato,
@@ -74,8 +74,8 @@ const POTATO = new Crop(
     preserveProcessMinutes: 54,
   },
   {
-    preserve: '/jars/potato.png',
-    seed: '/seeds/potato.png',
+    preserve: '/jars/potato.webp',
+    seed: '/seeds/potato.webp',
   },
   {
     cropCode: CropCode.Potato,
@@ -112,7 +112,7 @@ const RICE = new Crop(
   },
   {
     preserve: '',
-    seed: '/seeds/rice.png',
+    seed: '/seeds/rice.webp',
   },
   {
     cropCode: CropCode.Rice,
@@ -148,7 +148,7 @@ const WHEAT = new Crop(
   },
   {
     preserve: '',
-    seed: '/seeds/wheat.png',
+    seed: '/seeds/wheat.webp',
   },
   {
     cropCode: CropCode.Wheat,
@@ -183,8 +183,8 @@ const CARROT = new Crop(
     preserveProcessMinutes: 27,
   },
   {
-    preserve: '/jars/carrot.png',
-    seed: '/seeds/carrot.png',
+    preserve: '/jars/carrot.webp',
+    seed: '/seeds/carrot.webp',
   },
   {
     cropCode: CropCode.Carrot,
@@ -219,8 +219,8 @@ const ONION = new Crop(
     preserveProcessMinutes: 36,
   },
   {
-    preserve: '/jars/onion.png',
-    seed: '/seeds/onion.png',
+    preserve: '/jars/onion.webp',
+    seed: '/seeds/onion.webp',
   },
   {
     cropCode: CropCode.Onion,
@@ -256,7 +256,7 @@ const COTTON = new Crop(
   },
   {
     preserve: '',
-    seed: '/seeds/cotton.png',
+    seed: '/seeds/cotton.webp',
   },
   {
     cropCode: CropCode.Cotton,
@@ -294,8 +294,8 @@ const BLUEBERRY = new Crop(
     preserveProcessMinutes: 47.25,
   },
   {
-    preserve: '/jars/blueberry.png',
-    seed: '/seeds/blueberry.png',
+    preserve: '/jars/blueberry.webp',
+    seed: '/seeds/blueberry.webp',
   },
   {
     cropCode: CropCode.Blueberry,
@@ -333,8 +333,8 @@ const APPLE = new Crop(
     preserveProcessMinutes: 76,
   },
   {
-    preserve: '/jars/apple.png',
-    seed: '/seeds/apple.png',
+    preserve: '/jars/apple.webp',
+    seed: '/seeds/apple.webp',
   },
   {
     cropCode: CropCode.Apple,
@@ -481,7 +481,7 @@ const BOK_CHOY = new Crop(
   },
   {
     preserve: '/jars/bok-choy.webp',
-    seed: '/seeds/bok-choy.png',
+    seed: '/seeds/bok-choy.webp',
   },
   {
     cropCode: CropCode.BokChoy,
