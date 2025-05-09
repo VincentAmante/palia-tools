@@ -26,7 +26,7 @@ onMounted(() => {
 const icon = computed(() => {
   switch (props.type) {
     case 'alert-success':
-      // return ['fas', 'check']
+      return ['fas', 'check']
     case 'alert-danger':
       return ['fas', 'exclamation-triangle']
     default:

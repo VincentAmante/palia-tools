@@ -50,7 +50,8 @@ import {
   faWheatAwn,
   faX,
   faStopwatch,
-  faWindowMaximize
+  faWindowMaximize,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons'
@@ -107,7 +108,8 @@ library.add(
   faMagnifyingGlass,
   faStopwatch,
   faTableCells,
-  faWindowMaximize
+  faWindowMaximize,
+  faCheck
 )
 
 // This is important, we are going to let Nuxt worry about the CSS
