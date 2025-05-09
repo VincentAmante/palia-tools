@@ -258,7 +258,7 @@ export default class Processor {
 
     // Calculate processing data for each crop based on settings and harvest data
     const cropData = this.calculateSettings(harvestData, settings)
-    console.log('cropData', cropData)
+    // console.log('cropData', cropData)
 
     // If no crops need processing, return early
     if (cropData.size === 0) {
@@ -417,7 +417,7 @@ export default class Processor {
           })
 
           const inventoryId = `${cropType}-${isStar ? 'Star' : 'Base'}-${processType === 'seeds' ? 'Seed' : 'Preserve'}`
-          console.log('inventoryId', inventoryId)
+          // console.log('inventoryId', inventoryId)
           const baseGoldValue = (processType === 'seeds' ? crop.goldValues[`seed${isStar ? 'Star' : ''}`] : crop.goldValues[`preserve${isStar ? 'Star' : ''}`])
 
           if (inventory.has(inventoryId)) {
@@ -448,9 +448,9 @@ export default class Processor {
       }
     }
 
-    console.log('output', output)
+    // console.log('output', output)
 
-    console.log('inventory', inventory)
+    // console.log('inventory', inventory)
     // Update class properties with the final output
     this._inventory = inventory
     this._output = output

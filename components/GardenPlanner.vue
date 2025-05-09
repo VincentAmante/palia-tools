@@ -21,7 +21,7 @@ const { isFullUpdateRequested } = storeToRefs(gardenHandler)
 
 watch(isFullUpdateRequested, () => {
   if (isFullUpdateRequested) {
-    console.log('Full update requested')
+    // console.log('Full update requested')
     // Perform full update logic here
     gardenHandler.update()
 

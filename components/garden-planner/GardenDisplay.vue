@@ -88,11 +88,11 @@ function handleDragEnter(row: number, col: number, plot: Plot) {
                   :index="(1 + rowIndex) + (index + (rowIndex * 2))"
                   :is-alt="(plotRowIndex + plotIndex) % 2 === 0"
                   @click.left="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
-                  @click.right="((e: MouseEvent) => handleRightClick(event, rowIndex, index, plot as Plot))"
+                  @click.right="((e: MouseEvent) => handleRightClick(e, rowIndex, index, plot as Plot))"
                   @mouseover="handleHover(rowIndex, index, plot as Plot)"
                   @mouseup="(handleMouseUp(rowIndex, index, plot as Plot))"
                   @dragenter="(e: DragEvent) => handleDragEnter(rowIndex, index, plot as Plot)"
-                  @click.middle="((e: MouseEvent) => handleMiddleClick(event, rowIndex, index, plot as Plot))"
+                  @click.middle="((e: MouseEvent) => handleMiddleClick(e, rowIndex, index, plot as Plot))"
                   @mousedown.middle.prevent.stop
                 />
               </div>
