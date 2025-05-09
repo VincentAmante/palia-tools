@@ -73,7 +73,7 @@ watchEffect(() => {
       <NewSettings />
     </section>
     <CropDetailsDisplay v-show="activeTab === 'crop-details'" />
-    <section v-show="activeTab === 'info'" id="info-tab">
+    <section v-show="activeTab === 'info'" id="info-tab" class="pt-2">
       <LazyHCInfo />
     </section>
   </section>
