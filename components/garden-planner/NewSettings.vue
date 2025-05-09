@@ -16,49 +16,39 @@ const harvester = useHarvester()
 const garden = useGarden()
 const settingsCode = useSettingsCode()
 
-const harvesterSettings = ref({
-  days: -1 as number | 'L' | 'M',
-  includeReplant: true as boolean,
-  includeReplantCost: true as boolean,
-  level: 25 as number,
-  useGrowthBoost: false as boolean,
-  useStarSeeds: true as boolean,
-} satisfies IHarvesterOptions)
+const { settings: harvesterSettings, updateSettings: updateHarvesterSettings } = useHarvester()
 
-const starBaseChance = ref(0.25 + (harvesterSettings.value.useStarSeeds ? 0.25 : 0) + (harvesterSettings.value.level * 0.02))
+const starBaseChance = ref(0.25 + (harvesterSettings.useStarSeeds ? 0.25 : 0) + (harvesterSettings.level * 0.02))
 
 watchEffect(() => {
-  if (harvesterSettings.value.level < 0)
-    harvesterSettings.value.level = 0
+  if (harvesterSettings.level < 0)
+    harvesterSettings.level = 0
 
-  starBaseChance.value = 0.25 + (harvesterSettings.value.useStarSeeds ? 0.25 : 0) + (harvesterSettings.value.level * 0.02)
+  starBaseChance.value = 0.25 + (harvesterSettings.useStarSeeds ? 0.25 : 0) + (harvesterSettings.level * 0.02)
 
   starBaseChance.value = Math.min(1, starBaseChance.value)
 
-  if (harvesterSettings.value.days === 'L')
-    harvesterSettings.value.days = -1
-  else if (harvesterSettings.value.days === 'M')
-    harvesterSettings.value.days = 0
+  if (harvesterSettings.days === 'L')
+    harvesterSettings.days = -1
+  else if (harvesterSettings.days === 'M')
+    harvesterSettings.days = 0
 
-  if (harvesterSettings.value.days < -1)
-    harvesterSettings.value.days = -1
+  if (harvesterSettings.days < -1)
+    harvesterSettings.days = -1
 
-  harvester.updateSettings({ ...harvesterSettings.value })
+  harvester.updateSettings({ ...harvesterSettings })
 })
 
 const processor = useProcessor()
-const processorSettings = ref({
-  cropSettings: new Map() as Map<ICropNameWithGrowthDiff, ProcessorSetting>,
-  crafterSetting: 0,
-} satisfies ProcessorSettings)
+const { settings: processorSettings, updateSettings: updateProcessorSettings } = useProcessor()
 
 watchEffect(() => {
   // set all isActive to false
-  for (const setting of processorSettings.value.cropSettings.values())
+  for (const setting of processorSettings.cropSettings.values())
     setting.isActive = false
 
   for (const [cropId, data] of harvester.totalHarvest.crops) {
-    const cropSetting = processorSettings.value.cropSettings.get(cropId) ?? {
+    const cropSetting = processorSettings.cropSettings.get(cropId) ?? {
       count: data.totalWithDeductions,
       cropType: data.cropType,
       isStar: data.isStar,
@@ -71,12 +61,9 @@ watchEffect(() => {
 
     cropSetting.count = data.totalWithDeductions
 
-    processorSettings.value = {
-      ...processorSettings.value,
-      cropSettings: new Map(processorSettings.value.cropSettings).set(cropId, cropSetting),
-    }
+    processorSettings.cropSettings.set(cropId, cropSetting)
 
-    processorSettings.value.cropSettings.get(cropId)!.isActive = true
+    processorSettings.cropSettings.get(cropId)!.isActive = true
   }
 
   saveGarden()
@@ -89,7 +76,7 @@ const activeProcessorSettings = computed(() => {
     crafterSetting: 0,
   } satisfies ProcessorSettings
 
-  for (const [cropId, setting] of processorSettings.value.cropSettings) {
+  for (const [cropId, setting] of processorSettings.cropSettings) {
     if (setting.isActive && setting.count > 0)
       activeSettings.cropSettings.set(cropId, setting)
   }
@@ -116,7 +103,7 @@ function getCropImgSrc(cropType: CropType) {
 const activeTab = ref('Harvest')
 
 function updateSettings() {
-  processor.updateSettings(Object.assign({}, processorSettings.value))
+  updateProcessorSettings(Object.assign({}, processorSettings))
   processor.simulateProcessing(harvester.totalHarvest)
 }
 
@@ -136,7 +123,7 @@ function minutesToHoursAndMinutes(minutes: number) {
 
 
 function saveGarden() {
-  const saveString = garden.garden.saveSettings(harvesterSettings.value, processorSettings.value)
+  const saveString = garden.garden.saveSettings(harvesterSettings, processorSettings)
   settingsCode.set(saveString)
   // You can add code here to save the saveString to a file or share it
 }
@@ -154,9 +141,13 @@ watch (updateIsRequested, () => {
 function loadGarden(saveString: string) {
   const { harvesterOptions, processorSettings: loadedProcessorSettings } = garden.garden.loadSettings(saveString)
 
-  harvesterSettings.value = harvesterOptions
-  processorSettings.value = loadedProcessorSettings
-  processor.updateSettings(Object.assign({}, loadedProcessorSettings))
+  // harvesterSettings = harvesterOptions
+  updateHarvesterSettings(Object.assign({}, harvesterOptions))
+
+  // processorSettings.value = loadedProcessorSettings
+  updateProcessorSettings(loadedProcessorSettings)
+
+  updateProcessorSettings(Object.assign({}, loadedProcessorSettings))
   processor.simulateProcessing(harvester.totalHarvest)
   // You can add code here to update the UI with the loaded settings
 }
@@ -283,7 +274,7 @@ function loadGarden(saveString: string) {
                 </button>
               </div>
               <SettingsMinutesDisplay class="absolute bottom-0 translate-y-2 "
-                :minutes="processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
+                :minutes="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
             </div>
           </li>
         </ul>
