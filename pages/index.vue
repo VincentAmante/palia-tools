@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
+import { useToasts } from '~/stores/useToasts'
 import CropModalButton from '~/components/garden-planner/ItemSelector/CropModalButton.vue'
 import MenuBar from '~/components/garden-planner/MenuBar.vue'
+import Toast from '~/components/Toast.vue'
 
 useHead({
   title: 'Palia Garden Planner',
@@ -14,6 +16,15 @@ useHead({
 })
 
 const isTakingScreenshot = useTakingScreenshot()
+const toasts = useToasts()
+
+function addToast() {
+  toasts.addToast({
+    message: 'This is a toast message',
+    type: 'alert-info',
+    duration: 3000,
+  })
+}
 </script>
 
 <template>
@@ -41,5 +52,11 @@ const isTakingScreenshot = useTakingScreenshot()
       </div>
     </DevOnly> -->
     <CropModalButton position="bottom-right" />
+    <section id="toasts" class="toast toast-top toast-center z-50">
+      <Toast v-for="(toast, index) in toasts.toasts" :key="toast.id" :message="toast.message" :type="toast.type"
+        :id="toast.id!" :duration="toast.duration" @close="() => { toasts.removeToast(toast.id!) }" />
+    </section>
+    <button class="btn btn-primary" @click="() => addToast()">Add Toast</button>
+
   </main>
 </template>
