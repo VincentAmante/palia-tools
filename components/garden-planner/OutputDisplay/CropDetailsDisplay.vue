@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
-import { parseCropId, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { parseCropId, type ICropName, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { CropType } from '~/assets/scripts/garden-planner/imports'
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
 import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue'
@@ -74,28 +74,34 @@ const selectedCropProcessingData = computed(() => {
   else return null
 })
 
+const cycleId = computed(() => {
+  if (!selectedCropDetail.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
+    return ''
+
+  return `${parseCropId(selectedCropDetail.value).type}${harvester.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
+})
 // Computed property for seeds required per replant event
 const selectedCropSeedsRequiredPerHarvest = computed(() => {
-  if (!selectedCropDetail.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
+  if (!selectedCropDetail.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0 || !cycleId.value)
     return null
 
   // Find the first day harvest that requires this specific seed type
   for (const [, dayHarvest] of harvester.dayHarvests) {
-    if (dayHarvest.seedsRequired.has(selectedCropDetail.value))
-      return dayHarvest.seedsRequired.get(selectedCropDetail.value)
+    if (dayHarvest.seedsRequired.has(cycleId.value))
+      return dayHarvest.seedsRequired.get(cycleId.value)
   }
   return null // No replanting occurred or required for this specific type
 })
 
 // Computed property for total seeds required over the simulation
 const selectedCropTotalSeedsRequired = computed(() => {
-  if (!selectedCropDetail.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
+  if (!selectedCropDetail.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0 || !cycleId.value)
     return 0
 
   let total = 0
   for (const [, dayHarvest] of harvester.dayHarvests) {
-    if (dayHarvest.seedsRequired.has(selectedCropDetail.value))
-      total += dayHarvest.seedsRequired.get(selectedCropDetail.value)?.count || 0
+    if (dayHarvest.seedsRequired.has(cycleId.value))
+      total += dayHarvest.seedsRequired.get(cycleId.value)?.count || 0
   }
   return total
 })
