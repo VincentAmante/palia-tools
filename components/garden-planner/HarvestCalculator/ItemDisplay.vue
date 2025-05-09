@@ -31,7 +31,7 @@ defineProps({
 
 <template>
   <li
-    class="relative flex flex-col items-center justify-center h-full rounded-md isolate aspect-square bg-accent"
+    class="relative flex flex-col items-center justify-center rounded-md isolate aspect-square bg-accent"
   >
     <div
       :data-tip="tooltip || `${(count * baseGoldValue).toLocaleString()} Gold`"
