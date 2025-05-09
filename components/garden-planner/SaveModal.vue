@@ -8,6 +8,8 @@ const saveCode = useSaveCode()
 const title = ref('New Save')
 const version = ref(1)
 
+const toasts = useToasts()
+
 onMounted(() => {
   loadSavedGardenCodes()
 })
@@ -26,12 +28,33 @@ const useMarkdown = ref(false)
 
 const activeTab = ref('clipboard-tab')
 
+function addSuccessToast() {
+  toasts.addToast({
+    message: 'Save successful',
+    type: 'alert-success',
+    duration: 2000,
+  })
+}
+function addDeleteToast() {
+  toasts.addToast({
+    message: 'Layout deleted',
+    type: 'alert-success',
+    duration: 2000,
+  })
+}
+
+
+
 function saveAndClose() {
   saveGardenCode(title.value, saveCode.code, version.value)
   modal.value?.hideModal()
+
+  addSuccessToast()
 }
 function saveWithoutClose() {
   saveGardenCode(title.value, saveCode.code, version.value)
+
+  addSuccessToast()
 }
 
 function editTitle(index: number, newTitle: string) {

@@ -11,7 +11,9 @@ import SaveModal from '~/components/garden-planner/SaveModal.vue'
 import LoadModal from '~/components/garden-planner/LoadModal.vue'
 import LayoutCreator from '@/components/LayoutCreator.vue'
 import type ExportModal from '~/components/garden-planner/ExportModal.vue'
+import { useToasts } from '~/stores/useToasts'
 
+const toasts = useToasts()
 const gardenHandler = useGarden()
 
 const { garden } = gardenHandler
@@ -26,11 +28,19 @@ const saveCode = useSaveCode()
 const settingsCode = useSettingsCode()
 
 function loadLayoutFromCode(code: string) {
-  garden.loadLayout(code)
+  const hasLoadedSuccessfully = garden.loadLayout(code)
   settingsCode.set(garden.loadSettingsCode)
   settingsCode.requestUpdate()
   gardenHandler.update()
   gardenHandler.requestFullUpdate()
+
+  if (hasLoadedSuccessfully) {
+    toasts.addToast({
+      message: 'Layout loaded successfully',
+      type: 'alert-success',
+      duration: 2000,
+    })
+  }
 }
 
 function saveLayout() {

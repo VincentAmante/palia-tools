@@ -2,12 +2,15 @@
 import { computed, onMounted, ref } from 'vue'
 import { deleteGardenCode, loadSavedGardenCodes, savedGardenCodes } from './SaveLoadUtils'
 import PGPModal from '@/components/PGPModal.vue'
+import { useToasts } from '~/stores/useToasts'
 
 const emit = defineEmits<{
   (e: 'load', code: string): void
 }>()
 
 const searchQuery = ref('')
+
+const toasts = useToasts()
 
 onMounted(() => {
   loadSavedGardenCodes()
@@ -28,6 +31,11 @@ async function confirmDelete(index: number) {
   // }
 
   deleteGardenCode(index)
+  toasts.addToast({
+    message: 'Layout deleted',
+    type: 'alert-success',
+    duration: 2000,
+  })
 }
 
 const { text, copy } = useClipboard()
