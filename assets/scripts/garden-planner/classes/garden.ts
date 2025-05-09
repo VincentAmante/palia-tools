@@ -136,6 +136,8 @@ class Garden {
         cropIndex++
       }
     }
+
+    return true
   }
 
 
