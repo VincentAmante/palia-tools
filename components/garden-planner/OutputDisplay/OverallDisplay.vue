@@ -152,7 +152,7 @@ const craftingTime = computed(() => {
           <span v-if="processor.preserveJarsCount > 0">- {{ processor.preserveJarsCount }}</span>
         </p>
         <ul
-          class="flex flex-wrap gap-1 p-2 bg-opacity-50 border rounded-md bg-accent border-misc-dark min-h-16 gap-y-2">
+          class="flex flex-wrap items-start justify-start gap-1 p-2 bg-opacity-50 border rounded-md bg-accent border-misc-dark min-h-16">
           <ItemDisplay v-for="[name, item] in processor.preserveJars" :key="name" :img-src="item.img.src"
             :img-alt="item.img.alt" :star="item.isStar" :count="item.count" :base-gold-value="item.baseGoldValue"
             tooltip="Preserve Jars to use" />
