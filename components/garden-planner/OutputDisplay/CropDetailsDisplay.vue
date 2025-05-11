@@ -162,8 +162,8 @@ const selectedCropAsCrop = computed(() => {
       </button> -->
 
       <template v-for="([cropId, data]) in presentCrops" :key="cropId">
-        <CropButton :crop="getCropFromType(parseCropId(cropId).type)!" :count="data.count"
-          @click="selectCropForDetail(cropId)" :isSelected="cropId === selectedCropDetail" />
+        <CropDetailButton :crop="getCropFromType(parseCropId(cropId).type)!" :count="data.count"
+          @click="selectCropForDetail(cropId)" :isSelected="cropId === selectedCropDetail" :cropId="cropId" />
 
       </template>
     </div>
@@ -194,13 +194,15 @@ const selectedCropAsCrop = computed(() => {
           <p v-if="selectedCropTotalFullCycles !== selectedCropCycleData.totalHarvestsCount"
             class="font-semibold badge">
             {{ selectedCropCycleData.totalHarvestsCount }} Total Harvests</p>
-          <!-- <p class="font-semibold badge" v-if="selectedCropSeedsRequiredPerHarvest">
-        <span class="font-semibold">Seeds per Replant:</span>&nbsp;{{ selectedCropSeedsRequiredPerHarvest.count }}
-      </p>
-      <p class="font-semibold badge" v-else>
-        <span class="font-semibold">Seeds per Replant:</span>&nbsp;N/A
-      </p>
-      <p v-if="(selectedCropSeedsRequiredPerHarvest?.count || 0) !== selectedCropTotalSeedsRequired" class="font-semibold badge"><span class="font-semibold">Total Seeds Used:</span>&nbsp;{{ selectedCropTotalSeedsRequired }}</p> -->
+          <p class="font-semibold badge" v-if="selectedCropSeedsRequiredPerHarvest">
+            <span class="font-semibold">Seeds per Replant:</span>&nbsp;{{ selectedCropSeedsRequiredPerHarvest.count }}
+          </p>
+          <p class="font-semibold badge" v-else>
+            <span class="font-semibold">Seeds per Replant:</span>&nbsp;N/A
+          </p>
+          <p v-if="(selectedCropSeedsRequiredPerHarvest?.count || 0) !== selectedCropTotalSeedsRequired"
+            class="font-semibold badge"><span class="font-semibold">Total Seeds Used:</span>&nbsp;{{
+            selectedCropTotalSeedsRequired }}</p>
         </div>
       </div>
 

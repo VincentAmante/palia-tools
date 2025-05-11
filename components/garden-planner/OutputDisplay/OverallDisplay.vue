@@ -36,7 +36,8 @@ const craftingTime = computed(() => {
           <p class="w-full px-1 text-xs text-right text-misc-dark">
             Total
           </p>
-          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
+          <p
+            class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
             <img width="12" height="12" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
               format="webp">
             {{ (processor.finalGoldValue || 0).toLocaleString() }}
@@ -85,7 +86,8 @@ const craftingTime = computed(() => {
           <p class="w-full px-1 text-xs text-right text-misc-dark">
             Level
           </p>
-          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
+          <p
+            class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
             {{ harvester.settings.level }}
           </p>
         </div>
@@ -93,7 +95,8 @@ const craftingTime = computed(() => {
           <p class="w-full px-1 text-xs text-right text-misc-dark">
             Days of Harvest
           </p>
-          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
+          <p
+            class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
             {{ harvester.totalHarvest.lastHarvestDay }}
           </p>
         </div>
@@ -135,10 +138,14 @@ const craftingTime = computed(() => {
     <TotalInventory />
     <section class="grid gap-1 md:grid-cols-2">
       <div class="flex flex-col w-full">
-        <p class="px-1 text-sm font-semibold text-palia-blue-dark">
-          Seed Collectors
-          <span v-if="processor.seedCollectorsCount > 0">- {{ processor.seedCollectorsCount }}</span>
-        </p>
+        <div class="flex items-end">
+
+          <img src="/public/crafters/seeder.webp" class="max-w-6">
+          <p class="px-1 text-sm font-semibold text-palia-blue-dark">
+            Seed Collectors
+            <span v-if="processor.seedCollectorsCount > 0">- {{ processor.seedCollectorsCount }}</span>
+          </p>
+        </div>
         <ul
           class="flex flex-wrap gap-1 p-2 bg-opacity-50 border rounded-md border-misc-dark bg-accent min-h-16 gap-y-2">
           <ItemDisplay v-for="[name, item] in processor.seedCollectors" :key="name" :img-src="item.img.src"
@@ -147,10 +154,15 @@ const craftingTime = computed(() => {
         </ul>
       </div>
       <div class="flex flex-col w-full">
-        <p class="px-1 text-sm font-semibold text-palia-blue-dark">
-          Preserve Jars
-          <span v-if="processor.preserveJarsCount > 0">- {{ processor.preserveJarsCount }}</span>
-        </p>
+        <div class="flex items-end">
+
+          <img src="/public/crafters/preserve-jar.webp" class="max-w-6">
+          <p class="px-1 text-sm font-semibold text-palia-blue-dark">
+            Preserve Jars
+            <span v-if="processor.preserveJarsCount > 0">- {{ processor.preserveJarsCount }}</span>
+          </p>
+        </div>
+
         <ul
           class="flex flex-wrap items-start justify-start gap-1 p-2 bg-opacity-50 border rounded-md bg-accent border-misc-dark min-h-16">
           <ItemDisplay v-for="[name, item] in processor.preserveJars" :key="name" :img-src="item.img.src"

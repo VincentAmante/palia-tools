@@ -11,6 +11,8 @@ import type { IHarvesterOptions } from '~/assets/scripts/garden-planner/classes/
 import useGarden from '~/stores/useGarden'
 import { useSettingsCode } from '~/stores/useSettingsCode'
 import { storeToRefs } from 'pinia'
+import { CropItem } from '~/assets/scripts/garden-planner/classes/items/item'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const harvester = useHarvester()
 const garden = useGarden()
@@ -84,6 +86,14 @@ const activeProcessorSettings = computed(() => {
   return activeSettings
 })
 
+const activeCrafterCount = computed(() => {
+  return Array
+    .from(activeProcessorSettings.value.cropSettings.values())
+    .reduce((sum, setting) => {
+      return (setting.processAs !== ItemType.Crop) ? sum + setting.crafters : sum
+    }, 0);
+})
+
 function getCropImgSrc(cropType: CropType) {
   if (cropType === CropType.None || cropType === null) {
     return {
@@ -130,7 +140,7 @@ function saveGarden() {
 
 const { updateIsRequested } = storeToRefs(settingsCode)
 
-watch (updateIsRequested, () => {
+watch(updateIsRequested, () => {
   if (updateIsRequested.value) {
     loadGarden(settingsCode.code)
     settingsCode.resetUpdateRequest()
@@ -151,6 +161,8 @@ function loadGarden(saveString: string) {
   processor.simulateProcessing(harvester.totalHarvest)
   // You can add code here to update the UI with the loaded settings
 }
+
+const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
 </script>
 
 <template>
@@ -179,9 +191,13 @@ function loadGarden(saveString: string) {
             Process As
           </p>
         </div>
-        <div class="flex items-center justify-start w-full h-full col-span-3 gap-2 pl-2">
-          <p class="text-sm font-bold">
-            Crafters
+        <div class="flex items-center justify-start w-full h-full col-span-3 gap-2 pl-2"
+          :class="{ 'text-warning': isOverCrafterLimit }">
+          <p class="text-sm font-bold" :class="{ tooltip: isOverCrafterLimit }" data-tip="Known max of 30 crafters reached">
+            <span v-if="isOverCrafterLimit">
+              <FontAwesomeIcon :icon="['fas', 'triangle-exclamation']" />
+            </span>
+            Crafters {{ (activeCrafterCount > 0) ? `- ${activeCrafterCount}` : '' }}
           </p>
         </div>
       </div>
@@ -247,8 +263,8 @@ function loadGarden(saveString: string) {
             <div v-if="setting.processAs !== ItemType.Crop"
               class="relative flex flex-col items-start justify-start w-full h-full col-span-3 gap-2 pl-2">
               <div class="join">
-                <button class="btn-sm btn join-item disabled:bg-palia-blue-dark!"
-                  :disabled="setting.crafters <= 1" @click="() => {
+                <button class="btn-sm btn join-item disabled:bg-palia-blue-dark!" :disabled="setting.crafters <= 1"
+                  @click="() => {
                     if (setting.crafters <= 1)
                       return
 
