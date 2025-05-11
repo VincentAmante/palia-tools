@@ -244,12 +244,16 @@ export default class Harvester {
           // Seeds are required only on the last day of the cycle
           if (dayInCycle % lastDayOfCycle === 0) {
             // Marks a day where seeds are needed and how many
-            harvestDay.seedsRequired.set(seedsRequiredIdWithGrowth, {
-              count: group.count,
-              type: crop.type,
-            })
+            if (harvestDay.seedsRequired.get(seedsRequiredIdWithGrowth)) {
+              harvestDay.seedsRequired.get(seedsRequiredIdWithGrowth).count += group.count
+            }
+            else {
+              harvestDay.seedsRequired.set(seedsRequiredIdWithGrowth, {
+                count: group.count,
+                type: crop.type,
+              })
+            }
           }
-
           dayHarvests.set(dayInCycle, harvestDay)
         })
       }
@@ -280,10 +284,16 @@ export default class Harvester {
           })
 
           if (dayInCycle % lastDayOfCycle === 0) {
-            harvestDay.seedsRequired.set(seedsRequiredIdWithGrowth, {
-              count: group.count,
-              type: crop.type,
-            })
+            // Marks a day where seeds are needed and how many
+            if (harvestDay.seedsRequired.get(seedsRequiredIdWithGrowth)) {
+              harvestDay.seedsRequired.get(seedsRequiredIdWithGrowth).count += group.count
+            }
+            else {
+              harvestDay.seedsRequired.set(seedsRequiredIdWithGrowth, {
+                count: group.count,
+                type: crop.type,
+              })
+            }
           }
 
           dayHarvests.set(dayInCycle, harvestDay)
@@ -294,6 +304,7 @@ export default class Harvester {
     // Sort the harvests by day for chronological calculations
     dayHarvests = new Map([...dayHarvests.entries()].sort(([a], [b]) => a - b))
 
+    // console.log('dayHarvests', dayHarvests)
     /**
      * Contains the remainder of seeds after replanting for the next replant cycle
      */
@@ -321,16 +332,25 @@ export default class Harvester {
             continue
           }
 
+          // console.log(seedsRequiredInfo)
+
           const { cropsPerSeed, seedsPerConversion } = crop.conversionInfo
 
           // Calculate how many seeds need to be produced to replant, factoring in remainder from previous harvests
           const remainingSeeds = seedsRemainder.get(id) ?? 0
+          // console.log('remainingSeeds', remainingSeeds)
+
           const remainderSeedsToBeUsed = Math.min(remainingSeeds, seedsRequiredInfo.count)
+          // console.log('remainderSeedsToBeUsed', remainderSeedsToBeUsed)
+
           const seedsRequiredCount = seedsRequiredInfo.count - remainderSeedsToBeUsed
+          // console.log('seedsRequiredCount', seedsRequiredCount)
 
           const conversionsNeeded = Math.ceil(seedsRequiredCount / seedsPerConversion)
+          // console.log('conversionsNeeded', conversionsNeeded)
 
           const cropsRequired = conversionsNeeded * cropsPerSeed
+          // console.log('cropsRequired', cropsRequired)
 
           const cropData = harvest.crops.get(id) || {
             base: 0,
@@ -409,6 +429,8 @@ export default class Harvester {
             console.error('Somehow undefined')
             return
           }
+
+          // console.log(cropId, average, cropCycleData.phases.at(-1)!.yield.star.totalWithDeductions)
 
           // Change the appropriate yield
           if (isStar) {
