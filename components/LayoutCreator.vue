@@ -297,16 +297,16 @@ function trimLayout(): PlotStatus[][] {
           </div>
           <div v-if="selectedNewLayout === 'custom'" class="w-full flex flex-col gap-1  bg-misc-secondary px-2 rounded-md  py-2">
             <label class="label flex items-start border-white w-fit gap-2">
-              <span class="text-sm">Allow Illegal Layout</span>
+              <span class="text-sm">Expand Plot Limits</span>
               <div class="flex flex-col">
                 <input
                   v-model="allowIllegalLayout" type="checkbox" name="allow-illegal-layout"
-                  class="toggle  rounded-xs"
+                  class="toggle"
                 >
               </div>
             </label>
             <p class="text-xs opacity-40 font-thin">
-              Increase the maximum amount of overall plots from 9 to 27
+              Increases plot limit from 9 to 27. For if plot limits are increased or for experimenting with plot configurations the garden planner doesn't support.
             </p>
           </div>
         </div>
