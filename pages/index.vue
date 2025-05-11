@@ -17,6 +17,26 @@ useHead({
 
 const isTakingScreenshot = useTakingScreenshot()
 const toasts = useToasts()
+
+const uiSettings = useUiSettings()
+const toastLocation = computed(() => {
+  switch (uiSettings.settings.toastsLocation) {
+    case 'top-left':
+      return 'toast-top toast-start'
+    case 'top-center':
+      return 'toast-top toast-center'
+    case 'top-right':
+      return 'toast-top toast-end'
+    case 'bottom-left':
+      return 'toast-bottom toast-start'
+    case 'bottom-center':
+      return 'toast-bottom toast-center'
+    case 'bottom-right':
+     return 'toast-bottom toast-end'
+    default:
+      return 'toast-top toast-start'
+  }
+})
 </script>
 
 <template>
@@ -43,10 +63,10 @@ const toasts = useToasts()
         </button>
       </div>
     </DevOnly> -->
-    <CropModalButton position="bottom-right" />
+    <CropModalButton :position="uiSettings.settings.floatComponentLocation" />
     <Teleport to="body">
-      <section id="toasts" class="toast toast-start toast-center z-10000!">
-        <Toast v-for="(toast, index) in toasts.toasts" :key="toast.id" :message="toast.message" :type="toast.type"
+      <section id="toasts" class="toast z-1000" :class="toastLocation">
+        <Toast v-for="(toast) in toasts.toasts" :key="toast.id" :message="toast.message" :type="toast.type"
           :id="toast.id!" :duration="toast.duration" @close="() => { toasts.removeToast(toast.id!) }" />
       </section>
     </Teleport>

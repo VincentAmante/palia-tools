@@ -2,6 +2,10 @@
 import { computed } from 'vue'
 import type { PropType } from 'vue'
 import { Bonus, Crop, Fertiliser, Tile, getCodeFromCrop } from '@/assets/scripts/garden-planner/imports'
+import { useUiSettings } from '@/stores/useUiSettings'
+
+
+const uiSettings = useUiSettings()
 
 import { useSelectedItem } from '@/stores/useSelectedItem'
 
@@ -108,38 +112,35 @@ const border = computed(() => {
 
   return style
 })
+
+const showBonusBackground = computed(() => uiSettings.settings.cropTile.showBonusBackground)
+const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcons)
+
 </script>
 
 <template>
   <div
     class="border-misc-saturated relative select-none min-w-[3rem] xl:min-w-[3.25rem] hover:bg-primary aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
-             border,
-             borderRadius,
-             (tile?.isHovered ? 'bg-primary' : ' bg-secondary'),
-    ]"
-  >
-    <div class="absolute w-full h-full -z-10" :class="bgColour" />
+      border,
+      borderRadius,
+    (tile?.isHovered ? 'bg-primary' : ' bg-secondary'),
+    ]">
+    <div v-show="showBonusBackground" class="absolute w-full h-full -z-10" :class="bgColour" />
     <div class="font-bold uppercase select-none lg:text-3xl">
-      <img
-        v-if="(selectedItem.val instanceof Crop && tile?.isHovered)"
-        format="webp"
-        draggable="false" class="select-none p-1 max-w-[38px] md:max-w-[36px] 2xl:max-w-[38px] opacity-50"
-        :src="selectedItem.val.image"
-        :srcset="undefined"
-      >
-      <img
-        v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px"
-        format="webp"
-        draggable="false" class="select-none p-1 max-w-[36px] md:max-w-[36px] 2xl:max-w-[38px]"
-        :src="tile?.crop?.image"
-        :srcset="undefined"
-      >
+      <img v-if="(selectedItem.val instanceof Crop && tile?.isHovered)" format="webp" draggable="false"
+        class="select-none p-1 max-w-[38px] md:max-w-[36px] 2xl:max-w-[38px] opacity-50" :src="selectedItem.val.image"
+        :srcset="undefined">
+      <img v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px" format="webp"
+        draggable="false" class="select-none p-1 max-w-[36px] md:max-w-[36px] 2xl:max-w-[38px]" :src="tile?.crop?.image"
+        :srcset="undefined">
       <div v-else>
         {{ code as string || ' ' }}
       </div>
     </div>
-    <ul class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] xl:py-[1px] flex w-full gap-[0.6px] xl:gap-[1.3px] justify-center ">
+    <ul
+      v-show="showBonusIcons"
+      class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] xl:py-[1px] flex w-full gap-[0.6px] xl:gap-[1.3px] justify-center ">
       <li v-show="bonuses?.includes(Bonus.SpeedIncrease)">
         <font-awesome-icon class="text-growth-boost" :icon="['fas', 'forward-fast']" />
       </li>
@@ -157,24 +158,11 @@ const border = computed(() => {
       </li>
     </ul>
     <div class="absolute bottom-0 right-0 p-[2px]">
-      <img
-        v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)"
-        :src="selectedItem.val.image"
-        format="webp"
-        draggable="false" class="select-none max-w-[16px] opacity-50"
-        :srcset="undefined"
-      >
-      <img
-        v-else-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0"
-        format="webp"
-        draggable="false" class="select-none max-w-[16px]"
-        :src="tile?.fertiliser?.image"
-        :srcset="undefined"
-      >
+      <img v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)" :src="selectedItem.val.image"
+        format="webp" draggable="false" class="select-none max-w-[16px] opacity-50" :srcset="undefined">
+      <img v-else-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0" format="webp" draggable="false"
+        class="select-none max-w-[16px]" :src="tile?.fertiliser?.image" :srcset="undefined">
     </div>
-    <div
-      class="absolute w-full h-full transition-all -z-20"
-      :class="bonusBgColor"
-    />
+    <div class="absolute w-full h-full transition-all -z-20" :class="bonusBgColor" />
   </div>
 </template>
