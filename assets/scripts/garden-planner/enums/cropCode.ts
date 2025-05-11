@@ -10,7 +10,7 @@ enum CropCode {
   Blueberry = 'B',
   Apple = 'A',
   Corn = 'Cr',
-  SpicyPepper = 'Sp',
+  SpicyPepper = 'S',
   NapaCabbage = 'Cb',
   BokChoy = 'Bk',
 }

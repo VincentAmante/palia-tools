@@ -42,7 +42,7 @@ class Garden {
     }
 
     this.loadLayout(
-      `v${this._version}_DIM-111-111-111_CROPS-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN`,
+      `v${this._version}_D-111-111-111_Cr-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN`,
     )
   }
 
@@ -145,7 +145,7 @@ class Garden {
    * @returns a string containing the layout info of the garden
    */
   saveLayout(settingsCode?: string): string {
-    let layoutCode = `v${this._version}_DIM-`
+    let layoutCode = `v${this._version}_D-`
     const rows = this._layout.length
     const columns = this._layout[0].length
 
@@ -156,7 +156,7 @@ class Garden {
       layoutCode += `${row}-`
     }
 
-    layoutCode = `${layoutCode.substring(0, layoutCode.length - 1)}_CROPS-`
+    layoutCode = `${layoutCode.substring(0, layoutCode.length - 1)}_CR-`
 
     for (const plot of this._layout.flat()) {
       if (plot.isActive) {

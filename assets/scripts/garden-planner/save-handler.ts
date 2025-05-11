@@ -6,10 +6,28 @@ import CropCode from './enums/cropCode'
 import type { IHarvesterOptions } from './classes/harvester'
 import type { ProcessorSetting, ProcessorSettings } from './classes/processor'
 import { parseCropId, type ICropNameWithGrowthDiff, encodeCropId, ItemType } from './utils/garden-helpers'
-import { getCropFromCode } from './imports'
+import { Crop, getCropFromCode } from './imports'
+import FertiliserCode from './enums/fertilisercode'
 
+
+/**
+ * Gets the latest set of cropCodes, to be overriden by past iterations
+ * - This allows us to not have to update the whole thing everytime there's a new crop
+ */
+function getCropCodes() {
+  return Object.fromEntries(
+    Object.values(CropCode).map((cropCode) => [cropCode, cropCode])
+  ) as { [key in CropCode]: string }
+}
+
+function getFertiliserCodes() {
+  return Object.fromEntries(
+    Object.values(FertiliserCode).map((cropCode) => [cropCode, cropCode])
+  ) as { [key in FertiliserCode]: string }
+}
 
 const v0_1CropCodes: { [key in CropCode]: string } = {
+  ...getCropCodes(),
   [CropCode.None]: 'Na',
   [CropCode.Tomato]: 'To',
   [CropCode.Potato]: 'Po',
@@ -21,12 +39,10 @@ const v0_1CropCodes: { [key in CropCode]: string } = {
   [CropCode.Blueberry]: 'Bl',
   [CropCode.Apple]: 'Ap',
   [CropCode.Corn]: 'Co',
-  [CropCode.SpicyPepper]: 'Sp',
-  [CropCode.NapaCabbage]: 'Cb',
-  [CropCode.BokChoy]: 'Bk',
 }
 
 const v0_2CropCodes: { [key in CropCode]: string } = {
+  ...getCropCodes(),
   [CropCode.None]: 'N',
   [CropCode.Tomato]: 'T',
   [CropCode.Potato]: 'P',
@@ -43,12 +59,92 @@ const v0_2CropCodes: { [key in CropCode]: string } = {
   [CropCode.BokChoy]: 'Bk',
 }
 
+const v0_2FertCodes: { [key in FertiliserCode]: string } = {
+  ...getFertiliserCodes(),
+  [FertiliserCode.None]: 'N',
+  [FertiliserCode.SpeedyGro]: 'S',
+  [FertiliserCode.QualityUp]: 'Q',
+  [FertiliserCode.WeedBlock]: 'W',
+  [FertiliserCode.HarvestBoost]: 'H',
+  [FertiliserCode.HydratePro]: 'Hp',
+}
+
+const v0_3CropCodes: { [key in CropCode]: string } = {
+  ...getCropCodes(),
+  [CropCode.None]: 'N',
+  [CropCode.Tomato]: 'T',
+  [CropCode.Potato]: 'P',
+  [CropCode.Rice]: 'R',
+  [CropCode.Wheat]: 'W',
+  [CropCode.Carrot]: 'C',
+  [CropCode.Onion]: 'O',
+  [CropCode.Cotton]: 'Co',
+  [CropCode.Blueberry]: 'B',
+  [CropCode.Apple]: 'A',
+  [CropCode.Corn]: 'Cr',
+  [CropCode.SpicyPepper]: 'S',
+  [CropCode.NapaCabbage]: 'Cb',
+  [CropCode.BokChoy]: 'Bk',
+}
+
+const v0_3FertCodes: { [key in FertiliserCode]: string } = {
+  ...getFertiliserCodes(),
+  [FertiliserCode.None]: 'N',
+  [FertiliserCode.SpeedyGro]: 'S',
+  [FertiliserCode.QualityUp]: 'Q',
+  [FertiliserCode.WeedBlock]: 'W',
+  [FertiliserCode.HarvestBoost]: 'H',
+  [FertiliserCode.HydratePro]: 'Y',
+}
+
+function getCropCode(codeList: typeof v0_2CropCodes, codeToFind: string) {
+  return Object.keys(codeList).find(key => (codeList[key as CropCode] as string) === codeToFind);
+}
+function getFertCode(codeList: typeof v0_2FertCodes, codeToFind: string) {
+  return Object.keys(codeList).find(key => (codeList[key as FertiliserCode] as string) === codeToFind);
+}
+
+
 function convertV0_1CodestoV0_2(save: string): string {
   let newSave = save
   for (const [key, value] of Object.entries(v0_1CropCodes))
     newSave = newSave.replaceAll(value, v0_2CropCodes[key as CropCode])
 
   return newSave
+}
+
+function convertV_02Codesto_V0_3(save: string) {
+
+  // Remove the "CROPS-" prefix
+  const cropSection = save.replace("CROPS-", "");
+
+  const cropSections = cropSection.split('-')
+
+  // Regex to capture crop and optional fertiliser
+  const regex = /([A-Z][a-z]?)(?:\.([A-Z][a-z]?))?/g;
+
+  let match: RegExpExecArray | null;
+
+  let newCode = ''
+
+
+  for (let i = 0; i < cropSections.length; i++) {
+    let newSection = ''
+
+    while ((match = regex.exec(cropSections[i])) !== null) {
+      const crop = v0_3CropCodes[(getCropCode(v0_2CropCodes, match[1]) ?? CropCode.None) as CropCode];
+      const fertiliser = v0_3FertCodes[(getFertCode(v0_2FertCodes, match[2]) ?? FertiliserCode.None) as FertiliserCode];
+
+      newSection += `${crop}${fertiliser ? '.' + fertiliser : ''}`;
+    }
+
+    if (i < cropSections.length - 1) {
+      newSection += '-'
+    }
+    newCode += newSection
+  }
+
+  return `CR-${newCode}`
 }
 
 /**
@@ -63,7 +159,6 @@ function parseSave(save: string) {
   let settingsInfo = ''
 
   const strippedVersion = version.replace('v', '')
-
   switch (strippedVersion) {
     case '0.1':
       validatePlotMatrix(rest[0])
@@ -73,7 +168,7 @@ function parseSave(save: string) {
     case '0.2':
       validatePlotMatrix(rest[0])
       dimensionInfo = rest[0]
-      cropInfo = rest[1]
+      cropInfo = convertV_02Codesto_V0_3(rest[1])
       return { version, dimensionInfo, cropInfo, settingsInfo }
     case '0.3':
       validatePlotMatrix(rest[0])
@@ -198,7 +293,7 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
   for (let setting of settings) {
     if (setting.startsWith('0')) {
       setting = setting.slice(1)
-    
+
       const cropSettings = setting.split('-')
       for (const cropSetting of cropSettings) {
 
@@ -241,18 +336,18 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
         'Nss': () => { harvesterOptions.useStarSeeds = false; },
         'Gb': () => { harvesterOptions.useGrowthBoost = true; },
       };
-      
+
       for (const harvesterSetting of harvesterSettings) {
         if (exactHandlers[harvesterSetting]) {
           exactHandlers[harvesterSetting]();
           continue;
         }
-      
+
         const match = harvesterSetting.match(/^([A-Z])(\d+)$/);
         if (match) {
           const [, prefix, value] = match;
           const number = parseInt(value);
-      
+
           switch (prefix) {
             case 'D':
               harvesterOptions.days = number;

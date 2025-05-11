@@ -5,7 +5,7 @@ enum FertiliserCode {
   WeedBlock = 'W',
   SpeedyGro = 'S',
   // TODO: Consider renaming code to 'Y', to compress the code to 1 character
-  HydratePro = 'Hp',
+  HydratePro = 'Y',
 }
 
 export default FertiliserCode

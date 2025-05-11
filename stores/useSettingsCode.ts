@@ -2,7 +2,9 @@ import { defineStore } from 'pinia'
 
 export const useSettingsCode = defineStore('settingsCode', () => {
   const val = ref('')
-  const code = computed(() => val.value)
+  const includeSettingsCode = ref(true)
+
+  const code = computed(() => (includeSettingsCode.value ? val.value : ''))
   const set = (newVal: string) => {
     val.value = newVal
   }
@@ -17,11 +19,13 @@ export const useSettingsCode = defineStore('settingsCode', () => {
     updateIsRequestedVal.value = false
   }
 
+
   return {
     code,
     set,
     updateIsRequested,
     requestUpdate,
     resetUpdateRequest,
+     includeSettingsCode
   }
 })
