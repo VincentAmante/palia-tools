@@ -5,8 +5,11 @@ import PGPModal from '@/components/PGPModal.vue'
 import { useSaveCode } from '~/stores/useSaveCode'
 
 const saveCode = useSaveCode()
+const gardenHandler = useGarden()
+const { includeSettingsCode } = storeToRefs(useSettingsCode())
 const title = ref('New Save')
 const version = ref(1)
+
 
 const toasts = useToasts()
 
@@ -64,6 +67,11 @@ function editTitle(index: number, newTitle: string) {
 function deleteCode(index: number) {
   deleteGardenCode(index)
 }
+
+watch(includeSettingsCode, () => {
+  saveCode.set(gardenHandler.garden.saveLayout(useSettingsCode().code))
+})
+
 </script>
 
 <template>
@@ -72,12 +80,26 @@ function deleteCode(index: number) {
       Save Layout
     </template>
     <template #body>
-      <div class="tabs tabs-box w-fit">
-        <a class="tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
-          @click="activeTab = 'clipboard-tab'">Clipboard</a>
-        <a class="tab" :class="{ 'tab-active': activeTab === 'browser-tab' }"
-          @click="activeTab = 'browser-tab'">Browser</a>
+      <div class="flex justify-between">
+        <div class="tabs tabs-box w-fit">
+          <a class="tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
+            @click="activeTab = 'clipboard-tab'">Clipboard</a>
+          <a class="tab" :class="{ 'tab-active': activeTab === 'browser-tab' }"
+            @click="activeTab = 'browser-tab'">Browser</a>
+        </div>
       </div>
+
+      <!-- <fieldset class="fieldset items-end">
+        <legend class="fieldset-legend">
+          Include Settings
+        </legend>
+
+      </fieldset> -->
+
+      <label class="flex items-center gap-1">
+        <span class="label text-xs">Include Settings</span>
+        <input class="toggle toggle-xs" type="checkbox" v-model="includeSettingsCode" />
+      </label>
       <div v-if="activeTab === 'clipboard-tab'" id="clipboard-tab" class="flex flex-col gap-2">
         <div class="card card-compact">
           <div class="relative flex flex-col p-4 px-3 rounded-md card-body bg-palia-blue-dark">
@@ -113,9 +135,9 @@ function deleteCode(index: number) {
                 {{ (text === ((useMarkdown) ? saveCode.linkMarkdown : saveCode.link)) ? 'Copied!' : 'Copy' }}
                 <font-awesome-icon :icon="['fas', 'copy']" />
               </button>
-              <label class="grid items-center gap-2 py-2 text-xs font-semibold">
-                <input v-model="useMarkdown" type="checkbox" class="rounded-xs toggle toggle-sm">
-                <div class="font-normal">Markdown</div>
+              <label class="flex items-center gap-1 py-2 text-xs font-semibold">
+                <div class="font-normal label">Markdown</div>
+                <input v-model="useMarkdown" type="checkbox" class="toggle toggle-sm">
               </label>
               <!-- <p class="text-xs text-warning">
                 <font-awesome-icon icon="exclamation-triangle" class="mr-1" />
