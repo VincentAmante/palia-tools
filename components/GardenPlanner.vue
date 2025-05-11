@@ -63,7 +63,11 @@ const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
         <section class="w-full sm:px-2">
           <div class="h-full sm:rounded-lg bg-primary">
             <OutputDisplay is-main-output-display
-              @tab-changed="(newValue: 'garden+display' | 'display+display') => selectedTab = newValue" />
+              @tab-changed="(newValue: 'garden+display' | 'display+display') => {
+                if (selectedTab !== newValue){
+                  selectedTab = newValue
+                }
+              }" />
           </div>
         </section>
       </section>
