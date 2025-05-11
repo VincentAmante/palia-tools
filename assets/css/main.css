@@ -42,7 +42,7 @@
   --color-error-content: oklch(91.97% 0.027 80.25);  /* #EEE3D1 */
 
   /* Border radius */
-  --radius-selector: 1rem;
+  --radius-selector: 0.5rem;
   --radius-field: 0.25rem;
   --radius-box: 0.25rem;
 
@@ -94,6 +94,7 @@
 
   /* Weed prevention */
   --color-weed-prevention: oklch(63.35% 0.157 33.73); /* #d86046 */
+  --color-error: var(--color-weed-prevention);          /* #D86046 */
 
   /* Harvest boost */
   --color-harvest-boost: oklch(71.54% 0.124 121.50);  /* #97af51 */
