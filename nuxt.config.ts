@@ -17,6 +17,9 @@ export default defineNuxtConfig({
       // '@tailwindcss/postcss': {}
     },
   },
+  nitro: {
+    static: true
+  },
   modules: [
     '@vueuse/nuxt',
     '@nuxt/image',
