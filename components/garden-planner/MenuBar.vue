@@ -12,6 +12,7 @@ import LoadModal from '~/components/garden-planner/LoadModal.vue'
 import LayoutCreator from '@/components/LayoutCreator.vue'
 import type ExportModal from '~/components/garden-planner/ExportModal.vue'
 import { useToasts } from '~/stores/useToasts'
+import UISettingsModal from './UISettingsModal.vue'
 
 const toasts = useToasts()
 const gardenHandler = useGarden()
@@ -58,6 +59,12 @@ function openLoadModal() {
   loadModal.value?.openModal()
 }
 
+const uiSettingsModal = ref<InstanceType<typeof UISettingsModal> | null>(null)
+function openUISettingsModal() {
+  uiSettingsModal.value?.openModal()
+}
+
+
 const exportModal = ref<InstanceType<typeof ExportModal> | null>(null)
 function openExportModal() {
   exportModal.value?.openModal()
@@ -80,38 +87,44 @@ onMounted(() => {
 
 <template>
   <section class="flex flex-wrap justify-between gap-1 p-2 sm:gap-2 bg-palia-blue-dark rounded-b-md">
-    <div class="grid flex-wrap w-full grid-cols-3 gap-2 py-1 sm:py-0 lg:py-2 sm:flex sm:w-fit">
-      <button class="h-full normal-case btn bg-palia-blue" @click="openSaveModal">
+    <div class="grid flex-wrap w-full grid-cols-3 gap-2 py-1 sm:py-0 xl:py-2 xl:flex xl:w-fit order-2 xl:order-1">
+      <button class="xl:h-full normal-case btn bg-palia-blue" @click="openSaveModal">
         <font-awesome-icon class="text-lg" icon="floppy-disk" />
         Save
       </button>
-      <button class="h-full normal-case btn bg-palia-blue" @click="openLoadModal">
+      <button class="xl:h-full normal-case btn bg-palia-blue" @click="openLoadModal">
         <font-awesome-icon class="text-lg" icon="download" />
         Load
       </button>
-      <button class="h-full normal-case btn bg-palia-blue">
+      <button class="xl:h-full normal-case btn bg-palia-blue">
         <font-awesome-icon class="text-lg" icon="share-from-square" />
         Export
       </button>
     </div>
-    <div class="flex-col items-center w-full px-12 py-1 rounded-md sm:py-2 sm:w-fit sm:flex bg-palia-blue">
+    <div class="flex-col items-center w-full px-10 py-1 rounded-md sm:py-2 xl:w-fit xl:flex bg-palia-blue order-3 xl:order-2">
       <TimeDisplay />
     </div>
-    <div class="grid flex-wrap w-full grid-cols-2 gap-2 py-1 sm:w-fit sm:flex sm:py-2">
-      <button class="h-full normal-case btn btn-warning text-neutral" @click="openNewLayoutModal">
+    <div class="grid flex-wrap w-full grid-cols-2 sm:grid-cols-3 gap-2 py-1 xl:w-fit xl:flex xl:py-2 order-2 xl:order-3 ">
+      <button class="xl:h-full btn btn-soft" @click="openNewLayoutModal">
         <font-awesome-icon class="text-lg" icon="pen-to-square" />
         Edit Layout
       </button>
-      <button class="h-full normal-case btn btn-error" @click="clearGarden">
+      <button class="xl:h-full btn btn-warning text-neutral" @click="clearGarden">
         <font-awesome-icon class="text-lg" icon="trash" />
         Clear Plot
+      </button>
+
+      <!-- UI Modal -->
+      <button class="xl:h-full btn btn-info btn-soft" @click="openUISettingsModal">
+        <font-awesome-icon class="text-lg" icon="cog" />
+        Settings
       </button>
     </div>
     <Teleport to="body">
       <!-- Put all modals here -->
       <SaveModal ref="saveModal" @save-layout="saveLayout()" />
       <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
-
+      <UISettingsModal ref="uiSettingsModal" />
       <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
       <!-- <ExportModal ref="exportModal" @download-image="async () => await saveAsImage()" /> -->
     </Teleport>
