@@ -263,7 +263,7 @@ function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: 
   }
 
   if (cropSettings.length > 0) {
-    settings += `Cr0${cropSettings}`
+    settings += `Cr0.${cropSettings}`
   }
 
   // check for trailing underscore or trailing dash
@@ -288,10 +288,10 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
     crafterSetting: 0,
   }
 
-  const settings = settingsInfo.split('Cr')
+  const settings = settingsInfo.split('Cr0')
 
   for (let setting of settings) {
-    if (setting.startsWith('0')) {
+    if (setting.startsWith('.')) {
       setting = setting.slice(1)
 
       const cropSettings = setting.split('-')
@@ -360,9 +360,6 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
       }
     }
   }
-
-  // console.log('Processor Settings:', processorSettings)
-  // console.log('Harvester Options:', harvesterOptions)
 
   return { harvesterOptions, processorSettings }
 }
