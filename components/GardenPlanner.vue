@@ -22,7 +22,7 @@ const { isFullUpdateRequested } = storeToRefs(gardenHandler)
 
 watchEffect(() => {
   gardenHandler.update()
-  harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles)
+  harvester.harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles, harvester.settings)
   processor.simulateProcessing(harvester.totalHarvest)
 })
 
