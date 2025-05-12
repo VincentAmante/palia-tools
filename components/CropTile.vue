@@ -158,8 +158,7 @@ const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcon
       </li>
     </ul>
     <div class="absolute bottom-0 right-0 p-[2px]">
-      <img v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)" :src="selectedItem.val.image"
-        format="webp" draggable="false" class="select-none max-w-[16px] opacity-50" :srcset="undefined">
+      <img v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)" :src="selectedItem.val.image" draggable="false" class="select-none max-w-[16px] opacity-50" :srcset="undefined">
       <img v-else-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0" format="webp" draggable="false"
         class="select-none max-w-[16px]" :src="tile?.fertiliser?.image" :srcset="undefined">
     </div>
