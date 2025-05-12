@@ -96,8 +96,8 @@ onMounted(() => {
         <font-awesome-icon class="text-lg" icon="download" />
         Load
       </button>
-      <button class="xl:h-full normal-case btn bg-palia-blue">
-        <font-awesome-icon class="text-lg" icon="share-from-square" />
+      <button class="xl:h-full normal-case btn bg-palia-blue" disabled>
+        <font-awesome-icon class="text-lg" icon="share-from-square" @click="openExportModal" />
         Export
       </button>
     </div>
