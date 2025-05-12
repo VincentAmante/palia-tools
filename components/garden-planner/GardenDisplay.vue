@@ -74,7 +74,7 @@ function handleDragEnter(row: number, col: number, plot: Plot) {
       : isTakingScreenshot.get ? 'max-w-[1680px]' : 'max-w-[100vw]']"
   >
     <div
-      class="px-3 my-4 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
+      class="px-3 my-4 mb-2 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
       :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'"
       @contextmenu.prevent.self=""
     >

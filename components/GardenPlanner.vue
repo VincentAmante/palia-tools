@@ -35,7 +35,7 @@ const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
     <div class="sm:py-1 rounded-t-md sm:px-2 bg-accent">
       <ItemSelector />
       <AppDivider class="order-3 mx-4 my-1 lg:col-span-7 " :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
-      <section class="flex flex-col sm:py-2 gap-y-4 justify-between"
+      <section class="flex flex-col sm:py-2 gap-y-2 justify-between"
         :class="[gardenHandler.isGardenWide ? '' : 'lg:flex-row']">
         <section class="h-full" :class="[gardenHandler.isGardenWide ? 'flex flex-col items-center pb-2' : '',
         (selectedTab === 'display+display') ? 'w-full' : ''

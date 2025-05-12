@@ -18,8 +18,8 @@ const minutes = computed(() => {
   <p class="text-xs text-palia-blue-dark">
     <font-awesome-icon :icon="['fas', 'stopwatch']" />
     <span>
-      {{ hours }}<span aria-label="Hours">Hrs</span>
-      {{ minutes }}<span aria-label="Minutes">Min</span>
+      {{ hours.toLocaleString() }}<span aria-label="Hours">Hrs</span>
+      {{ minutes.toLocaleString() }}<span aria-label="Minutes">Min</span>
     </span>
   </p>
 </template>

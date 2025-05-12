@@ -36,11 +36,10 @@ const craftingTime = computed(() => {
           <p class="w-full px-1 text-xs text-right text-misc-dark">
             Total
           </p>
-          <p
-            class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
+          <p class="flex items-center justify-end gap-1 text-lg font-semibold text-center @2xl:text-xl text-palia-blue">
             <img width="12" height="12" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
               format="webp">
-            {{ (processor.finalGoldValue || 0).toLocaleString() }}
+            {{ parseInt((processor.finalGoldValue || 0).toFixed(0)).toLocaleString() }}
           </p>
         </div>
         <div class="p-1 border rounded-md bg-accent border-misc-dark">
@@ -52,7 +51,7 @@ const craftingTime = computed(() => {
             Average
           </p>
           <p
-            class="flex items-center justify-end w-full gap-1 text-xl font-semibold text-right @2xl:text-2xl text-palia-blue">
+            class="flex items-center justify-end w-full gap-1 text-lg font-semibold text-right @2xl:text-xl text-palia-blue">
             <img width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
               format="webp">
             <span v-if="processor.highestCraftingTime > 0">
@@ -72,10 +71,12 @@ const craftingTime = computed(() => {
           <p class="w-full text-xs text-right text-misc-dark">
             Process Time
           </p>
-          <p class="flex items-end justify-end text-xl font-semibold text-right text-palia-blue @2xl:text-2xl">
+          <p class="flex items-end justify-end text-lg font-semibold text-right text-palia-blue @2xl:text-xl">
             <template v-if="((craftingTime.hours + craftingTime.minutes) > 0)">
-              {{ craftingTime.hours.toFixed(0) }}<span class="pr-1">h</span> {{ craftingTime.minutes.toFixed(0)
-              }}<span class="">m</span>
+              {{ parseInt(craftingTime.hours.toFixed(0)).toLocaleString() }}
+              <span class="pr-1" aria-label="Hours">h</span> {{
+                parseInt(craftingTime.minutes.toFixed(0)).toLocaleString()
+              }}<span class="" aria-label="Minutes">m</span>
             </template>
             <template v-else>
               <span class="text-warning">N/A</span>
@@ -86,8 +87,7 @@ const craftingTime = computed(() => {
           <p class="w-full px-1 text-xs text-right text-misc-dark">
             Level
           </p>
-          <p
-            class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
+          <p class="flex items-center justify-end gap-1 text-lg font-semibold text-center @2xl:text-xl text-palia-blue">
             {{ harvester.settings.level }}
           </p>
         </div>
@@ -95,8 +95,7 @@ const craftingTime = computed(() => {
           <p class="w-full px-1 text-xs text-right text-misc-dark">
             Days of Harvest
           </p>
-          <p
-            class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-2xl text-palia-blue">
+          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-xl text-palia-blue">
             {{ harvester.totalHarvest.lastHarvestDay }}
           </p>
         </div>
