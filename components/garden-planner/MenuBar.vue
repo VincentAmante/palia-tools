@@ -117,7 +117,7 @@ onMounted(() => {
       <!-- UI Modal -->
       <button class="xl:h-full btn btn-info btn-soft" @click="openUISettingsModal">
         <font-awesome-icon class="text-lg" icon="cog" />
-        Settings
+        UI Settings
       </button>
     </div>
     <Teleport to="body">

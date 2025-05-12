@@ -12,7 +12,7 @@ const savedGardenCodes = ref<SavedGardenCode[]>([])
 function loadSavedGardenCodes() {
   const savedCodes = localStorage.getItem('savedGardenCodes')
   if (savedCodes)
-    savedGardenCodes.value = JSON.parse(savedCodes)
+    savedGardenCodes.value = (JSON.parse(savedCodes) as SavedGardenCode[]).sort((codeA, codeB) => ((new Date(codeA.dateCreated).getTime() - new Date(codeB.dateCreated).getTime()) * -1))
 }
 
 function saveGardenCode(title: string, code: string, version: number) {

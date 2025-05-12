@@ -26,10 +26,6 @@ defineExpose({
 })
 
 async function confirmDelete(index: number) {
-  // const isConfirmed = await confirm('Are you sure you want to delete this layout?', 'Delete Layout')
-  // if (isConfirmed) {
-  // }
-
   deleteGardenCode(index)
   toasts.addToast({
     message: 'Layout deleted',
@@ -53,7 +49,9 @@ function loadSavedCode(code: string) {
 }
 
 const filteredSavedGardenCodes = computed(() => {
-  return savedGardenCodes.value.filter(code => code.title.toLowerCase().includes(searchQuery.value.toLowerCase()))
+  return savedGardenCodes.value
+    .filter(code => code.title.toLowerCase().includes(searchQuery.value.toLowerCase()))
+    .sort((codeA, codeB) => ((new Date(codeA.dateCreated).getTime() - new Date(codeB.dateCreated).getTime()) * -1))
 })
 
 const loadCode = ref(text.value)
@@ -69,11 +67,10 @@ async function paste() {
     </template>
     <template #body>
       <div class="tabs tabs-box w-fit">
-        <a
-          class="px-2 tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
-          @click="activeTab = 'clipboard-tab'"
-        >From Clipboard</a>
-        <a class="px-2 tab" :class="{ 'tab-active': activeTab === 'browser-tab' }" @click="activeTab = 'browser-tab'">From Browser</a>
+        <a class="px-2 tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
+          @click="activeTab = 'clipboard-tab'">From Clipboard</a>
+        <a class="px-2 tab" :class="{ 'tab-active': activeTab === 'browser-tab' }"
+          @click="activeTab = 'browser-tab'">From Browser</a>
       </div>
       <div v-if="activeTab === 'clipboard-tab'" id="clipboard-tab" class="flex flex-col gap-2">
         <div class="card card-compact">
@@ -100,25 +97,20 @@ async function paste() {
               Saved Layouts
             </p>
             <ul class="flex flex-col w-full gap-2 p-2 overflow-y-auto rounded-xs bg-base-100 max-h-90 md:max-h-[496px]">
-              <li v-for="(code, index) in filteredSavedGardenCodes" :key="index" class="flex items-start justify-between w-full pb-2 border-b last:border-b-0 border-b-accent/20">
+              <li v-for="(code, index) in filteredSavedGardenCodes" :key="index"
+                class="flex items-start justify-between w-full pb-2 border-b last:border-b-0 border-b-accent/20">
                 <div class="max-w-2/3 md:max-w-3/4">
                   <p>{{ code.title }}</p>
-                  <p class="font-mono leading-none opacity-50 text-xxs text-justify line-clamp-3 md:line-clamp-4"
-                  >
+                  <p class="font-mono leading-none opacity-50 text-xxs text-justify line-clamp-3 md:line-clamp-4">
                     {{ code.code }}
                   </p>
                 </div>
                 <div class="flex gap-1">
-                  <button
-                    class="btn btn-xs btn-circle btn-ghost" @click="loadSavedCode(code.code)"
-                  >
+                  <button class="btn btn-xs btn-circle btn-ghost" @click="loadSavedCode(code.code)">
                     <font-awesome-icon class="text-sm" icon="download" />
                   </button>
-                  <button
-                    class="btn btn-xs btn-circle btn-ghost"
-                    :class="{ 'btn-disabled': code.code === text }"
-                    @click="copy(code.code)"
-                  >
+                  <button class="btn btn-xs btn-circle btn-ghost" :class="{ 'btn-disabled': code.code === text }"
+                    @click="copy(code.code)">
                     <font-awesome-icon class="text-sm" icon="copy" />
                   </button>
                   <button class="btn btn-xs btn-circle btn-ghost text-weed-prevention" @click="confirmDelete(index)">

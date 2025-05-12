@@ -157,7 +157,7 @@ watch(includeSettingsCode, () => {
               <label class="sr-only label">
                 <span class="label-text">Title</span>
               </label>
-              <input v-model="title" type="text" placeholder="Enter title"
+              <input v-model="title" max="64" type="text" placeholder="Enter title"
                 class="w-full max-w-xs input input-bordered input-sm">
               <p class="pt-1 font-mono text-justify opacity-50 text-xxs wrap-anywhere">
                 {{ saveCode.code }}
