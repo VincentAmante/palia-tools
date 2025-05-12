@@ -35,7 +35,8 @@ defineProps({
   >
     <div
       :data-tip="tooltip || `${(count * baseGoldValue).toLocaleString()} Gold`"
-      class="z-50 hidden w-full h-full sm:absolute sm:tooltip"
+      class="z-50 hidden w-full h-full sm:absolute"
+      :class="{'sm:tooltip': tooltip || (baseGoldValue !== 0)}"
     />
     <div class="relative w-full h-full p-2 pt-[10px] rounded-md isolate overflow-clip">
       <div class="absolute top-0 left-0 w-full h-full -translate-y-1 rounded-md select-none opacity-40 -z-10 bg-linear-to-b from-misc to-primary" />
