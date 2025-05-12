@@ -53,7 +53,7 @@ defineProps({
       <p
         v-if="count !== 0"
         class="absolute top-0 right-0 px-[2px] text-xs text-center align-middle rounded-lg"
-        :class="(count < 0) ? 'text-error' : ' text-palia-blue-dark'"
+        :class="(count < 0) ? 'font-bold italic' : ' text-palia-blue-dark'"
       >
         {{ count }}
       </p>
