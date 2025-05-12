@@ -144,7 +144,6 @@ class Crop {
     }
 
     const totalGrowthTime = this.getTotalGrowTime(hasGrowthBoost)
-    // console.log('totalGrowthTime', totalGrowthTime)
 
     const onLastHarvest = (day % totalGrowthTime) === 0
     const doReplant = onLastHarvest
