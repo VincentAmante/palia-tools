@@ -7,7 +7,7 @@ const useHarvester = defineStore('harvester', () => {
   const harvesterRef = ref(new Harvester())
 
   const harvestSettingsRef = ref<IHarvesterOptions>({
-    days: 'L',
+    days: -1,
     includeReplant: true,
     includeReplantCost: true,
     useStarSeeds: true,
@@ -27,6 +27,10 @@ const useHarvester = defineStore('harvester', () => {
     harvestSettingsRef.value = { ...newSettings }
   }
 
+  function updateSetting(newSettings: { [property in keyof IHarvesterOptions]?: IHarvesterOptions[property] }) {
+    harvestSettingsRef.value = { ...harvestSettingsRef.value, ...newSettings }
+  }
+
   const harvester = computed(() => harvesterRef.value)
   const dayHarvests = computed(() => harvesterRef.value.dayHarvests)
   const totalHarvest = computed(() => harvesterRef.value.totalHarvest)
@@ -39,6 +43,7 @@ const useHarvester = defineStore('harvester', () => {
     totalHarvest,
     settings,
     updateSettings,
+    updateSetting
   }
 })
 
