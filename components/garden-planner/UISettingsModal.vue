@@ -13,7 +13,6 @@ const closeModal = () => {
 
 const settingsModalRef = ref<InstanceType<typeof PGPModal> | null>(null);
 function openModal() {
-  console.log('attempting to open modal')
   settingsModalRef.value?.showModal();
 }
 

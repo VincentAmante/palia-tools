@@ -12,7 +12,14 @@ export interface ProcessorOutput {
   seeds: Map<ICropNameWithGrowthDiff, ProcessOutputInfo>
   preserves: Map<ICropNameWithGrowthDiff, ProcessOutputInfo>
   replantSeeds: Map<ICropNameWithGrowthDiff, ISeedTracker>
-  detailedProcessingInfo: Map<ICropNameWithGrowthDiff, IProcessCycleData[]> // Stores detailed cycle data for analysis
+  detailedProcessingInfo: Map<ICropNameWithGrowthDiff, {
+    cycleData: IProcessCycleData[],
+    averageProcessMinutes: number,
+    averageGoldGenerated: number,
+    averageProduce: number,
+    totalProcessMinutes: number
+    effectiveProcessMinutes: number
+  }> // Stores detailed cycle data for analysis
 }
 
 // Interface for processing output information
@@ -345,6 +352,10 @@ export default class Processor {
         let goldGenerated = 0
         let firstHarvestDelayMinutes = 0
 
+        let averageProcessMinutes = 0
+        let averageGoldGenerated = 0
+        let averageProduce = 0
+
         let lastCycleData: IProcessCycleData | null = null
         const allCycleData: IProcessCycleData[] = [] // Store data for all cycles
 
@@ -375,8 +386,6 @@ export default class Processor {
                 isLastCycle: (i === cycles - 1 && cyclesRemainder === 0)
               })
             }
-
-            console.log('longestProcessMinutes', crop.type, cycleOutputToUse.longestProcessMinutes)
 
             totalProduceCount += cycleOutputToUse.totalProduceCount
             totalProcessMinutes += cycleOutputToUse.totalProcessMinutes
@@ -418,21 +427,7 @@ export default class Processor {
 
         // Calculate effective processing time considering parallel processing
         if (lastCycleData) {
-          // const effectiveTime = firstHarvestDelayMinutes + allCycleData.reduce((sum, cycle) => {
-          //   const cycleTotalProcessMinutes = cycle.cycleCrafterData
-          //     .map(p => p.longestProcessMinutes)
-          //     .reduce((sum, phase) => (sum + phase), 0)
-          //   return sum + cycleTotalProcessMinutes
-          // }, 0)
-
           longestProcessMinutes += firstHarvestDelayMinutes
-
-          // TODO: Calculate total effective time
-
-          // Subtract idle time from the last phase of the last cycle
-          // const lastPhaseData = lastCycleData.cycleCrafterData.at(-1)
-          // const lastPhaseIdleTime = lastPhaseData ? (lastPhaseData.longestProcessMinutes - lastPhaseData.longestProcessMinutesNoIdle) : 0
-          // const finalEffectiveTime = Math.max(0, effectiveTime)
 
           output[processType].set(cropName, {
             count: totalProduceCount,
@@ -467,11 +462,22 @@ export default class Processor {
           if (longestProcessMinutes > this._highestCraftingTime)
             this._highestCraftingTime = longestProcessMinutes
 
+          const cyclesTotal = cycles + cyclesRemainder
+          averageProcessMinutes = longestProcessMinutes / cyclesTotal
+          averageProduce = totalProduceCount / cyclesTotal
+          averageGoldGenerated = goldGenerated / cyclesTotal
         }
 
 
         // Store detailed processing info
-        output.detailedProcessingInfo.set(cropName, allCycleData)
+        output.detailedProcessingInfo.set(cropName, {
+          cycleData: allCycleData,
+          averageProcessMinutes,
+          averageGoldGenerated,
+          averageProduce,
+          totalProcessMinutes,
+          effectiveProcessMinutes: longestProcessMinutes
+        })
       }
     }
 
@@ -549,6 +555,10 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
   // Get data about the current phase
   const phaseData = cycleData.phases[currentPhaseIndex]
   const cropCount = phaseData.yield[qualityId].totalWithDeductions
+
+  if (cropCount === 0){
+    console.log('empty value found')
+  }
 
   // Calculate how many conversions can be made
 
