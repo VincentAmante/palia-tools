@@ -24,14 +24,6 @@ function resetHover() {
   }
 }
 
-const harvester = useHarvester()
-const processor = useProcessor()
-
-watchEffect(() => {
-  harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles)
-  processor.simulateProcessing(harvester.totalHarvest)
-})
-
 const update = useDebounceFn(() => {
   gardenHandler.update()
 }, 50, { maxWait: 100 })

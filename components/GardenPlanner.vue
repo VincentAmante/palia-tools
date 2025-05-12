@@ -19,22 +19,15 @@ const harvester = useHarvester()
 const processor = useProcessor()
 const { isFullUpdateRequested } = storeToRefs(gardenHandler)
 
-watch(isFullUpdateRequested, () => {
-  if (isFullUpdateRequested) {
-    // console.log('Full update requested')
-    // Perform full update logic here
-    gardenHandler.update()
 
-    harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles, harvester.settings)
-    processor.simulateProcessing(harvester.totalHarvest)
-    if (selectedTab.value === 'garden+display') {
-    }
-  }
+watchEffect(() => {
+  gardenHandler.update()
+  harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles)
+  processor.simulateProcessing(harvester.totalHarvest)
 })
 
+
 const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
-
-
 </script>
 
 <template>
@@ -62,12 +55,11 @@ const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
         </section>
         <section class="w-full sm:px-2">
           <div class="h-full sm:rounded-lg bg-primary">
-            <OutputDisplay is-main-output-display
-              @tab-changed="(newValue: 'garden+display' | 'display+display') => {
-                if (selectedTab !== newValue){
-                  selectedTab = newValue
-                }
-              }" />
+            <OutputDisplay is-main-output-display @tab-changed="(newValue: 'garden+display' | 'display+display') => {
+              if (selectedTab !== newValue) {
+                selectedTab = newValue
+              }
+            }" />
           </div>
         </section>
       </section>
