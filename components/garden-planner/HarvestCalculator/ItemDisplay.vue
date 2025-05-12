@@ -55,7 +55,7 @@ defineProps({
         class="absolute top-0 right-0 px-[2px] text-xs font-semibold  text-center align-middle rounded-lg "
         :class="(count < 0) ? 'text-error' : ' text-palia-blue-dark'"
       >
-        {{ count.toLocaleString() }}
+        {{ (Math.round(count*100)/100).toLocaleString() }}
       </p>
       <p class="absolute bottom-0 right-1">
         <slot name="icon" />
