@@ -12,7 +12,7 @@ const useHarvester = defineStore('harvester', () => {
     includeReplantCost: true,
     useStarSeeds: true,
     useGrowthBoost: false,
-    level: 25,
+    level: 0,
   })
 
   function simulateYield(

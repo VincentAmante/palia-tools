@@ -228,7 +228,7 @@ function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: 
   if (!harvesterOptions.useStarSeeds)
     settings += 'Nss'
 
-  if (harvesterOptions.level !== 25)
+  if (harvesterOptions.level !== 0)
     settings += `L${harvesterOptions.level}`
 
   let cropSettings = ''
@@ -278,7 +278,7 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
     days: -1,
     includeReplant: true,
     includeReplantCost: true,
-    level: 25,
+    level: 0,
     useGrowthBoost: false,
     useStarSeeds: true,
   }
