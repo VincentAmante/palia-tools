@@ -408,7 +408,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
               Likely bugged as of 0.169
               <NuxtLink class="pl-1 underline text-misc"
                 to="https://docs.google.com/document/d/1f4MQHjEC1RCNpDUz1I3eg2tioD_6yBmW0XWsVxUOJ1Y/edit"
-                target="_blank">
+                target="_blank" :prefetch="false">
                 <font-awesome-icon class="text-sm" :icon="['fas', 'arrow-up-right-from-square']" />
                 (Source)
               </NuxtLink>

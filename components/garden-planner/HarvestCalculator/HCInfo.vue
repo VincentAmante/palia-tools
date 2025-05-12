@@ -11,18 +11,16 @@
             This tool uses information on crops gathered
             from
             resources such as Arenvanya's
-            <NuxtLink
-              href="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
-              target="_blank" class="items-center inline-block gap-1 font-bold text-harvest-boost-dark hover:underline underline-offset-2"
-            >
+            <NuxtLink href="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
+              target="_blank" :prefetch="false"
+              class="items-center inline-block gap-1 font-bold text-harvest-boost-dark hover:underline underline-offset-2">
               <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xs" />
               Gardening Guide
             </NuxtLink>
             and their
-            <NuxtLink
-              to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
-              target="_blank" class="inline-block gap-1 font-bold text-harvest-boost-dark hover:underline underline-offset-2"
-            >
+            <NuxtLink to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
+              target="_blank" :prefetch="false"
+              class="inline-block gap-1 font-bold text-harvest-boost-dark hover:underline underline-offset-2">
               <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xs" />
               Math Spreadsheet
             </NuxtLink>
