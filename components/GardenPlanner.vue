@@ -46,7 +46,7 @@ const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
               :class="[gardenHandler.isGardenWide ? 'w-fit' : 'lg:w-full']" />
           </template>
           <template v-show="(selectedTab === 'display+display')">
-            <section class="w-full sm:px-2">
+            <section class="w-full">
               <div class="h-full sm:rounded-lg bg-primary">
                 <OutputDisplay />
               </div>

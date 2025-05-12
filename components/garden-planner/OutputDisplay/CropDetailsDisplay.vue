@@ -165,7 +165,7 @@ const selectedCropAsCrop = computed(() => {
 // --- End Crop Details Tab Logic ---
 </script>
 <template>
-  <section class="flex flex-col gap-2 pt-1 text-palia-blue-dark">
+  <section class="flex flex-col gap-1 pt-1 text-palia-blue-dark">
     <p class="text-sm font-semibold text-palia-blue-dark">
       Crop Details
     </p>
@@ -238,7 +238,7 @@ const selectedCropAsCrop = computed(() => {
           </div>
           <div>
             <p class="text-sm pb-1">Harvest days/cycle</p>
-            <ul class="flex gap-2">
+            <ul class="flex flex-wrap gap-2">
               <template v-for="harvestYield in selectedCropCycleData.phases">
                 <li class="flex flex-col">
                   <p class="text-xs">Day {{ harvestYield.dayOfHarvest }}</p>
@@ -247,7 +247,7 @@ const selectedCropAsCrop = computed(() => {
                     :count="(harvestYield.yield[(cropInfo.isStar ? 'star' : 'base')].totalWithDeductions)" />
                 </li>
               </template>
-              <li class="flex flex-col pl-4 border-l-2 border-l-misc"
+              <li class="flex flex-col md:pl-4 md:border-l-2 border-l-misc"
                 v-if="harvester.settings.includeReplantCost && (cropInfo.isStar === parseCropId(cycleId).isStar)">
                 <p class="text-xs">Average deduction (Day {{ selectedCropCycleData.phases.at(-1)!.dayOfHarvest }})
                 </p>
@@ -267,8 +267,9 @@ const selectedCropAsCrop = computed(() => {
           <p class="text-sm font-medium ">
             Processing Details
           </p>
-          <p class="badge badge-sm mb-1 text-neutral font-bold"
-            :class="{ 'badge-warning': canFinishBeforeNextHarvest }">
+          <p v-if="canFinishBeforeNextHarvest"
+            class="text-neutral font-semibold text-sm">
+            <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
             Harvests can't process before next harvest
           </p>
         </div>
