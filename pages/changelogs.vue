@@ -34,6 +34,155 @@ useHead({
       <div class="grid gap-2">
         <ChangelogItem checked>
           <template #title>
+            <span class="font-bold">
+              May 12, 2025 — Save'n Time Update</span>
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">Crafter Timings —</span> Crafters now have time support
+            </li>
+            <li>
+              <span class="italic">In-Browser Saving —</span> Planner codes can now be saved within the browser
+            </li>
+            <li>
+              <span class="italic">New UI —</span> Cause I'm trying to fit everything in
+            </li>
+            <li>
+              <span class="italic">Setting Codes —</span> Settings can now be included in save codes
+            </li>
+            <li>
+              <span class="italic">Harvester & Processor Overhaul —</span> Overhauled how crops are harvested and
+              processed for better efficiency
+            </li>
+            <li>
+              <span class="italic">QoL Changes</span>
+              <ul class="pl-3 list-disc list-inside text-sm">
+                <li>UI Settings can now hide tile bonus icons & background for less clutter</li>
+                <li>Improved widget for item selection</li>
+                <li>(Mobile) New modal for crop & fert selection</li>
+                <li>(Keyboard) Shift + [CropCode] now selects a crop</li>
+                <li>Last Harvest Day now automatically finds a day where all crops are harvestable (LCM Day)</li>
+                <li>You can now have a duplicate settings for when everything's a bit chaotic</li>
+              </ul>
+            </li>
+            <li>
+              <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-warning" />
+              <span class="italic pl-1 uppercase">To be re-added —</span> The following features have been temporarily
+              removed and will be re-implemented:
+              <ul class="pl-3 list-disc list-inside text-sm">
+                <li>Harvests by Day (Will focus primarily on simulated harvests)</li>
+                <li>Export as Image</li>
+                <li>Default Settings</li>
+                <li>Total/Average Gold being globally visible in settings</li>
+                <li>Total/Average Gold being globally visible in settings</li>
+              </ul>
+            </li>
+            <li>
+              In addition, expect some fixes and improvements shortly after this update as I look for bugs, as
+              well as including the new crops (should be quick if they have no new mechanics)
+            </li>
+          </template>
+          <template #default>
+            <p>
+              Hello everyone, been awhile! Looks like the Elderwoods is here and so I must catch up!
+              I shan't yap too much about where I've been, so I'll just move on to the changes at hand. Apologies for
+              the wait
+            </p>
+            <div class="divider"></div>
+            <h4 class="font-bold text-xl">New Crafter Timing Support & Saves</h4>
+            <p>
+              I've now added Crafter Time Support, and with it comes the ability to save and share setting
+              configurations.
+              This is the 2nd major milestone of the planner, with the next being a better support for off-set plots.
+              This implementation took way longer than necessary to come up with. I was attempting to tinker with more
+              ambitious scopes but had to ground myself to this one.
+              At the least, making changes to this system should now be better than the last due to the overhauled
+              internal systems.
+            </p>
+            <p>
+              To help with the effort everyone'll go through messing with crafter configurations, I've also added the
+              ability to add settings into the code.
+              I've done my best to minimise its impact on the code length, so hopefully it won't be much of a hassle to
+              share.
+              I've also added browser-saving! So now you can quickly fetch and share them from within the website
+            </p>
+            <div class="divider"></div>
+            <h4 class="font-bold text-xl">Harvester Improvements</h4>
+            <p>
+              While the processor was obviously going to be re-made, the harvester also got a massive change!
+              The old method was <span class='italic'>incredibly</span> slow and inefficient, impeding the experience
+              especially on long simulations.
+              Thanks to the overhaul, simulating a large amount of days should now be faster, you can try simulating
+              1.8k days of harvest now with a lot less lag!
+              Unfortunately, this did mean I have to re-implement the day-by-day breakdown so stay tuned for that.
+            </p>
+            <div class="divider"></div>
+            <h4 class="font-bold text-xl">QoL Changes</h4>
+            <p>
+              Outside of that, there should now be some new features to make things easier for your garden planning.
+            </p>
+            <p>
+              Starting off, I've added a widget to sort crops by buffs.
+              The truth is this is to condense the space of the crop buttons to handle new crops, but it also doubles as
+              a filter!
+              Furthermore, I've added some assistance to mobile users,
+              you should now have a new button that lets you pick a crop without having to scroll al the way up.
+              In addition, there's now a couple options in the new UI Settings modal to let you hide crop buff
+              indicators.
+              This should make things look a lot less cluttered, letting your eyes breathe a lil' easier!
+            </p>
+            <p>
+              An LCM option got added to the harvest settings. One of many features that should've been here sooner tbh.
+              This new default setting makes it so the last day has all your crops be ready for harvest, making it a
+              nice way to round the simulation off.
+              Speaking of, the output window as a whole is getting quite cluttered with these tabs, so I added the
+              option to clone it!
+              Feel free to leave the garden for a while while you mess with the configurations
+            </p>
+            <div class="divider"></div>
+            <h4 class="font-bold text-xl">Closing Words</h4>
+            <p>
+              What a long post! Anyway, I'll be testing these changes as they come and will be polishing things up.
+              In the meantime, feel free to report any issues, complaints, or suggestions you may have about the new changes! (.aisen on Discord)
+            </p>
+            <p>
+              Thank you guys once again for your continued use of the planner. Happy planning and happy Elderwoods update!
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
+          <template #title>
+            October 18, 2024 — 2nd Internal Tweak
+          </template>
+          <template #summary>
+            <li>
+              Changed how images render to test performance improvements
+            </li>
+          </template>
+          <template #default>
+            <p>
+              Hello! The last internal tweak proved to be beneficial in reducing host resource consumption without
+              affecting user experience.
+              As a result, another tweak is being implemented to optimise another aspect of the website.
+            </p>
+            <p>
+              If you have been facing any issues since the update today or the previous one, please contact me on
+              Discord below.
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
+          <template #title>
+            October 15, 2024 — Mild internal tweak
+          </template>
+          <template #summary>
+            <li>
+              Changed how images render to test performance improvements
+            </li>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
+          <template #title>
             May 28, 2024 — 0.180 Patch Parity
           </template>
           <template #summary>
@@ -250,8 +399,7 @@ useHead({
             </li>
             <li>
               <span class="ml-5">Experimental Release</span> - Added a proof of concept house planner: <NuxtLink
-                class="link" to="/house-planner"
-              >
+                class="link" to="/house-planner">
                 Link Here
               </NuxtLink> (Warning: Heavily early stage, not recommended for regular use)
             </li>
@@ -445,8 +593,7 @@ useHead({
             This hotfix adds the new crops added in the 0.168 patch.
             It also fixed some incorrect values that I've not detected for a long time.
             If you notice discrepancies in your harvest/gold values, please do report it to me on Discord <span
-              class="font-bold"
-            >(.aisen)</span>
+              class="font-bold">(.aisen)</span>
             as I tend to miss some values while working on the planner.
           </template>
         </ChangelogItem>
@@ -470,8 +617,7 @@ useHead({
             other's
             tools.
             If you're a developer and would like to have your tool added, feel free to contact me on Discord! <span
-              class="font-bold"
-            >(.aisen)</span>
+              class="font-bold">(.aisen)</span>
             <br>
             Recent changes have been slow for various reasons, mostly the development of a small side-project that could
             be added on here.
@@ -512,8 +658,7 @@ useHead({
           </template>
           <template #default>
             This change was added hastily, so if any bugs occur please report it to me on Discord <span
-              class="font-bold"
-            >(.aisen)</span>
+              class="font-bold">(.aisen)</span>
           </template>
         </ChangelogItem>
 
@@ -539,8 +684,7 @@ useHead({
             <div class="flex flex-col gap-1">
               <p>
                 Today's update adds a core gardening mechanic to the planner - <span
-                  class="font-bold"
-                >Fertilisers</span>!
+                  class="font-bold">Fertilisers</span>!
                 Important for covering tiles that lack necessary bonuses, fertilisers are a great way to enhance your
                 garden.
               </p>
@@ -580,8 +724,7 @@ useHead({
                 New save version includes shortened crop codes, with all crops having their codes reduced by 1 character
                 (except for Cotton).
                 Fertilisers are indicated by the dot <span
-                  class="px-2 font-bold border border-solid rounded-lg border-info"
-                >.</span> prefix, followed by their
+                  class="px-2 font-bold border border-solid rounded-lg border-info">.</span> prefix, followed by their
                 code.
               </p>
               <p>
@@ -681,8 +824,7 @@ useHead({
               </p>
               <p class="indent-6">
                 Due to that, I've decided to save myself potential future troubles by migrating from Vue to <span
-                  class="italic font-bold"
-                >Nuxt</span>
+                  class="italic font-bold">Nuxt</span>
                 as early as possible before the planner becomes open to the public.
                 This also lets me better analyse the website performance of the planner, allowing me to deliver a better
                 experience for you all.
