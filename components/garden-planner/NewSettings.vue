@@ -42,15 +42,14 @@ watchEffect(() => {
 })
 
 const processor = useProcessor()
-const { settings: processorSettings, updateSettings: updateProcessorSettings } = useProcessor()
 
 watchEffect(() => {
   // set all isActive to false
-  for (const setting of processorSettings.cropSettings.values())
+  for (const setting of processor.settings.cropSettings.values())
     setting.isActive = false
 
   for (const [cropId, data] of harvester.totalHarvest.crops) {
-    const cropSetting = processorSettings.cropSettings.get(cropId) ?? {
+    const cropSetting = processor.settings.cropSettings.get(cropId) ?? {
       count: data.totalWithDeductions,
       cropType: data.cropType,
       isStar: data.isStar,
@@ -63,9 +62,9 @@ watchEffect(() => {
 
     cropSetting.count = data.totalWithDeductions
 
-    processorSettings.cropSettings.set(cropId, cropSetting)
+    processor.settings.cropSettings.set(cropId, cropSetting)
 
-    processorSettings.cropSettings.get(cropId)!.isActive = true
+    processor.settings.cropSettings.get(cropId)!.isActive = true
   }
 
   saveGarden()
@@ -78,7 +77,7 @@ const activeProcessorSettings = computed(() => {
     crafterSetting: 0,
   } satisfies ProcessorSettings
 
-  for (const [cropId, setting] of processorSettings.cropSettings) {
+  for (const [cropId, setting] of processor.settings.cropSettings) {
     if (setting.isActive && setting.count > 0)
       activeSettings.cropSettings.set(cropId, setting)
   }
@@ -113,7 +112,7 @@ function getCropImgSrc(cropType: CropType) {
 const activeTab = ref('Harvest')
 
 function updateSettings() {
-  updateProcessorSettings(Object.assign({}, processorSettings))
+  processor.updateSettings(Object.assign({}, processor.settings))
   processor.simulateProcessing(harvester.totalHarvest)
 }
 
@@ -121,21 +120,11 @@ function onChangeSettings() {
   updateSettings()
 }
 
-function minutesToHoursAndMinutes(minutes: number) {
-  const hours = Math.floor(minutes / 60)
-  const remainingMinutes = minutes % 60
-
-  return {
-    hours,
-    minutes: remainingMinutes,
-  }
-}
 
 
 function saveGarden() {
-  const saveString = garden.garden.saveSettings(harvesterSettings, processorSettings)
+  const saveString = garden.garden.saveSettings(harvester.settings, processor.settings)
   settingsCode.set(saveString)
-  // You can add code here to save the saveString to a file or share it
 }
 
 const { updateIsRequested } = storeToRefs(settingsCode)
@@ -151,18 +140,15 @@ watch(updateIsRequested, () => {
 function loadGarden(saveString: string) {
   const { harvesterOptions, processorSettings: loadedProcessorSettings } = garden.garden.loadSettings(saveString)
 
-  // harvesterSettings = harvesterOptions
   updateHarvesterSettings(Object.assign({}, harvesterOptions))
-
-  // processorSettings.value = loadedProcessorSettings
-  updateProcessorSettings(loadedProcessorSettings)
-
-  updateProcessorSettings(Object.assign({}, loadedProcessorSettings))
+  processor.updateSettings(Object.assign({}, loadedProcessorSettings))
   processor.simulateProcessing(harvester.totalHarvest)
-  // You can add code here to update the UI with the loaded settings
 }
 
 const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
+
+const isUnderleveledForSeeder = computed(() => harvester.settings.level < 5)
+const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8)
 </script>
 
 <template>
@@ -191,9 +177,10 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
             Process As
           </p>
         </div>
-        <div class="flex items-center justify-start w-full h-full col-span-3 gap-2 pl-2"
+        <div class="flex items-center justify-start w-full h-full col-span-5 gap-2 pl-2"
           :class="{ 'text-warning': isOverCrafterLimit }">
-          <p class="text-sm font-bold" :class="{ tooltip: isOverCrafterLimit }" data-tip="Known max of 30 crafters reached">
+          <p class="text-sm font-bold" :class="{ tooltip: isOverCrafterLimit }"
+            data-tip="Known max of 30 crafters reached">
             <span v-if="isOverCrafterLimit">
               <FontAwesomeIcon :icon="['fas', 'triangle-exclamation']" />
             </span>
@@ -219,7 +206,7 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
                 {{ setting.cropType }}
               </p>
             </div>
-            <div class="flex items-center justify-start w-full h-full col-span-5 md:col-span-6 xl:col-span-5">
+            <div class="flex flex-col items-start justify-start w-full h-full col-span-5 md:col-span-6 xl:col-span-5">
               <div class="join">
                 <button class="p-2 btn join-item btn-primary btn-square"
                   :class="(setting.processAs === ItemType.Crop) ? 'btn-active' : ''" @click="async () => {
@@ -258,12 +245,20 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
                     :alt="`${setting.cropType} Preserve`">
                 </button>
               </div>
+              <p v-if="(setting.processAs === ItemType.Preserve && isUnderleveledForPreserveJar)
+                || (setting.processAs === ItemType.Seed && isUnderleveledForSeeder)"
+                class="text-xxs pl-1 flex items-center gap-0.5 text-warning font-bold">
+                <FontAwesomeIcon :icon="['fas', 'triangle-exclamation']" />
+                Need level
+                <template v-if="setting.processAs === ItemType.Preserve">8+</template>
+                <template v-else>5+</template>
+              </p>
             </div>
 
             <div v-if="setting.processAs !== ItemType.Crop"
-              class="relative flex flex-col items-start justify-start w-full h-full col-span-3 gap-2 pl-2">
+              class="relative flex flex-col items-start justify-start w-full h-full col-span-5 gap-x-2 pl-2">
               <div class="join">
-                <button class="btn-sm btn join-item disabled:bg-palia-blue-dark!" :disabled="setting.crafters <= 1"
+                <button class="btn btn-sm  join-item disabled:bg-palia-blue-dark!" :disabled="setting.crafters <= 1"
                   @click="() => {
                     if (setting.crafters <= 1)
                       return
@@ -274,14 +269,14 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
                   }">
                   <font-awesome-icon :icon="['fas', 'chevron-left']" />
                 </button>
-                <input v-model="setting.crafters" class="input input-sm text-center w-10 text-white! join-item"
+                <input v-model="setting.crafters" class="input input-sm text-center w-12 text-white! join-item"
                   type="number" min="1" @change="() => {
                     if (setting.crafters < 1)
                       setting.crafters = 1
 
                     onChangeSettings()
                   }">
-                <button class="btn-sm btn join-item disabled:bg-palia-blue-dark!" @click="() => {
+                <button class="btn-square btn btn-sm join-item disabled:bg-palia-blue-dark!" @click="() => {
                   setting.crafters++
 
                   onChangeSettings()
@@ -289,7 +284,7 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
                   <font-awesome-icon :icon="['fas', 'chevron-right']" />
                 </button>
               </div>
-              <SettingsMinutesDisplay class="absolute bottom-0 translate-y-2 "
+              <SettingsMinutesDisplay class="absolute bottom-0 w-full translate-y-2 pl-4 whitespace-nowrap"
                 :minutes="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
             </div>
           </li>
@@ -309,10 +304,13 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
               <button class="join-item btn btn-sm " @click="harvesterSettings.days = 0">
                 Auto
               </button>
-              <input v-model="harvesterSettings.days" class="join-item input input-sm text-lg max-w-[6rem] text-accent"
+              <input v-model="harvester.settings.days" class="join-item input input-sm text-lg max-w-[6rem] text-accent"
                 type="number" min="0">
               <button class="join-item btn btn-sm " @click="harvesterSettings.days = 30">
                 30
+              </button>
+              <button class="join-item btn btn-sm " @click="harvesterSettings.days = 180">
+                180
               </button>
             </div>
           </template>
@@ -337,8 +335,8 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
               <button class="join-item btn btn-sm text-primary" @click="harvesterSettings.level = 10">
                 10
               </button>
-              <input v-model="harvesterSettings.level" class="input input-sm text-lg max-w-[5rem] join-item text-accent"
-                type="number" min="0">
+              <input v-model="harvester.settings.level"
+                class="input input-sm text-lg max-w-[5rem] join-item text-accent" type="number" min="0">
               <button class="join-item btn btn-sm text-primary" @click="harvesterSettings.level = 25">
                 25
               </button>
@@ -361,7 +359,7 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
 
         <OptionCard label="allStarSeeds" name="All Star Seeds">
           <template #input>
-            <input v-model="harvesterSettings.useStarSeeds" class="toggle" type="checkbox">
+            <input v-model="harvester.settings.useStarSeeds" class="toggle" type="checkbox">
           </template>
           <template #labels>
             <p>
@@ -372,13 +370,13 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
 
         <OptionCard label="includeReplant" name="Include Replant">
           <template #input>
-            <input v-model="harvesterSettings.includeReplant" class="toggle" type="checkbox">
+            <input v-model="harvester.settings.includeReplant" class="toggle" type="checkbox">
           </template>
           <template #labels>
             <p>
               Replants the crops after harvest until the last day
             </p>
-            <p v-show="!harvesterSettings.includeReplant" class="font-bold">
+            <p v-show="!harvester.settings.includeReplant" class="font-bold">
               Off: Bonuses will still be calculated but the
               harvest days will be inaccurate
             </p>
@@ -387,8 +385,8 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
 
         <OptionCard label="includeReplantCost" name="Include Replant Cost">
           <template #input>
-            <input v-model="harvesterSettings.includeReplantCost" class="toggle" type="checkbox"
-              :disabled="!harvesterSettings.includeReplant">
+            <input v-model="harvester.settings.includeReplantCost" class="toggle" type="checkbox"
+              :disabled="!harvester.settings.includeReplant">
           </template>
           <template #labels>
             <p>
@@ -399,7 +397,7 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
 
         <OptionCard label="useGrowthBoost" name="Use Growth Boost">
           <template #input>
-            <input v-model="harvesterSettings.useGrowthBoost" class="toggle" type="checkbox">
+            <input v-model="harvester.settings.useGrowthBoost" class="toggle" type="checkbox">
           </template>
           <template #labels>
             <p>
