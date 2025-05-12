@@ -9,7 +9,7 @@ import { parseSave, encodeSettings, decodeSettings } from '../save-handler'
 import FertiliserType from '../enums/fertiliser'
 import FertiliserCode from '../enums/fertilisercode'
 import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliserList'
-import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo, ISimulateYieldResult } from '../utils/garden-helpers'
+import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo, ISimulateYieldResult, TUniqueTiles } from '../utils/garden-helpers'
 import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
 import CropTiles from './cropTiles'
 import type Harvester from './harvester'
@@ -466,10 +466,6 @@ class Garden {
     }
   }
 
-  testHarvesterYield(harvester: Harvester, options: IHarvesterOptions) {
-    harvester.simulateYield(this._cropTiles.uniqueTiles, options)
-  }
-
   saveSettings(harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings): string {
     return encodeSettings(harvesterOptions, processorSettings)
   }
@@ -640,7 +636,7 @@ class Garden {
   }
 
   get uniqueTiles() {
-    return this._cropTiles.uniqueTiles
+    return this._cropTiles.uniqueTiles satisfies TUniqueTiles
   }
 }
 
