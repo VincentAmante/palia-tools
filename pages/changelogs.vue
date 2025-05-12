@@ -95,9 +95,8 @@ useHead({
               configurations.
               This is the 2nd major milestone of the planner, with the next being a better support for off-set plots.
               This implementation took way longer than necessary to come up with. I was attempting to tinker with more
-              ambitious scopes but had to ground myself to this one.
-              At the least, making changes to this system should now be better than the last due to the overhauled
-              internal systems.
+              ambitious scopes but had to ground myself to this one. 
+              I belive the input will stay, with maybe an extra option or two, but I'll have to see if there's other internal implementations I can make to improve this.
             </p>
             <p>
               To help with the effort everyone'll go through messing with crafter configurations, I've also added the
@@ -115,6 +114,12 @@ useHead({
               Thanks to the overhaul, simulating a large amount of days should now be faster, you can try simulating
               1.8k days of harvest now with a lot less lag!
               Unfortunately, this did mean I have to re-implement the day-by-day breakdown so stay tuned for that.
+            </p>
+            <p>
+              This change also disentangled a lot of the messy code the planner initially had. 
+              While it's still not pristine, it's now both easier and more convenient for me to add new changes!
+              I'm eyeing the ability to factor in fertiliser costs soon, as well as alternative ways to factor in replant costs.
+              I'll be working on this after bug fixes, re-implementations, and new crops.
             </p>
             <div class="divider"></div>
             <h4 class="font-bold text-xl">QoL Changes</h4>
