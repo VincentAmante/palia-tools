@@ -95,7 +95,8 @@ useHead({
               configurations.
               This is the 2nd major milestone of the planner, with the next being a better support for off-set plots.
               This implementation took way longer than necessary to come up with. I was attempting to tinker with more
-              ambitious scopes but had to ground myself to this one. 
+              ambitious scopes but had to ground myself to this one.
+              Do see the Info tab in the Output Display to see some explanation on the processor!
               I belive the input will stay, with maybe an extra option or two, but I'll have to see if there's other internal implementations I can make to improve this.
             </p>
             <p>

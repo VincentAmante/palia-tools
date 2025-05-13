@@ -16,9 +16,7 @@ This project may contain assets, media files, or intellectual property that are 
 
 ## Why is this called Palia Tools?
 
-There's current plans to add other tools once the planner is considered feature-complete, with everything on the Road Map being ticked off.
-Alternatively I may start work on them as a trial attempt or to work on something else for a bit.
-What these tools are will depend on the current situation of community-made tools by the time the Garden Planner is at version 1.0.
+There were plans to add other tools once the planner is considered feature-complete, with everything on the Road Map being ticked off.
 
 ## Roadmap
 
