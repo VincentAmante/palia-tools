@@ -304,7 +304,7 @@ const selectedCropAsCrop = computed(() => {
           </div>
           <div class="flex flex-col gap-1 py-1 border border-palia-blue px-1 rounded-xs pb-4">
             <p class="text-palia-blue opacity-80 text-xs">Estimated Time to Process Everything</p>
-            <p class="font-bold text-base"> <font-awesome-icon :icon="['fas', 'stopwatch']" />{{
+            <p class="font-bold text-base"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
               formatMinutesToHoursMinutes(selectedCropProcessingData.effectiveProcessMinutes) }}</p>
           </div>
 

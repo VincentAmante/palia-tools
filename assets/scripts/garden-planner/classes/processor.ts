@@ -199,6 +199,11 @@ export default class Processor {
       // Determine conversion ratios based on processing type (seed or preserve)
       const cropsPerConversion = (processSetting === ItemType.Seed) ? conversionInfo.cropsPerSeed : conversionInfo.cropsPerPreserve
 
+      // Means there's nothing to work with for this crop
+      if (cropYield.totalRaw === 0 && cropYield.totalWithDeductions === 0) {
+        continue
+      }
+
       // Track seed collectors and preserve jars
       if (processSetting === ItemType.Seed) {
         this._seedCollectors.set(cropName, {
@@ -556,8 +561,8 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
   const phaseData = cycleData.phases[currentPhaseIndex]
   const cropCount = phaseData.yield[qualityId].totalWithDeductions
 
-  if (cropCount === 0){
-    console.log('empty value found')
+  if (cropCount === 0) {
+    console.warn('Empty cropCount found, bug?')
   }
 
   // Calculate how many conversions can be made
