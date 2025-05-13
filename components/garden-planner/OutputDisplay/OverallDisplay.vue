@@ -75,7 +75,7 @@ const craftingTime = computed(() => {
             Process Time
           </p>
           <p class="flex items-end justify-end text-lg font-semibold text-right text-palia-blue @2xl:text-xl">
-            <template v-if="((craftingTime.hours + craftingTime.minutes) > 0)">
+            <template v-if="((craftingTime.actualValue) > 0)">
               <template v-if="craftingTime.days > 0">
                 {{ parseInt(craftingTime.days.toFixed(0)).toLocaleString() }}
                 <span class="pr-1" aria-label="Days">d</span>
@@ -91,6 +91,10 @@ const craftingTime = computed(() => {
             <template v-else>
               <span class="text-warning">N/A</span>
             </template>
+          </p>
+          
+          <p v-if="(craftingTime.actualValue > 0)" class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue">
+            Earth Time
           </p>
         </div>
         <div class="p-1 border rounded-md bg-accent border-misc-dark">
