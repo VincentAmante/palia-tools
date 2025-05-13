@@ -72,7 +72,7 @@ useHead({
               <ul class="pl-3 list-disc list-inside text-sm">
                 <li>Harvests by Day (Will focus primarily on simulated harvests)</li>
                 <li>Export as Image</li>
-                <li>Default Settings</li>
+                <li>Settings b</li>
                 <li>Total/Average Gold being globally visible in settings</li>
               </ul>
             </li>
