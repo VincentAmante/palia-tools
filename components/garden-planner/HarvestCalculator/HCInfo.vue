@@ -128,7 +128,7 @@
     <div class="px-2 pb-3">
       <div class="grid gap-2 p-3 rounded-md bg-palia-blue">
         <h3 class="text-lg font-bold">
-          Processing Assumptions (13/05/2025)
+          Processing Mechanics (13/05/2025)
         </h3>
         <ul class="list text-sm">
 
