@@ -120,7 +120,7 @@ const craftingTime = computed(() => {
             </span>
           </p>
         </li>
-        <li class="text-xs border border-none badge badge-sm">
+        <li v-if="harvester.settings.useGrowthBoost" class="text-xs border border-none badge badge-sm">
           <p>
             <FontAwesomeIcon :icon="['fas', 'forward-fast']" class="pr-1" />
             Growth Boost
