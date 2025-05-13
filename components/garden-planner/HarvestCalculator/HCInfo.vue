@@ -211,7 +211,7 @@
                 </li>
                 <li>
                   When there is known to be excess time (a crafter still processing beyond the next harvest), we instead calculate the total conversions that can be done within the
-                  harvest, and subtract it by the conversions required. We then use this to calculate the average excess
+                  harvest (how many processes can be done based on time to next harvest & crafter amount), and subtract it from the conversions required. We then use this to calculate the average excess
                   time
                   <p class=" text-white rounded-md bg-neutral w-fit p-2 font-mono slashed-zero tabular-nums">
                     <code>averageExcessTimeMinutes = ((conversionsRequired - conversionsPossible) * minutesPerConversion) / crafterCount</code>
