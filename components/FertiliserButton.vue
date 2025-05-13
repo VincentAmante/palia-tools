@@ -68,11 +68,11 @@ const dragHandler = useDragAndDrop()
     @dragend="(e: DragEvent) => dragHandler.stopDrag()">
     <font-awesome-icon v-if="bonus.icon !== ''" class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black"
       :icon="['fas', bonus.icon]" :class="bonus.colour" />
-    <p v-if="count > 0" class="absolute bottom-0 right-0 py-[0.1rem] pr-[0.2rem] text-xs leading-none font-bold text-neutral-700">
+    <p v-if="count > 0" class="absolute bottom-0 right-0 py-[0.1rem] pr-[0.2rem] text-xs leading-none font-bold text-palia-blue-dark">
       {{ count }}
     </p>
-    <img v-if="(fertiliser && fertiliser.image != null && fertiliser.image !== '')" v-once width="34px" height="34px"
-      class="absolute -z-10 max-w-[34px] pointer-events-none" :src="fertiliser.image"
+    <img v-if="(fertiliser && fertiliser.image != null && fertiliser.image !== '')" v-once width="30" height="30"
+      class="absolute -z-10 max-w-[30px] pointer-events-none" :src="fertiliser.image"
       :class="(fertiliser.type === fertiliser.type) ? 'opacity-100' : 'opacity-90'" :alt="fertiliser.type"
       :srcset="undefined" draggable="false" />
     <font-awesome-icon v-else class="absolute -z-10 max-w-[34px] text-warning text-3xl " :icon="['fas', 'eraser']" />
