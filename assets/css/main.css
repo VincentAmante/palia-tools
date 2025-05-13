@@ -1,7 +1,7 @@
 @import '@fontsource-variable/merriweather';
 body {
   font-family: 'Merriweather Variable', serif;
-    font-display: swap;
+  font-display: swap;
 }
 
 @import 'tailwindcss';
