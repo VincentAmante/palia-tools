@@ -38,16 +38,16 @@
         </h3>
         <ol class="list">
           <li class="list-row">
-            <div class="font-thin opacity-30 tabular-nums">01</div>
+            <div class="font-thin opacity-30 tabular-nums hidden xs:block">01</div>
             The planner estimates crop yields, factoring in [Quality, Harvest] Boosts, and star chance of crops.
           </li>
           <li class="list-row">
-            <div class="font-thin opacity-30 tabular-nums">02</div>
+            <div class="font-thin opacity-30 tabular-nums hidden xs:block">02</div>
             Using the provided yields, it processes the crops into the form in which you wish to sell them
             (Crop/Seed/Preserve)
           </li>
           <li class="list-row">
-            <div class="font-thin opacity-30 tabular-nums">03</div>
+            <div class="font-thin opacity-30 tabular-nums hidden xs:block">03</div>
             Finally, it calculates the gold value of everything once processes are factored in
           </li>
         </ol>
@@ -60,7 +60,7 @@
         </h3>
         <ul class="list text-sm">
           <li class="list-row">
-            <div class="font-thin opacity-30 tabular-nums">01</div>
+            <div class="font-thin opacity-30 tabular-nums hidden xs:block">01</div>
             <span class="font-black">
               Planner Formula for Star Chance:
             </span>
@@ -75,7 +75,7 @@
             </div>
           </li>
           <li class="list-row">
-            <div class="font-thin opacity-30 tabular-nums">02</div>
+            <div class="font-thin opacity-30 tabular-nums hidden xs:block">02</div>
             <span class="font-black">
               Assumptions that result in the Planner Formula:
             </span>
@@ -100,7 +100,7 @@
             </div>
           </li>
           <li class="list-row">
-            <div class="font-thin opacity-30 tabular-nums">03</div>
+            <div class="font-thin opacity-30 tabular-nums hidden xs:block">03</div>
             <span class="font-black">
               Other Crop Assumptions
             </span>
@@ -133,7 +133,7 @@
         <ul class="list text-sm">
 
           <li class="list-row">
-            <div class="font-thin opacity-30 tabular-nums">01</div>
+            <div class="font-thin opacity-30 tabular-nums hidden xs:block">01</div>
             <span class="font-black">
               Crop distribution
             </span>
@@ -162,7 +162,7 @@
             </div>
           </li>
           <li class="list-row">
-            <div class="font-thin opacity-30 tabular-nums">02</div>
+            <div class="font-thin opacity-30 tabular-nums hidden xs:block">02</div>
             <span class="font-black">
               Crop Fragments
             </span>
@@ -190,7 +190,7 @@
             </div>
           </li>
           <li class="list-row">
-            <div class="font-thin opacity-30 tabular-nums">03</div>
+            <div class="font-thin opacity-30 tabular-nums hidden xs:block">03</div>
             <span class="font-black">
               Time Calculations
             </span>
@@ -210,15 +210,23 @@
                   If the busiest crafter will finish before the next harvest, the remaining 'idle' time is included
                 </li>
                 <li>
-                  When there is excess time, the busiest crafter will only be included for the first and last harvest
-                </li>
-                <li>
-                  When there is excess time, we instead calculate the total conversions that can be done within the
+                  When there is known to be excess time (a crafter still processing beyond the next harvest), we instead calculate the total conversions that can be done within the
                   harvest, and subtract it by the conversions required. We then use this to calculate the average excess
                   time
                   <p class=" text-white rounded-md bg-neutral w-fit p-2 font-mono slashed-zero tabular-nums">
-                    <code>averageExcessTimeMinutes = (((conversionsToMake + conversionsRemainder) - conversionsPossible) * minutesPerConversion) / crafterCount</code>
+                    <code>averageExcessTimeMinutes = ((conversionsRequired - conversionsPossible) * minutesPerConversion) / crafterCount</code>
                   </p>
+                </li>
+                <li>
+                  This method is only used for all in-between harvests, operating under the aforementioned assumption that the player
+                  will distribute crop groups based on the most available one
+                </li>
+                
+                <li>
+                  average excess time only applies to in-between harvests.
+                  The first harvest assumes all crafters are empty.
+                  The last harvest not using average excess time is more arbitrary,
+                  believing that by the last harvest, crops have been distributed evenly enough that using the longest crafter again is more accurate
                 </li>
               </ul>
             </div>
