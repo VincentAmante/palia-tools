@@ -89,16 +89,22 @@ useHead({
             </p>
             <div class="divider"></div>
             <h4 class="font-bold text-xl">New Crafter Timing Support & Saves</h4>
-            <p>
+            <p class="indent-6">
               I've now added Crafter Time Support, and with it comes the ability to save and share setting
               configurations.
               This is the 2nd major milestone of the planner, with the next being a better support for off-set plots.
               This implementation took way longer than necessary to come up with. I was attempting to tinker with more
               ambitious scopes but had to ground myself to this one.
-              Do see the Info tab in the Output Display to see some explanation on the processor!
-              I belive the input will stay, with maybe an extra option or two, but I'll have to see if there's other internal implementations I can make to improve this.
+              Truth is I wanted a more experimental process, testing changes with a smaller set of players to test
+              different solutions.
+              However, after such a long time (sorry), I decided that this simple one should be good for a live test.
             </p>
-            <p>
+            <p class="indent-6">
+              Do see the Info tab in the Output Display to see some explanation on the processor!
+              I belive the input will stay, with maybe an extra option or two, but I'll have to see if there's other
+              internal implementations I can make to improve this.
+            </p>
+            <p class="indent-6">
               To help with the effort everyone'll go through messing with crafter configurations, I've also added the
               ability to add settings into the code.
               I've done my best to minimise its impact on the code length, so hopefully it won't be much of a hassle to
@@ -107,7 +113,7 @@ useHead({
             </p>
             <div class="divider"></div>
             <h4 class="font-bold text-xl">Harvester Improvements</h4>
-            <p>
+            <p class="indent-6">
               While the processor was obviously going to be re-made, the harvester also got a massive change!
               The old method was <span class='italic'>incredibly</span> slow and inefficient, impeding the experience
               especially on long simulations.
@@ -115,18 +121,19 @@ useHead({
               1.8k days of harvest now with a lot less lag!
               Unfortunately, this did mean I have to re-implement the day-by-day breakdown so stay tuned for that.
             </p>
-            <p>
-              This change also disentangled a lot of the messy code the planner initially had. 
+            <p class="indent-6">
+              This change also disentangled a lot of the messy code the planner initially had.
               While it's still not pristine, it's now both easier and more convenient for me to add new changes!
-              I'm eyeing the ability to factor in fertiliser costs soon, as well as alternative ways to factor in replant costs.
+              I'm eyeing the ability to factor in fertiliser costs soon, as well as alternative ways to factor in
+              replant costs.
               I'll be working on this after bug fixes, re-implementations, and new crops.
             </p>
             <div class="divider"></div>
             <h4 class="font-bold text-xl">QoL Changes</h4>
-            <p>
+            <p class="indent-6">
               Outside of that, there should now be some new features to make things easier for your garden planning.
             </p>
-            <p>
+            <p class="indent-6">
               Starting off, I've added a widget to sort crops by buffs.
               The truth is this is to condense the space of the crop buttons to handle new crops, but it also doubles as
               a filter!
@@ -136,7 +143,7 @@ useHead({
               indicators.
               This should make things look a lot less cluttered, letting your eyes breathe a lil' easier!
             </p>
-            <p>
+            <p class="indent-6">
               An LCM option got added to the harvest settings. One of many features that should've been here sooner tbh.
               This new default setting makes it so the last day has all your crops be ready for harvest, making it a
               nice way to round the simulation off.
@@ -146,12 +153,14 @@ useHead({
             </p>
             <div class="divider"></div>
             <h4 class="font-bold text-xl">Closing Words</h4>
-            <p>
+            <p class="indent-6">
               What a long post! Anyway, I'll be testing these changes as they come and will be polishing things up.
-              In the meantime, feel free to report any issues, complaints, or suggestions you may have about the new changes! (.aisen on Discord)
+              In the meantime, feel free to report any issues, complaints, or suggestions you may have about the new
+              changes! (.aisen on Discord)
             </p>
             <p>
-              Thank you guys once again for your continued use of the planner. Happy planning and happy Elderwoods update!
+              Thank you guys once again for your continued use of the planner. Happy planning and happy Elderwoods
+              update!
             </p>
           </template>
         </ChangelogItem>
@@ -165,12 +174,12 @@ useHead({
             </li>
           </template>
           <template #default>
-            <p>
+            <p class="indent-6">
               Hello! The last internal tweak proved to be beneficial in reducing host resource consumption without
               affecting user experience.
               As a result, another tweak is being implemented to optimise another aspect of the website.
             </p>
-            <p>
+            <p class="indent-6">
               If you have been facing any issues since the update today or the previous one, please contact me on
               Discord below.
             </p>
@@ -207,12 +216,12 @@ useHead({
             </li>
           </template>
           <template #default>
-            <p>
+            <p class="indent-6">
               Hi folks! The Garden Planner now has a Ko-fi link for those who wish to send tips.
               I've had a few requests for this, but I wanted to hold off till I had something more substantial to show
               for it.
             </p>
-            <p>
+            <p class="indent-6">
               However, Garden Planner traffic has been increasing (woohoo!!). I'll soon no longer be able to host the
               server
               for free though, so I've decided to add the Ko-fi link now to help me cover the costs.
@@ -220,7 +229,7 @@ useHead({
               that I hope
               will finally allow me to release them.
             </p>
-            <p>
+            <p class="indent-6">
               Regardless, thank you guys so much for your continued support and use of the planner. I'm glad to see it's
               been useful to so many of you and I'm proud it's come to a point I have to consider server costs (though
               stressful).
