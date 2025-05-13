@@ -223,10 +223,10 @@
                 </li>
                 
                 <li>
-                  average excess time only applies to in-between harvests.
+                  Average excess time only applies to in-between harvests.
                   The first harvest assumes all crafters are empty.
                   The last harvest not using average excess time is more arbitrary,
-                  believing that by the last harvest, crops have been distributed evenly enough that using the longest crafter again is more accurate
+                  believing that by the last harvest, crops have been distributed evenly enough that using the time of the longest busiest again is more accurate
                 </li>
               </ul>
             </div>
