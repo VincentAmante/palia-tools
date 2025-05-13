@@ -74,7 +74,6 @@ useHead({
                 <li>Export as Image</li>
                 <li>Default Settings</li>
                 <li>Total/Average Gold being globally visible in settings</li>
-                <li>Total/Average Gold being globally visible in settings</li>
               </ul>
             </li>
             <li>
