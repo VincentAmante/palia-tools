@@ -75,7 +75,7 @@ function closeModal() {
 
 <template>
   <div
-    :class="['fixed z-50 mx-3 my-2 sm:hidden', props.position === 'bottom-right' ? 'bottom-0 right-0' : '', props.position === 'bottom-left' ? 'bottom-0 left-0' : '', props.position === 'top-right' ? 'top-0 right-0' : '', props.position === 'top-left' ? 'top-0 left-0' : '']">
+    :class="['fixed z-50 mx-4 my-4 sm:hidden', props.position === 'bottom-right' ? 'bottom-0 right-0' : '', props.position === 'bottom-left' ? 'bottom-0 left-0' : '', props.position === 'top-right' ? 'top-0 right-0' : '', props.position === 'top-left' ? 'top-0 left-0' : '']">
     <CropButton class="shadow-xl bg-accent btn-lg" v-if="selectedItem.type === SelectedItemType.Crop"
       :crop="selectedItem.val as Crop" @click="openModal"
       :count="cropsList.find(({ crop }) => (crop.type === (selectedItem.val as Crop).type))?.count" />
