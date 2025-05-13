@@ -164,11 +164,11 @@ watch(includeSettingsCode, () => {
               </p>
             </div>
             <div class="flex gap-2">
-              <button class="normal-case btn btn-sm btn-outline" @click="saveWithoutClose">
+              <button class="normal-case btn btn-sm btn-outline" @click="saveAndClose">
                 Save
               </button>
-              <button class="normal-case btn btn-sm btn-outline" @click="saveAndClose">
-                Save and Close
+              <button class="normal-case btn btn-sm btn-outline" @click="saveWithoutClose">
+                Save (No Close)
               </button>
             </div>
           </div>
