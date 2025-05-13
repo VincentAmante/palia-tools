@@ -56,7 +56,7 @@
     <div class="px-2">
       <div class="grid gap-2 p-3 rounded-md bg-palia-blue">
         <h3 class="text-lg font-bold">
-          Harvest Assumptions (13/05/2025)
+          Harvest Assumptions <span class="tabular-nums text-xs pl-1 opacity-50">(13/05/2025)</span>
         </h3>
         <ul class="list text-sm">
           <li class="list-row">
@@ -94,7 +94,7 @@
                   Around level 50 and under, normal seeds alone can reach 100% star chance.
                 </li>
                 <li class="">
-                  Normal seeds always have a chance of star crops (hence an assumed 25% base chance).
+                  Normal seeds always have a chance of star crops (An assumed 25% base chance).
                 </li>
               </ul>
             </div>
@@ -128,7 +128,7 @@
     <div class="px-2 pb-3">
       <div class="grid gap-2 p-3 rounded-md bg-palia-blue">
         <h3 class="text-lg font-bold">
-          Processing Mechanics (13/05/2025)
+          Processing Mechanics <span class="tabular-nums text-xs pl-1 opacity-50">(13/05/2025)</span>
         </h3>
         <ul class="list text-sm">
 
