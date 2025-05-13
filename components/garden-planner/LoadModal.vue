@@ -51,7 +51,7 @@ function loadSavedCode(code: string) {
 const filteredSavedGardenCodes = computed(() => {
   return savedGardenCodes.value
     .filter(code => code.title.toLowerCase().includes(searchQuery.value.toLowerCase()))
-    .sort((codeA, codeB) => ((new Date(codeA.dateCreated).getTime() - new Date(codeB.dateCreated).getTime()) * -1))
+    // .sort((codeA, codeB) => ((new Date(codeA.dateCreated).getTime() - new Date(codeB.dateCreated).getTime()) * -1))
 })
 
 const loadCode = ref(text.value)
