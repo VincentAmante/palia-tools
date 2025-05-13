@@ -76,12 +76,13 @@ function closeModal() {
 <template>
   <div
     :class="['fixed z-50 mx-3 my-2 sm:hidden', props.position === 'bottom-right' ? 'bottom-0 right-0' : '', props.position === 'bottom-left' ? 'bottom-0 left-0' : '', props.position === 'top-right' ? 'top-0 right-0' : '', props.position === 'top-left' ? 'top-0 left-0' : '']">
-    <CropButton class="shadow-xl bg-accent" v-if="selectedItem.type === SelectedItemType.Crop"
-      :crop="selectedItem.val as Crop" @click="openModal" :count="cropsList.find(({ crop }) => (crop.type === (selectedItem.val as Crop).type))?.count" />
-    <FertiliserButton class="shadow-xl bg-accent" v-else-if="selectedItem.type === SelectedItemType.Fertiliser"
+    <CropButton class="shadow-xl bg-accent btn-lg" v-if="selectedItem.type === SelectedItemType.Crop"
+      :crop="selectedItem.val as Crop" @click="openModal"
+      :count="cropsList.find(({ crop }) => (crop.type === (selectedItem.val as Crop).type))?.count" />
+    <FertiliserButton class="shadow-xl bg-accent btn-lg" v-else-if="selectedItem.type === SelectedItemType.Fertiliser"
       :fertiliser="selectedItem.val as Fertiliser" @click="openModal" />
     <button v-else-if="selectedItem.type === SelectedItemType.CropErase" id="crop-eraser"
-      class="relative border rounded-xs shadow-xl btn btn-square btn-secondary isolate border-misc bg-accent"
+      class="relative border rounded-xs shadow-xl btn btn-square btn-lg btn-secondary isolate border-misc bg-accent"
       aria-label="Crop Eraser"
       :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
       :in-picture-mode="isTakingScreenshot.get" @click="openModal">
@@ -89,7 +90,7 @@ function closeModal() {
     </button>
     <button v-else-if="selectedItem.type === SelectedItemType.FertiliserErase" id="fertiliser-eraser"
       aria-label="Fertiliser Eraser"
-      class="relative border rounded-xs shadow-xl bg-accent btn btn-square btn-secondary isolate border-misc"
+      class="relative border rounded-xs shadow-xl bg-accent btn btn-square btn-lg btn-secondary isolate border-misc"
       :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
       :in-picture-mode="isTakingScreenshot.get" @click="openModal">
       <font-awesome-icon class="absolute -z-10 max-w-[42px] text-warning text-2xl " :icon="['fas', 'eraser']" />
@@ -178,7 +179,8 @@ function closeModal() {
           </div>
           <div class="flex flex-wrap gap-1">
             <button id="crop-eraser" aria-label="Select Crop Eraser"
-              class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc sm:hidden" :class="{
+              class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc sm:hidden"
+              :class="{
                 'bg-white': selectedItem.val === 'crop-erase' && !isTakingScreenshot.get,
                 'hidden': isTakingScreenshot.get,
               }" :in-picture-mode="isTakingScreenshot.get" @click="() => {
