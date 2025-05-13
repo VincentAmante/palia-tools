@@ -26,7 +26,7 @@
             </NuxtLink>
             as well as a mix of observations and testings done by fellow Palians discussed on Discord
           </div>
-          <p class="inline-flex gap-2 p-2 text-sm bg-warning text-neutral rounded-sm">
+          <p class="inline-flex gap-2 p-2 text-sm bg-warning text-neutral rounded-sm w-fit">
             <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="text-lg text-neutral" />
             Final values are estimations and may not reflect actual in-game experience.
           </p>
@@ -34,75 +34,194 @@
       </div>
       <div class="p-3 rounded-md bg-palia-blue ">
         <h3 class="text-lg font-bold ">
-          How it works (8/9/2023)
+          How it works - Summary <span class="tabular-nums text-xs pl-1 opacity-50">(13/05/2025)</span>
         </h3>
-        <ol class="grid gap-2 text-sm list-decimal list-inside">
-          <li class="p-2 border rounded-sm border-info">
+        <ol class="list">
+          <li class="list-row">
+            <div class="font-thin opacity-30 tabular-nums">01</div>
             The planner estimates crop yields, factoring in [Quality, Harvest] Boosts, and star chance of crops.
           </li>
-          <li class="p-2 border rounded-sm border-info">
-            Using the provided yields, it calculates the gold value in the form you wish to sell them
+          <li class="list-row">
+            <div class="font-thin opacity-30 tabular-nums">02</div>
+            Using the provided yields, it processes the crops into the form in which you wish to sell them
             (Crop/Seed/Preserve)
           </li>
+          <li class="list-row">
+            <div class="font-thin opacity-30 tabular-nums">03</div>
+            Finally, it calculates the gold value of everything once processes are factored in
+          </li>
         </ol>
+      </div>
+    </div>
+    <div class="px-2">
+      <div class="grid gap-2 p-3 rounded-md bg-palia-blue">
+        <h3 class="text-lg font-bold">
+          Harvest Assumptions (13/05/2025)
+        </h3>
+        <ul class="list text-sm">
+          <li class="list-row">
+            <div class="font-thin opacity-30 tabular-nums">01</div>
+            <span class="font-black">
+              Planner Formula for Star Chance:
+            </span>
+            <div class="list-col-wrap">
+              <p class=" text-white rounded-md bg-neutral w-fit p-2">
+                <code>0.25 + (0.25 * useStarSeeds) + (0.02 * level) + (0.5 * hasQualityBoost)</code>
+              </p>
+              <p class="w-full">
+                Not the actual in-game formula and is based off player observations and personal assumptions.
+                Fully debatable and may be tweaked in the future.
+              </p>
+            </div>
+          </li>
+          <li class="list-row">
+            <div class="font-thin opacity-30 tabular-nums">02</div>
+            <span class="font-black">
+              Assumptions that result in the Planner Formula:
+            </span>
+            <div class="list-col-wrap">
+              <ul class="list-disc list-inside flex flex-col gap-1">
+                <li class="">
+                  Star Seed + Quality Boost stacks up to 100% star chance (hence +50% from quality boost).
+                </li>
+                <li class="">
+                  At level 25, star seeds alone can reach 100% star chance (hence an assumed level scaling).
+                </li>
+                <li class="">
+                  Each level increases star chance by 2% (which reaches a total of 100% at level 25 w/ star seeds).
+                </li>
+                <li class="">
+                  Around level 50 and under, normal seeds alone can reach 100% star chance.
+                </li>
+                <li class="">
+                  Normal seeds always have a chance of star crops (hence an assumed 25% base chance).
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="list-row">
+            <div class="font-thin opacity-30 tabular-nums">03</div>
+            <span class="font-black">
+              Other Crop Assumptions
+            </span>
+            <div class="list-col-wrap">
+              <ul class="list-disc list-inside flex flex-col gap-1">
+                <li class="">
+                  <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
+                  Weed Chance is not accounted for due to their unreliable or undocumented behaviour.
+                </li>
+                <li class="">
+                  Crops are harvested on the day they are ready.
+                </li>
+                <li class="">
+                  Crops receive daily watering or has Water Retain.
+                </li>
+                <li class="">
+                  Crop boosts last until the final calculation day.
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="px-2 pb-3">
       <div class="grid gap-2 p-3 rounded-md bg-palia-blue">
         <h3 class="text-lg font-bold">
-          Assumptions (3/10/2024)
+          Processing Assumptions (13/05/2025)
         </h3>
-        <ul class="grid gap-2 text-sm ">
-          <li class="p-2 border rounded-sm border-info">
+        <ul class="list text-sm">
+
+          <li class="list-row">
+            <div class="font-thin opacity-30 tabular-nums">01</div>
             <span class="font-black">
-              Planner Formula for Star Chance:
+              Crop distribution
             </span>
-            <p class="p-1 px-2 ml-5 text-white rounded-md bg-neutral w-fit">
-              <code>0.25 + (0.25 * useStarSeeds) + (0.02 * level) + (0.5 * hasQualityBoost)</code>
-            </p>
-            <p class="ml-5">
-              Not the actual in-game formula and is based off player observations and personal assumptions.
-              Fully debatable and may be tweaked in the future.
-            </p>
+            <div class="list-col-wrap">
+              <ul class="list-disc list-inside flex flex-col gap-1">
+                <li>
+                  On harvest, crops for processing will be immediately sent to their assigned crafters when available
+                </li>
+                <li>
+                  Crops are grouped & divided based on how many is required for a conversion (e.g Apples are grouped by
+                  10 for seeding)
+                </li>
+                <li>
+                  In an ideal scenario, these groups are divided to the assigned crafters equally
+                </li>
+                <li>
+                  If there are crafters that are still processing by the next harvest, it is assumed the player will
+                  distribute these groups
+                  based on the most available crafters
+                </li>
+                <li>
+                  The planner does not factor in storage limit for crafters, assuming the player will insert once there
+                  is room
+                </li>
+              </ul>
+            </div>
           </li>
-          <li class="p-2 border rounded-sm border-info">
+          <li class="list-row">
+            <div class="font-thin opacity-30 tabular-nums">02</div>
             <span class="font-black">
-              Assumptions that result in the Planner Formula:
+              Crop Fragments
             </span>
-            <ul class="list-disc list-inside">
-              <li class="ml-5">
-                Star Seed + Quality Boost stacks up to 100% star chance (hence +50% from quality boost).
-              </li>
-              <li class="ml-5">
-                At level 25, star seeds alone can reach 100% star chance (hence an assumed level scaling).
-              </li>
-              <li class="ml-5">
-                Each level increases star chance by 2% (which reaches a total of 100% at level 25 w/ star seeds).
-              </li>
-              <li class="ml-5">
-                Around level 50 and under, normal seeds alone can reach 100% star chance.
-              </li>
-              <li class="ml-5">
-                Normal seeds always have a chance of star crops (hence an assumed 25% base chance).
-              </li>
-            </ul>
+            <div class="list-col-wrap">
+              <ul class="list-disc list-inside flex flex-col gap-1">
+                <li>
+                  If there are not enough crops for a conversion, they will still be included as fragment groups
+                </li>
+                <li>
+                  Fragment groups operate under the assumption that they will build up over time into full processes.
+                </li>
+                <li>
+                  As they may take an unknown number of harvest/cycles to be complete, the planner does not wait for
+                  them to be
+                  complete groups.
+                </li>
+                <li>
+                  Crop fragments are factored in on time and gold calculations
+                </li>
+                <li>
+                  In the ideal scenario where crop groups are divided evenly, they're assigned to the most available
+                  crafter
+                </li>
+              </ul>
+            </div>
           </li>
-          <li class="p-2 font-semibold border rounded-sm border-info">
-            <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
-            Seed/Preserve conversion time is not accounted for (yet).
-          </li>
-          <li class="p-2 font-semibold border rounded-sm border-info">
-            <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
-            Weed Chance is not accounted for due to their unreliable or undocumented behaviour.
-          </li>
-          <li class="p-2 border rounded-sm border-info">
-            Crops are harvested on the day they are ready.
-          </li>
-          <li class="p-2 border rounded-sm border-info">
-            Crops receive daily watering or has Water Retain.
-          </li>
-          <li class="p-2 border rounded-sm border-info">
-            Crop boosts last until the final calculation day.
+          <li class="list-row">
+            <div class="font-thin opacity-30 tabular-nums">03</div>
+            <span class="font-black">
+              Time Calculations
+            </span>
+            <div class="list-col-wrap">
+              <ul class="list-disc list-inside flex flex-col gap-1">
+                <li>
+                  Processing time is calculated based on crafter distribution and harvest time
+                </li>
+                <li>
+                  The overall processing time attempts to estimate the 'shortest possible time' to process everything
+                </li>
+                <li>
+                  Once crafters are divided equally, the crafter with the longest processing time will be used to
+                  calculate the overall time.
+                </li>
+                <li>
+                  If the busiest crafter will finish before the next harvest, the remaining 'idle' time is included
+                </li>
+                <li>
+                  When there is excess time, the busiest crafter will only be included for the first and last harvest
+                </li>
+                <li>
+                  When there is excess time, we instead calculate the total conversions that can be done within the
+                  harvest, and subtract it by the conversions required. We then use this to calculate the average excess
+                  time
+                  <p class=" text-white rounded-md bg-neutral w-fit p-2 font-mono slashed-zero tabular-nums">
+                    <code>averageExcessTimeMinutes = (((conversionsToMake + conversionsRemainder) - conversionsPossible) * minutesPerConversion) / crafterCount</code>
+                  </p>
+                </li>
+              </ul>
+            </div>
           </li>
         </ul>
       </div>
