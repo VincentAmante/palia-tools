@@ -5,6 +5,7 @@ import PGPModal from '@/components/PGPModal.vue'
 import { useSaveCode } from '~/stores/useSaveCode'
 
 const saveCode = useSaveCode()
+
 const gardenHandler = useGarden()
 const { includeSettingsCode } = storeToRefs(useSettingsCode())
 const title = ref('New Save')
