@@ -45,14 +45,14 @@ useHead({
               <span class="italic">In-Browser Saving —</span> Planner codes can now be saved within the browser
             </li>
             <li>
-              <span class="italic">New UI —</span> Cause I'm trying to fit everything in
-            </li>
-            <li>
               <span class="italic">Setting Codes —</span> Settings can now be included in save codes
             </li>
             <li>
               <span class="italic">Harvester & Processor Overhaul —</span> Overhauled how crops are harvested and
               processed for better efficiency
+            </li>
+            <li>
+              <span class="italic">New UI —</span> Cause I'm trying to fit everything in
             </li>
             <li>
               <span class="italic">QoL Changes</span>
@@ -72,7 +72,7 @@ useHead({
               <ul class="pl-3 list-disc list-inside text-sm">
                 <li>Harvests by Day (Will focus primarily on simulated harvests)</li>
                 <li>Export as Image</li>
-                <li>Settings b</li>
+                <li>Your default settings being configurable</li>
                 <li>Total/Average Gold being globally visible in settings</li>
               </ul>
             </li>
@@ -83,7 +83,7 @@ useHead({
           </template>
           <template #default>
             <p>
-              Hello everyone, been awhile! Looks like the Elderwoods is here and so I must catch up!
+              Hi everyone, been awhile! Looks like the Elderwoods is here and so I must catch up!
               I shan't yap too much about where I've been, so I'll just move on to the changes at hand. Apologies for
               the wait
             </p>
