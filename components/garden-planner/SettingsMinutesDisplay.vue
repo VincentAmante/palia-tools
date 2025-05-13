@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { formatMinutesToDaysHoursMinutesObject } from '~/utils/formatters' // Assuming a formatter utility exists or needs creation
+
+
 const props = defineProps({
   minutes: {
     type: Number,
@@ -6,20 +9,20 @@ const props = defineProps({
   },
 })
 
-const hours = computed(() => {
-  return Math.floor(props.minutes / 60)
-})
-const minutes = computed(() => {
-  return Math.floor(props.minutes % 60)
+const timeFormatted = computed(() => {
+  return formatMinutesToDaysHoursMinutesObject(props.minutes)
 })
 </script>
 
 <template>
   <p class="text-xs text-palia-blue-dark">
     <font-awesome-icon :icon="['fas', 'stopwatch']" />
-    <span>
-      {{ hours.toLocaleString() }}<span aria-label="Hours">Hrs</span>
-      {{ minutes.toLocaleString() }}<span aria-label="Minutes">Min</span>
+    <span class="pl-1">
+      <template v-if="timeFormatted.days > 0">{{ timeFormatted.days.toLocaleString() }}Days
+
+      </template>
+      {{ timeFormatted.hours.toLocaleString() }}<span aria-label="Hours">Hrs</span>
+      {{ timeFormatted.minutes.toLocaleString() }}<span aria-label="Minutes">Min</span>
     </span>
   </p>
 </template>

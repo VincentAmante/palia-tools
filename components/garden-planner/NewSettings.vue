@@ -286,6 +286,8 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
               </div>
               <SettingsMinutesDisplay class="absolute bottom-0 w-full translate-y-2 whitespace-nowrap"
                 :minutes="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
+                <SettingsMinutesDisplay class=""
+                  :minutes="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
             </div>
           </li>
         </ul>

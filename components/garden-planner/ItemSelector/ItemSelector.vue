@@ -239,8 +239,8 @@ watchEffect(() => {
                   @mouseleave="hoveredItem = null" />
               </template>
             </div>
-            <button aria-label="Scroll Right" class="hidden px-2 rounded-l-none btn btn-primary btn-lg w-fit sm:block"
-              :class="{ 'hidden!': isTakingScreenshot.get || (reachedLeft && reachedRight) }" :disabled="reachedRight"
+            <button aria-label="Scroll Right" class="hidden px-2 rounded-l-none btn btn-primary btn-lg w-fit sm:block z-50"
+              :class="{ 'hidden!': isTakingScreenshot.get || (reachedLeft && reachedRight) }"
               @mousedown="resumeRight" @mouseup="pauseRight" @mouseleave="pauseRight">
               <font-awesome-icon :icon="['fas', 'chevron-right']" />
             </button>

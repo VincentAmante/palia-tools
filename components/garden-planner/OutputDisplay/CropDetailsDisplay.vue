@@ -8,7 +8,7 @@ import { CropType } from '~/assets/scripts/garden-planner/imports'
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
 import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue'
 
-import { formatMinutesToHoursMinutes } from '~/utils/formatters' // Assuming a formatter utility exists or needs creation
+import { formatMinutesToHoursMinutes, formatMinutesToDaysHoursMinutes } from '~/utils/formatters' // Assuming a formatter utility exists or needs creation
 
 const harvester = useHarvester()
 const processor = useProcessor()
@@ -265,7 +265,7 @@ const selectedCropAsCrop = computed(() => {
         class="flex flex-col gap-2 p-2 border rounded-sm border-misc-dark bg-accent">
         <div>
           <p class="text-sm font-medium ">
-            Processing Details
+            Processing Details <span>(Note) To be Expanded On</span>
           </p>
           <p v-if="canFinishBeforeNextHarvest"
             class="text-neutral font-semibold text-sm">
@@ -294,18 +294,18 @@ const selectedCropAsCrop = computed(() => {
           <div class="flex flex-col gap-1 py-1 border border-palia-blue px-1 rounded-xs">
             <p class="text-palia-blue opacity-80 text-xs">Total Active Processing Minutes</p>
             <p class="font-bold text-base"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
-              formatMinutesToHoursMinutes(selectedCropProcessingData.totalProcessMinutes) }}</p>
+              formatMinutesToDaysHoursMinutes(selectedCropProcessingData.totalProcessMinutes) }}</p>
           </div>
           <div class="flex flex-col gap-1 py-1 border border-palia-blue px-1 rounded-xs pb-4">
             <p class="text-palia-blue opacity-80 text-xs">Average Cycle Processing Time</p>
             <p class="font-bold text-base"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
-              formatMinutesToHoursMinutes(selectedCropProcessingData.averageProcessMinutes)
+              formatMinutesToDaysHoursMinutes(selectedCropProcessingData.averageProcessMinutes)
             }}</p>
           </div>
           <div class="flex flex-col gap-1 py-1 border border-palia-blue px-1 rounded-xs pb-4">
             <p class="text-palia-blue opacity-80 text-xs">Estimated Time to Process Everything</p>
             <p class="font-bold text-base"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
-              formatMinutesToHoursMinutes(selectedCropProcessingData.effectiveProcessMinutes) }}</p>
+              formatMinutesToDaysHoursMinutes(selectedCropProcessingData.effectiveProcessMinutes) }}</p>
           </div>
 
         </div>

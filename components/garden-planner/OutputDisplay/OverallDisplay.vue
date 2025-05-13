@@ -5,6 +5,7 @@ import TotalInventory from '../HarvestCalculator/TotalInventory.vue'
 import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
+import { formatMinutesToHoursMinutesObject, formatMinutesToDaysHoursMinutesObject } from '~/utils/formatters'
 
 const harvester = useHarvester()
 const processor = useProcessor()
@@ -12,16 +13,18 @@ const processor = useProcessor()
 const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
 
 const craftingTime = computed(() => {
-  const timeInMinutes = processor.highestCraftingTime
+  // const timeInMinutes = processor.highestCraftingTime
 
-  const hours = Math.floor(timeInMinutes / 60)
-  const minutes = timeInMinutes % 60
+  // const hours = Math.floor(timeInMinutes / 60)
+  // const minutes = timeInMinutes % 60
 
-  return {
-    actualValue: timeInMinutes,
-    hours,
-    minutes,
-  }
+  // return {
+  //   actualValue: timeInMinutes,
+  //   hours,
+  //   minutes,
+  // }
+
+  return formatMinutesToDaysHoursMinutesObject(processor.highestCraftingTime)
 })
 
 </script>
@@ -73,8 +76,15 @@ const craftingTime = computed(() => {
           </p>
           <p class="flex items-end justify-end text-lg font-semibold text-right text-palia-blue @2xl:text-xl">
             <template v-if="((craftingTime.hours + craftingTime.minutes) > 0)">
+              <template v-if="craftingTime.days > 0">
+                {{ parseInt(craftingTime.days.toFixed(0)).toLocaleString() }}
+                <span class="pr-1" aria-label="Days">d</span>
+              </template>
+
               {{ parseInt(craftingTime.hours.toFixed(0)).toLocaleString() }}
-              <span class="pr-1" aria-label="Hours">h</span> {{
+              <span class="pr-1" aria-label="Hours">h</span>
+
+              {{
                 parseInt(craftingTime.minutes.toFixed(0)).toLocaleString()
               }}<span class="" aria-label="Minutes">m</span>
             </template>
