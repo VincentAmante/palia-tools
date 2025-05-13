@@ -180,12 +180,9 @@ function trimLayout(): PlotStatus[][] {
         <h3 class="font-bold">
           Dimensions
         </h3>
-        <select
-          v-model="selectedNewLayout"
-          name="layout-select" class="select select-bordered select-sm w-full max-w-xs"
-          aria-label="Select Layout"
-          @change="onLayoutSelect()"
-        >
+        <select v-model="selectedNewLayout" name="layout-select"
+          class="select select-bordered select-sm w-full max-w-xs" aria-label="Select Layout"
+          @change="onLayoutSelect()">
           <option value="select" disabled selected>
             Select Layout
           </option>
@@ -224,11 +221,10 @@ function trimLayout(): PlotStatus[][] {
             </p>
             <div class=" flex flex-col gap-1 py-4 px-2 rounded-md w-fit">
               <div v-for="(plotRow, plotRowIndex) of plotLayout" :key="plotRowIndex" class="flex gap-1">
-                <div
-                  v-for="(plot, index) of plotRow" :key="index"
+                <div v-for="(plot, index) of plotRow" :key="index"
                   class="btn btn-square rounded-none btn-accent btn-xs cursor-pointer transition-all"
-                  :class="plot === PlotStatus.active ? 'border-misc-saturated' : 'bg-misc bg-opacity-70'" @click="togglePlot(plotRowIndex, index)"
-                />
+                  :class="plot === PlotStatus.active ? 'border-misc-saturated' : 'bg-misc bg-opacity-70'"
+                  @click="togglePlot(plotRowIndex, index)" />
               </div>
             </div>
 
@@ -244,81 +240,65 @@ function trimLayout(): PlotStatus[][] {
             <label for="row-input" class="items-center justify-start grid grid-cols-2 gap-2 w-fit">
               <p class="select-none text-sm ">Rows</p>
               <div class="join col-span-1 rounded-md">
-                <button
-                  class="join-item btn btn-sm btn-square btn-primary"
-                  @click="() => {
-                    if (rowInput <= 1)
-                      return
-                    rowInput--
-                    enforceLayoutLimits()
-                  }"
-                >-</button>
-                <input
-                  v-model="rowInput" type="number" name="row-input"
+                <button class="join-item btn btn-sm btn-square btn-primary" @click="() => {
+                  if (rowInput <= 1)
+                    return
+                  rowInput--
+                  enforceLayoutLimits()
+                }">-</button>
+                <input v-model="rowInput" type="number" name="row-input"
                   class="join-item input input-sm max-w-16 text-center input-primary" min="1" max="9" step="1"
-                  :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()"
-                >
-                <button
-                  class="join-item btn btn-sm btn-square btn-primary" @click="() => {
-                    if (rowInput >= MAX_ROWS)
-                      return
-                    rowInput++
-                  }"
-                >+</button>
+                  :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()">
+                <button class="join-item btn btn-sm btn-square btn-primary" @click="() => {
+                  if (rowInput >= MAX_ROWS)
+                    return
+                  rowInput++
+                }">+</button>
               </div>
             </label>
             <label for="col-input" class="items-center justify-start grid grid-cols-2 gap-2 w-fit">
               <p class="select-none text-sm">Columns</p>
               <div class="join col-span-1 rounded-md">
-                <button
-                  class="join-item btn btn-sm btn-square btn-primary"
-                  @click="() => {
-                    if (colInput <= 1)
-                      return
-                    colInput--
-                    enforceLayoutLimits()
-                  }"
-                >-</button>
-                <input
-                  v-model="colInput" type="number" name="col-input"
+                <button class="join-item btn btn-sm btn-square btn-primary" @click="() => {
+                  if (colInput <= 1)
+                    return
+                  colInput--
+                  enforceLayoutLimits()
+                }">-</button>
+                <input v-model="colInput" type="number" name="col-input"
                   class="join-item input input-sm input-primary max-w-16 text-center" min="1" max="9" step="1"
-                  :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()"
-                >
-                <button
-                  class="join-item btn btn-sm btn-primary btn-square" @click="() => {
-                    if (colInput >= MAX_COLS)
-                      return
-                    colInput++
-                    enforceLayoutLimits()
-                  }"
-                >+</button>
+                  :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()">
+                <button class="join-item btn btn-sm btn-primary btn-square" @click="() => {
+                  if (colInput >= MAX_COLS)
+                    return
+                  colInput++
+                  enforceLayoutLimits()
+                }">+</button>
               </div>
             </label>
           </div>
-          <div v-if="selectedNewLayout === 'custom'" class="w-full flex flex-col gap-1  bg-misc-secondary px-2 rounded-md  py-2">
+          <div v-if="selectedNewLayout === 'custom'"
+            class="w-full flex flex-col gap-1  bg-misc-secondary px-2 rounded-md  py-2">
             <label class="label flex items-start border-white w-fit gap-2">
               <span class="text-sm">Expand Plot Limits</span>
               <div class="flex flex-col">
-                <input
-                  v-model="allowIllegalLayout" type="checkbox" name="allow-illegal-layout"
-                  class="toggle"
-                >
+                <input v-model="allowIllegalLayout" type="checkbox" name="allow-illegal-layout" class="toggle">
               </div>
             </label>
             <p class="text-xs opacity-40 font-thin">
-              Increases plot limit from 9 to 27. For if plot limits are increased or for experimenting with plot configurations the garden planner doesn't support.
+              Increases plot limit from 9 to 27. For if plot limits are increased or for experimenting with plot
+              configurations the garden planner doesn't support.
             </p>
           </div>
         </div>
       </div>
-      <div class="text-xs max-w-xs">
-        <p>Note: Empty rows and columns will be trimmed from the final output</p>
+      <div class="text-xs max-w-sm flex flex-col gap-1">
+        <p>Empty rows and columns will be trimmed from the final output</p>
+        <p>This will reset everything, so consider saving beforehand</p>
       </div>
       <div class="flex flex-col gap-1">
-        <button
-          :disabled="selectedNewLayout === 'select' || activePlots <= 0" class="btn w-fit"
-          @click="createNewLayout()"
-        >
+        <button :disabled="selectedNewLayout === 'select' || activePlots <= 0" class="btn w-fit"
+          @click="createNewLayout()">
           Create
         </button>
 

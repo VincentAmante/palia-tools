@@ -36,14 +36,14 @@ function getBonus(bonus: Bonus) {
         icon: 'droplet',
         colour: 'text-water-retain',
         type: 'Water Retain',
-        extraDetail: 'keeps the surrounding crops watered',
+        extraDetail: 'Keeps the surrounding crops of other types watered',
       }
     case Bonus.QualityIncrease:
       return {
         icon: 'star',
         colour: 'text-quality-increase',
         type: 'Quality Increase',
-        extraDetail: 'Helps keep other nearby crop types hydrated',
+        extraDetail: 'Boosts star quality chance of other nearby crop types',
       }
     case Bonus.HarvestIncrease:
       return {
@@ -75,12 +75,58 @@ function getBonus(bonus: Bonus) {
   }
 }
 
+function getBonusFert(bonus: Bonus) {
+  switch (bonus) {
+    case Bonus.WaterRetain:
+      return {
+        icon: 'droplet',
+        colour: 'text-water-retain',
+        type: 'Water Retain',
+        extraDetail: 'Keeps the crop watered',
+      }
+    case Bonus.QualityIncrease:
+      return {
+        icon: 'star',
+        colour: 'text-quality-increase',
+        type: 'Quality Increase',
+        extraDetail: 'Boosts the chance of the crop having star quality harvests',
+      }
+    case Bonus.HarvestIncrease:
+      return {
+        icon: 'wheat-awn',
+        colour: 'text-harvest-boost',
+        type: 'Harvest Increase',
+        extraDetail: 'Boosts the amount harvested from the crop',
+      }
+    case Bonus.WeedPrevention:
+      return {
+        icon: 'shield',
+        colour: 'text-weed-prevention',
+        type: 'Weed Prevention',
+        extraDetail: 'Prevents weed growing on this crop',
+      }
+    case Bonus.SpeedIncrease:
+      return {
+        icon: 'forward-fast',
+        colour: 'text-growth-boost',
+        type: 'Growth Boost',
+        extraDetail: 'Boosts growth speed of this crop',
+      }
+    default:
+      return {
+        icon: '',
+        colour: 'text-misc',
+        type: '',
+      }
+  }
+}
+
 const bonus = computed(() => {
   switch (getSelectedItemType(props.hoveredItem)) {
     case (SelectedItemType.Crop):
       return getBonus((props.hoveredItem as Crop).cropBonus)
     case (SelectedItemType.Fertiliser):
-      return getBonus((props.hoveredItem as Fertiliser).effect)
+      return getBonusFert((props.hoveredItem as Fertiliser).effect)
     default:
       return getBonus(Bonus.None)
   }

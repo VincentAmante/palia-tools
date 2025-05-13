@@ -107,7 +107,7 @@ onMounted(() => {
     <div class="grid flex-wrap w-full grid-cols-2 sm:grid-cols-3 gap-2 py-1 xl:w-fit xl:flex xl:py-2 order-2 xl:order-3 ">
       <button class="xl:h-full btn btn-soft" @click="openNewLayoutModal">
         <font-awesome-icon class="text-lg" icon="pen-to-square" />
-        Edit Layout
+        New Layout
       </button>
       <button class="xl:h-full btn btn-warning text-neutral" @click="clearGarden">
         <font-awesome-icon class="text-lg" icon="trash" />

@@ -31,7 +31,7 @@ defineProps({
 
 <template>
   <li
-    class="relative flex flex-col items-center justify-center w-10 h-10 rounded-md isolate aspect-square bg-accent"
+    class="relative flex flex-col items-center justify-center w-10 h-10 rounded-sm isolate aspect-square bg-accent"
   >
     <!-- <div
       :data-tip="tooltip || `${count * baseGoldValue}g`"
@@ -42,8 +42,8 @@ defineProps({
       <img
         v-if="imgSrc"
         :src="imgSrc"
-        width="32px"
-        class="object-contain aspect-square"
+        width="28px"
+        class="object-contain aspect-square pt-0.5"
         :srcset="undefined"
       >
 
@@ -53,9 +53,11 @@ defineProps({
       <p
         v-if="count !== 0"
         class="absolute top-0 right-0 px-[2px] text-xs text-center align-middle rounded-lg"
-        :class="(count < 0) ? 'font-bold italic' : ' text-palia-blue-dark'"
+        :class="[(count < 0) ? 'font-bold italic' : ' text-palia-blue-dark',
+          (count.toLocaleString().length > 5 ? 'text-xxs' : 'text-xs')
+        ]"
       >
-        {{ count }}
+        {{ count.toLocaleString() }}
       </p>
       <p class="absolute bottom-0 right-1">
         <slot name="icon" />
