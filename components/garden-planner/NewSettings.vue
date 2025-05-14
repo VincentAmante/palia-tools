@@ -7,67 +7,11 @@ import type { ProcessorSetting, ProcessorSettings } from '~/assets/scripts/garde
 import { type ICropNameWithGrowthDiff, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { CropType, getCropFromType } from '~/assets/scripts/garden-planner/imports'
 import useProcessor from '~/stores/useProcessor'
-import type { IHarvesterOptions } from '~/assets/scripts/garden-planner/classes/harvester'
-import useGarden from '~/stores/useGarden'
-import { useSettingsCode } from '~/stores/useSettingsCode'
-import { storeToRefs } from 'pinia'
-import { CropItem } from '~/assets/scripts/garden-planner/classes/items/item'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const harvester = useHarvester()
-const garden = useGarden()
-const settingsCode = useSettingsCode()
-
-const { settings: harvesterSettings, updateSettings: updateHarvesterSettings } = useHarvester()
-
 const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
-
-watchEffect(() => {
-  if (harvester.settings.level < 0)
-    harvester.settings.level = 0
-
-  starBaseChance.value = 0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)
-
-  starBaseChance.value = Math.min(1, starBaseChance.value)
-
-  if (harvester.settings.days === 'L')
-    harvester.settings.days = -1
-  else if (harvester.settings.days === 'M')
-    harvester.settings.days = 0
-  else if (harvester.settings.days < -1)
-    harvester.settings.days = -1
-
-  harvester.updateSettings({ ...harvester.settings })
-})
-
 const processor = useProcessor()
-
-watchEffect(() => {
-  // set all isActive to false
-  for (const setting of processor.settings.cropSettings.values())
-    setting.isActive = false
-
-  for (const [cropId, data] of harvester.totalHarvest.crops) {
-    const cropSetting = processor.settings.cropSettings.get(cropId) ?? {
-      count: data.totalWithDeductions,
-      cropType: data.cropType,
-      isStar: data.isStar,
-      processAs: ItemType.Crop,
-      crafters: 1,
-      targetTime: 0,
-      isActive: true,
-      hasPreserve: (getCropFromType(data.cropType)?.conversionInfo.preserveProcessMinutes || 0) > 0,
-    }
-
-    cropSetting.count = data.totalWithDeductions
-
-    processor.settings.cropSettings.set(cropId, cropSetting)
-
-    processor.settings.cropSettings.get(cropId)!.isActive = true
-  }
-
-  saveGarden()
-})
 
 // Allows us to save settings of unselected crops
 const activeProcessorSettings = computed(() => {
@@ -117,32 +61,6 @@ function updateSettings() {
 
 function onChangeSettings() {
   updateSettings()
-}
-
-
-
-function saveGarden() {
-  const saveString = garden.garden.saveSettings(harvester.settings, processor.settings)
-  settingsCode.set(saveString)
-}
-
-const { updateIsRequested } = storeToRefs(settingsCode)
-
-watch(updateIsRequested, () => {
-  if (updateIsRequested.value) {
-    loadGarden(settingsCode.code)
-    settingsCode.resetUpdateRequest()
-  }
-})
-
-
-function loadGarden(saveString: string) {
-  const { harvesterOptions, processorSettings: loadedProcessorSettings } = garden.garden.loadSettings(saveString)
-
-  // updateHarvesterSettings(Object.assign({}, harvesterOptions))
-  harvester.updateSettings(Object.assign({}, harvesterOptions))
-  processor.updateSettings(Object.assign({}, loadedProcessorSettings))
-  processor.simulateProcessing(harvester.totalHarvest)
 }
 
 const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
