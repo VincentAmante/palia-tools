@@ -292,7 +292,7 @@ watchEffect(() => {
               Crafter Data
             </button>
           </div>
-          <p v-if="canFinishBeforeNextHarvest" class="text-neutral font-semibold text-sm">
+          <p v-if="canFinishBeforeNextHarvest" class="text-neutral font-semibold text-xs">
             <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
             Harvests can't process before next harvest
           </p>
@@ -372,17 +372,17 @@ watchEffect(() => {
                   }">»</button>
                 </div>
               </div> -->
-              <div class="flex flex-col">
-                <p class="text-sm">Phase</p>
+              <div class="flex flex-row gap-2 items-center">
+                <p class="text-sm font-bold">Harvest</p>
                 <div class="join">
                   <button
                     v-for="phaseIndex in selectedCropProcessingData.cycleData[cropDetailCycleIndex].cycleCrafterData.length"
-                    @click="cropDetailCyclePhase = (phaseIndex - 1)" class="join-item btn btn-soft"
+                    @click="cropDetailCyclePhase = (phaseIndex - 1)" class="join-item btn btn-soft btn-sm"
                     :class="{ 'btn-active': (phaseIndex - 1) === cropDetailCyclePhase }">{{ phaseIndex }}</button>
                 </div>
               </div>
             </div>
-            <div class="max-h-64 overflow-y-scroll overflow-x-auto ">
+            <div class="max-h-48 overflow-y-scroll overflow-x-auto ">
               <table class="table bg-primary table-sm table-pin-rows">
                 <thead>
                   <tr class="font-light text-accent">
@@ -390,7 +390,7 @@ watchEffect(() => {
                       Crafter #
                     </th>
                     <th class="">
-                      Crops Inserted
+                      Crops Added
                     </th>
                     <th class="">
                       Processes

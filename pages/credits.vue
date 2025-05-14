@@ -96,6 +96,14 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
+              DuhScape
+            </template>
+            <template #for>
+              Information, Feedback
+            </template>
+          </CreditName>
+          <CreditName>
+            <template #name>
               st3fannl
             </template>
             <template #for>
