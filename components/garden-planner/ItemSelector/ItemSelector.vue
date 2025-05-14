@@ -202,9 +202,8 @@ watchEffect(() => {
           </ul>
         </div>
         <p class="text-sm pt-1 text-palia-blue">
-          <FontAwesomeIcon class="text-warning" :icon="['fas', 'triangle-exclamation']" /> New crops not fully
-          implemented or is
-          being verified
+          <FontAwesomeIcon class="text-warning" :icon="['fas', 'triangle-exclamation']" />
+          New crops are still not fully supported, no gold values are concrete until then
         </p>
         <div class="flex gap-1 py-1 rounded-md w-fit items-start">
           <div class="hidden pb-1 sm:flex lg:items-center">
