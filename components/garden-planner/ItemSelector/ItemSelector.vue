@@ -201,7 +201,7 @@ watchEffect(() => {
             </li>
           </ul>
         </div>
-        <p class="text-xs text-palia-blue">
+        <p class="text-sm pt-1 text-palia-blue">
           <FontAwesomeIcon class="text-warning" :icon="['fas', 'triangle-exclamation']" /> New crops not fully
           implemented or is
           being verified
