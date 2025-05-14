@@ -490,8 +490,6 @@ const BOK_CHOY = new Crop(
   },
 )
 
-
-
 const BATTERFLY_BEAN = new Crop(
   CropType.BatterflyBean,
   Bonus.HarvestIncrease,
@@ -526,13 +524,13 @@ const BATTERFLY_BEAN = new Crop(
   },
   {
     cropCode: CropCode.BatterflyBean,
-    cropTooltip: 'batterfly Bean',
+    cropTooltip: 'Batterfly Bean',
     cropBackgroundColor: 'bg-harvest-boost/20',
   },
 )
 
 const ROCKHOPPER_PUMPKIN = new Crop(
-  CropType.None,
+  CropType.RockhopperPumpkin,
   Bonus.QualityIncrease,
   CropSize.Bush,
   '/crops/rockhopper-pumpkin.webp',
@@ -560,11 +558,11 @@ const ROCKHOPPER_PUMPKIN = new Crop(
     preserveProcessMinutes: 31.5,
   },
   {
-    preserve: '/jars/spicy-pepper.webp',
+    preserve: '/jars/rockhopper-pumpkin.webp',
     seed: '/seeds/rockhopper-pumpkin.webp',
   },
   {
-    cropCode: CropCode.None,
+    cropCode: CropCode.RockhopperPumpkin,
     cropTooltip: 'Rockhopper Pumpkin',
     cropBackgroundColor: 'bg-quality-increase/20',
   },
@@ -621,7 +619,7 @@ const crops = {
   [CropType.SpicyPepper]: SPICY_PEPPER,
   [CropType.NapaCabbage]: NAPA_CABBAGE,
   [CropType.BokChoy]: BOK_CHOY,
-  // [CropType.RockhopperPumpkin]: ROCKHOPPER_PUMPKIN,
+  [CropType.RockhopperPumpkin]: ROCKHOPPER_PUMPKIN,
   [CropType.BatterflyBean]: BATTERFLY_BEAN,
   [CropType.None]: NULLCROP,
 } as const
@@ -654,8 +652,8 @@ function getCropFromCode(code: CropCode): Crop {
       return crops[CropType.NapaCabbage]
     case CropCode.BokChoy:
       return crops[CropType.BokChoy]
-    // case CropCode.RockhopperPumpkin:
-    //   return crops[CropType.RockhopperPumpkin]
+    case CropCode.RockhopperPumpkin:
+      return crops[CropType.RockhopperPumpkin]
     case CropCode.BatterflyBean:
       return crops[CropType.BatterflyBean]
     default:

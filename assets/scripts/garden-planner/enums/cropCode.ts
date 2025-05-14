@@ -13,7 +13,7 @@ enum CropCode {
   SpicyPepper = 'S',
   NapaCabbage = 'Cb',
   BokChoy = 'Bk',
-  // RockhopperPumpkin = 'Pm',
+  RockhopperPumpkin = 'Pm',
   BatterflyBean = 'Bb'
 }
 
