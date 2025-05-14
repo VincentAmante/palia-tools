@@ -83,8 +83,6 @@ const selectedCropIsProcessedAs = computed(() => {
     return null
   }
 
-
-
   return processor.settings.cropSettings.get(selectedCropDetail.value satisfies ICropNameWithGrowthDiff)?.processAs
 })
 
@@ -160,6 +158,26 @@ const selectedCropAsCrop = computed(() => {
   }
 
   return getCropFromType(parseCropId(selectedCropDetail.value).type)
+})
+
+
+const cropDetailsProcessTab = ref<'overall' | 'cycle-data'>('overall')
+const cropDetailCycleIndex = ref(0)
+const lastVisitedCropDetail = ref(`none`)
+const cropDetailCyclePhase = ref(0)
+
+watchEffect(() => {
+  if (`${selectedCropDetail}` !== lastVisitedCropDetail.value) {
+    cropDetailCyclePhase.value = 0
+
+    lastVisitedCropDetail.value = selectedCropDetail.value || ''
+  }
+})
+
+watchEffect(() => {
+  if (!selectedCropCycleData.value && selectedCropDetail.value !== null) {
+    selectedCropDetail.value = null
+  }
 })
 
 // --- End Crop Details Tab Logic ---
@@ -264,26 +282,33 @@ const selectedCropAsCrop = computed(() => {
       <div v-if="selectedCropProcessingData && selectedCropProcessingData.cycleData.length > 0"
         class="flex flex-col gap-2 p-2 border rounded-sm border-misc-dark bg-accent">
         <div>
-          <p class="text-sm font-medium ">
-            Processing Details <span>(Note) To be Expanded On</span>
-          </p>
-          <p v-if="canFinishBeforeNextHarvest"
-            class="text-neutral font-semibold text-sm">
+          <div class="join  w-fit">
+            <button class="join-item btn btn-sm btn-primary" @click="cropDetailsProcessTab = 'overall'"
+              :class="{ 'btn-active': cropDetailsProcessTab === 'overall' }">
+              Cycle Summary
+            </button>
+            <button class="join-item btn btn-sm btn-primary" @click="cropDetailsProcessTab = 'cycle-data'"
+              :class="{ 'btn-active': cropDetailsProcessTab === 'cycle-data' }">
+              Crafter Data
+            </button>
+          </div>
+          <p v-if="canFinishBeforeNextHarvest" class="text-neutral font-semibold text-sm">
             <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
             Harvests can't process before next harvest
           </p>
         </div>
-        <div class="grid grid-cols-2 flex-wrap gap-1 gap-y-2 text-sm xl:grid-cols-3 pb-4">
-          <div class="flex flex-col gap-1 py-1 border border-palia-blue px-1 rounded-xs">
+        <div v-if="cropDetailsProcessTab === 'overall'"
+          class="grid grid-cols-2 flex-wrap gap-1 gap-y-2 text-sm xl:grid-cols-3 pb-4">
+          <div class="flex flex-col gap-1 py-1 border border-palia-blue px-1 rounded-xs justify-between">
             <p class="text-palia-blue opacity-80 text-xs">Average Produce/Cycle:</p>
             <ItemDisplay class="max-w-12"
               :imgSrc="selectedCropAsCrop![`${selectedCropIsProcessedAs === ItemType.Preserve ? 'preserveImage' : 'seedImage'}`]"
               :imgAlt="`${selectedCropAsCrop!.type} ${selectedCropIsProcessedAs}`"
               :count="selectedCropProcessingData.averageProduce" />
           </div>
-          <div class="flex flex-col gap-1 py-1 border border-palia-blue px-1 rounded-xs">
+          <div class="flex flex-col gap-1 py-1 border border-palia-blue px-2 justify-between rounded-xs">
             <p class="text-palia-blue opacity-80 text-xs">Gold Generated</p>
-            <div class="font-bold text-base flex items-center gap-1">
+            <div class="font-bold text-lg flex items-center gap-1">
               <img width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
                 format="webp">
               <p>{{
@@ -291,20 +316,20 @@ const selectedCropAsCrop = computed(() => {
               }}</p>
             </div>
           </div>
-          <div class="flex flex-col gap-1 py-1 border border-palia-blue px-1 rounded-xs">
+          <div class="flex flex-col gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
             <p class="text-palia-blue opacity-80 text-xs">Total Active Processing Minutes</p>
-            <p class="font-bold text-base"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
+            <p class="font-bold text-lg"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
               formatMinutesToDaysHoursMinutes(selectedCropProcessingData.totalProcessMinutes) }}</p>
           </div>
-          <div class="flex flex-col gap-1 py-1 border border-palia-blue px-1 rounded-xs pb-4">
+          <div class="flex flex-col gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
             <p class="text-palia-blue opacity-80 text-xs">Average Cycle Processing Time</p>
-            <p class="font-bold text-base"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
+            <p class="font-bold text-lg"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
               formatMinutesToDaysHoursMinutes(selectedCropProcessingData.averageProcessMinutes)
             }}</p>
           </div>
-          <div class="flex flex-col gap-1 py-1 border border-palia-blue px-1 rounded-xs pb-4">
+          <div class="flex flex-col gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
             <p class="text-palia-blue opacity-80 text-xs">Estimated Time to Process Everything</p>
-            <p class="font-bold text-base"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
+            <p class="font-bold text-lg"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
               formatMinutesToDaysHoursMinutes(selectedCropProcessingData.effectiveProcessMinutes) }}</p>
           </div>
 
@@ -323,55 +348,92 @@ const selectedCropAsCrop = computed(() => {
                 formatMinutesToHoursMinutes(phaseData.longestProcessMinutesNoIdle) }} active)
             </p>
           </div>
-          <div class="grid ">
-            <table class="w-full text-xs border-collapse">
-              <thead>
-                <tr class="bg-opacity-50 bg-misc">
-                  <th class="p-1 font-semibold border border-misc-dark">
-                    Crafter #
-                  </th>
-                  <th class="p-1 font-semibold border border-misc-dark">
-                    Crops In
-                  </th>
-                  <th class="p-1 font-semibold border border-misc-dark">
-                    Processes
-                  </th>
-                  <th class="p-1 font-semibold border border-misc-dark">
-                    Time
-                  </th>
-                  <th class="p-1 font-semibold border border-misc-dark">
-                    Idle
-                  </th>
-                  <th class="p-1 font-semibold border border-misc-dark">
-                    Excess
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(crafter, crafterIndex) in phaseData.crafterData" :key="`crafter-${crafterIndex}`">
-                  <td class="p-1 text-center border border-misc-dark">
-                    {{ crafterIndex + 1 }}
-                  </td>
-                  <td class="p-1 text-right border border-misc-dark">
-                    {{ crafter.cropsInsertedCount.toLocaleString() }}
-                  </td>
-                  <td class="p-1 text-right border border-misc-dark">
-                    {{ crafter.processesDone.toLocaleString(undefined, { maximumFractionDigits: 1 }) }}
-                  </td>
-                  <td class="p-1 text-right border border-misc-dark">
-                    {{ formatMinutesToHoursMinutes(crafter.processTimeMinutes) }}
-                  </td>
-                  <td class="p-1 text-right border border-misc-dark">
-                    {{ formatMinutesToHoursMinutes(crafter.idleTimeMinutes) }}
-                  </td>
-                  <td class="p-1 text-right border border-misc-dark">
-                    {{ formatMinutesToHoursMinutes(crafter.excessTimeMinutes) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+
         </div> -->
+        <div v-if="cropDetailsProcessTab === 'cycle-data'">
+          <div class="grid gap-1">
+            <div class="flex justify-between">
+              <!-- <div class="flex flex-col">
+                <p class="text-sm">Cycle</p>
+                <div v-if="cropDetailsProcessTab === 'cycle-data'" class="join">
+                  <button class="join-item btn" @click="() => {
+                    if (cropDetailCycleIndex <= 0)
+                      return
+
+                    cropDetailCycleIndex--
+                  }">«</button>
+                  <button class="join-item btn">Cycle {{ cropDetailCycleIndex + 1 }}</button>
+                  <button class="join-item btn" @click="() => {
+                    if (cropDetailCycleIndex >= (selectedCropProcessingData!.cycleData.length - 1))
+                      return
+
+                    else
+                      cropDetailCycleIndex++
+                  }">»</button>
+                </div>
+              </div> -->
+              <div class="flex flex-col">
+                <p class="text-sm">Phase</p>
+                <div class="join">
+                  <button
+                    v-for="phaseIndex in selectedCropProcessingData.cycleData[cropDetailCycleIndex].cycleCrafterData.length"
+                    @click="cropDetailCyclePhase = (phaseIndex - 1)" class="join-item btn btn-soft"
+                    :class="{ 'btn-active': (phaseIndex - 1) === cropDetailCyclePhase }">{{ phaseIndex }}</button>
+                </div>
+              </div>
+            </div>
+            <div class="max-h-64 overflow-y-scroll overflow-x-auto ">
+              <table class="table bg-primary table-sm table-pin-rows">
+                <thead>
+                  <tr class="font-light text-accent">
+                    <th class="">
+                      Crafter #
+                    </th>
+                    <th class="">
+                      Crops Inserted
+                    </th>
+                    <th class="">
+                      Processes
+                    </th>
+                    <th class="">
+                      Time
+                    </th>
+                    <th class="">
+                      +Idle / >Excess
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(crafter, crafterIndex) in selectedCropProcessingData.cycleData[cropDetailCycleIndex].cycleCrafterData[cropDetailCyclePhase].crafterData"
+                    :key="`${cropDetailCycleIndex}-${cropDetailCyclePhase}-${crafterIndex}`">
+                    <td class="">
+                      {{ crafterIndex + 1 }}
+                    </td>
+                    <td class="">
+                      {{ crafter.cropsInsertedCount.toLocaleString() }}
+                    </td>
+                    <td class="">
+                      {{ crafter.processesDone.toLocaleString(undefined, { maximumFractionDigits: 1 }) }}
+                    </td>
+                    <td class="">
+                      {{ formatMinutesToHoursMinutes(crafter.processTimeMinutes) }}
+                    </td>
+                    <td class="">
+                      <template v-if="crafter.excessTimeMinutes > 0">
+                        <span class="italic">
+                          &gt;{{ formatMinutesToHoursMinutes(crafter.excessTimeMinutes) }}</span>
+                      </template>
+                      <template v-else="crafter.idleTimeMinutes > 0">
+                        +{{ formatMinutesToHoursMinutes(crafter.idleTimeMinutes) }}
+                      </template>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
         <!-- <div v-for="(cycle, cycleIndex) in selectedCropProcessingData" :key="`cycle-${cycleIndex}`"
       class="pb-2 mb-3 border-b border-misc last:border-b-0 last:mb-0">
       <p class="mb-1 text-xs font-semibold">

@@ -13,6 +13,8 @@ enum CropType {
   SpicyPepper = 'spicy pepper',
   NapaCabbage = 'napa cabbage',
   BokChoy = 'bok choy',
+  // RockhopperPumpkin = 'rockhopper pumpkin',
+  BatterflyBean = 'batterfly bean'
 }
 
 export default CropType

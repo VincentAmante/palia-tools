@@ -7,6 +7,7 @@ import { SelectedItemType, useSelectedItem } from '~/stores/useSelectedItem'
 import { Crop, Fertiliser } from '~/assets/scripts/garden-planner/imports'
 import { Bonus, CropCode, CropType, FertiliserType, crops, fertilisers, getCropFromCode, getFertiliserFromCode } from '~/assets/scripts/garden-planner/imports'
 import FertiliserCode from '~/assets/scripts/garden-planner/enums/fertilisercode'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const selectedItem = useSelectedItem()
 const isTakingScreenshot = useTakingScreenshot()
@@ -159,6 +160,8 @@ watchEffect(() => {
           <h3 class="font-semibold text-palia-blue">
             Crops
           </h3>
+
+
           <ul class="flex items-center gap-1 text-sm" :class="{ hidden: isTakingScreenshot.get }">
             <li
               class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
@@ -198,7 +201,12 @@ watchEffect(() => {
             </li>
           </ul>
         </div>
-        <div class="flex gap-1 py-1 rounded-md w-fit">
+        <p class="text-xs text-palia-blue">
+          <FontAwesomeIcon class="text-warning" :icon="['fas', 'triangle-exclamation']" /> New crops not fully
+          implemented or is
+          being verified
+        </p>
+        <div class="flex gap-1 py-1 rounded-md w-fit items-start">
           <div class="hidden pb-1 sm:flex lg:items-center">
             <button id="crop-eraser" aria-label="Select Crop Eraser"
               class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc"
@@ -239,21 +247,23 @@ watchEffect(() => {
                   @mouseleave="hoveredItem = null" />
               </template>
             </div>
-            <button aria-label="Scroll Right" class="hidden px-2 rounded-l-none btn btn-primary btn-lg w-fit sm:block z-50"
-              :class="{ 'hidden!': isTakingScreenshot.get || (reachedLeft && reachedRight) }"
-              @mousedown="resumeRight" @mouseup="pauseRight" @mouseleave="pauseRight">
+            <button aria-label="Scroll Right"
+              class="hidden px-2 rounded-l-none btn btn-primary btn-lg w-fit sm:block z-50"
+              :class="{ 'hidden!': isTakingScreenshot.get || (reachedLeft && reachedRight) }" @mousedown="resumeRight"
+              @mouseup="pauseRight" @mouseleave="pauseRight">
               <font-awesome-icon :icon="['fas', 'chevron-right']" />
             </button>
           </div>
         </div>
       </section>
+
       <section class="flex flex-wrap order-2 xl:justify-end xl:col-span-3"
         :class="[isTakingScreenshot.get ? 'col-span-3' : '']">
         <div v-if="!(isTakingScreenshot.get && totalFertilisers <= 0)">
           <h3 class="font-semibold text-palia-blue">
             Fertilisers per Day
           </h3>
-          <div class="flex flex-wrap gap-1 pt-2">
+          <div class="flex flex-wrap gap-1 pt-2 items-start">
             <button id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
               class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc" :class="{
                 'bg-white': selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get,

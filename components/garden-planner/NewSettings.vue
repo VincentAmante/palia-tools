@@ -120,7 +120,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
             <div class="flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
               <ItemDisplayAlt :img-src="getCropImgSrc(setting.cropType).src"
                 :img-alt="getCropImgSrc(setting.cropType).alt" :star="setting.isStar" :count="setting.count" />
-              <p class="hidden font-bold capitalize xl:text-xs 2xl:text-sm xl:block">
+              <p class="hidden font-bold capitalize xl:text-xs xl:block">
                 {{ setting.cropType }}
               </p>
             </div>
@@ -151,7 +151,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
                   <img class="w-full h-full" :src="getCropFromType(setting.cropType)?.seedImage"
                     :alt="`${setting.cropType} Preserve`">
                 </button>
-                <button v-if="(((getCropFromType(setting.cropType)?.goldValues.preserve) || 0) > 0)"
+                <button v-if="getCropFromType(setting.cropType)?.goldValues.hasPreserve"
                   class="p-2 btn join-item btn-primary btn-square "
                   :class="(setting.processAs === ItemType.Preserve) ? 'btn-active' : ''" @click="() => {
                     if (setting.processAs === ItemType.Preserve)
