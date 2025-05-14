@@ -83,8 +83,6 @@ const selectedCropIsProcessedAs = computed(() => {
     return null
   }
 
-
-
   return processor.settings.cropSettings.get(selectedCropDetail.value satisfies ICropNameWithGrowthDiff)?.processAs
 })
 
@@ -173,6 +171,12 @@ watchEffect(() => {
     cropDetailCyclePhase.value = 0
 
     lastVisitedCropDetail.value = selectedCropDetail.value || ''
+  }
+})
+
+watchEffect(() => {
+  if (!selectedCropCycleData.value && selectedCropDetail.value !== null) {
+    selectedCropDetail.value = null
   }
 })
 
