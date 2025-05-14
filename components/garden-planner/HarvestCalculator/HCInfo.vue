@@ -119,6 +119,14 @@
                 <li class="">
                   Crop boosts last until the final calculation day.
                 </li>
+                <li class="">
+                  If Replant Costs are enabled, crops will be deducted from within the day.
+                  This may sometimes result in a harvest having negative values
+                </li>
+                <li class="pl-5">
+                  These harvests with a negative value merely imply that a crop was taken from somewhere else, whether your storage
+                  or from a different harvest. Aside from required seed calculations, each harvest day does not factor in outcomes from other days
+                </li>
               </ul>
             </div>
           </li>
@@ -210,23 +218,50 @@
                   If the busiest crafter will finish before the next harvest, the remaining 'idle' time is included
                 </li>
                 <li>
-                  When there is known to be excess time (a crafter still processing beyond the next harvest), we instead calculate the total conversions that can be done within the
-                  harvest (how many processes can be done based on time to next harvest & crafter amount), and subtract it from the conversions required. We then use this to calculate the average excess
+                  When there is known to be excess time (a crafter still processing beyond the next harvest), we instead
+                  calculate the total conversions that can be done within the
+                  harvest (how many processes can be done based on time to next harvest & crafter amount), and subtract
+                  it from the conversions required. We then use this to calculate the average excess
                   time
                   <p class=" text-white rounded-md bg-neutral w-fit p-2 font-mono slashed-zero tabular-nums">
                     <code>averageExcessTimeMinutes = ((conversionsRequired - conversionsPossible) * minutesPerConversion) / crafterCount</code>
                   </p>
                 </li>
                 <li>
-                  This method is only used for all in-between harvests, operating under the aforementioned assumption that the player
+                  This method is only used for all in-between harvests, operating under the aforementioned assumption
+                  that the player
                   will distribute crop groups based on the most available one
                 </li>
-                
+
                 <li>
                   Average excess time only applies to in-between harvests.
                   The first harvest assumes all crafters are empty.
                   The last harvest not using average excess time is more arbitrary,
-                  believing that by the last harvest, crops have been distributed evenly enough that using the time of the longest busiest again is more accurate
+                  believing that by the last harvest, crops have been distributed evenly enough that using the time of
+                  the longest busiest again is more accurate
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="list-row">
+            <div class="font-thin opacity-30 tabular-nums hidden xs:block">03</div>
+            <span class="font-black">
+              Negative Values
+            </span>
+            <div class="list-col-wrap">
+              <ul class="list-disc list-inside flex flex-col gap-1">
+                <li>
+                  Negative values may be encountered when 'Replant Costs' is enabled
+                </li>
+                <li>
+                  These negative values are the result of negative harvest crops mentioned in the Harvest section
+                </li>
+                <li>
+                  Since other harvests are not deducted due to planner mechanics,
+                  these values seek to 'balance' other harvests having extra produce that would've been deducted
+                </li>
+                <li>
+                  This implementation may be faulty, so I do seek feedback on this
                 </li>
               </ul>
             </div>
