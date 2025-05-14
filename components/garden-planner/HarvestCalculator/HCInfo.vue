@@ -56,7 +56,7 @@
     <div class="px-2">
       <div class="grid gap-2 p-3 rounded-md bg-palia-blue">
         <h3 class="text-lg font-bold">
-          Harvest Assumptions <span class="tabular-nums text-xs pl-1 opacity-50">(13/05/2025)</span>
+          Harvest Assumptions <span class="tabular-nums text-xs pl-1 opacity-50">(14/05/2025)</span>
         </h3>
         <ul class="list text-sm">
           <li class="list-row">
@@ -136,7 +136,7 @@
     <div class="px-2 pb-3">
       <div class="grid gap-2 p-3 rounded-md bg-palia-blue">
         <h3 class="text-lg font-bold">
-          Processing Mechanics <span class="tabular-nums text-xs pl-1 opacity-50">(13/05/2025)</span>
+          Processing Mechanics <span class="tabular-nums text-xs pl-1 opacity-50">(14/05/2025)</span>
         </h3>
         <ul class="list text-sm">
 
@@ -244,7 +244,7 @@
             </div>
           </li>
           <li class="list-row">
-            <div class="font-thin opacity-30 tabular-nums hidden xs:block">03</div>
+            <div class="font-thin opacity-30 tabular-nums hidden xs:block">04</div>
             <span class="font-black">
               Negative Values
             </span>
