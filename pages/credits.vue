@@ -88,6 +88,14 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
+              Ren
+            </template>
+            <template #for>
+              Information
+            </template>
+          </CreditName>
+          <CreditName>
+            <template #name>
               st3fannl
             </template>
             <template #for>
@@ -120,7 +128,8 @@ useHead({
           </CreditName>
         </div>
         <p class="max-w-4xl text-center">
-          Huge thanks to the Palia Team and Singularity 6 for developing the game, Palia's Commmunity Teams for various assistance with the planner, and players who provided information through discussions online,
+          Huge thanks to the Palia Team and Singularity 6 for developing the game, Palia's Commmunity Teams for various
+          assistance with the planner, and players who provided information through discussions online,
           and everyone for using the planner and providing feedback!
         </p>
       </div>
