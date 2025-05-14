@@ -20,6 +20,8 @@ const modal = ref<InstanceType<typeof PGPModal> | null>(null)
 
 function openModal() {
   modal.value?.showModal()
+  
+  loadSavedGardenCodes()
 }
 defineExpose({
   openModal,
@@ -58,6 +60,7 @@ const loadCode = ref(text.value)
 async function paste() {
   loadCode.value = await navigator.clipboard.readText()
 }
+
 </script>
 
 <template>
