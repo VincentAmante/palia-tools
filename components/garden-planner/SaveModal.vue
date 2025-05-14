@@ -21,6 +21,7 @@ onMounted(() => {
 const modal = ref<InstanceType<typeof PGPModal> | null>(null)
 function openModal() {
   modal.value?.showModal()
+  loadSavedGardenCodes()
 }
 defineExpose({
   openModal,
