@@ -198,7 +198,7 @@ watchEffect(() => {
             </li>
           </ul>
         </div>
-        <div class="flex gap-1 py-1 rounded-md w-fit">
+        <div class="flex gap-1 py-1 rounded-md w-fit items-start">
           <div class="hidden pb-1 sm:flex lg:items-center">
             <button id="crop-eraser" aria-label="Select Crop Eraser"
               class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc"
@@ -253,7 +253,7 @@ watchEffect(() => {
           <h3 class="font-semibold text-palia-blue">
             Fertilisers per Day
           </h3>
-          <div class="flex flex-wrap gap-1 pt-2">
+          <div class="flex flex-wrap gap-1 pt-2 items-start">
             <button id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
               class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc" :class="{
                 'bg-white': selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get,
