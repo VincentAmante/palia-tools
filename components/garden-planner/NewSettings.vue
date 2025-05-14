@@ -20,25 +20,24 @@ const settingsCode = useSettingsCode()
 
 const { settings: harvesterSettings, updateSettings: updateHarvesterSettings } = useHarvester()
 
-const starBaseChance = ref(0.25 + (harvesterSettings.useStarSeeds ? 0.25 : 0) + (harvesterSettings.level * 0.02))
+const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
 
 watchEffect(() => {
-  if (harvesterSettings.level < 0)
-    harvesterSettings.level = 0
+  if (harvester.settings.level < 0)
+    harvester.settings.level = 0
 
-  starBaseChance.value = 0.25 + (harvesterSettings.useStarSeeds ? 0.25 : 0) + (harvesterSettings.level * 0.02)
+  starBaseChance.value = 0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)
 
   starBaseChance.value = Math.min(1, starBaseChance.value)
 
-  if (harvesterSettings.days === 'L')
-    harvesterSettings.days = -1
-  else if (harvesterSettings.days === 'M')
-    harvesterSettings.days = 0
+  if (harvester.settings.days === 'L')
+    harvester.settings.days = -1
+  else if (harvester.settings.days === 'M')
+    harvester.settings.days = 0
+  else if (harvester.settings.days < -1)
+    harvester.settings.days = -1
 
-  if (harvesterSettings.days < -1)
-    harvesterSettings.days = -1
-
-  harvester.updateSettings({ ...harvesterSettings })
+  harvester.updateSettings({ ...harvester.settings })
 })
 
 const processor = useProcessor()
@@ -140,7 +139,8 @@ watch(updateIsRequested, () => {
 function loadGarden(saveString: string) {
   const { harvesterOptions, processorSettings: loadedProcessorSettings } = garden.garden.loadSettings(saveString)
 
-  updateHarvesterSettings(Object.assign({}, harvesterOptions))
+  // updateHarvesterSettings(Object.assign({}, harvesterOptions))
+  harvester.updateSettings(Object.assign({}, harvesterOptions))
   processor.updateSettings(Object.assign({}, loadedProcessorSettings))
   processor.simulateProcessing(harvester.totalHarvest)
 }
@@ -298,18 +298,18 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
         <OptionCard label="days" name="Days">
           <template #input>
             <div class="join">
-              <button class="join-item btn btn-sm " @click="harvesterSettings.days = -1">
+              <button class="join-item btn btn-sm " @click="harvester.settings.days = -1">
                 LCM
               </button>
-              <button class="join-item btn btn-sm " @click="harvesterSettings.days = 0">
+              <button class="join-item btn btn-sm " @click="harvester.settings.days = 0">
                 Auto
               </button>
               <input v-model="harvester.settings.days" class="join-item input input-sm text-lg max-w-[6rem] text-accent"
                 type="number" min="0">
-              <button class="join-item btn btn-sm " @click="harvesterSettings.days = 30">
+              <button class="join-item btn btn-sm " @click="harvester.settings.days = 30">
                 30
               </button>
-              <button class="join-item btn btn-sm " @click="harvesterSettings.days = 180">
+              <button class="join-item btn btn-sm " @click="harvester.settings.days = 180">
                 180
               </button>
             </div>
@@ -329,18 +329,18 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
         <OptionCard label="level" name="Gardening Level">
           <template #input>
             <div class="join ">
-              <button class="join-item btn btn-sm text-primary" @click="harvesterSettings.level = 0">
+              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 0">
                 0
               </button>
-              <button class="join-item btn btn-sm text-primary" @click="harvesterSettings.level = 10">
+              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 10">
                 10
               </button>
               <input v-model="harvester.settings.level"
                 class="input input-sm text-lg max-w-[5rem] join-item text-accent" type="number" min="0">
-              <button class="join-item btn btn-sm text-primary" @click="harvesterSettings.level = 25">
+              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 25">
                 25
               </button>
-              <button class="join-item btn btn-sm text-primary " @click="harvesterSettings.level = 50">
+              <button class="join-item btn btn-sm text-primary " @click="harvester.settings.level = 50">
                 50
               </button>
             </div>
