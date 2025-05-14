@@ -91,7 +91,7 @@ useHead({
               Ren
             </template>
             <template #for>
-              Information
+              Information, Feedback
             </template>
           </CreditName>
           <CreditName>
