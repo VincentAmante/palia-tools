@@ -7,7 +7,7 @@ import { useUiSettings } from '@/stores/useUiSettings'
 
 const uiSettings = useUiSettings()
 
-import { useSelectedItem } from '@/stores/useSelectedItem'
+import { SelectedItemType, useSelectedItem, type SelectedItem } from '@/stores/useSelectedItem'
 
 const props = defineProps({
   tile: Tile,
@@ -30,6 +30,7 @@ const props = defineProps({
     default: 0,
   },
 })
+
 const selectedItem = useSelectedItem()
 const code = computed(() => {
   if (props.tile?.crop === null)
@@ -49,15 +50,27 @@ const bgColour = computed(() => {
   return `${props.tile?.crop?.cropBackgroundColor}` || ''
 })
 
+const TILE_HIGHLIGHT_STYLE = 'opacity-100 bg-white'
+const TILE_NO_HIGHLIGHT_STYLE = ''
 // Highlights tile if it has the bonus being hovered
-const bonusBgColor = computed(() => {
-  if (props.tile?.bonuses.length === 0)
-    return ''
+const tileHighlightBgStyle = computed(() => {
+  if ((props.tile?.bonuses.includes(props.bonusHovered as Bonus)))
+    return TILE_HIGHLIGHT_STYLE
 
-  if (!(props.tile?.bonuses.includes(props.bonusHovered as Bonus)))
-    return ''
+  const hoveredItem = selectedItem.hoverVal
 
-  return 'opacity-100 bg-white'
+  if (hoveredItem) {
+    switch (selectedItem.hoverType) {
+      case SelectedItemType.Crop:
+        return ((hoveredItem as Crop).type === props.tile?.crop?.type) ? TILE_HIGHLIGHT_STYLE : TILE_NO_HIGHLIGHT_STYLE
+      case SelectedItemType.Fertiliser:
+        return ((hoveredItem as Fertiliser).effect === props.tile?.fertiliser?.effect) ? TILE_HIGHLIGHT_STYLE : TILE_NO_HIGHLIGHT_STYLE
+      default:
+        return TILE_NO_HIGHLIGHT_STYLE
+    }
+  }
+
+  return TILE_NO_HIGHLIGHT_STYLE
 })
 
 // based on 1-9, decide border corner radius
@@ -138,8 +151,7 @@ const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcon
         {{ code as string || ' ' }}
       </div>
     </div>
-    <ul
-      v-show="showBonusIcons"
+    <ul v-show="showBonusIcons"
       class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] xl:py-[1px] flex w-full gap-[0.6px] xl:gap-[1.3px] justify-center ">
       <li v-show="bonuses?.includes(Bonus.SpeedIncrease)">
         <font-awesome-icon class="text-growth-boost" :icon="['fas', 'forward-fast']" />
@@ -158,10 +170,11 @@ const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcon
       </li>
     </ul>
     <div class="absolute bottom-0 right-0 p-[2px]">
-      <img v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)" :src="selectedItem.val.image" draggable="false" class="select-none max-w-[16px] opacity-50" :srcset="undefined">
+      <img v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)" :src="selectedItem.val.image"
+        draggable="false" class="select-none max-w-[16px] opacity-50" :srcset="undefined">
       <img v-else-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0" format="webp" draggable="false"
         class="select-none max-w-[16px]" :src="tile?.fertiliser?.image" :srcset="undefined">
     </div>
-    <div class="absolute w-full h-full transition-all -z-20" :class="bonusBgColor" />
+    <div class="absolute w-full h-full transition-all -z-20" :class="tileHighlightBgStyle" />
   </div>
 </template>

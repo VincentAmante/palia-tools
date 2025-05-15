@@ -211,7 +211,7 @@ watchEffect(() => {
               class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc"
               :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
               :in-picture-mode="isTakingScreenshot.get" @click="selectedItem.select('crop-erase')"
-              @mouseover="hoveredItem = SelectedItemType.CropErase" @mouseleave="hoveredItem = null">
+              @mouseover="selectedItem.hover('crop-erase')" @mouseleave="selectedItem.hover(null)">
               <font-awesome-icon class="absolute -z-10 max-w-[45px] text-success text-2xl " :icon="['fas', 'eraser']" />
             </button>
           </div>
@@ -233,7 +233,7 @@ watchEffect(() => {
                   'bg-white': selectedItem.val === 'crop-erase' && !isTakingScreenshot.get,
                   'hidden': isTakingScreenshot.get,
                 }" :in-picture-mode="isTakingScreenshot.get" @click="selectedItem.select('crop-erase')"
-                @mouseover="hoveredItem = SelectedItemType.CropErase" @mouseleave="hoveredItem = null">
+                @mouseover="selectedItem.hover(SelectedItemType.CropErase)" @mouseleave="selectedItem.hover(null)">
                 <font-awesome-icon class="absolute -z-10 max-w-[45px] text-success text-2xl "
                   :icon="['fas', 'eraser']" />
               </button>
@@ -242,8 +242,8 @@ watchEffect(() => {
                   :is-selected="(selectedItem.type === SelectedItemType.Crop)
                     && selectedItem.val !== null
                     && listedCrop.crop.type === (selectedItem.val as Crop).type" :count="listedCrop.count"
-                  @click="selectedItem.select(crops[listedCrop.crop.type])" @mouseover="hoveredItem = listedCrop.crop"
-                  @mouseleave="hoveredItem = null" />
+                  @click="selectedItem.select(crops[listedCrop.crop.type])"
+                  @mouseover="selectedItem.hover(listedCrop.crop)" @mouseleave="selectedItem.hover(null)" />
               </template>
             </div>
             <button aria-label="Scroll Right"
@@ -268,7 +268,7 @@ watchEffect(() => {
                 'bg-white': selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get,
                 'hidden': isTakingScreenshot.get,
               }" @click="selectedItem.select('fertiliser-erase')"
-              @mouseover="hoveredItem = SelectedItemType.FertiliserErase" @mouseleave="hoveredItem = null">
+              @mouseover="selectedItem.hover(SelectedItemType.FertiliserErase)" @mouseleave="selectedItem.hover(null)">
               <font-awesome-icon class="absolute -z-10 max-w-[42px] text-warning text-2xl " :icon="['fas', 'eraser']" />
             </button>
             <template v-for="(count, index) in plotStat.fertiliserCount" :key="index">
@@ -276,15 +276,15 @@ watchEffect(() => {
                 :is-selected="(selectedItem.type === SelectedItemType.Fertiliser)
                   && selectedItem.val !== null
                   && index === (selectedItem.val as Fertiliser).type" :count="count"
-                @click="selectedItem.select(fertilisers[index])" @mouseover="hoveredItem = fertilisers[index]"
-                @mouseleave="hoveredItem = null" />
+                @click="selectedItem.select(fertilisers[index])" @mouseover="selectedItem.hover(fertilisers[index])"
+                @mouseleave="selectedItem.hover(null)" />
             </template>
           </div>
         </div>
       </section>
     </div>
     <div class="px-2 text-xs pb -1">
-      <HoveredItemTooltip :hovered-item="(hoveredItem || selectedItem.val) as SelectedItem" />
+      <HoveredItemTooltip :hovered-item="(selectedItem.hoverVal || selectedItem.val) as SelectedItem" />
     </div>
   </section>
 </template>

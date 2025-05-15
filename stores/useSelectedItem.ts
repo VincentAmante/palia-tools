@@ -29,19 +29,34 @@ export function getSelectedItemType(item: SelectedItem): SelectedItemType | null
 export const useSelectedItem = defineStore('selectedItem', () => {
   const selectedItem = ref<SelectedItem>(SelectedItemType.CropErase)
 
+  const hoveredItem = ref<SelectedItem | null>()
+
   function select(item: SelectedItem) {
     selectedItem.value = item
+  }
+
+  function hover(item: SelectedItem | null){
+    hoveredItem.value = item
   }
 
   const type = computed(() => {
     return getSelectedItemType(selectedItem.value as SelectedItem)
   })
 
+  const hoverType = computed(() => {
+    return getSelectedItemType(hoveredItem.value as SelectedItem | null)
+  })
+
   const val = computed(() => selectedItem.value)
+
+  const hoverVal = computed(() => hoveredItem.value)
 
   return {
     select,
     val,
     type,
+    hover,
+    hoverVal,
+    hoverType
   }
 })
