@@ -43,6 +43,7 @@ function getFertiliserFromCode(code: FertiliserCode): Fertiliser | null {
     case FertiliserCode.SpeedyGro:
       return fertilisers[FertiliserType.SpeedyGro]
     case FertiliserCode.HydratePro:
+    case 'Hp' as FertiliserCode.HydratePro:
       return fertilisers[FertiliserType.HydratePro]
     default:
       return fertilisers[FertiliserType.None]
