@@ -30,26 +30,25 @@ watchEffect(() => {
 
 <template>
   <section class="p-2 ">
-    <section class="flex flex-row-reverse justify-between border-b border-b-misc pb-1">
-      <section class="flex justify-end gap-2">
+    <section class="flex flex-row-reverse justify-between border-b border-b-misc pb-1 px-1">
+      <section class="flex justify-end gap-1">
         <button id="approximator-display-tab" aria-label="Display Tab"
-          class="text-lg border-none btn-circle btn-sm btn btn-misc tooltip" data-tip="Output Display"
+          class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip" data-tip="Output Display"
           :class="activeTab === 'display' ? 'btn-active' : ''" @click="setTab('display')">
           <FontAwesomeIcon :icon="['fas', 'table-list']" />
         </button>
-
         <button id="approximator-crop-details-tab" aria-label="Crop Details Tab"
-          class="text-lg border-none btn-circle btn-sm btn btn-misc tooltip" data-tip="Crop Details"
+          class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip" data-tip="Crop Details"
           :class="activeTab === 'crop-details' ? 'btn-active' : ''" @click="setTab('crop-details')">
           <FontAwesomeIcon :icon="['fas', 'magnifying-glass']" />
         </button>
         <button id="approximator-options-tab" aria-label="Options Tab"
-          class="text-lg border-none btn-circle btn-sm btn btn-misc tooltip" data-tip="Harvest & Process Settings"
+          class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip" data-tip="Harvest & Process Settings"
           :class="activeTab === 'options' ? 'btn-active' : ''" @click="setTab('options')">
           <FontAwesomeIcon :icon="['fas', 'sliders']" />
         </button>
         <button id="approximator-info-tab" aria-label="Info Tab" data-tip="Info"
-          class="text-lg border-none btn-circle btn-sm btn btn-misc tooltip"
+          class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip"
           :class="activeTab === 'info' ? 'btn-active' : ''" @click="setTab('info')">
           <FontAwesomeIcon :icon="['fas', 'info']" />
         </button>
