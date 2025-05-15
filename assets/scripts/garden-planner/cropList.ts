@@ -535,7 +535,7 @@ const ROCKHOPPER_PUMPKIN = new Crop(
   CropSize.Bush,
   '/crops/rockhopper-pumpkin.webp',
   {
-    base: 6,
+    base: 2,
     growthTime: 9,
     isReharvestable: true,
     reharvestCooldown: 2,
