@@ -13,7 +13,7 @@ enum CropType {
   SpicyPepper = 'spicy pepper',
   NapaCabbage = 'napa cabbage',
   BokChoy = 'bok choy',
-  // RockhopperPumpkin = 'rockhopper pumpkin',
+  RockhopperPumpkin = 'rockhopper pumpkin',
   BatterflyBean = 'batterfly bean'
 }
 
