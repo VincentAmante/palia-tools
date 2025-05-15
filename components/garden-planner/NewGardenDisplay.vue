@@ -4,9 +4,6 @@ import useGarden from '~/stores/useGarden'
 import type { Crop, Fertiliser, Plot, Tile } from '~/assets/scripts/garden-planner/imports'
 import { SelectedItemType, useSelectedItem } from '~/stores/useSelectedItem'
 import { useDragAndDrop } from '~/stores/useDragAndDrop'
-import useHarvester from '~/stores/useHarvester'
-import useProcessor from '~/stores/useProcessor'
-import type { TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 
 
 const isTakingScreenshot = useTakingScreenshot()
@@ -39,7 +36,7 @@ function selectTile(event: MouseEvent, row: number, col: number, plot: Plot) {
       plot.setTile(row, col, null)
       break
     case SelectedItemType.FertiliserErase:
-      plot.removeCropFromTile(row, col)
+      plot.removeFertiliserFromTile(row, col)
       break
     case SelectedItemType.Crop:
       plot.setTile(row, col, selectedItem.val as Crop)

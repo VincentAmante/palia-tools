@@ -490,8 +490,6 @@ const BOK_CHOY = new Crop(
   },
 )
 
-
-
 const BATTERFLY_BEAN = new Crop(
   CropType.BatterflyBean,
   Bonus.HarvestIncrease,
@@ -509,7 +507,7 @@ const BATTERFLY_BEAN = new Crop(
     cropStar: 34,
     seed: 90,
     seedStar: 135,
-    hasPreserve: false,
+    hasPreserve: true,
     preserve: 41,
     preserveStar: 61,
   },
@@ -526,49 +524,49 @@ const BATTERFLY_BEAN = new Crop(
   },
   {
     cropCode: CropCode.BatterflyBean,
-    cropTooltip: 'batterfly Bean',
+    cropTooltip: 'Batterfly Bean',
     cropBackgroundColor: 'bg-harvest-boost/20',
   },
 )
 
-const ROCKHOPPER_PUMPKIN = new Crop(
-  CropType.None,
-  Bonus.QualityIncrease,
-  CropSize.Bush,
-  '/crops/rockhopper-pumpkin.webp',
-  {
-    base: 6,
-    growthTime: 9,
-    isReharvestable: true,
-    reharvestCooldown: 2,
-    reharvestLimit: 3,
-  },
-  {
-    crop: 88,
-    cropStar: 132,
-    seed: 25,
-    seedStar: 37,  
-    hasPreserve: false,
-    preserve: 101,
-    preserveStar: 151,
-  },
-  {
-    cropsPerSeed: 1,
-    seedsPerConversion: 4,
-    cropsPerPreserve: 1,
-    seedProcessMinutes: 100,
-    preserveProcessMinutes: 31.5,
-  },
-  {
-    preserve: '/jars/spicy-pepper.webp',
-    seed: '/seeds/rockhopper-pumpkin.webp',
-  },
-  {
-    cropCode: CropCode.None,
-    cropTooltip: 'Rockhopper Pumpkin',
-    cropBackgroundColor: 'bg-quality-increase/20',
-  },
-)
+// const ROCKHOPPER_PUMPKIN = new Crop(
+//   CropType.RockhopperPumpkin,
+//   Bonus.QualityIncrease,
+//   CropSize.Bush,
+//   '/crops/rockhopper-pumpkin.webp',
+//   {
+//     base: 6,
+//     growthTime: 9,
+//     isReharvestable: true,
+//     reharvestCooldown: 2,
+//     reharvestLimit: 3,
+//   },
+//   {
+//     crop: 88,
+//     cropStar: 132,
+//     seed: 25,
+//     seedStar: 37,  
+//     hasPreserve: false,
+//     preserve: 101,
+//     preserveStar: 151,
+//   },
+//   {
+//     cropsPerSeed: 1,
+//     seedsPerConversion: 4,
+//     cropsPerPreserve: 1,
+//     seedProcessMinutes: 100,
+//     preserveProcessMinutes: 31.5,
+//   },
+//   {
+//     preserve: '/jars/rockhopper-pumpkin.webp',
+//     seed: '/seeds/rockhopper-pumpkin.webp',
+//   },
+//   {
+//     cropCode: CropCode.RockhopperPumpkin,
+//     cropTooltip: 'Rockhopper Pumpkin',
+//     cropBackgroundColor: 'bg-quality-increase/20',
+//   },
+// )
 
 const NULLCROP = new Crop(
   CropType.None,
