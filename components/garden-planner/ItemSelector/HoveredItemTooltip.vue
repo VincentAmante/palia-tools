@@ -36,14 +36,14 @@ function getBonus(bonus: Bonus) {
         icon: 'droplet',
         colour: 'text-water-retain',
         type: 'Water Retain',
-        extraDetail: 'Keeps the surrounding crops of other types watered',
+        extraDetail: 'Helps keeps other nearby crop types hydrated',
       }
     case Bonus.QualityIncrease:
       return {
         icon: 'star',
         colour: 'text-quality-increase',
         type: 'Quality Increase',
-        extraDetail: 'Boosts star quality chance of other nearby crop types',
+        extraDetail: 'Boosts quality of other nearby crop types',
       }
     case Bonus.HarvestIncrease:
       return {
@@ -82,35 +82,35 @@ function getBonusFert(bonus: Bonus) {
         icon: 'droplet',
         colour: 'text-water-retain',
         type: 'Water Retain',
-        extraDetail: 'Keeps the crop watered',
+        extraDetail: 'Prevents crops from needing water for one day',
       }
     case Bonus.QualityIncrease:
       return {
         icon: 'star',
         colour: 'text-quality-increase',
         type: 'Quality Increase',
-        extraDetail: 'Boosts the chance of the crop having star quality harvests',
+        extraDetail: 'Increases quality of crops harvested',
       }
     case Bonus.HarvestIncrease:
       return {
         icon: 'wheat-awn',
         colour: 'text-harvest-boost',
         type: 'Harvest Increase',
-        extraDetail: 'Boosts the amount harvested from the crop',
+        extraDetail: 'Increases the number of crop items gained when harvested (+50% yield)',
       }
     case Bonus.WeedPrevention:
       return {
         icon: 'shield',
         colour: 'text-weed-prevention',
         type: 'Weed Prevention',
-        extraDetail: 'Prevents weed growing on this crop',
+        extraDetail: 'Stops weeds from appearing',
       }
     case Bonus.SpeedIncrease:
       return {
         icon: 'forward-fast',
         colour: 'text-growth-boost',
         type: 'Growth Boost',
-        extraDetail: 'Boosts growth speed of this crop',
+        extraDetail: 'Gives an extra day of growth every other day',
       }
     default:
       return {
