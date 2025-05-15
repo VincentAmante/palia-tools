@@ -56,6 +56,14 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
+              DuhScape
+            </template>
+            <template #for>
+              Information
+            </template>
+          </CreditName>
+          <CreditName>
+            <template #name>
               frnkers
             </template>
             <template #for>
@@ -96,14 +104,6 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
-              DuhScape
-            </template>
-            <template #for>
-              Information, Feedback
-            </template>
-          </CreditName>
-          <CreditName>
-            <template #name>
               st3fannl
             </template>
             <template #for>
@@ -120,7 +120,10 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
-              Palia Wiki
+              <NuxtLink to="https://palia.wiki.gg" class="flex items-center gap-1 underline underline-offset-4"
+                rel="noopener" target="_blank" :prefetch="false">
+                Palia Wiki
+              </NuxtLink>
             </template>
             <template #for>
               Information
@@ -128,7 +131,12 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
-              Paliapedia
+              <NuxtLink to="https://paliapedia.com/" class="flex items-center gap-1 underline underline-offset-4"
+                rel="noopener" target="_blank" :prefetch="false">
+                <img src="/externals/paliapedia.svg" width="18px" height="18px"
+                  class="max-w-[1.5rem] inline-block text-lg" alt="Paliapedia Logo">
+                Paliapedia
+              </NuxtLink>
             </template>
             <template #for>
               Information, Assets
