@@ -546,7 +546,7 @@ const ROCKHOPPER_PUMPKIN = new Crop(
     cropStar: 132,
     seed: 25,
     seedStar: 37,  
-    hasPreserve: false,
+    hasPreserve: true,
     preserve: 101,
     preserveStar: 151,
   },

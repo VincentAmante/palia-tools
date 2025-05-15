@@ -35,6 +35,44 @@ useHead({
         <ChangelogItem checked>
           <template #title>
             <span class="font-bold">
+              May 15, 2025 — 0.191 Parity</span>
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">Added New Crops —</span> New crops now fully implemented
+            </li>
+            <li>
+              <span class="italic">Bug fixes —</span> Patched out a lot of issues that came out due to the new update
+            </li>
+            <li>
+              <span class="italic">Mild Changes</span>
+              <ul class="pl-3 list-disc list-inside text-sm">
+                <li>Hovering over a crop/fert in the selector now highlights their presence in the layout</li>
+                <li>Quickly added a crafter tab to double-check the planner's time calculations</li>
+                <li>Minor UI tweaks & fixes to improve the planner experience</li>
+              </ul>
+            </li>
+          </template>
+          <template #default>
+            <p>
+              Planner now has full support of the new crops.
+              Major thanks to DuhScape & Ren this round for finding their growth and produce values!
+            </p>
+            <p>
+              With this, I'll soon be re-implementing the features I mentioned in the May 12 update.
+              In addition, the new features will also be looked at for issues & improvements
+              so feel free to share any thoughts you may have on it.
+            </p>
+            <p>
+              Thanks everyone for the wait.
+              Please share any inaccuracies you may have found within my planner so I may look into it,
+              as well as any other issues and feedback you may way to send my way. Happy Gardening!
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem checked>
+          <template #title>
+            <span class="font-bold">
               May 12, 2025 — Save'n Time Update</span>
           </template>
           <template #summary>
