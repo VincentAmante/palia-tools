@@ -132,7 +132,7 @@ const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcon
 </script>
 
 <template>
-  <div
+  <button
     class="border-misc-saturated relative select-none min-w-[3rem] xl:min-w-[3.25rem] hover:bg-primary aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
       border,
@@ -147,9 +147,7 @@ const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcon
       <img v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px" format="webp"
         draggable="false" class="select-none p-1 max-w-[36px] md:max-w-[36px] 2xl:max-w-[38px]" :src="tile?.crop?.image"
         :srcset="undefined">
-      <div v-else>
-        {{ code as string || ' ' }}
-      </div>
+      <div v-else>{{ code as string || null }}</div>
     </div>
     <ul v-show="showBonusIcons"
       class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] xl:py-[1px] flex w-full gap-[0.6px] xl:gap-[1.3px] justify-center ">
@@ -176,5 +174,5 @@ const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcon
         class="select-none max-w-[16px]" :src="tile?.fertiliser?.image" :srcset="undefined">
     </div>
     <div class="absolute w-full h-full transition-all -z-20" :class="tileHighlightBgStyle" />
-  </div>
+  </button>
 </template>
