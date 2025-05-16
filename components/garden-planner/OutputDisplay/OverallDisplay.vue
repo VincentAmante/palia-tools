@@ -115,7 +115,7 @@ const craftingTime = computed(() => {
         </div>
       </div>
     </section>
-    <section class="text-xs">
+    <section class="text-xs  whitespace-nowrap">
       <ul class="flex flex-wrap gap-1 text-palia-blue-dark">
         <li class="text-xs border-none badge badge-sm bg-quality-increase-dark">
           <p>
@@ -141,9 +141,8 @@ const craftingTime = computed(() => {
           </p>
         </li>
         <li class="text-xs badge badge-sm">
-          <span class="font-black">{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</span> Star Crop Chance
-        </li>
-        <li class="text-xs badge badge-sm">
+          <span class="font-black">{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</span>Star Crop Chance</li>
+        <li class="text-xs badge badge-sm ">
           No Fertiliser Cost
         </li>
       </ul>
