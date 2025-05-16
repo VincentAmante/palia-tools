@@ -9,14 +9,10 @@ import { storeToRefs } from 'pinia'
 import useHarvester from '~/stores/useHarvester'
 import type { TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { useSettingsCode } from '~/stores/useSettingsCode'
-import {  ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
-import {  getCropFromType } from '~/assets/scripts/garden-planner/imports'
-
-
+import { ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
 const display = ref<HTMLElement | null>(null)
 const isTakingScreenshot = useTakingScreenshot()
-
-
 const gardenHandler = useGarden()
 const harvester = useHarvester()
 const processor = useProcessor()
@@ -60,7 +56,6 @@ function saveGarden() {
 function loadGarden(saveString: string) {
   const { harvesterOptions, processorSettings: loadedProcessorSettings } = garden.garden.loadSettings(saveString)
 
-  // updateHarvesterSettings(Object.assign({}, harvesterOptions))
   harvester.updateSettings(Object.assign({}, harvesterOptions))
   processor.updateSettings(Object.assign({}, loadedProcessorSettings))
   processor.simulateProcessing(harvester.totalHarvest)
@@ -104,14 +99,14 @@ watch(updateIsRequested, () => {
   }
 })
 
-
 const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
+
 </script>
 
 <template>
-  <section ref="display">
+  <section ref="display"  id="garden-planner">
     <div class="sm:py-1 rounded-t-md sm:px-2 bg-accent">
-      <ItemSelector />
+      <ItemSelector  />
       <AppDivider class="order-3 mx-4 my-1 lg:col-span-7 " :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
       <section class="flex flex-col sm:py-2 gap-y-2 justify-between"
         :class="[gardenHandler.isGardenWide ? '' : 'lg:flex-row']">
@@ -119,8 +114,8 @@ const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
         (selectedTab === 'display+display') ? 'w-full' : ''
         ]">
           <template v-if="(selectedTab === 'garden+display')">
-            <NewGardenDisplay />
-            <NewStatsDisplay class="pt-2 sm:mx-auto xs:px-2 w-fit "
+            <NewGardenDisplay   />
+            <NewStatsDisplay   class="pt-2 sm:mx-auto xs:px-2 w-fit "
               :class="[gardenHandler.isGardenWide ? 'w-fit' : 'lg:w-full']" />
           </template>
           <template v-if="(selectedTab === 'display+display')">
