@@ -63,31 +63,18 @@ onMounted(() => {
 <template>
   <div class="gap-2 px-4">
     <div class="flex flex-col items-center justify-center w-full px-3 py-2 rounded-md text-accent md:py-0">
-      <p class="text-4xl">
-        {{ timeFormatted }}
+      <p class="text-3xl">
+        <span class="countdown">
+          <span class="translate-x-1" :style="`--value:${hourFormatted};`" aria-live="polite" :aria-label="`${hourFormatted}`">{{
+            hourFormatted }}</span>
+          :
+          <span :style="`--value:${minuteFormatted};`" aria-live="polite" :aria-label="`${minuteFormatted}`">{{
+            minuteFormatted }}</span>
+        </span>{{ meridiem }}
       </p>
       <p class="">
         Palian Time
       </p>
     </div>
-    <!-- <div
-      class="flex items-center justify-between px-4 py-2 rounded-md tooltip tooltip-top text-misc bg-accent md:py-0"
-    >
-      <div
-        class="flex items-center gap-1 tooltip tooltip-top"
-        data-tip="Experimental, may not work on all platforms"
-      >
-        <p>6 AM Alarm</p>
-        <font-awesome-icon
-          :icon="['fas', 'info-circle']"
-          class="text-misc"
-        />
-      </div>
-      <input
-        v-model="dayAlert"
-        aria-label="Toggle 6 AM alarm"
-        name="reminder-toggle" type="checkbox" class="toggle toggle-info"
-      >
-    </div> -->
   </div>
 </template>
