@@ -10,7 +10,7 @@ import { useSettingsCode } from '~/stores/useSettingsCode'
 import SaveModal from '~/components/garden-planner/SaveModal.vue'
 import LoadModal from '~/components/garden-planner/LoadModal.vue'
 import LayoutCreator from '@/components/LayoutCreator.vue'
-import type ExportModal from '~/components/garden-planner/ExportModal.vue'
+import ExportModal from '~/components/garden-planner/ExportModal.vue'
 import { useToasts } from '~/stores/useToasts'
 import UISettingsModal from './UISettingsModal.vue'
 
@@ -96,15 +96,17 @@ onMounted(() => {
         <font-awesome-icon class="text-lg" icon="download" />
         Load
       </button>
-      <button class="xl:h-full normal-case btn bg-palia-blue" disabled>
-        <font-awesome-icon class="text-lg" icon="share-from-square" @click="openExportModal" />
+      <button class="xl:h-full normal-case btn bg-palia-blue" @click="openExportModal">
+        <font-awesome-icon class="text-lg" icon="share-from-square" />
         Export
       </button>
     </div>
-    <div class="flex-col items-center w-full px-10 py-1 rounded-md sm:py-2 xl:w-fit xl:flex bg-palia-blue order-3 xl:order-2">
+    <div
+      class="flex-col items-center w-full px-10 py-1 rounded-md sm:py-2 xl:w-fit xl:flex bg-palia-blue order-3 xl:order-2">
       <TimeDisplay />
     </div>
-    <div class="grid flex-wrap w-full grid-cols-2 sm:grid-cols-3 gap-2 py-1 xl:w-fit xl:flex xl:py-2 order-2 xl:order-3 ">
+    <div
+      class="grid flex-wrap w-full grid-cols-2 sm:grid-cols-3 gap-2 py-1 xl:w-fit xl:flex xl:py-2 order-2 xl:order-3 ">
       <button class="xl:h-full btn btn-soft" @click="openNewLayoutModal">
         <font-awesome-icon class="text-lg" icon="pen-to-square" />
         New Layout
@@ -126,7 +128,7 @@ onMounted(() => {
       <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
       <UISettingsModal ref="uiSettingsModal" />
       <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
-      <!-- <ExportModal ref="exportModal" @download-image="async () => await saveAsImage()" /> -->
+      <ExportModal ref="exportModal" />
     </Teleport>
   </section>
 </template>

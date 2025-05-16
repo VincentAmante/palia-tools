@@ -3,11 +3,11 @@ import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import NewSettings from './NewSettings.vue'
 import LazyHCInfo from './HarvestCalculator/HCInfo.vue'
-import useHarvester from '~/stores/useHarvester'
-import useProcessor from '~/stores/useProcessor'
 import CropDetailsDisplay from './OutputDisplay/CropDetailsDisplay.vue'
 import OverallDisplay from './OutputDisplay/OverallDisplay.vue'
 
+
+const isTakingScreenshot = useTakingScreenshot()
 const activeTab = ref('display')
 function setTab(tab: string) {
   activeTab.value = tab
@@ -30,7 +30,7 @@ watchEffect(() => {
 
 <template>
   <section class="p-2 ">
-    <section class="flex flex-row-reverse justify-between border-b border-b-misc pb-1 px-1">
+    <section v-if="!isTakingScreenshot.get" class="flex flex-row-reverse justify-between border-b border-b-misc pb-1 px-1">
       <section class="flex justify-end gap-1">
         <button id="approximator-display-tab" aria-label="Display Tab"
           class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip" data-tip="Output Display"

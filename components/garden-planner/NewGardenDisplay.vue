@@ -144,7 +144,9 @@ function onDragEnter(row: number, col: number, plot: Plot) {
 </script>
 
 <template>
-  <section class="flex flex-col items-center h-full " :class="[
+  <section class="flex flex-col items-center h-full" 
+  id="garden-display"
+  :class="[
     ((isTakingScreenshot.get && gardenHandler.isGardenWide) || isTakingScreenshot.get) ? 'max-w-[1680px]' : 'max-w-full',
     (gardenHandler.isGardenWide) ? 'overflow-x-scroll max-w-full' : '',
   ]">
