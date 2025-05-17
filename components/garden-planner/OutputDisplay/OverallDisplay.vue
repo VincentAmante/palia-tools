@@ -76,11 +76,10 @@ const craftingTime = computed(() => {
           </p>
           <p class="flex items-end justify-end text-lg font-semibold text-right text-palia-blue @2xl:text-xl">
             <template v-if="((craftingTime.actualValue) > 0)">
-              <template v-if="craftingTime.days > 0">
+              &#8776;<template v-if="craftingTime.days > 0">
                 {{ parseInt(craftingTime.days.toFixed(0)).toLocaleString() }}
                 <span class="pr-1" aria-label="Days">d</span>
               </template>
-
               {{ parseInt(craftingTime.hours.toFixed(0)).toLocaleString() }}
               <span class="pr-1" aria-label="Hours">h</span>
 
