@@ -16,6 +16,18 @@ const processor = useProcessor()
 // --- Crop Details Tab Logic ---
 const selectedCropDetail = ref<ICropNameWithGrowthDiff | null>(null)
 
+// Gets cycle detail which relies on selected crop detail
+const cycleId = computed(() => {
+  if (!selectedCropDetail.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
+    return ''
+
+  return `${parseCropId(selectedCropDetail.value).type}${harvester.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
+})
+
+const cropInfo = computed(() => {
+  return parseCropId(selectedCropDetail.value || '')
+})
+
 // Get unique crop types present in the harvest, maintaining the growth diff identifier
 const presentCrops = computed(() => {
   const cropsMap = new Map<ICropNameWithGrowthDiff, { count: number; cropType: CropType; isStar: boolean; hasGrowthBoost: boolean }>()
@@ -38,18 +50,6 @@ const presentCrops = computed(() => {
 function selectCropForDetail(cropId: ICropNameWithGrowthDiff) {
   selectedCropDetail.value = cropId
 }
-
-// Helper to get crop object for display
-// function getCropInfoForDetail(cropId: ICropNameWithGrowthDiff | null) {
-//   if (!cropId)
-//     return null
-
-//   const { type } = parseCropId(cropId)
-//   return getCropFromType(type)
-// }
-const cropInfo = computed(() => {
-  return parseCropId(selectedCropDetail.value || '')
-})
 
 // Computed property for selected crop's cycle data
 const selectedCropCycleData = computed(() => {
@@ -106,12 +106,6 @@ const canFinishBeforeNextHarvest = computed(() => {
   }
 })
 
-const cycleId = computed(() => {
-  if (!selectedCropDetail.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
-    return ''
-
-  return `${parseCropId(selectedCropDetail.value).type}${harvester.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
-})
 // Computed property for seeds required per replant event
 const selectedCropSeedsRequiredPerHarvest = computed(() => {
   if (!selectedCropDetail.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0 || !cycleId.value)
@@ -193,30 +187,9 @@ watchEffect(() => {
       <p v-if="presentCrops.size === 0" class="text-sm  text-misc-dark">
         No crops in layout to display details for.
       </p>
-      <!-- <button v-for="([cropId, data]) in presentCrops" :key="cropId"
-        class="relative h-auto p-1 border rounded-md btn btn-sm border-misc hover:border-palia-blue focus:border-palia-blue focus:ring-2 focus:ring-palia-blue focus:outline-hidden"
-        :class="{ 'ring-2 ring-palia-blue border-palia-blue': selectedCropDetail === cropId }"
-        @click="selectCropForDetail(cropId)">
-        <div class="flex items-center gap-1">
-          <img :src="getCropInfoForDetail(cropId)?.image" :alt="data.cropType" class="object-contain w-6 h-6" width="24"
-            height="24" :srcset="undefined" format="webp">
-          <span class="text-xs font-semibold">
-            {{ data.cropType }}
-            <FontAwesomeIcon v-if="data.isStar" :icon="['fas', 'star']" class="text-xs text-yellow-400" />
-            <FontAwesomeIcon v-if="data.hasGrowthBoost" :icon="['fas', 'forward-fast']"
-              class="ml-1 text-xs text-growth-boost" title="Growth Boost Applied" />
-          </span>
-        </div>
-        <span
-          class="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 text-xs font-semibold text-white rounded-full bg-palia-blue-dark min-w-[1rem] h-[1rem] flex items-center justify-center">
-          {{ data.count }}
-        </span>
-      </button> -->
-
       <template v-for="([cropId, data]) in presentCrops" :key="cropId">
         <CropDetailButton :crop="getCropFromType(parseCropId(cropId).type)!" :count="data.count"
           @click="selectCropForDetail(cropId)" :isSelected="cropId === selectedCropDetail" :cropId="cropId" />
-
       </template>
     </div>
 
@@ -332,7 +305,6 @@ watchEffect(() => {
             <p class="font-bold text-lg"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
               formatMinutesToDaysHoursMinutes(selectedCropProcessingData.effectiveProcessMinutes) }}</p>
           </div>
-
         </div>
 
         <!-- <div class="pl-2 border-l-2 border-palia-blue-dark"
