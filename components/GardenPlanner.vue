@@ -140,7 +140,7 @@ const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
     <div v-if="isTakingScreenshot.get" id="watermark" aria-label="hidden"
       class="grid grid-cols-2 justify-between order-8 w-full px-4 lg:col-span-4 bg-palia-blue" :class="[]">
       <div class="flex items-center w-full gap-2 p-2 text-right rounded-md leading-1">
-        <img format="png" src="/logo.webp" class="max-w-[6rem]" alt="Palia Garden Planner Logo" :srcset="undefined">
+        <img format="webp" src="/logo.webp" width="48px" height="48px" class="max-w-[4rem]" alt="Palia Garden Planner Logo">
         <div class="flex flex-col items-start justify-start w-full text-left text-primary flex-nowrap ws-nowrap">
           <p class="w-full text-2xl font-bold">
             Palia Garden Planner
