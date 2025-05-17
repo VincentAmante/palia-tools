@@ -2,6 +2,7 @@
 import PGPModal from '@/components/PGPModal.vue'
 import domtoimage from 'dom-to-image-more'
 import download from 'downloadjs'
+import uniqid from 'uniqid'
 
 
 const isTakingScreenshot = useTakingScreenshot()
@@ -40,7 +41,7 @@ async function saveToImage() {
   },
   ).then(
     (dataUrl: string) => {
-      download(dataUrl, 'test_0')
+      download(dataUrl, `PaliaGardenPlanner-${uniqid()}`)
     },
   ).finally(() => {
     isTakingScreenshot.set(false)
