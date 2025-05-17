@@ -4,8 +4,6 @@ import { useToasts } from '~/stores/useToasts'
 import CropModalButton from '~/components/garden-planner/ItemSelector/CropModalButton.vue'
 import MenuBar from '~/components/garden-planner/MenuBar.vue'
 import Toast from '~/components/Toast.vue'
-import domtoimage from 'dom-to-image-more'
-import download from 'downloadjs'
 
 
 useHead({
@@ -41,22 +39,6 @@ const toastLocation = computed(() => {
   }
 })
 
-function filter(node: Node) {
-  return node.nodeName !== '#comment'
-}
-
-function getImage() {
-  domtoimage.toPng(
-    document.getElementById('garden-planner'), {
-    copyDefaultStyles: false,
-    filter: filter,
-  },
-  ).then(
-    (dataUrl: string) => {
-      download(dataUrl, 'test_0')
-    },
-  )
-}
 </script>
 
 <template>
@@ -69,7 +51,7 @@ function getImage() {
       <GardenPlanner />
       <MenuBar />
     </section>
-    <DevOnly>
+    <!-- <DevOnly>
       <div class="fixed bottom-0 left-0 flex flex-col gap-2 p-2 mx-12 my-2 rounded-md w-fit bg-accent bg-opacity-10">
         <p class="text-sm text-palia-blue-dark">
           Toggle Screenshot Mode
@@ -81,7 +63,7 @@ function getImage() {
           Snapshot
         </button>
       </div>
-    </DevOnly>
+    </DevOnly> -->
     <CropModalButton :position="uiSettings.settings.floatComponentLocation" />
     <Teleport to="body">
       <section id="toasts" class="toast z-1000" :class="toastLocation">
