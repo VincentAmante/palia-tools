@@ -5,28 +5,12 @@ import TotalInventory from '../HarvestCalculator/TotalInventory.vue'
 import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
-import { formatMinutesToHoursMinutesObject, formatMinutesToDaysHoursMinutesObject } from '~/utils/formatters'
+import { formatMinutesToDaysHoursMinutesObject } from '~/utils/formatters'
 
 const harvester = useHarvester()
 const processor = useProcessor()
-
 const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
-
-const craftingTime = computed(() => {
-  // const timeInMinutes = processor.highestCraftingTime
-
-  // const hours = Math.floor(timeInMinutes / 60)
-  // const minutes = timeInMinutes % 60
-
-  // return {
-  //   actualValue: timeInMinutes,
-  //   hours,
-  //   minutes,
-  // }
-
-  return formatMinutesToDaysHoursMinutesObject(processor.highestCraftingTime)
-})
-
+const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(processor.highestCraftingTime))
 </script>
 <template>
   <section class="flex flex-col gap-2 pt-1 @container">
@@ -91,8 +75,9 @@ const craftingTime = computed(() => {
               <span class="text-warning">N/A</span>
             </template>
           </p>
-          
-          <p v-if="(craftingTime.actualValue > 0)" class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue">
+
+          <p v-if="(craftingTime.actualValue > 0)"
+            class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue">
             Earth Time
           </p>
         </div>
@@ -140,7 +125,8 @@ const craftingTime = computed(() => {
           </p>
         </li>
         <li class="text-xs badge badge-sm">
-          <span class="font-black">{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</span>Star Crop Chance</li>
+          <span class="font-black">{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</span>Star Crop Chance
+        </li>
         <li class="text-xs badge badge-sm ">
           No Fertiliser Cost
         </li>
