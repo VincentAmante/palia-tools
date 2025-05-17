@@ -106,11 +106,11 @@ function getFertCode(codeList: typeof v0_2FertCodes, codeToFind: string) {
 
 
 function convertV0_1CodestoV0_2(save: string): string {
-  let newSave = save
+  let newSave = save.replace("CROPS-", "");
   for (const [key, value] of Object.entries(v0_1CropCodes))
     newSave = newSave.replaceAll(value, v0_2CropCodes[key as CropCode])
 
-  return newSave
+  return `CROPS-${newSave}`
 }
 
 function convertV_02Codesto_V0_3(save: string) {
@@ -152,33 +152,54 @@ function convertV_02Codesto_V0_3(save: string) {
   * @param save a save code for the garden planner
  */
 function parseSave(save: string) {
+  const LATEST_VERSION = '0.3';
+
+  console.log('Parsing save code...', save);
+
   // * This format makes it permanent that the first part of the save is the version number
   const [version, ...rest] = save.split('_')
-  let dimensionInfo = ''
-  let cropInfo = ''
-  let settingsInfo = ''
+  let dimensionInfo = rest[0] || ''
+  let cropInfo = rest[1] || ''
+  let settingsInfo = rest[2] || ''
+  let strippedVersion = version.replace('v', '');
 
-  const strippedVersion = version.replace('v', '')
-  switch (strippedVersion) {
-    case '0.1':
-      validatePlotMatrix(rest[0])
-      dimensionInfo = rest[0]
-      cropInfo = convertV0_1CodestoV0_2(rest[1])
-      return { version, dimensionInfo, cropInfo, settingsInfo }
-    case '0.2':
-      validatePlotMatrix(rest[0])
-      dimensionInfo = rest[0]
-      cropInfo = convertV_02Codesto_V0_3(rest[1])
-      return { version, dimensionInfo, cropInfo, settingsInfo }
-    case '0.3':
-      validatePlotMatrix(rest[0])
-      dimensionInfo = rest[0]
-      cropInfo = rest[1]
-      settingsInfo = rest[2]
-      return { version, dimensionInfo, cropInfo, settingsInfo }
-    default:
-      throw new Error('Invalid save version')
-  }
+  // Update the save version iteratively based on the version number
+  do {
+    if (strippedVersion === '') {
+      break
+    }
+
+    switch (strippedVersion) {
+      case '0.1':
+        validatePlotMatrix(dimensionInfo)
+        cropInfo = convertV0_1CodestoV0_2(cropInfo)
+        strippedVersion = '0.2'
+        console.log('0.1 -> 0.2', cropInfo)
+        break
+      case '0.2':
+        validatePlotMatrix(dimensionInfo)
+        cropInfo = convertV_02Codesto_V0_3(cropInfo)
+        strippedVersion = '0.3'
+        console.log('0.2 -> 0.3', cropInfo)
+        break
+      case '0.3':
+        validatePlotMatrix(dimensionInfo)
+        cropInfo = cropInfo
+        settingsInfo = settingsInfo
+        console.log('0.3 -> Final')
+        break
+      default:
+        throw new Error('Invalid save version')
+    }
+  } while (strippedVersion !== LATEST_VERSION)
+
+  console.log('Final stripped version:', strippedVersion)
+  console.log('Final dimensionInfo:', dimensionInfo)
+  console.log('Final cropInfo:', cropInfo)
+  console.log('Final settingsInfo:', settingsInfo)
+
+
+  return { version, dimensionInfo, cropInfo, settingsInfo }
 }
 
 /**
