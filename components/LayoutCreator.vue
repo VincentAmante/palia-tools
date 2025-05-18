@@ -27,7 +27,7 @@ enum PlotStatus {
 // Creates a v.02 code from the layout
 function layoutToCode(layout: PlotStatus[][]) {
   // ? technically 'plot' is just a boolean, do I really need to use an enum?
-  let code = 'v0.2_DIM-'
+  let code = 'v0.3_D-'
   for (const layoutRow of layout) {
     for (const plot of layoutRow)
       code += plot
@@ -35,7 +35,7 @@ function layoutToCode(layout: PlotStatus[][]) {
     code += '-'
   }
   code = code.slice(0, -1)
-  code += '_CROPS-'
+  code += '_CR-'
   for (const plot of layout.flat()) {
     if (plot === PlotStatus.active) {
       for (let i = 0; i < 9; i++)
