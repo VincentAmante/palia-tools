@@ -157,7 +157,7 @@ function convertV_0_2Codesto_V_0_3(save: string) {
       const crop = v0_3CropCodes[(getCropCode(v0_2CropCodes, match[1]) ?? CropCode.None) as CropCode];
       const fertiliser = v0_3FertCodes[(getFertCode(v0_2FertCodes, match[2]) ?? FertiliserCode.None) as FertiliserCode];
 
-      newSection += `${crop}${(fertiliser && fertiliser !== FertiliserCode.None ) ? '.' + fertiliser : ''}`;
+      newSection += `${crop}${(fertiliser && fertiliser !== FertiliserCode.None) ? '.' + fertiliser : ''}`;
     }
 
     if (i < cropSections.length - 1) {
@@ -170,6 +170,9 @@ function convertV_0_2Codesto_V_0_3(save: string) {
 }
 
 function convertV_0_3Codesto_V_0_4(save: string) {
+  // console.log("Converting V_0_3 to V_0_4");
+  // console.log(save);
+
 
   // Remove the "CR-" prefix
   const cropSection = save.replace("CR-", "");
@@ -191,7 +194,7 @@ function convertV_0_3Codesto_V_0_4(save: string) {
       const crop = v0_4CropCodes[(getCropCode(v0_3CropCodes, match[1]) ?? CropCode.None) as CropCode];
       const fertiliser = match[2] as FertiliserCode ?? FertiliserCode.None;
 
-      newSection += `${crop}${(fertiliser && fertiliser !== FertiliserCode.None ) ? '.' + fertiliser : ''}`;
+      newSection += `${crop}${(fertiliser && fertiliser !== FertiliserCode.None) ? '.' + fertiliser : ''}`;
     }
 
     if (i < cropSections.length - 1) {
@@ -200,8 +203,64 @@ function convertV_0_3Codesto_V_0_4(save: string) {
     newCode += newSection
   }
 
+  // console.log(newCode)
   return `CR-${newCode}`
 }
+
+function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
+  if (!settings)
+    return ''
+
+  const settingsSplit = settings.split('Cr0')
+
+  let convertedCropSettings = ''
+  let convertedSettings = ''
+
+
+  for (let setting of settingsSplit) {
+    if (setting.startsWith('.')) {
+      setting = setting.slice(1)
+
+      const cropSettings = setting.split('-')
+      for (const cropSetting of cropSettings) {
+
+        if (cropSetting.length === 0) continue
+
+        const codeMatch = cropSetting.match(/^([A-Z][a-z]?)(\.?)(~?)([PS]?)(\d*)/);
+
+
+        if (!codeMatch) {
+          throw new Error(`Invalid crop setting format: ${cropSetting}`)
+        }
+
+        const code = codeMatch[1] as CropCode
+        const isStar = codeMatch[2] !== '.'
+        const hasGrowthBoost = codeMatch[3] === '~'
+        const processAs = codeMatch[4] === 'P' ? ItemType.Preserve : codeMatch[4] === 'S' ? ItemType.Seed : ItemType.Crop
+        const crafters = codeMatch[5] ? parseInt(codeMatch[5], 10) : 1
+
+
+        const cropConverted = v0_4CropCodes[(getCropCode(v0_3CropCodes, code) ?? CropCode.None) as CropCode];
+        const newCode = `${cropConverted}${isStar ? '' : '.'}${hasGrowthBoost ? '~' : ''}${processAs === ItemType.Preserve ? 'P' : processAs === ItemType.Seed ? 'S' : ''}${crafters > 1 ? crafters : ''}`
+
+        convertedCropSettings += `${newCode}-`
+      }
+    } else {
+      convertedSettings = setting
+    }
+  }
+
+  if (convertedCropSettings.length > 0){
+    // remove the trailing dash
+
+    convertedCropSettings = `Cr0.${convertedCropSettings.substring(0, convertedCropSettings.length - 1)}`
+    // console.log('convertedCropSettings:', convertedCropSettings)
+    
+  }
+
+  return `${convertedSettings}${convertedCropSettings}`
+}
+
 
 /**
  * Converts a save string to an object containing the save version, dimension info, and crop info of the latest version
@@ -241,9 +300,9 @@ function parseSave(save: string) {
       case '0.3':
         validatePlotMatrix(dimensionInfo)
         cropInfo = convertV_0_3Codesto_V_0_4(cropInfo)
-        settingsInfo = settingsInfo
+        settingsInfo = convertV_0_3SettingsToV_0_4Settings(settingsInfo)
         strippedVersion = '0.4'
-        // console.log('0.3 -> 0.4')
+        // console.log('0.3 -> 0.4', cropInfo, settingsInfo)
         break
       case '0.4':
         validatePlotMatrix(dimensionInfo)
