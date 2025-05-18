@@ -128,7 +128,7 @@ watchEffect(() => {
         <div role="tablist" class="tabs tabs-xs tabs-border bg-palia-blue-dark rounded-sm gap-1 w-fit">
           <button role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'overall'}" @click="cropDetailsTab = 'overall'" :aria-selected="cropDetailsTab === 'overall'">Summary</button>
           <button v-if="selectedCropProcessingData" role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'crafter-data'}" @click="cropDetailsTab = 'crafter-data'" :aria-selected="cropDetailsTab === 'crafter-data'">Crafters</button>
-          <button role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'day-by-day'}" @click="cropDetailsTab = 'day-by-day'" :aria-selected="cropDetailsTab === 'day-by-day'">Harvest Days</button>
+          <!-- <button role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'day-by-day'}" @click="cropDetailsTab = 'day-by-day'" :aria-selected="cropDetailsTab === 'day-by-day'">Harvest Days</button> -->
         </div>
       </div>
       <div v-if="cropDetailsTab === 'overall'">
