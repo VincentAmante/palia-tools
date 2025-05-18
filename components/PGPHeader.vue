@@ -38,9 +38,9 @@
                   </NuxtLink>
                 </li>
                 <li>
-                  <NuxtLink class="text-harvest-boost" target="_blank" :prefetch="false" rel="noopener"
+                  <NuxtLink class="" target="_blank" :prefetch="false" rel="noopener"
                     to="https://paliapedia.com/tools/garden">
-                    <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="" />
+                    <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost" :aria-hidden="true" />
                     Layout Generator
                   </NuxtLink>
                 </li>
@@ -119,9 +119,9 @@
             </NuxtLink>
           </li>
           <li class="text-lg font-bold normal-case">
-            <NuxtLink class="text-harvest-boost" target="_blank" rel="noopener" :prefetch="false"
+            <NuxtLink class="" target="_blank" rel="noopener" :prefetch="false"
               to="https://paliapedia.com/tools/garden">
-              <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="" />
+              <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost" :aria-hidden="true" />
               Layout Generator
             </NuxtLink>
           </li>

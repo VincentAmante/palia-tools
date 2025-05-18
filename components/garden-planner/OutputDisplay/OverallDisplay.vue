@@ -72,7 +72,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
               }}<span class="" aria-label="Minutes">m</span>
             </template>
             <template v-else>
-              <span class="text-warning">N/A</span>
+              <span class="text-palia-blue-dark">N/A</span>
             </template>
           </p>
 
