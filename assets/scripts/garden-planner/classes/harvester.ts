@@ -66,13 +66,13 @@ export default class Harvester {
       // This fetches the day in which all crops are harvestable
       case -1:
       case 'L':
-        dayOfLastHarvest = getGrowthTimeLCM(tiles)
+        dayOfLastHarvest = getGrowthTimeLCM(tiles, options.useGrowthBoost)
         break
 
       // This uses the day in which the crop with the highest growth time is harvestable
       case 0:
       case 'M':
-        dayOfLastHarvest = getHighestGrowthTime(tiles)
+        dayOfLastHarvest = getHighestGrowthTime(tiles, options.useGrowthBoost)
         break
 
       // Manual input
@@ -166,6 +166,7 @@ export default class Harvester {
        *  Days left after harvest time ends but a crop still has an unfinished cycle
        */
       const cycleRemainder = dayOfLastHarvest % lastDayOfCycle
+      console.log(`Cycles: ${cycles}, Cycle Remainder: ${cycleRemainder}, Last Day of Cycle: ${lastDayOfCycle}, Day of Last Harvest: ${dayOfLastHarvest}`);
 
       let remainingHarvests = 0
       if (cycleRemainder > 0) {
@@ -206,6 +207,7 @@ export default class Harvester {
        * Whether to factor in growth boost for this crop
        */
       const differentiateByGrowthBoost = (options.useGrowthBoost && tile.bonuses.includes(Bonus.SpeedIncrease))
+
 
       /**
        * If growth boost is being factored in, we need to differentiate tiles that have growth boost from those that don't.
@@ -279,6 +281,8 @@ export default class Harvester {
 
       // This cycle won't complete but we still need to harvest the crops on every harvestable day before the last day
       if (cycleRemainder > 0) {
+        
+
         for (const day of harvestableDays) {
           const dayInCycle = lastDayOfCycle * cycles + day
           if (dayInCycle > dayOfLastHarvest)
@@ -290,13 +294,13 @@ export default class Harvester {
             seedsRequired: new Map(),
           }
 
-          harvestDay.crops.set(`${crop.type}-Base`, {
+          harvestDay.crops.set(`${crop.type}-Base${differentiateByGrowthBoost ? '-Growth' : ''}`, {
             ...baseCrop,
             cropType: crop.type,
             isStar: false,
           })
 
-          harvestDay.crops.set(`${crop.type}-Star`, {
+          harvestDay.crops.set(`${crop.type}-Star${differentiateByGrowthBoost ? '-Growth' : ''}`, {
             ...starCrop,
             cropType: crop.type,
             isStar: true,
@@ -347,7 +351,6 @@ export default class Harvester {
       // Deduct seeds required for replanting
       if (options.includeReplantCost) {
         for (const [id, seedsRequiredInfo] of harvest.seedsRequired) {
-          // * Uses the id to deduct from the right seed type (base or star)
 
           const crop = getCropFromType(seedsRequiredInfo.type)
           if (!crop) {
@@ -404,8 +407,6 @@ export default class Harvester {
             days: cropTotalTracker.days + 1,
           })
 
-          // if (id === 'onion-Star')
-          //   console.log(cropTotalsForAveraging.get('onion-Star'))
 
           // Remaining seeds after replanting
           const newRemainingSeeds = (remainingSeeds - remainderSeedsToBeUsed) + (seedsGenerated - seedsRequiredCount)
@@ -450,8 +451,6 @@ export default class Harvester {
             console.error('Somehow undefined')
             return
           }
-
-          // console.log(cropId, average, cropCycleData.phases.at(-1)!.yield.star.totalWithDeductions)
 
           // Change the appropriate yield
           if (isStar) {
@@ -547,14 +546,14 @@ function addCropYields(cropYield1: ICropYield, cropYield2: ICropYield): ICropYie
  * @param cropTiles - A map of crop groups
  * @returns The highest growth time of all crops
  */
-function getHighestGrowthTime(cropTiles: TUniqueTiles): number {
+function getHighestGrowthTime(cropTiles: TUniqueTiles, factorInGrowthBoost: boolean = false): number {
   let highestGrowthTime = 0
   for (const group of cropTiles.values()) {
     const crop = group.tile.crop
     if (!crop)
       continue
 
-    const totalGrowthTime = crop.getTotalGrowTime()
+    const totalGrowthTime = crop.getTotalGrowTime(group.tile.bonuses.includes(Bonus.SpeedIncrease) && factorInGrowthBoost) 
     if (totalGrowthTime > highestGrowthTime)
       highestGrowthTime = totalGrowthTime
   }
@@ -566,7 +565,7 @@ function getHighestGrowthTime(cropTiles: TUniqueTiles): number {
  * @param crops - A map of crop groups
  * @returns The least common multiple of all growth times of the crops
  */
-function getGrowthTimeLCM(crops: TUniqueTiles): number {
+function getGrowthTimeLCM(crops: TUniqueTiles, factorInGrowthBoost: boolean = false): number {
   if (crops.size === 0) {
     // console.warn('No crops found')
     return 0
@@ -578,7 +577,7 @@ function getGrowthTimeLCM(crops: TUniqueTiles): number {
     if (!tile.crop)
       continue
 
-    growthTimes.add(tile.crop.getTotalGrowTime())
+    growthTimes.add(tile.crop.getTotalGrowTime(group.tile.bonuses.includes(Bonus.SpeedIncrease) && factorInGrowthBoost))
   }
 
   if (growthTimes.size === 0) {
