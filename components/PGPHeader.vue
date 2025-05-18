@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="z-50 drawer drawer-end">
-      <input id="menu" type="checkbox" class="drawer-toggle">
+      <input id="menu" type="checkbox" class="drawer-toggle" aria-label="toggle menu" />
       <div class="flex flex-col drawer-content">
         <div class="w-full py-3 navbar sm:px-12">
           <div class="flex-1">
@@ -98,9 +98,9 @@
         <label for="menu" class="drawer-overlay" aria-label="close menu" />
         <ul class="relative h-full gap-2 p-4 menu w-80 bg-base-200">
           <li class="flex items-end w-full lg:hidden">
-            <label for="menu">
+            <label for="menu-side">
               <font-awesome-icon :icon="['fas', 'x']" class="text-xl" />
-              <input id="menu" type="checkbox" class="drawer-toggle">
+              <input id="menu-side" type="checkbox" class="drawer-toggle" aria-label="close menu">
             </label>
           </li>
           <li class="text-lg font-bold normal-case">
