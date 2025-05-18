@@ -85,6 +85,8 @@ const v0_3CropCodes: { [key in CropCode]: string } = {
   [CropCode.SpicyPepper]: 'S',
   [CropCode.NapaCabbage]: 'Cb',
   [CropCode.BokChoy]: 'Bk',
+  [CropCode.RockhopperPumpkin]: 'Pm',
+  [CropCode.BatterflyBean]: 'Bb'
 }
 
 const v0_3FertCodes: { [key in FertiliserCode]: string } = {
@@ -95,6 +97,26 @@ const v0_3FertCodes: { [key in FertiliserCode]: string } = {
   [FertiliserCode.WeedBlock]: 'W',
   [FertiliserCode.HarvestBoost]: 'H',
   [FertiliserCode.HydratePro]: 'Y',
+}
+
+const v0_4CropCodes: { [key in CropCode]: string } = {
+  ...getCropCodes(),
+  [CropCode.None]: 'N',
+  [CropCode.Tomato]: 'T',
+  [CropCode.Potato]: 'P',
+  [CropCode.Rice]: 'R',
+  [CropCode.Wheat]: 'W',
+  [CropCode.Carrot]: 'C',
+  [CropCode.Onion]: 'O',
+  [CropCode.Cotton]: 'Co',
+  [CropCode.Blueberry]: 'B',
+  [CropCode.Apple]: 'A',
+  [CropCode.Corn]: 'Cr',
+  [CropCode.SpicyPepper]: 'S',
+  [CropCode.NapaCabbage]: 'Cb',
+  [CropCode.BokChoy]: 'Bk',
+  [CropCode.RockhopperPumpkin]: 'Pm',
+  [CropCode.BatterflyBean]: 'Bt'
 }
 
 function getCropCode(codeList: typeof v0_2CropCodes, codeToFind: string) {
@@ -113,7 +135,7 @@ function convertV0_1CodestoV0_2(save: string): string {
   return `CROPS-${newSave}`
 }
 
-function convertV_02Codesto_V0_3(save: string) {
+function convertV_0_2Codesto_V_0_3(save: string) {
 
   // Remove the "CROPS-" prefix
   const cropSection = save.replace("CROPS-", "");
@@ -135,7 +157,41 @@ function convertV_02Codesto_V0_3(save: string) {
       const crop = v0_3CropCodes[(getCropCode(v0_2CropCodes, match[1]) ?? CropCode.None) as CropCode];
       const fertiliser = v0_3FertCodes[(getFertCode(v0_2FertCodes, match[2]) ?? FertiliserCode.None) as FertiliserCode];
 
-      newSection += `${crop}${fertiliser ? '.' + fertiliser : ''}`;
+      newSection += `${crop}${(fertiliser && fertiliser !== FertiliserCode.None ) ? '.' + fertiliser : ''}`;
+    }
+
+    if (i < cropSections.length - 1) {
+      newSection += '-'
+    }
+    newCode += newSection
+  }
+
+  return `CR-${newCode}`
+}
+
+function convertV_0_3Codesto_V_0_4(save: string) {
+
+  // Remove the "CR-" prefix
+  const cropSection = save.replace("CR-", "");
+
+  const cropSections = cropSection.split('-')
+
+  // Regex to capture crop and optional fertiliser
+  const regex = /([A-Z][a-z]?)(?:\.([A-Z][a-z]?))?/g;
+
+  let match: RegExpExecArray | null;
+
+  let newCode = ''
+
+
+  for (let i = 0; i < cropSections.length; i++) {
+    let newSection = ''
+
+    while ((match = regex.exec(cropSections[i])) !== null) {
+      const crop = v0_4CropCodes[(getCropCode(v0_3CropCodes, match[1]) ?? CropCode.None) as CropCode];
+      const fertiliser = match[2] as FertiliserCode ?? FertiliserCode.None;
+
+      newSection += `${crop}${(fertiliser && fertiliser !== FertiliserCode.None ) ? '.' + fertiliser : ''}`;
     }
 
     if (i < cropSections.length - 1) {
@@ -152,9 +208,9 @@ function convertV_02Codesto_V0_3(save: string) {
   * @param save a save code for the garden planner
  */
 function parseSave(save: string) {
-  const LATEST_VERSION = '0.3';
+  const LATEST_VERSION = '0.4';
 
-  console.log('Parsing save code...', save);
+  // console.log('Parsing save code...', save);
 
   // * This format makes it permanent that the first part of the save is the version number
   const [version, ...rest] = save.split('_')
@@ -174,29 +230,36 @@ function parseSave(save: string) {
         validatePlotMatrix(dimensionInfo)
         cropInfo = convertV0_1CodestoV0_2(cropInfo)
         strippedVersion = '0.2'
-        console.log('0.1 -> 0.2', cropInfo)
+        // console.log('0.1 -> 0.2', cropInfo)
         break
       case '0.2':
         validatePlotMatrix(dimensionInfo)
-        cropInfo = convertV_02Codesto_V0_3(cropInfo)
+        cropInfo = convertV_0_2Codesto_V_0_3(cropInfo)
         strippedVersion = '0.3'
-        console.log('0.2 -> 0.3', cropInfo)
+        // console.log('0.2 -> 0.3', cropInfo)
         break
       case '0.3':
         validatePlotMatrix(dimensionInfo)
+        cropInfo = convertV_0_3Codesto_V_0_4(cropInfo)
+        settingsInfo = settingsInfo
+        strippedVersion = '0.4'
+        // console.log('0.3 -> 0.4')
+        break
+      case '0.4':
+        validatePlotMatrix(dimensionInfo)
         cropInfo = cropInfo
         settingsInfo = settingsInfo
-        console.log('0.3 -> Final')
+        // console.log('0.4 -> Final')
         break
       default:
         throw new Error('Invalid save version')
     }
   } while (strippedVersion !== LATEST_VERSION)
 
-  console.log('Final stripped version:', strippedVersion)
-  console.log('Final dimensionInfo:', dimensionInfo)
-  console.log('Final cropInfo:', cropInfo)
-  console.log('Final settingsInfo:', settingsInfo)
+  // console.log('Final stripped version:', strippedVersion)
+  // console.log('Final dimensionInfo:', dimensionInfo)
+  // console.log('Final cropInfo:', cropInfo)
+  // console.log('Final settingsInfo:', settingsInfo)
 
 
   return { version, dimensionInfo, cropInfo, settingsInfo }

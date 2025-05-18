@@ -25,7 +25,7 @@ import type Crop from './crop'
 
 class Garden {
   private _layout: Plot[][] = []
-  private _version: string = '0.3'
+  private _version: string = '0.4'
   private _cropTiles = new CropTiles()
   private _settingsCode: string = ''
   private _settingsHaveBeenLoaded = false
