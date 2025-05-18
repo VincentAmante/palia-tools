@@ -149,7 +149,8 @@ function onDragEnter(row: number, col: number, plot: Plot) {
   :class="[
     ((isTakingScreenshot.get && gardenHandler.isGardenWide) || isTakingScreenshot.get) ? 'max-w-[1680px]' : 'max-w-full',
     (gardenHandler.isGardenWide) ? 'overflow-x-scroll max-w-full' : '',
-  ]">
+  ]"
+  aria-label="Garden Display">
     <div class="px-3 my-4 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
       :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'" @contextmenu.prevent.self="">
       <div role="grid" ref="plotsDisplay" class="grid w-full gap-2 pr-12 overflow-auto sm:pr-0">

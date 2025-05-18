@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between gap-0 items-center relative ">
+  <div class="flex justify-between gap-0 items-center relative " :aria-hidden="true">
     <div class="absolute left-0">
       <img
         class="w-auto h-3"

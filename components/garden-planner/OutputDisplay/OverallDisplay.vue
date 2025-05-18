@@ -137,7 +137,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
       <div class="flex flex-col w-full">
         <div class="flex items-end">
 
-          <img src="/public/crafters/seeder.webp" class="max-w-6">
+          <img src="/public/crafters/seeder.webp" class="max-w-6" alt="Seed Collectors" aria-hidden="true">
           <p class="px-1 text-sm font-semibold text-palia-blue-dark">
             Seed Collectors
             <span v-if="processor.seedCollectorsCount > 0">- {{ processor.seedCollectorsCount }}</span>
@@ -153,7 +153,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
       <div class="flex flex-col w-full">
         <div class="flex items-end">
 
-          <img src="/public/crafters/preserve-jar.webp" class="max-w-6">
+          <img src="/public/crafters/preserve-jar.webp" class="max-w-6" alt="Preserve Jars" aria-hidden="true">
           <p class="px-1 text-sm font-semibold text-palia-blue-dark">
             Preserve Jars
             <span v-if="processor.preserveJarsCount > 0">- {{ processor.preserveJarsCount }}</span>
