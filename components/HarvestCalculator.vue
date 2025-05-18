@@ -296,13 +296,13 @@ watchEffect(() => {
       </div>
       <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'"
         class="flex flex-col gap-2 px-4 transition-all max-h-96 ">
-        <div class="gap-2 tabs">
-          <div class="normal-case rounded-md tab btn btn-sm"
+        <div role="tablist" class="gap-2 tabs">
+          <div role="tab" class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'main' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('main')">
             Main
           </div>
-          <div class="normal-case rounded-md tab btn btn-sm"
+          <div role="tab" class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'crop' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('crop')">
             Crop

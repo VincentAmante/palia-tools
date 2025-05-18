@@ -100,12 +100,12 @@ watchEffect(() => {
 </script>
 <template>
   <section class="flex flex-col gap-1 pt-1 text-palia-blue-dark">
-    <p class="text-sm font-semibold text-palia-blue-dark">
+    <h2 class="text-sm font-semibold text-palia-blue-dark">
       Crop Details
-    </p>
+    </h2>
 
     <!-- Crop Selector -->
-    <div class="flex flex-wrap gap-2 p-2 border rounded-sm border-misc-dark bg-accent">
+    <nav class="flex flex-wrap gap-2 p-2 border rounded-sm border-misc-dark bg-accent">
       <p v-if="presentCrops.size === 0" class="text-sm  text-misc-dark">
         No crops in layout to display details for.
       </p>
@@ -113,7 +113,7 @@ watchEffect(() => {
         <CropDetailButton :crop="getCropFromType(parseCropId(cropId).type)!" :count="data.count"
           @click="selectCropForDetail(cropId)" :isSelected="cropId === selectedCropDetail" :cropId="cropId" />
       </template>
-    </div>
+    </nav>
 
     <!-- Details Display -->
     <div v-if="selectedCropDetail && selectedCropCycleData" class="py-1 flex flex-col gap-1">
@@ -121,14 +121,14 @@ watchEffect(() => {
         <p class="text-sm font-semibold text-palia-blue-dark flex gap-1 items-center bg-accent px-3 rounded-sm">
           <span class="capitalize font-bold">{{ selectedCropCycleData.cropType }}</span>
           <FontAwesomeIcon v-if="selectedCropDetail.includes('-Star')" :icon="['fas', 'star']"
-            class="text-sm text-quality-increase-dark" />
+            class="text-sm text-quality-increase-dark" aria-label="Star Seed" />
           <FontAwesomeIcon v-if="selectedCropDetail.includes('-Growth')" :icon="['fas', 'forward-fast']"
-            class="ml-1 text-sm text-growth-boost" title="Growth Boost Applied" />
+            class="ml-1 text-sm text-growth-boost" title="Growth Boost Applied" aria-label="Growth Boost Applied" />
         </p>
         <div role="tablist" class="tabs tabs-xs tabs-border bg-palia-blue-dark rounded-sm gap-1 w-fit">
-          <button role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'overall'}" @click="cropDetailsTab = 'overall'">Summary</button>
-          <button v-if="selectedCropProcessingData" role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'crafter-data'}" @click="cropDetailsTab = 'crafter-data'">Crafters</button>
-          <button role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'day-by-day'}" @click="cropDetailsTab = 'day-by-day'">Harvest Days</button>
+          <button role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'overall'}" @click="cropDetailsTab = 'overall'" :aria-selected="cropDetailsTab === 'overall'">Summary</button>
+          <button v-if="selectedCropProcessingData" role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'crafter-data'}" @click="cropDetailsTab = 'crafter-data'" :aria-selected="cropDetailsTab === 'crafter-data'">Crafters</button>
+          <button role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'day-by-day'}" @click="cropDetailsTab = 'day-by-day'" :aria-selected="cropDetailsTab === 'day-by-day'">Harvest Days</button>
         </div>
       </div>
       <div v-if="cropDetailsTab === 'overall'">
@@ -140,12 +140,12 @@ watchEffect(() => {
       </div>
     </div>
     <div v-else-if="selectedCropDetail" class="mt-2">
-      <p class="italic font-bold text-warning">
+      <p class="italic font-bold text-warning" role="alert">
         ERROR: No data available for {{ selectedCropDetail }}...
       </p>
     </div>
     <div v-else class="mt-2">
-      <p class="italic text-misc-dark">
+      <p class="italic text-misc-dark" role="status">
         Select a crop group above to see details.
       </p>
     </div>

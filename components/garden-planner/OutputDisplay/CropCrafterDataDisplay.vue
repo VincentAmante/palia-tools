@@ -2,7 +2,6 @@
 import type { PropType } from 'vue';
 import { type IDetailedProcessingInfo } from '~/assets/scripts/garden-planner/classes/processor';
 
-
 defineProps({
     selectedCropProcessingData: {
         type: Object as PropType<IDetailedProcessingInfo>,
@@ -46,7 +45,7 @@ const cropDetailCyclePhaseIndex = ref(0);
                     <button
                         v-for="phaseIndex in selectedCropProcessingData!.cycleData[cropDetailCycleIndex].cycleCrafterData.length"
                         @click="cropDetailCyclePhaseIndex = (phaseIndex - 1)" class="join-item btn btn-soft btn-sm"
-                        :class="{ 'btn-active': (phaseIndex - 1) === cropDetailCyclePhaseIndex }">{{ phaseIndex
+                        :class="{ 'btn-active': (phaseIndex - 1) === cropDetailCyclePhaseIndex }" :aria-label="`Phase ${phaseIndex}`">{{ phaseIndex
                         }}</button>
                 </div>
             </div>

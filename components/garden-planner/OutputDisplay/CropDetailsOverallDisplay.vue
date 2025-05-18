@@ -160,9 +160,9 @@ const selectedCropAsCrop = computed(() => {
 
 
 <template>
-    <div v-if="selectedCropDetail && selectedCropCycleData" class="py-1 flex flex-col gap-1">
+    <section v-if="selectedCropDetail && selectedCropCycleData" class="py-1 flex flex-col gap-1">
         <!-- Cycle Info -->
-        <div class="p-2 border rounded-sm border-misc-dark bg-accent">
+        <section class="p-2 border rounded-sm border-misc-dark bg-accent">
             <div class="flex flex-col gap-1">
                 <div class="flex flex-wrap gap-1 text-sm">
                     <p class="font-semibold badge badge-sm">{{ selectedCropCycleData.phases.length }}<span
@@ -211,10 +211,10 @@ const selectedCropAsCrop = computed(() => {
                     </ul>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- Processing Info -->
-        <div v-if="selectedCropProcessingData && selectedCropProcessingData.cycleData.length > 0"
+        <section v-if="selectedCropProcessingData && selectedCropProcessingData.cycleData.length > 0"
             class="flex flex-col gap-2 p-2 border rounded-sm border-misc-dark bg-accent">
             <div>
 
@@ -258,12 +258,12 @@ const selectedCropAsCrop = computed(() => {
                         formatMinutesToDaysHoursMinutes(selectedCropProcessingData.effectiveProcessMinutes) }}</p>
                 </div>
             </div>
-        </div>
-        <div v-else-if="selectedCropProcessingData === null || selectedCropProcessingData.cycleData[0].cycleCrafterData === undefined"
+        </section>
+        <section v-else-if="selectedCropProcessingData === null || selectedCropProcessingData.cycleData[0].cycleCrafterData === undefined"
             class="p-2 border rounded-sm border-misc-dark bg-accent">
             <p class="text-sm italic text-misc-dark">
                 No Process Data
             </p>
-        </div>
-    </div>
+        </section>
+    </section>
 </template>
