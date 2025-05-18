@@ -3,8 +3,8 @@
     <header class="z-50 drawer drawer-end">
       <input id="menu" type="checkbox" class="drawer-toggle">
       <div class="flex flex-col drawer-content">
-        <div class="w-full py-3 navbar sm:px-12 lg:px-22">
-          <div class="flex-1 mx-2">
+        <div class="w-full py-3 navbar sm:px-12">
+          <div class="flex-1">
             <NuxtLink to="/" class="flex items-center gap-2">
               <img format="webp" src="/logo.webp" width="48px" height="48px" alt="Palia Garden Planner Logo"
                 class="max-w-[3rem]">
@@ -23,17 +23,17 @@
             <div class="flex-none hidden lg:block">
               <ul class="items-center gap-1 text-base menu menu-horizontal">
                 <li>
-                  <NuxtLink to="/roadmap">
+                  <NuxtLink to="/roadmap" :prefetch=false>
                     Roadmap
                   </NuxtLink>
                 </li>
                 <li>
-                  <NuxtLink to="/changelogs">
+                  <NuxtLink to="/changelogs" :prefetch=false>
                     Changelogs
                   </NuxtLink>
                 </li>
                 <li>
-                  <NuxtLink to="/credits">
+                  <NuxtLink to="/credits" :prefetch=false>
                     Credits
                   </NuxtLink>
                 </li>
@@ -167,6 +167,6 @@
         </ul>
       </div>
     </header>
-    <AppDivider class="mx-2 sm:mx-12 lg:mx-22" />
+    <AppDivider class="mx-2 sm:mx-12" />
   </div>
 </template>
