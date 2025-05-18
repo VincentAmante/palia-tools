@@ -166,7 +166,7 @@ export default class Harvester {
        *  Days left after harvest time ends but a crop still has an unfinished cycle
        */
       const cycleRemainder = dayOfLastHarvest % lastDayOfCycle
-      console.log(`Cycles: ${cycles}, Cycle Remainder: ${cycleRemainder}, Last Day of Cycle: ${lastDayOfCycle}, Day of Last Harvest: ${dayOfLastHarvest}`);
+      // console.log(`Cycles: ${cycles}, Cycle Remainder: ${cycleRemainder}, Last Day of Cycle: ${lastDayOfCycle}, Day of Last Harvest: ${dayOfLastHarvest}`);
 
       let remainingHarvests = 0
       if (cycleRemainder > 0) {
@@ -201,7 +201,7 @@ export default class Harvester {
       /**
        * The id of the seeds required for replanting, differentiated by base or star seeds
        */
-      const seedsRequiredId = `${crop.type}${seedsRequiredIdSuffix}` satisfies ICropName
+      const seedsRequiredId = `${crop.type}${seedsRequiredIdSuffix}` satisfies ICropNameWithGrowthDiff
 
       /**
        * Whether to factor in growth boost for this crop
@@ -331,14 +331,14 @@ export default class Harvester {
     /**
      * Contains the remainder of seeds after replanting for the next replant cycle
      */
-    const seedsRemainder = new Map() as Map<ICropName, number>
+    const seedsRemainder = new Map() as Map<ICropNameWithGrowthDiff, number>
 
     /**
      * TODO: Think of a better name
      * - This is a tracker to find the total amount of crops left after seed replants,
      *   to get the average value of how many crops are usually left on replant days
      */
-    const cropTotalsForAveraging = new Map() as Map<ICropName, {
+    const cropTotalsForAveraging = new Map() as Map<ICropNameWithGrowthDiff, {
       total: number
       days: number
     }>
