@@ -10,7 +10,7 @@ import useProcessor from '~/stores/useProcessor'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const harvester = useHarvester()
-const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
+const starBaseChance = computed(() => Math.trunc(Math.min(100, (0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)) * 100)))
 const processor = useProcessor()
 
 // Allows us to save settings of unselected crops
@@ -269,7 +269,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
             </p>
             <p>
               Base Star Chance: <code
-                class="px-2 rounded-xs bg-misc text-accent">{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</code>
+                class="px-2 rounded-xs bg-misc text-accent">{{ starBaseChance }}%</code>
             </p>
             <p>Formula in info</p>
           </template>
