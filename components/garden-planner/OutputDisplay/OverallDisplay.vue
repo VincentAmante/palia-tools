@@ -9,7 +9,7 @@ import { formatMinutesToDaysHoursMinutesObject } from '~/utils/formatters'
 
 const harvester = useHarvester()
 const processor = useProcessor()
-const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
+const starBaseChance = computed(() => Math.trunc(Math.min(100, (0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)) * 100)))
 const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(processor.highestCraftingTime))
 </script>
 <template>
@@ -125,7 +125,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
           </p>
         </li>
         <li class="text-xs badge badge-sm">
-          <span class="font-black">{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</span>Star Crop Chance
+          <span class="font-black">{{ starBaseChance}}%</span>Star Crop Chance
         </li>
         <li class="text-xs badge badge-sm ">
           No Fertiliser Cost
