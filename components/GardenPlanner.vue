@@ -109,7 +109,7 @@ const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
       <ItemSelector />
       <AppDivider class="order-3 mx-4 my-1 @:col-span-7 " :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
       <section class="flex @sm:py-2 gap-y-2 justify-between"
-        :class="{ '@lg:flex-row': !garden.isGardenWide, 'flex-col': !isTakingScreenshot.get }">
+        :class="{ '@5xl:flex-row': !garden.isGardenWide && (!isTakingScreenshot.get), 'flex-col': !isTakingScreenshot.get || (!isTakingScreenshot.get && garden.isGardenWide) }">
         <section class="h-full" :class="[gardenHandler.isGardenWide ? 'flex flex-col items-center pb-2' : '',
         (selectedTab === 'display+display') ? 'w-full' : ''
         ]">
