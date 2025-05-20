@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
+import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import { useDragAndDrop } from '@/stores/useDragAndDrop'
 import { Bonus, Crop, CropType } from '@/assets/scripts/garden-planner/imports'
 import { parseCropId } from '~/assets/scripts/garden-planner/utils/garden-helpers'
