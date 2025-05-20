@@ -56,12 +56,12 @@ defineProps({
         </button>
       </section>
       <section class="join" v-if="isMainOutputDisplay">
-        <button class="btn join-item btn-sm gap-1 tooltip" aria-label="Show Garden + Output Display (default)" " data-tip="
+        <button class="btn join-item btn-sm gap-1 tooltip" aria-label="Show Garden + Output Display (default)" data-tip="
           Garden + Display (default)" @click="plannerDisplayConfig.set('garden+display')">
           <FontAwesomeIcon :icon="['fas', 'table-cells']" />
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
         </button>
-        <button class="btn join-item btn-sm gap-1 tooltip" aria-label="Show double Output Displays" " data-tip=" Double Displays"
+        <button class="btn join-item btn-sm gap-1 tooltip" aria-label="Show double Output Displays" data-tip=" Double Displays"
           @click="plannerDisplayConfig.set('display+display')">
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />

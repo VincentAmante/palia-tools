@@ -96,7 +96,7 @@ onMounted(() => {
         <font-awesome-icon class="text-lg" icon="download" />
         Load
       </button>
-      <button class="xl:h-full normal-case btn bg-palia-blue" disabled @click="openExportModal">
+      <button class="xl:h-full normal-case btn bg-palia-blue" @click="openExportModal">
         <font-awesome-icon class="text-lg" icon="share-from-square" />
         Export
       </button>
@@ -128,7 +128,7 @@ onMounted(() => {
       <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
       <UISettingsModal ref="uiSettingsModal" />
       <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
-      <!-- <ExportModal ref="exportModal" /> -->
+      <ExportModal ref="exportModal" />
     </Teleport>
   </section>
 </template>
