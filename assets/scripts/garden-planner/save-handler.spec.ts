@@ -6,7 +6,7 @@ describe('Save Handler', () => {
   // sample 2 : v0.3_D-111-111-111_CR-BbBbBbBbBbBbBbBbBb-BbNBbBbNBbBbBbBb-BbBbBbBbBbBbBbBbN-BbBbBbBbBbBbBbBbBb-BbBbBbBbBbBbBbBbBb-BbBbNBbBbNBbBbN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN_D30NrNssL50Cr0.Bb.S7-BbS6
 
   describe('Full save code conversion', () => {
-    it('should fully convert a 0.3 save to 0.4 save in the expected format (Test 1)', () => {
+    it('should fully convert a 0.3 save to 0.4 save in the expected format (Test 1 - Batterfly Beans is converted)', () => {
       const v0_3Save = 'v0.3_D-111-111-111_CR-BbBbBbBbBbBbBbBbBb-BbNBbBbNBbBbBbBb-BbBbBbBbBbBbBbBbN-BbBbBbBbBbBbBbBbBb-BbBbBbBbBbBbBbBbBb-BbBbNBbBbNBbBbN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN_D30NrNssL50Cr0.Bb.S7-BbS6'
       const expectedDimensionInfo = 'D-111-111-111'
       const expectedCropsInfo = 'CR-BtBtBtBtBtBtBtBtBt-BtNBtBtNBtBtBtBt-BtBtBtBtBtBtBtBtN-BtBtBtBtBtBtBtBtBt-BtBtBtBtBtBtBtBtBt-BtBtNBtBtNBtBtN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN'
@@ -20,7 +20,7 @@ describe('Save Handler', () => {
       expect(settingsInfo).toBe(expectedSettingsInfo)
     })
 
-    it('should fully convert a 0.3 save to 0.4 save in the expected format (Test 2)', () => {
+    it('should fully convert a 0.3 save to 0.4 save in the expected format (Test 2 - No changes except for version expected)', () => {
       const v0_3Save = 'v0.3_D-111-111-111_CR-Cb.HP.HO.HBk.HSSO.HSS-BkCbPAAAAAA-OBkCb.HBBPBBO-PCbBkCrWOBkCbP-AAACrCb.YBkAAA-PCbBkOWCrBkCbP-OBBPBBCb.HBkO-AAAAAAPCbBk-SSO.HSSBk.HO.HP.HCb.H_D30L25Cr0.BkS-OP-WS-PS-CrP-CbP-SP-BP-AP'
       const expectedDimensionInfo = 'D-111-111-111'
       const expectedCropsInfo = 'CR-Cb.HP.HO.HBk.HSSO.HSS-BkCbPAAAAAA-OBkCb.HBBPBBO-PCbBkCrWOBkCbP-AAACrCb.YBkAAA-PCbBkOWCrBkCbP-OBBPBBCb.HBkO-AAAAAAPCbBk-SSO.HSSBk.HO.HP.HCb.H'
@@ -28,6 +28,19 @@ describe('Save Handler', () => {
 
       const { dimensionInfo, version, cropInfo, settingsInfo } = parseSave(v0_3Save)
 
+      expect(version).toBe('0.4')
+      expect(dimensionInfo).toBe(expectedDimensionInfo)
+      expect(cropInfo).toBe(expectedCropsInfo)
+      expect(settingsInfo).toBe(expectedSettingsInfo)
+    })
+
+    it('should fully convert a 0.3 save to 0.4 save in the expected format (Test 3 - Batterfly and Blueberries Mixed)', () => {
+      const v0_3Save = 'v0.3_D-111-111-111_CR-BbBbBBbBbBBBB-BBbBbBBbBbBBB-BbBbNBbBbNBbBbN-BBBBBBBBB-BBBBBbBbBBbBb-BbBbNNNNNNN-BbBbBbBbBbBbNNN-BbBBBbBBNNN-NNNNNNNNN_Cr0.Bb.S3-BbS5-B.S4-BS7'
+      const expectedDimensionInfo = 'D-111-111-111'
+      const expectedCropsInfo = 'CR-BtBtBBtBtBBBB-BBtBtBBtBtBBB-BtBtNBtBtNBtBtN-BBBBBBBBB-BBBBBtBtBBtBt-BtBtNNNNNNN-BtBtBtBtBtBtNNN-BtBBBtBBNNN-NNNNNNNNN'
+      const expectedSettingsInfo = 'Cr0.Bt.S3-BtS5-B.S4-BS7'
+
+      const { dimensionInfo, version, cropInfo, settingsInfo } = parseSave(v0_3Save)
 
       expect(version).toBe('0.4')
       expect(dimensionInfo).toBe(expectedDimensionInfo)
