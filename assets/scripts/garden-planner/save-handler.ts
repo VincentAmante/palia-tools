@@ -176,7 +176,6 @@ function convertV_0_3Codesto_V_0_4(save: string) {
 
   // Remove the "CR-" prefix
   const cropSection = save.replace("CR-", "");
-
   const cropSections = cropSection.split('-')
 
   // Regex to capture crop and optional fertiliser
