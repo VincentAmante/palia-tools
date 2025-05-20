@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
+import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import { Bonus, Fertiliser, FertiliserType } from '@/assets/scripts/garden-planner/imports'
 import { useDragAndDrop } from '@/stores/useDragAndDrop'
 
