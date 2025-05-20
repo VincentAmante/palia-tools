@@ -127,7 +127,7 @@ function getFertCode(codeList: typeof v0_2FertCodes, codeToFind: string) {
 }
 
 
-function convertV0_1CodestoV0_2(save: string): string {
+export function convertV0_1CodestoV0_2(save: string): string {
   let newSave = save.replace("CROPS-", "");
   for (const [key, value] of Object.entries(v0_1CropCodes))
     newSave = newSave.replaceAll(value, v0_2CropCodes[key as CropCode])
@@ -135,7 +135,7 @@ function convertV0_1CodestoV0_2(save: string): string {
   return `CROPS-${newSave}`
 }
 
-function convertV_0_2Codesto_V_0_3(save: string) {
+export function convertV_0_2Codesto_V_0_3(save: string) {
 
   // Remove the "CROPS-" prefix
   const cropSection = save.replace("CROPS-", "");
@@ -169,7 +169,7 @@ function convertV_0_2Codesto_V_0_3(save: string) {
   return `CR-${newCode}`
 }
 
-function convertV_0_3Codesto_V_0_4(save: string) {
+export function convertV_0_3Codesto_V_0_4(save: string) {
   // console.log("Converting V_0_3 to V_0_4");
   // console.log(save);
 
@@ -206,7 +206,7 @@ function convertV_0_3Codesto_V_0_4(save: string) {
   return `CR-${newCode}`
 }
 
-function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
+export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
   if (!settings)
     return ''
 
@@ -265,7 +265,7 @@ function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
  * Converts a save string to an object containing the save version, dimension info, and crop info of the latest version
   * @param save a save code for the garden planner
  */
-function parseSave(save: string) {
+export function parseSave(save: string) {
   const LATEST_VERSION = '0.4';
 
   // console.log('Parsing save code...', save);
@@ -320,7 +320,7 @@ function parseSave(save: string) {
   // console.log('Final settingsInfo:', settingsInfo)
 
 
-  return { version, dimensionInfo, cropInfo, settingsInfo }
+  return { version: strippedVersion, dimensionInfo, cropInfo, settingsInfo }
 }
 
 /**
@@ -506,4 +506,4 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
   return { harvesterOptions, processorSettings }
 }
 
-export { convertV0_1CodestoV0_2 as convertV_0_1_to_V_0_2, parseSave, encodeSettings, decodeSettings }
+export { convertV0_1CodestoV0_2 as convertV_0_1_to_V_0_2, encodeSettings, decodeSettings }
