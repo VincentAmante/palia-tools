@@ -43,7 +43,11 @@ useHead({
               seeds/using seeds under-level 25
             </li>
             <li>
-              <span class="italic">Harvest By Day —</span> New window for displaying harvests
+              <span class="italic">RE-ADDED*: Harvest By Day —</span> Re-added harvests-by-day, *but no produce
+              conversion or gold output
+            </li>
+            <li>
+              <span class="italic">RE-ADDED: Export by Image —</span> Re-added export by image
             </li>
             <li>
               <span class="italic">0.4 Upgrade —</span> Batterfly Beans code from `Bb` to `Bt`
@@ -79,7 +83,11 @@ useHead({
               code is not properly updated.
             </p>
             <p>
-              Finally, I've done some styling fixes to House Planner to make it working again after the recent updates broke it. Its developement is still
+              Export by Image should now work again. Good chance it breaks again though cause of how fickle it is. It should, however, now support firefox and Mac Safari (iOS still broken)
+            </p>
+            <p>
+              Finally, I've done some styling fixes to House Planner to make it working again after the recent updates
+              broke it. Its developement is still
               halted, but it is promised that it will at least be maintained.
             </p>
           </template>
