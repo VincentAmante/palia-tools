@@ -56,18 +56,31 @@ useHead({
             <p>
               Hello folks. A major oversight has been done where crops were being rounded too early when harvesting.
               This likely made layouts for under level 25 players and/or layouts using unstarred seeds to be lower than
-              promised. Huge thanks to Ren for seeing this one.
+              promised. Huge thanks to Ren for seeing this one!
             </p>
             <p>
-              The harvest-by-day has been re-implemented, though lacking produce conversions. This helps at least with those looking to see when harvests overlap,
-              but those looking at when a produce is available would not benefit still. Do let me know your use-cases for the day-by-day if you want a specific feature implemented.
+              My sincere apologies though. This was a pretty substantial change in profits especially for lower-levelled
+              players,
+              so the inaccuracies here should've been noticed sooner. I'll continue tweaking the planner and staying
+              alert to any more inaccuracies, but
+              do keep in mind that the planner's output calcs may not reflect the player experience 1:1.
+            </p>
+            <div class="divider"></div>
+            <p>
+              The harvest-by-day has been re-implemented, though lacking produce conversions. This helps at least with
+              those looking to see when harvests overlap,
+              but those looking at when a produce is available would not benefit still. Do let me know your use-cases
+              for the day-by-day if you want a specific feature implemented.
             </p>
             <p>
-              We've updated to code 0.4. The main reason for this was that the Batterfly Beans had a potential to be auto-modded in the official Palia Discord, which the planner was initially built for.
-              I've ensured the cropCodes and the settings should update properly but please hastily report if a save code is not properly updated.
+              We've updated to code 0.4. The main reason for this was that the Batterfly Beans had a potential to be
+              auto-modded in the official Palia Discord, which the planner was initially built for.
+              I've ensured the cropCodes and the settings should update properly but please hastily report if a save
+              code is not properly updated.
             </p>
             <p>
-              Finally, I've done some styling fixes to House Planner to make it working again. Its developement is still halted, but it is promised that it will at least be maintained.
+              Finally, I've done some styling fixes to House Planner to make it working again after the recent updates broke it. Its developement is still
+              halted, but it is promised that it will at least be maintained.
             </p>
           </template>
         </ChangelogItem>
