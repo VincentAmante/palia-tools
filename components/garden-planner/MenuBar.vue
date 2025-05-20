@@ -128,7 +128,7 @@ onMounted(() => {
       <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
       <UISettingsModal ref="uiSettingsModal" />
       <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
-      <ExportModal ref="exportModal" />
+      <!-- <ExportModal ref="exportModal" /> -->
     </Teleport>
   </section>
 </template>
