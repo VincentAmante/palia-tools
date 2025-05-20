@@ -136,7 +136,7 @@ watch(updateIsRequested, () => {
         </section>
       </section>
     </div>
-    <div v-if="isTakingScreenshot.get" id="watermark" aria-label="hidden"
+    <div v-show="isTakingScreenshot.get" id="watermark" aria-label="hidden"
       class="grid grid-cols-2 justify-between order-8 w-full px-4 lg:col-span-4 bg-palia-blue" :class="[]">
       <div class="flex items-center w-full gap-2 p-2 text-right rounded-md leading-1">
         <img format="webp" src="/logo.webp" width="48px" height="48px" class="max-w-[4rem]" alt="Palia Garden Planner Logo">
