@@ -29,7 +29,7 @@ async function saveToImage() {
 
   isTakingScreenshot.set(true)
 
-  await nextTick()
+  await nextTick();
 
 
   domtoimage.toPng(
@@ -45,10 +45,8 @@ async function saveToImage() {
     },
   ).finally(() => {
     isTakingScreenshot.set(false)
-    modal.value?.hideModal()
-
-
   })
+
 }
 
 const downloadedImgSrc = ref('')
