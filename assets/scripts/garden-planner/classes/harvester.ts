@@ -113,12 +113,12 @@ export default class Harvester {
       const hasHarvestBoost = tile.bonuses.includes(Bonus.HarvestIncrease)
 
       // Calculate number of star and base crops with and without harvest boost
-      const baseStarCrops = Math.floor(base * finalStarChance)
-      const baseBaseCrops = base - baseStarCrops
+      const baseStarCrops = Math.round((base * group.count) * finalStarChance)
+      const baseBaseCrops = (base * group.count) - baseStarCrops
 
       // Extra crops are only calculated if there is a harvest boost
-      const extraStarCrops = (hasHarvestBoost) ? Math.floor(extra * finalStarChance) : 0
-      const extraBaseCrops = (hasHarvestBoost) ? extra - extraStarCrops : 0
+      const extraStarCrops = (hasHarvestBoost) ? Math.round((extra * group.count) * finalStarChance) : 0
+      const extraBaseCrops = (hasHarvestBoost) ? (extra * group.count) - extraStarCrops : 0
 
       const totalStarCrops = baseStarCrops + extraStarCrops
       const totalBaseCrops = baseBaseCrops + extraBaseCrops
@@ -126,21 +126,18 @@ export default class Harvester {
       // Stores the number of crops harvested, which is usually the same
 
       const starCrop = {
-        base: baseStarCrops * group.count,
-        extra: extraStarCrops * group.count,
-        totalRaw: totalStarCrops * group.count,
-        totalWithDeductions: totalStarCrops * group.count,
+        base: baseStarCrops,
+        extra: extraStarCrops,
+        totalRaw: totalStarCrops,
+        totalWithDeductions: totalStarCrops,
       } satisfies ICropYield
 
       const baseCrop = {
-        base: baseBaseCrops * group.count,
-        extra: extraBaseCrops * group.count,
-        totalRaw: totalBaseCrops * group.count,
-        totalWithDeductions: totalBaseCrops * group.count,
+        base: baseBaseCrops,
+        extra: extraBaseCrops,
+        totalRaw: totalBaseCrops,
+        totalWithDeductions: totalBaseCrops,
       } satisfies ICropYield
-
-      if (tile.crop.type === CropType.Onion){
-      }
 
       /**
        * An array of days in which the crop is harvestable from moment of planting
@@ -281,7 +278,7 @@ export default class Harvester {
 
       // This cycle won't complete but we still need to harvest the crops on every harvestable day before the last day
       if (cycleRemainder > 0) {
-        
+
 
         for (const day of harvestableDays) {
           const dayInCycle = lastDayOfCycle * cycles + day
@@ -553,7 +550,7 @@ function getHighestGrowthTime(cropTiles: TUniqueTiles, factorInGrowthBoost: bool
     if (!crop)
       continue
 
-    const totalGrowthTime = crop.getTotalGrowTime(group.tile.bonuses.includes(Bonus.SpeedIncrease) && factorInGrowthBoost) 
+    const totalGrowthTime = crop.getTotalGrowTime(group.tile.bonuses.includes(Bonus.SpeedIncrease) && factorInGrowthBoost)
     if (totalGrowthTime > highestGrowthTime)
       highestGrowthTime = totalGrowthTime
   }
