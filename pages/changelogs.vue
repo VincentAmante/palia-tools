@@ -57,12 +57,13 @@ useHead({
             </li>
           </template>
           <template #default>
-            <p>
+            <h4 class="font-bold text-xl">Harvest Fix</h4>
+            <p class="indent-6">
               Hello folks. A major oversight has been done where crops were being rounded too early when harvesting.
               This likely made layouts for under level 25 players and/or layouts using unstarred seeds to be lower than
               promised. Huge thanks to Ren for seeing this one!
             </p>
-            <p>
+            <p class="indent-6">
               My sincere apologies though. This was a pretty substantial change in profits especially for lower-levelled
               players,
               so the inaccuracies here should've been noticed sooner. I'll continue tweaking the planner and staying
@@ -70,22 +71,27 @@ useHead({
               do keep in mind that the planner's output calcs may not reflect the player experience 1:1.
             </p>
             <div class="divider"></div>
-            <p>
+            <h4 class="font-bold text-xl">Other Changes</h4>
+            <p class="indent-6">
               The harvest-by-day has been re-implemented, though lacking produce conversions. This helps at least with
-              those looking to see when harvests overlap,
-              but those looking at when a produce is available would not benefit still. Do let me know your use-cases
+              those looking to see when harvests overlap, with a new option to see exactly the days when a crop is
+              harvested (plus other crops with it).
+              Those looking at when a produce is available would not benefit still, as I'm somewhat towards furthering
+              the planner as a '24/7 player' simulation.
+              Do let me know your use-cases
               for the day-by-day if you want a specific feature implemented.
             </p>
-            <p>
+            <p class="indent-6">
               We've updated to code 0.4. The main reason for this was that the Batterfly Beans had a potential to be
               auto-modded in the official Palia Discord, which the planner was initially built for.
               I've ensured the cropCodes and the settings should update properly but please hastily report if a save
               code is not properly updated.
             </p>
-            <p>
-              Export by Image should now work again. Good chance it breaks again though cause of how fickle it is. It should, however, now support firefox and Mac Safari (iOS still broken)
+            <p class="indent-6">
+              Export by Image should now work again. Good chance it breaks again though cause of how fickle it is. It
+              should, however, now support Firefox and Mac Safari (iOS still broken)
             </p>
-            <p>
+            <p class="indent-6">
               Finally, I've done some styling fixes to House Planner to make it working again after the recent updates
               broke it. Its developement is still
               halted, but it is promised that it will at least be maintained.
