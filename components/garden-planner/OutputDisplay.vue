@@ -31,7 +31,7 @@ defineProps({
 
 <template>
   <section class="p-2 ">
-    <section v-if="!isTakingScreenshot.get"
+    <section v-show="!isTakingScreenshot.get"
       class="flex flex-row-reverse justify-between border-b border-b-misc pb-1 px-1">
       <section class="flex justify-end gap-1">
         <button id="approximator-display-tab" aria-label="Display Tab"
