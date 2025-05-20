@@ -5,9 +5,10 @@ import NewSettings from './NewSettings.vue'
 import LazyHCInfo from './HarvestCalculator/HCInfo.vue'
 import CropDetailsDisplay from './OutputDisplay/CropDetailsDisplay.vue'
 import OverallDisplay from './OutputDisplay/OverallDisplay.vue'
-
+import { usePlannerDisplayConfig } from '~/stores/usePlannerDisplayConfig'
 
 const isTakingScreenshot = useTakingScreenshot()
+const plannerDisplayConfig = usePlannerDisplayConfig()
 const activeTab = ref('display')
 function setTab(tab: string) {
   activeTab.value = tab
@@ -20,11 +21,11 @@ defineProps({
   }
 })
 
-const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
-const emit = defineEmits(['tabChanged'])
-watchEffect(() => {
-  emit('tabChanged', selectedTab.value)
-})
+// const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
+// const emit = defineEmits(['tabChanged'])
+// watchEffect(() => {
+//   emit('tabChanged', selectedTab.value)
+// })
 
 </script>
 
@@ -56,12 +57,12 @@ watchEffect(() => {
       </section>
       <section class="join" v-if="isMainOutputDisplay">
         <button class="btn join-item btn-sm gap-1 tooltip" aria-label="Show Garden + Output Display (default)" " data-tip="
-          Garden + Display (default)" @click="selectedTab = 'garden+display'">
+          Garden + Display (default)" @click="plannerDisplayConfig.set('garden+display')">
           <FontAwesomeIcon :icon="['fas', 'table-cells']" />
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
         </button>
         <button class="btn join-item btn-sm gap-1 tooltip" aria-label="Show double Output Displays" " data-tip=" Double Displays"
-          @click="selectedTab = 'display+display'">
+          @click="plannerDisplayConfig.set('display+display')">
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
         </button>
@@ -78,5 +79,5 @@ watchEffect(() => {
     <section v-show="activeTab === 'info'" id="info-tab" class="pt-2">
       <LazyHCInfo />
     </section>
-  </section>
+  </section> 
 </template>

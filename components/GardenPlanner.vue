@@ -11,11 +11,16 @@ import type { TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-
 import { useSettingsCode } from '~/stores/useSettingsCode'
 import { ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
+
+import { usePlannerDisplayConfig } from '~/stores/usePlannerDisplayConfig'
+
 const display = ref<HTMLElement | null>(null)
 const isTakingScreenshot = useTakingScreenshot()
 const gardenHandler = useGarden()
 const harvester = useHarvester()
 const processor = useProcessor()
+const plannerDisplayConfig = usePlannerDisplayConfig()
+
 
 watchEffect(() => {
   gardenHandler.update()
@@ -99,8 +104,6 @@ watch(updateIsRequested, () => {
   }
 })
 
-const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
-
 </script>
 
 <template>
@@ -111,14 +114,14 @@ const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
       <section class="flex @sm:py-2 gap-y-2 justify-between"
         :class="{ '@5xl:flex-row': !garden.isGardenWide && (!isTakingScreenshot.get), 'flex-col': !isTakingScreenshot.get || (!isTakingScreenshot.get && garden.isGardenWide) }">
         <section class="h-full" :class="[gardenHandler.isGardenWide ? 'flex flex-col items-center pb-2' : '',
-        (selectedTab === 'display+display') ? 'w-full' : ''
+        (plannerDisplayConfig.get === 'display+display') ? 'w-full' : ''
         ]">
-          <template v-if="(selectedTab === 'garden+display')">
+          <template v-if="(plannerDisplayConfig.get === 'garden+display')">
             <NewGardenDisplay />
             <NewStatsDisplay class="pt-2 @sm:mx-auto @xs:px-2 w-fit "
               :class="[gardenHandler.isGardenWide ? 'w-fit' : '@lg:w-full']" />
           </template>
-          <template v-if="(selectedTab === 'display+display')">
+          <template v-if="(plannerDisplayConfig.get === 'display+display')">
             <section class="w-full">
               <div class="h-full @sm:rounded-lg bg-primary">
                 <OutputDisplay />
@@ -128,11 +131,7 @@ const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
         </section>
         <section class="w-full sm:px-2">
           <div class="h-full sm:rounded-lg bg-primary">
-            <OutputDisplay is-main-output-display @tab-changed="(newValue: 'garden+display' | 'display+display') => {
-              if (selectedTab !== newValue) {
-                selectedTab = newValue
-              }
-            }" />
+            <OutputDisplay is-main-output-display />
           </div>
         </section>
       </section>

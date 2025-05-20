@@ -7,7 +7,6 @@ import { ItemType, parseCropId, type ICropName, type ICropNameWithGrowthDiff } f
 import { CropType } from '~/assets/scripts/garden-planner/imports'
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
 import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue'
-
 import { formatMinutesToDaysHoursMinutes } from '~/utils/formatters' // Assuming a formatter utility exists or needs creation
 
 
@@ -155,7 +154,6 @@ const selectedCropAsCrop = computed(() => {
 
     return getCropFromType(parseCropId(props.selectedCropDetail).type)
 })
-
 </script>
 
 

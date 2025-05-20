@@ -6,11 +6,10 @@ import useProcessor from '~/stores/useProcessor'
 import { ItemType, parseCropId, type ICropName, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { CropType } from '~/assets/scripts/garden-planner/imports'
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
-import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue'
 
-import { formatMinutesToHoursMinutes, formatMinutesToDaysHoursMinutes } from '~/utils/formatters' // Assuming a formatter utility exists or needs creation
 import CropCrafterDataDisplay from './CropCrafterDataDisplay.vue'
 import CropDetailsOverallDisplay from './CropDetailsOverallDisplay.vue'
+import CropDetailsHarvest from './CropDetailsHarvest.vue'
 
 const harvester = useHarvester()
 const processor = useProcessor()
@@ -49,7 +48,7 @@ const presentCrops = computed(() => {
   return new Map([...cropsMap.entries()].sort(([keyA], [keyB]) => keyA.localeCompare(keyB)))
 })
 
-function selectCropForDetail(cropId: ICropNameWithGrowthDiff) {
+function selectCropForDetail(cropId: ICropNameWithGrowthDiff | null) {
   selectedCropDetail.value = cropId
 }
 
@@ -106,9 +105,15 @@ watchEffect(() => {
 
     <!-- Crop Selector -->
     <nav class="flex flex-wrap gap-2 p-2 border rounded-sm border-misc-dark bg-accent">
-      <p v-if="presentCrops.size === 0" class="text-sm  text-misc-dark">
+      <p v-if="presentCrops.size === 0" class="text-lg  text-misc-dark">
         No crops in layout to display details for.
       </p>
+      <button v-if="presentCrops.size > 0" @click="selectCropForDetail(null)"
+        class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc tooltip"
+        data-tip="All harvests"
+        >
+        <FontAwesomeIcon :icon="['fas', 'wheat-awn']" />
+      </button>
       <template v-for="([cropId, data]) in presentCrops" :key="cropId">
         <CropDetailButton :crop="getCropFromType(parseCropId(cropId).type)!" :count="data.count"
           @click="selectCropForDetail(cropId)" :isSelected="cropId === selectedCropDetail" :cropId="cropId" />
@@ -116,7 +121,7 @@ watchEffect(() => {
     </nav>
 
     <!-- Details Display -->
-    <div v-if="selectedCropDetail && selectedCropCycleData" class="py-1 flex flex-col gap-1">
+    <div v-if="selectedCropDetail && selectedCropCycleData" class="py-1 flex flex-col gap-1 @container">
       <div class="flex gap-1 flex-col lg:flex-row  gap-x-4">
         <p class="text-sm font-semibold text-palia-blue-dark flex gap-1 items-center bg-accent px-3 rounded-sm">
           <span class="capitalize font-bold">{{ selectedCropCycleData.cropType }}</span>
@@ -126,9 +131,17 @@ watchEffect(() => {
             class="ml-1 text-sm text-growth-boost" title="Growth Boost Applied" aria-label="Growth Boost Applied" />
         </p>
         <div role="tablist" class="tabs tabs-xs tabs-border bg-palia-blue-dark rounded-sm gap-1 w-fit">
-          <button role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'overall'}" @click="cropDetailsTab = 'overall'" :aria-selected="cropDetailsTab === 'overall'">Summary</button>
-          <button v-if="selectedCropProcessingData" role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'crafter-data'}" @click="cropDetailsTab = 'crafter-data'" :aria-selected="cropDetailsTab === 'crafter-data'">Crafters</button>
-          <!-- <button role="tab" class="tab bg-transparent" :class="{'tab-active text-accent': cropDetailsTab === 'day-by-day'}" @click="cropDetailsTab = 'day-by-day'" :aria-selected="cropDetailsTab === 'day-by-day'">Harvest Days</button> -->
+          <button role="tab" class="tab bg-transparent"
+            :class="{ 'tab-active text-accent': cropDetailsTab === 'overall' }" @click="cropDetailsTab = 'overall'"
+            :aria-selected="cropDetailsTab === 'overall'">Summary</button>
+          <button v-if="selectedCropProcessingData" role="tab" class="tab bg-transparent"
+            :class="{ 'tab-active text-accent': cropDetailsTab === 'crafter-data' }"
+            @click="cropDetailsTab = 'crafter-data'"
+            :aria-selected="cropDetailsTab === 'crafter-data'">Crafters</button>
+          <button role="tab" class="tab bg-transparent"
+            :class="{ 'tab-active text-accent': cropDetailsTab === 'day-by-day' }"
+            @click="cropDetailsTab = 'day-by-day'" :aria-selected="cropDetailsTab === 'day-by-day'">Harvest
+            Days</button>
         </div>
       </div>
       <div v-if="cropDetailsTab === 'overall'">
@@ -138,6 +151,9 @@ watchEffect(() => {
         <CropCrafterDataDisplay :selected-crop-processing-data="selectedCropProcessingData"
           :selected-crop-detail="selectedCropDetail" />
       </div>
+      <div class="pt-1" v-if="cropDetailsTab === 'day-by-day'">
+        <CropDetailsHarvest :day-harvests="harvester.harvester.dayHarvests" :crop-to-filter="selectedCropDetail" />
+      </div>
     </div>
     <div v-else-if="selectedCropDetail" class="mt-2">
       <p class="italic font-bold text-warning" role="alert">
@@ -145,9 +161,7 @@ watchEffect(() => {
       </p>
     </div>
     <div v-else class="mt-2">
-      <p class="italic text-misc-dark" role="status">
-        Select a crop group above to see details.
-      </p>
+      <CropDetailsHarvest  should-be-max-size :day-harvests="harvester.harvester.dayHarvests" />
     </div>
   </section>
 </template>

@@ -27,6 +27,7 @@
     "konva": "^9.2.0",
     "pinia": "^3.0.2",
     "uniqid": "^5.4.0",
+    "virtua": "^0.41.2",
     "vue-konva": "^3.0.2"
   },
   "devDependencies": {

@@ -146,8 +146,8 @@ export interface ISeedTracker {
 // replacers for IDayResult, ICalculateValueResult, ISimulateYieldResult
 export interface IDayHarvest {
   day: number
-  crops: Map<ICropName, ICropYield & ICropInfo>
-  seedsRequired: Map<ICropName, ISeedTracker>
+  crops: Map<ICropNameWithGrowthDiff, ICropYield & ICropInfo>
+  seedsRequired: Map<ICropNameWithGrowthDiff, ISeedTracker>
 }
 
 export type DayHarvests = Map<number, IDayHarvest>
@@ -159,7 +159,7 @@ export interface IDayHarvests {
 export interface ITotalHarvest {
   lastHarvestDay: number
   crops: Map<ICropNameWithGrowthDiff, ICropYield & ICropInfo>
-  seedsRemainder: Map<ICropName, ISeedTracker>
+  seedsRemainder: Map<ICropNameWithGrowthDiff, ISeedTracker>
   cycleData: Map<ICropNameWithGrowthDiff, ICropHarvestCycle>
 }
 
