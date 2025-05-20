@@ -10,7 +10,7 @@ import useProcessor from '~/stores/useProcessor'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const harvester = useHarvester()
-const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
+const starBaseChance = computed(() => Math.trunc(Math.min(100, (0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)) * 100)))
 const processor = useProcessor()
 
 // Allows us to save settings of unselected crops
@@ -71,14 +71,14 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
 
 <template>
   <section id="planner-settings" class="relative flex flex-col gap-1 py-2 ">
-    <ul class="font-semibold tabs tabs-box w-fit join">
-      <li class="tab join-item" :class="(activeTab === 'Harvest') ? 'tab-active' : ''" @click="activeTab = 'Harvest'">
+    <nav role="tablist" class="font-semibold tabs tabs-box w-fit join">
+      <button role="tab" class="tab join-item" :class="(activeTab === 'Harvest') ? 'tab-active' : ''" @click="activeTab = 'Harvest'" :aria-selected="activeTab === 'Harvest'">
         <p>Harvest</p>
-      </li>
-      <li class="tab join-item" :class="(activeTab === 'Crops') ? 'tab-active' : ''" @click="activeTab = 'Crops'">
+      </button>
+      <button role="tab" class="tab join-item" :class="(activeTab === 'Crops') ? 'tab-active' : ''" @click="activeTab = 'Crops'" :aria-selected="activeTab === 'Crops'">
         <p>Crops</p>
-      </li>
-    </ul>
+      </button>
+    </nav>
     <section v-if="activeTab === 'Crops'" class="h-full rounded-md isolate bg-accent">
       <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
         class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-70 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary" />
@@ -135,9 +135,9 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
 
                     await nextTick()
                     onChangeSettings()
-                  }">
+                  }" aria-label="Process as Crop">
                   <img class="w-full h-full" :src="getCropFromType(setting.cropType)?.cropImage"
-                    :alt="`${setting.cropType} Preserve`">
+                    :alt="`${setting.cropType} Crop`">
                 </button>
                 <button class="p-2 btn join-item btn-primary btn-square"
                   :class="(setting.processAs === ItemType.Seed) ? 'btn-active' : ''" @click="() => {
@@ -147,9 +147,9 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
                     setting.processAs = ItemType.Seed
 
                     onChangeSettings()
-                  }">
+                  }" aria-label="Process as Seed">
                   <img class="w-full h-full" :src="getCropFromType(setting.cropType)?.seedImage"
-                    :alt="`${setting.cropType} Preserve`">
+                    :alt="`${setting.cropType} Seed`">
                 </button>
                 <button v-if="getCropFromType(setting.cropType)?.goldValues.hasPreserve"
                   class="p-2 btn join-item btn-primary btn-square "
@@ -158,7 +158,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
                       return
                     setting.processAs = ItemType.Preserve
                     onChangeSettings()
-                  }">
+                  }" aria-label="Process as Preserve">
                   <img class="h-full" :src="getCropFromType(setting.cropType)?.preserveImage"
                     :alt="`${setting.cropType} Preserve`">
                 </button>
@@ -184,7 +184,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
                     setting.crafters--
 
                     onChangeSettings()
-                  }">
+                  }" aria-label="Remove 1 Crafter">
                   <font-awesome-icon :icon="['fas', 'chevron-left']" />
                 </button>
                 <input v-model="setting.crafters" class="input input-sm text-center w-12 text-white! join-item"
@@ -198,7 +198,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
                   setting.crafters++
 
                   onChangeSettings()
-                }">
+                }" aria-label="Add 1 Crafter">
                   <font-awesome-icon :icon="['fas', 'chevron-right']" />
                 </button>
               </div>
@@ -216,18 +216,18 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
         <OptionCard label="days" name="Days">
           <template #input>
             <div class="join">
-              <button class="join-item btn btn-sm " @click="harvester.settings.days = -1">
+              <button class="join-item btn btn-sm " @click="harvester.settings.days = -1" aria-label="Set Days to LCM">
                 LCM
               </button>
-              <button class="join-item btn btn-sm " @click="harvester.settings.days = 0">
+              <button class="join-item btn btn-sm " @click="harvester.settings.days = 0" aria-label="Set Days to Auto">
                 Auto
               </button>
               <input v-model="harvester.settings.days" class="join-item input input-sm text-lg max-w-[6rem] text-accent"
                 type="number" min="0">
-              <button class="join-item btn btn-sm " @click="harvester.settings.days = 30">
+              <button class="join-item btn btn-sm " @click="harvester.settings.days = 30" aria-label="Set Days to 30">
                 30
               </button>
-              <button class="join-item btn btn-sm " @click="harvester.settings.days = 180">
+              <button class="join-item btn btn-sm " @click="harvester.settings.days = 180" aria-label="Set Days to 180">
                 180
               </button>
             </div>
@@ -247,18 +247,18 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
         <OptionCard label="level" name="Gardening Level">
           <template #input>
             <div class="join ">
-              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 0">
+              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 0" aria-label="Set Level to 0">
                 0
               </button>
-              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 10">
+              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 10" aria-label="Set Level to 10">
                 10
               </button>
               <input v-model="harvester.settings.level"
-                class="input input-sm text-lg max-w-[5rem] join-item text-accent" type="number" min="0">
-              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 25">
+                class="input input-sm text-lg max-w-[5rem] join-item text-accent" type="number" min="0" aria-label="Gardening Level">
+              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 25" aria-label="Set Level to 25">
                 25
               </button>
-              <button class="join-item btn btn-sm text-primary " @click="harvester.settings.level = 50">
+              <button class="join-item btn btn-sm text-primary " @click="harvester.settings.level = 50" aria-label="Set Level to 50">
                 50
               </button>
             </div>
@@ -269,7 +269,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
             </p>
             <p>
               Base Star Chance: <code
-                class="px-2 rounded-xs bg-misc text-accent">{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</code>
+                class="px-2 rounded-xs bg-misc text-accent">{{ starBaseChance }}%</code>
             </p>
             <p>Formula in info</p>
           </template>
@@ -277,7 +277,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
 
         <OptionCard label="allStarSeeds" name="All Star Seeds">
           <template #input>
-            <input v-model="harvester.settings.useStarSeeds" class="toggle" type="checkbox">
+            <input v-model="harvester.settings.useStarSeeds" class="toggle" type="checkbox" aria-label="Use Star Seeds">
           </template>
           <template #labels>
             <p>
@@ -288,7 +288,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
 
         <OptionCard label="includeReplant" name="Include Replant">
           <template #input>
-            <input v-model="harvester.settings.includeReplant" class="toggle" type="checkbox">
+            <input v-model="harvester.settings.includeReplant" class="toggle" type="checkbox" aria-label="Include Replant">
           </template>
           <template #labels>
             <p>
@@ -304,7 +304,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
         <OptionCard label="includeReplantCost" name="Include Replant Cost">
           <template #input>
             <input v-model="harvester.settings.includeReplantCost" class="toggle" type="checkbox"
-              :disabled="!harvester.settings.includeReplant">
+              :disabled="!harvester.settings.includeReplant" aria-label="Include Replant Cost">
           </template>
           <template #labels>
             <p>
@@ -315,7 +315,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
 
         <OptionCard label="useGrowthBoost" name="Use Growth Boost">
           <template #input>
-            <input v-model="harvester.settings.useGrowthBoost" class="toggle" type="checkbox">
+            <input v-model="harvester.settings.useGrowthBoost" class="toggle" type="checkbox" aria-label="Use Growth Boost">
           </template>
           <template #labels>
             <p>
@@ -336,7 +336,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
 
         <OptionCard label="includeFertiliserCosts" name="Include Fertiliser Costs" disabled>
           <template #input>
-            <input class="toggle" type="checkbox" disabled>
+            <input class="toggle" type="checkbox" disabled aria-label="Include Fertiliser Costs (Not yet supported)">
           </template>
           <template #labels>
             <p>

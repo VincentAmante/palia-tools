@@ -5,28 +5,12 @@ import TotalInventory from '../HarvestCalculator/TotalInventory.vue'
 import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
-import { formatMinutesToHoursMinutesObject, formatMinutesToDaysHoursMinutesObject } from '~/utils/formatters'
+import { formatMinutesToDaysHoursMinutesObject } from '~/utils/formatters'
 
 const harvester = useHarvester()
 const processor = useProcessor()
-
-const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
-
-const craftingTime = computed(() => {
-  // const timeInMinutes = processor.highestCraftingTime
-
-  // const hours = Math.floor(timeInMinutes / 60)
-  // const minutes = timeInMinutes % 60
-
-  // return {
-  //   actualValue: timeInMinutes,
-  //   hours,
-  //   minutes,
-  // }
-
-  return formatMinutesToDaysHoursMinutesObject(processor.highestCraftingTime)
-})
-
+const starBaseChance = computed(() => Math.trunc(Math.min(100, (0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)) * 100)))
+const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(processor.highestCraftingTime))
 </script>
 <template>
   <section class="flex flex-col gap-2 pt-1 @container">
@@ -76,11 +60,10 @@ const craftingTime = computed(() => {
           </p>
           <p class="flex items-end justify-end text-lg font-semibold text-right text-palia-blue @2xl:text-xl">
             <template v-if="((craftingTime.actualValue) > 0)">
-              <template v-if="craftingTime.days > 0">
+              &#8776;<template v-if="craftingTime.days > 0">
                 {{ parseInt(craftingTime.days.toFixed(0)).toLocaleString() }}
                 <span class="pr-1" aria-label="Days">d</span>
               </template>
-
               {{ parseInt(craftingTime.hours.toFixed(0)).toLocaleString() }}
               <span class="pr-1" aria-label="Hours">h</span>
 
@@ -89,11 +72,12 @@ const craftingTime = computed(() => {
               }}<span class="" aria-label="Minutes">m</span>
             </template>
             <template v-else>
-              <span class="text-warning">N/A</span>
+              <span class="text-palia-blue-dark">N/A</span>
             </template>
           </p>
-          
-          <p v-if="(craftingTime.actualValue > 0)" class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue">
+
+          <p v-if="(craftingTime.actualValue > 0)"
+            class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue">
             Earth Time
           </p>
         </div>
@@ -115,7 +99,7 @@ const craftingTime = computed(() => {
         </div>
       </div>
     </section>
-    <section class="text-xs">
+    <section class="text-xs  whitespace-nowrap">
       <ul class="flex flex-wrap gap-1 text-palia-blue-dark">
         <li class="text-xs border-none badge badge-sm bg-quality-increase-dark">
           <p>
@@ -141,9 +125,9 @@ const craftingTime = computed(() => {
           </p>
         </li>
         <li class="text-xs badge badge-sm">
-          <span class="font-black">{{ Math.trunc(Math.min(100, starBaseChance * 100)) }}%</span> Star Crop Chance
+          <span class="font-black">{{ starBaseChance}}%</span>Star Crop Chance
         </li>
-        <li class="text-xs badge badge-sm">
+        <li class="text-xs badge badge-sm ">
           No Fertiliser Cost
         </li>
       </ul>
@@ -153,7 +137,7 @@ const craftingTime = computed(() => {
       <div class="flex flex-col w-full">
         <div class="flex items-end">
 
-          <img src="/public/crafters/seeder.webp" class="max-w-6">
+          <img src="/public/crafters/seeder.webp" class="max-w-6" alt="Seed Collectors" aria-hidden="true">
           <p class="px-1 text-sm font-semibold text-palia-blue-dark">
             Seed Collectors
             <span v-if="processor.seedCollectorsCount > 0">- {{ processor.seedCollectorsCount }}</span>
@@ -169,7 +153,7 @@ const craftingTime = computed(() => {
       <div class="flex flex-col w-full">
         <div class="flex items-end">
 
-          <img src="/public/crafters/preserve-jar.webp" class="max-w-6">
+          <img src="/public/crafters/preserve-jar.webp" class="max-w-6" alt="Preserve Jars" aria-hidden="true">
           <p class="px-1 text-sm font-semibold text-palia-blue-dark">
             Preserve Jars
             <span v-if="processor.preserveJarsCount > 0">- {{ processor.preserveJarsCount }}</span>

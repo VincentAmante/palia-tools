@@ -1,5 +1,5 @@
 import { getCropFromType } from '../cropList'
-import type { CropType } from '../enums/crops'
+import { CropType } from '../imports'
 import { ItemType } from '../utils/garden-helpers'
 import type { IInventoryItem } from '../utils/garden-helpers'
 import { CropItem, type Item } from './items/item'

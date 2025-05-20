@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import PGPModal from '@/components/PGPModal.vue'
+import domtoimage from 'dom-to-image-more'
+import download from 'downloadjs'
+import uniqid from 'uniqid'
+
+
+const isTakingScreenshot = useTakingScreenshot()
 
 const emit = defineEmits<{
   (e: 'downloadImage'): void
 }>()
+
 const modal = ref<InstanceType<typeof PGPModal> | null>(null)
 function openModal() {
   modal.value?.showModal()
@@ -12,10 +19,89 @@ defineExpose({
   openModal,
 })
 
-function downloadImage() {
-  emit('downloadImage')
-  modal.value?.hideModal()
+
+function filter(node: Node) {
+  return node.nodeName !== '#comment'
 }
+
+async function saveToImage() {
+  const node = document.getElementById('garden-planner') as HTMLElement
+
+  if (!node) {
+    console.error('No node')
+  }
+
+  isTakingScreenshot.set(true)
+  const id = `PaliaGardenPlanner-${uniqid()}`
+
+  await nextTick();
+
+
+  domtoimage.toPng(
+    node, {
+    copyDefaultStyles: false,
+    filter: filter,
+    width: node.clientWidth,
+    height: node.clientHeight
+  },
+  ).then(
+    (dataUrl: string) => {
+      if (download(dataUrl, id)) {
+        useTakingScreenshot().set(false)
+      }
+    },
+  ).finally((err: any) => {
+    isTakingScreenshot.set(false)
+  })
+
+}
+
+const downloadedImgSrc = ref('')
+
+const displayWidth = ref(0)
+
+function setScreenshotLayout() {
+  const gardenDisplay = document.getElementById('garden-display')
+  const display = document.getElementById('garden-planner')
+
+  if (!gardenDisplay || !display) {
+    return
+  }
+
+  displayWidth.value = (gardenDisplay.clientWidth)
+  if (useGarden().isGardenWide)
+    displayWidth.value += gardenDisplay.clientWidth || 0
+
+  // console.log('Setting width')
+  displayWidth.value = Math.max(displayWidth.value, 1368)
+  display.style.width = `${displayWidth.value}px`
+  // console.log('Finish setting width', display.style)
+}
+
+function resetScreenshotLayout() {
+
+  const gardenDisplay = document.getElementById('garden-display')
+  const display = document.getElementById('garden-planner')
+
+  if (!gardenDisplay || !display) {
+    // console.error('HTML element not found for garden-display or display', gardenDisplay, display)
+    return
+  }
+
+  // console.log('DISPLAY STYLE:', display.style)
+  display.style.width = ''
+}
+
+watch(useTakingScreenshot(), () => {
+  if (useTakingScreenshot().get)
+    setScreenshotLayout()
+  else if (useTakingScreenshot().get === false && displayWidth.value > 0) {
+    resetScreenshotLayout()
+    modal.value?.hideModal()
+  }
+})
+
+
 </script>
 
 <template>
@@ -29,12 +115,9 @@ function downloadImage() {
           <p class="card-title">
             As Image
           </p>
-
           <div class="card-actions">
-            <button
-              class="btn normal-case btn-outline"
-              @click="downloadImage()"
-            >
+            <button class="btn normal-case btn-outline" @click="async () => await saveToImage()">
+              <span v-if="isTakingScreenshot.get" class="loading loading-spinner loading-sm"></span>
               Export as Image
             </button>
           </div>

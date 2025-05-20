@@ -153,7 +153,9 @@ watchEffect(() => {
 
 <template>
   <section class="relative flex flex-col py-2 ">
+    <h2 class="sr-only">Item Selector</h2>
     <div class="relative grid px-2 xl:grid-cols-7 ">
+
       <section v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
         class="flex flex-col order-1 w-full xl:col-span-4" :class="[isTakingScreenshot.get ? 'col-span-4' : '']">
         <div class="flex gap-2">

@@ -4,7 +4,10 @@ body {
   font-display: swap;
 }
 
+
 @import 'tailwindcss';
+
+@source inline("{xs:,sm:,lg:,}grid");
 @plugin 'daisyui';
 @plugin "daisyui/theme" {
   name: "frnkrs";

@@ -12,14 +12,16 @@ export interface ProcessorOutput {
   seeds: Map<ICropNameWithGrowthDiff, ProcessOutputInfo>
   preserves: Map<ICropNameWithGrowthDiff, ProcessOutputInfo>
   replantSeeds: Map<ICropNameWithGrowthDiff, ISeedTracker>
-  detailedProcessingInfo: Map<ICropNameWithGrowthDiff, {
-    cycleData: IProcessCycleData[],
-    averageProcessMinutes: number,
-    averageGoldGenerated: number,
-    averageProduce: number,
-    totalProcessMinutes: number
-    effectiveProcessMinutes: number
-  }> // Stores detailed cycle data for analysis
+  detailedProcessingInfo: Map<ICropNameWithGrowthDiff, IDetailedProcessingInfo> // Stores detailed cycle data for analysis
+}
+
+export interface IDetailedProcessingInfo {
+  cycleData: IProcessCycleData[],
+  averageProcessMinutes: number,
+  averageGoldGenerated: number,
+  averageProduce: number,
+  totalProcessMinutes: number
+  effectiveProcessMinutes: number
 }
 
 // Interface for processing output information

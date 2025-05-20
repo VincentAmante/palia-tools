@@ -10,7 +10,7 @@ import type { ICalculateValueResult, ISimulateYieldResult } from '@/assets/scrip
 import { CropType, Garden, crops } from '@/assets/scripts/garden-planner/imports'
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/garden'
 import AppDividerAlt from '@/components/AppDividerAlt.vue'
-import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
+import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import useHarvester from '~/stores/useHarvester'
 import { getCropMap } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import type { ICropName, IHarvestInfo } from '~/assets/scripts/garden-planner/utils/garden-helpers'
@@ -296,13 +296,13 @@ watchEffect(() => {
       </div>
       <div v-if="!(isTakingScreenshot.get) && activeTab === 'options'"
         class="flex flex-col gap-2 px-4 transition-all max-h-96 ">
-        <div class="gap-2 tabs">
-          <div class="normal-case rounded-md tab btn btn-sm"
+        <div role="tablist" class="gap-2 tabs">
+          <div role="tab" class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'main' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('main')">
             Main
           </div>
-          <div class="normal-case rounded-md tab btn btn-sm"
+          <div role="tab" class="normal-case rounded-md tab btn btn-sm"
             :class="activeOptionTab === 'crop' ? 'tab-active btn-accent' : 'btn-ghost text-misc text-opacity-50'"
             @click="setOptionTab('crop')">
             Crop

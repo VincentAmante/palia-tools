@@ -14,7 +14,7 @@ enum CropCode {
   NapaCabbage = 'Cb',
   BokChoy = 'Bk',
   RockhopperPumpkin = 'Pm',
-  BatterflyBean = 'Bb'
+  BatterflyBean = 'Bt'
 }
 
 export default CropCode

@@ -52,8 +52,8 @@ defineProps({
         <font-awesome-icon v-if="star" class="text-sm text-quality-increase" :icon="['fas', 'star']" />
       </p>
       <p
-        class="absolute top-0 right-0 px-[2px] text-xs font-semibold  text-center align-middle rounded-lg "
-        :class="(count < 0) ? 'text-error' : ' text-palia-blue-dark'"
+        class="absolute top-0 right-0 px-[2px] text-xs font-semibold  text-center align-middle rounded-lg text-palia-blue-dark"
+        :class="(count < 0) ? 'italic' : ' '"
       >
         {{ (Math.round(count*100)/100).toLocaleString() }}
       </p>

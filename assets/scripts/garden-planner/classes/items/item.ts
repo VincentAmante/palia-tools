@@ -1,6 +1,7 @@
 import type CropType from '../../enums/crops'
-
-import { ItemType } from '../../utils/garden-helpers'
+import { getCropFromType } from '../../imports'
+import { ItemType, parseCropId } from '../../utils/garden-helpers'
+import type { ICropYield, ICropInfo, ICropName, ICropNameWithGrowthDiff } from '../../utils/garden-helpers'
 
 export interface Item {
   readonly name: string
@@ -79,8 +80,6 @@ export class CropItem implements Item {
 
   // Converts the count of this item into an array of stacks of this item based on the maxStack value.
   get inventoryStacks(): this[] {
-    // throw new Error('Method not implemented.')
-
     const stacks = []
     let count = this.count
     while (count > 0) {
@@ -99,6 +98,26 @@ export class CropItem implements Item {
     }
 
     return stacks as this[]
+  }
+
+  get tooltip(): string {
+    return `${this.count * this.baseGoldValue} Gold`
+  }
+
+  get imgSrc(): string {
+    return this.image
+  }
+
+  get imgAlt(): string {
+    return this.name
+  }
+
+  get star(): boolean {
+    return this.isStar
+  }
+
+  get baseGoldValue(): number {
+    return this.price
   }
 
   // takes any number of identical items and combines them into stacks of this item
@@ -124,5 +143,24 @@ export class CropItem implements Item {
     )
 
     return this
+  }
+
+  static fromCropYieldAndInfo(cropId: ICropNameWithGrowthDiff, cropYieldInfo: ICropYield & ICropInfo): CropItem {
+    const parsedCropId = parseCropId(cropId)
+    const cropName = cropId
+
+    const crop = getCropFromType(parsedCropId.type)
+    if (!crop)
+      throw new Error(`No crop found: ${cropId}`)
+
+    const image = crop.image
+    const isStar = parsedCropId.isStar
+
+    const price = crop.goldValues[isStar ? 'cropStar' : 'crop']
+
+    const maxStack = 30
+    const count = cropYieldInfo.totalWithDeductions
+
+    return new CropItem(cropName, ItemType.Crop, image, price, isStar, maxStack, count, parsedCropId.type)
   }
 }

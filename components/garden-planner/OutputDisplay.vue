@@ -3,11 +3,12 @@ import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import NewSettings from './NewSettings.vue'
 import LazyHCInfo from './HarvestCalculator/HCInfo.vue'
-import useHarvester from '~/stores/useHarvester'
-import useProcessor from '~/stores/useProcessor'
 import CropDetailsDisplay from './OutputDisplay/CropDetailsDisplay.vue'
 import OverallDisplay from './OutputDisplay/OverallDisplay.vue'
+import { usePlannerDisplayConfig } from '~/stores/usePlannerDisplayConfig'
 
+const isTakingScreenshot = useTakingScreenshot()
+const plannerDisplayConfig = usePlannerDisplayConfig()
 const activeTab = ref('display')
 function setTab(tab: string) {
   activeTab.value = tab
@@ -20,17 +21,18 @@ defineProps({
   }
 })
 
-const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
-const emit = defineEmits(['tabChanged'])
-watchEffect(() => {
-  emit('tabChanged', selectedTab.value)
-})
+// const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
+// const emit = defineEmits(['tabChanged'])
+// watchEffect(() => {
+//   emit('tabChanged', selectedTab.value)
+// })
 
 </script>
 
 <template>
   <section class="p-2 ">
-    <section class="flex flex-row-reverse justify-between border-b border-b-misc pb-1 px-1">
+    <section v-if="!isTakingScreenshot.get"
+      class="flex flex-row-reverse justify-between border-b border-b-misc pb-1 px-1">
       <section class="flex justify-end gap-1">
         <button id="approximator-display-tab" aria-label="Display Tab"
           class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip" data-tip="Output Display"
@@ -54,13 +56,13 @@ watchEffect(() => {
         </button>
       </section>
       <section class="join" v-if="isMainOutputDisplay">
-        <button class="btn join-item btn-sm gap-1 tooltip" data-tip="Garden + Display (default)"
-          @click="selectedTab = 'garden+display'">
+        <button class="btn join-item btn-sm gap-1 tooltip" aria-label="Show Garden + Output Display (default)" data-tip="
+          Garden + Display (default)" @click="plannerDisplayConfig.set('garden+display')">
           <FontAwesomeIcon :icon="['fas', 'table-cells']" />
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
         </button>
-        <button class="btn join-item btn-sm gap-1 tooltip" data-tip="Double Displays"
-          @click="selectedTab = 'display+display'">
+        <button class="btn join-item btn-sm gap-1 tooltip" aria-label="Show double Output Displays" data-tip=" Double Displays"
+          @click="plannerDisplayConfig.set('display+display')">
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
         </button>
@@ -77,5 +79,5 @@ watchEffect(() => {
     <section v-show="activeTab === 'info'" id="info-tab" class="pt-2">
       <LazyHCInfo />
     </section>
-  </section>
+  </section> 
 </template>

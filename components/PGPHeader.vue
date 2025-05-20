@@ -1,10 +1,10 @@
 <template>
   <div>
     <header class="z-50 drawer drawer-end">
-      <input id="menu" type="checkbox" class="drawer-toggle">
+      <input id="menu" type="checkbox" class="drawer-toggle" aria-label="toggle menu" />
       <div class="flex flex-col drawer-content">
-        <div class="w-full py-3 navbar sm:px-12 lg:px-22">
-          <div class="flex-1 mx-2">
+        <div class="w-full py-3 navbar sm:px-12">
+          <div class="flex-1">
             <NuxtLink to="/" class="flex items-center gap-2">
               <img format="webp" src="/logo.webp" width="48px" height="48px" alt="Palia Garden Planner Logo"
                 class="max-w-[3rem]">
@@ -23,24 +23,24 @@
             <div class="flex-none hidden lg:block">
               <ul class="items-center gap-1 text-base menu menu-horizontal">
                 <li>
-                  <NuxtLink to="/roadmap">
+                  <NuxtLink to="/roadmap" :prefetch=false>
                     Roadmap
                   </NuxtLink>
                 </li>
                 <li>
-                  <NuxtLink to="/changelogs">
+                  <NuxtLink to="/changelogs" :prefetch=false>
                     Changelogs
                   </NuxtLink>
                 </li>
                 <li>
-                  <NuxtLink to="/credits">
+                  <NuxtLink to="/credits" :prefetch=false>
                     Credits
                   </NuxtLink>
                 </li>
                 <li>
-                  <NuxtLink class="text-harvest-boost" target="_blank" :prefetch="false" rel="noopener"
+                  <NuxtLink class="" target="_blank" :prefetch="false" rel="noopener"
                     to="https://paliapedia.com/tools/garden">
-                    <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="" />
+                    <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost" :aria-hidden="true" />
                     Layout Generator
                   </NuxtLink>
                 </li>
@@ -98,9 +98,9 @@
         <label for="menu" class="drawer-overlay" aria-label="close menu" />
         <ul class="relative h-full gap-2 p-4 menu w-80 bg-base-200">
           <li class="flex items-end w-full lg:hidden">
-            <label for="menu">
+            <label for="menu-side">
               <font-awesome-icon :icon="['fas', 'x']" class="text-xl" />
-              <input id="menu" type="checkbox" class="drawer-toggle">
+              <input id="menu-side" type="checkbox" class="drawer-toggle" aria-label="close menu">
             </label>
           </li>
           <li class="text-lg font-bold normal-case">
@@ -119,9 +119,9 @@
             </NuxtLink>
           </li>
           <li class="text-lg font-bold normal-case">
-            <NuxtLink class="text-harvest-boost" target="_blank" rel="noopener" :prefetch="false"
+            <NuxtLink class="" target="_blank" rel="noopener" :prefetch="false"
               to="https://paliapedia.com/tools/garden">
-              <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="" />
+              <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost" :aria-hidden="true" />
               Layout Generator
             </NuxtLink>
           </li>
@@ -167,6 +167,6 @@
         </ul>
       </div>
     </header>
-    <AppDivider class="mx-2 sm:mx-12 lg:mx-22" />
+    <AppDivider class="mx-2 sm:mx-12" />
   </div>
 </template>

@@ -40,7 +40,7 @@ defineProps({
     >
       {{ amount }}
     </p>
-    <p class="absolute bottom-0 right-1">
+    <p class="absolute bottom-0 right-1" aria-label="">
       <slot name="icon" />
     </p>
     <p class="absolute bottom-0 left-0">

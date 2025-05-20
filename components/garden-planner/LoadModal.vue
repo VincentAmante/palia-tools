@@ -68,10 +68,10 @@ async function paste() {
       Load Layout
     </template>
     <template #body>
-      <div class="tabs tabs-box w-fit">
-        <a class="px-2 tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
+      <div role="tablist" class="tabs tabs-box w-fit">
+        <a role="tab" class="px-2 tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
           @click="activeTab = 'clipboard-tab'">From Clipboard</a>
-        <a class="px-2 tab" :class="{ 'tab-active': activeTab === 'browser-tab' }"
+        <a role="tab" class="px-2 tab" :class="{ 'tab-active': activeTab === 'browser-tab' }"
           @click="activeTab = 'browser-tab'">From Browser</a>
       </div>
       <div v-if="activeTab === 'clipboard-tab'" id="clipboard-tab" class="flex flex-col gap-2">

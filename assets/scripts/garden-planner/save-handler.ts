@@ -85,6 +85,8 @@ const v0_3CropCodes: { [key in CropCode]: string } = {
   [CropCode.SpicyPepper]: 'S',
   [CropCode.NapaCabbage]: 'Cb',
   [CropCode.BokChoy]: 'Bk',
+  [CropCode.RockhopperPumpkin]: 'Pm',
+  [CropCode.BatterflyBean]: 'Bb'
 }
 
 const v0_3FertCodes: { [key in FertiliserCode]: string } = {
@@ -97,6 +99,26 @@ const v0_3FertCodes: { [key in FertiliserCode]: string } = {
   [FertiliserCode.HydratePro]: 'Y',
 }
 
+const v0_4CropCodes: { [key in CropCode]: string } = {
+  ...getCropCodes(),
+  [CropCode.None]: 'N',
+  [CropCode.Tomato]: 'T',
+  [CropCode.Potato]: 'P',
+  [CropCode.Rice]: 'R',
+  [CropCode.Wheat]: 'W',
+  [CropCode.Carrot]: 'C',
+  [CropCode.Onion]: 'O',
+  [CropCode.Cotton]: 'Co',
+  [CropCode.Blueberry]: 'B',
+  [CropCode.Apple]: 'A',
+  [CropCode.Corn]: 'Cr',
+  [CropCode.SpicyPepper]: 'S',
+  [CropCode.NapaCabbage]: 'Cb',
+  [CropCode.BokChoy]: 'Bk',
+  [CropCode.RockhopperPumpkin]: 'Pm',
+  [CropCode.BatterflyBean]: 'Bt'
+}
+
 function getCropCode(codeList: typeof v0_2CropCodes, codeToFind: string) {
   return Object.keys(codeList).find(key => (codeList[key as CropCode] as string) === codeToFind);
 }
@@ -105,15 +127,15 @@ function getFertCode(codeList: typeof v0_2FertCodes, codeToFind: string) {
 }
 
 
-function convertV0_1CodestoV0_2(save: string): string {
-  let newSave = save
+export function convertV0_1CodestoV0_2(save: string): string {
+  let newSave = save.replace("CROPS-", "");
   for (const [key, value] of Object.entries(v0_1CropCodes))
     newSave = newSave.replaceAll(value, v0_2CropCodes[key as CropCode])
 
-  return newSave
+  return `CROPS-${newSave}`
 }
 
-function convertV_02Codesto_V0_3(save: string) {
+export function convertV_0_2Codesto_V_0_3(save: string) {
 
   // Remove the "CROPS-" prefix
   const cropSection = save.replace("CROPS-", "");
@@ -135,7 +157,7 @@ function convertV_02Codesto_V0_3(save: string) {
       const crop = v0_3CropCodes[(getCropCode(v0_2CropCodes, match[1]) ?? CropCode.None) as CropCode];
       const fertiliser = v0_3FertCodes[(getFertCode(v0_2FertCodes, match[2]) ?? FertiliserCode.None) as FertiliserCode];
 
-      newSection += `${crop}${fertiliser ? '.' + fertiliser : ''}`;
+      newSection += `${crop}${(fertiliser && fertiliser !== FertiliserCode.None) ? '.' + fertiliser : ''}`;
     }
 
     if (i < cropSections.length - 1) {
@@ -147,38 +169,158 @@ function convertV_02Codesto_V0_3(save: string) {
   return `CR-${newCode}`
 }
 
+export function convertV_0_3Codesto_V_0_4(save: string) {
+  // console.log("Converting V_0_3 to V_0_4");
+  // console.log(save);
+
+
+  // Remove the "CR-" prefix
+  const cropSection = save.replace("CR-", "");
+  const cropSections = cropSection.split('-')
+
+  // Regex to capture crop and optional fertiliser
+  const regex = /([A-Z][a-z]?)(?:\.([A-Z][a-z]?))?/g;
+
+  let match: RegExpExecArray | null;
+
+  let newCode = ''
+
+
+  for (let i = 0; i < cropSections.length; i++) {
+    let newSection = ''
+
+    while ((match = regex.exec(cropSections[i])) !== null) {
+      const crop = v0_4CropCodes[(getCropCode(v0_3CropCodes, match[1]) ?? CropCode.None) as CropCode];
+      const fertiliser = match[2] as FertiliserCode ?? FertiliserCode.None;
+
+      newSection += `${crop}${(fertiliser && fertiliser !== FertiliserCode.None) ? '.' + fertiliser : ''}`;
+    }
+
+    if (i < cropSections.length - 1) {
+      newSection += '-'
+    }
+    newCode += newSection
+  }
+
+  // console.log(newCode)
+  return `CR-${newCode}`
+}
+
+export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
+  if (!settings)
+    return ''
+
+  const settingsSplit = settings.split('Cr0')
+
+  let convertedCropSettings = ''
+  let convertedSettings = ''
+
+
+  for (let setting of settingsSplit) {
+    if (setting.startsWith('.')) {
+      setting = setting.slice(1)
+
+      const cropSettings = setting.split('-')
+      for (const cropSetting of cropSettings) {
+
+        if (cropSetting.length === 0) continue
+
+        const codeMatch = cropSetting.match(/^([A-Z][a-z]?)(\.?)(~?)([PS]?)(\d*)/);
+
+
+        if (!codeMatch) {
+          throw new Error(`Invalid crop setting format: ${cropSetting}`)
+        }
+
+        const code = codeMatch[1] as CropCode
+        const isStar = codeMatch[2] !== '.'
+        const hasGrowthBoost = codeMatch[3] === '~'
+        const processAs = codeMatch[4] === 'P' ? ItemType.Preserve : codeMatch[4] === 'S' ? ItemType.Seed : ItemType.Crop
+        const crafters = codeMatch[5] ? parseInt(codeMatch[5], 10) : 1
+
+
+        const cropConverted = v0_4CropCodes[(getCropCode(v0_3CropCodes, code) ?? CropCode.None) as CropCode];
+        const newCode = `${cropConverted}${isStar ? '' : '.'}${hasGrowthBoost ? '~' : ''}${processAs === ItemType.Preserve ? 'P' : processAs === ItemType.Seed ? 'S' : ''}${crafters > 1 ? crafters : ''}`
+
+        convertedCropSettings += `${newCode}-`
+      }
+    } else {
+      convertedSettings = setting
+    }
+  }
+
+  if (convertedCropSettings.length > 0){
+    // remove the trailing dash
+
+    convertedCropSettings = `Cr0.${convertedCropSettings.substring(0, convertedCropSettings.length - 1)}`
+    // console.log('convertedCropSettings:', convertedCropSettings)
+    
+  }
+
+  return `${convertedSettings}${convertedCropSettings}`
+}
+
+
 /**
  * Converts a save string to an object containing the save version, dimension info, and crop info of the latest version
   * @param save a save code for the garden planner
  */
-function parseSave(save: string) {
+export function parseSave(save: string) {
+  const LATEST_VERSION = '0.4';
+
+  // console.log('Parsing save code...', save);
+
   // * This format makes it permanent that the first part of the save is the version number
   const [version, ...rest] = save.split('_')
-  let dimensionInfo = ''
-  let cropInfo = ''
-  let settingsInfo = ''
+  let dimensionInfo = rest[0] || ''
+  let cropInfo = rest[1] || ''
+  let settingsInfo = rest[2] || ''
+  let strippedVersion = version.replace('v', '');
 
-  const strippedVersion = version.replace('v', '')
-  switch (strippedVersion) {
-    case '0.1':
-      validatePlotMatrix(rest[0])
-      dimensionInfo = rest[0]
-      cropInfo = convertV0_1CodestoV0_2(rest[1])
-      return { version, dimensionInfo, cropInfo, settingsInfo }
-    case '0.2':
-      validatePlotMatrix(rest[0])
-      dimensionInfo = rest[0]
-      cropInfo = convertV_02Codesto_V0_3(rest[1])
-      return { version, dimensionInfo, cropInfo, settingsInfo }
-    case '0.3':
-      validatePlotMatrix(rest[0])
-      dimensionInfo = rest[0]
-      cropInfo = rest[1]
-      settingsInfo = rest[2]
-      return { version, dimensionInfo, cropInfo, settingsInfo }
-    default:
-      throw new Error('Invalid save version')
-  }
+  // Update the save version iteratively based on the version number
+  do {
+    if (strippedVersion === '') {
+      break
+    }
+
+    switch (strippedVersion) {
+      case '0.1':
+        validatePlotMatrix(dimensionInfo)
+        cropInfo = convertV0_1CodestoV0_2(cropInfo)
+        strippedVersion = '0.2'
+        // console.log('0.1 -> 0.2', cropInfo)
+        break
+      case '0.2':
+        validatePlotMatrix(dimensionInfo)
+        cropInfo = convertV_0_2Codesto_V_0_3(cropInfo)
+        strippedVersion = '0.3'
+        // console.log('0.2 -> 0.3', cropInfo)
+        break
+      case '0.3':
+        validatePlotMatrix(dimensionInfo)
+        cropInfo = convertV_0_3Codesto_V_0_4(cropInfo)
+        settingsInfo = convertV_0_3SettingsToV_0_4Settings(settingsInfo)
+        strippedVersion = '0.4'
+        // console.log('0.3 -> 0.4', cropInfo, settingsInfo)
+        break
+      case '0.4':
+        validatePlotMatrix(dimensionInfo)
+        cropInfo = cropInfo
+        settingsInfo = settingsInfo
+        // console.log('0.4 -> Final')
+        break
+      default:
+        throw new Error('Invalid save version')
+    }
+  } while (strippedVersion !== LATEST_VERSION)
+
+  // console.log('Final stripped version:', strippedVersion)
+  // console.log('Final dimensionInfo:', dimensionInfo)
+  // console.log('Final cropInfo:', cropInfo)
+  // console.log('Final settingsInfo:', settingsInfo)
+
+
+  return { version: strippedVersion, dimensionInfo, cropInfo, settingsInfo }
 }
 
 /**
@@ -364,4 +506,4 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
   return { harvesterOptions, processorSettings }
 }
 
-export { convertV0_1CodestoV0_2 as convertV_0_1_to_V_0_2, parseSave, encodeSettings, decodeSettings }
+export { convertV0_1CodestoV0_2 as convertV_0_1_to_V_0_2, encodeSettings, decodeSettings }
