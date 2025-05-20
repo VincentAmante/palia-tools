@@ -44,6 +44,7 @@
     "@vueuse/core": "^13.1.0",
     "@vueuse/nuxt": "^13.1.0",
     "autoprefixer": "^10.4.15",
+    "canvas": "^3.1.0",
     "daisyui": "^5.0.35",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^10.0.1",
