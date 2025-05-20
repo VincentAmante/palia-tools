@@ -45,6 +45,9 @@ async function saveToImage() {
     },
   ).finally(() => {
     isTakingScreenshot.set(false)
+    modal.value?.hideModal()
+
+
   })
 }
 
