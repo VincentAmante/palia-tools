@@ -10,7 +10,7 @@ import type { ICalculateValueResult, ISimulateYieldResult } from '@/assets/scrip
 import { CropType, Garden, crops } from '@/assets/scripts/garden-planner/imports'
 import type { CalculateValueOptions } from '@/assets/scripts/garden-planner/classes/garden'
 import AppDividerAlt from '@/components/AppDividerAlt.vue'
-import { useTakingScreenshot } from '@/stores/useIsTakingScreenshot'
+import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import useHarvester from '~/stores/useHarvester'
 import { getCropMap } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import type { ICropName, IHarvestInfo } from '~/assets/scripts/garden-planner/utils/garden-helpers'
