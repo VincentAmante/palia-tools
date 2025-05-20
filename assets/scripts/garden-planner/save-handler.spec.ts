@@ -6,13 +6,28 @@ describe('Save Handler', () => {
   // sample 2 : v0.3_D-111-111-111_CR-BbBbBbBbBbBbBbBbBb-BbNBbBbNBbBbBbBb-BbBbBbBbBbBbBbBbN-BbBbBbBbBbBbBbBbBb-BbBbBbBbBbBbBbBbBb-BbBbNBbBbNBbBbN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN_D30NrNssL50Cr0.Bb.S7-BbS6
 
   describe('Full save code conversion', () => {
-    it('should fully convert a 0.3 save to 0.4 save in the expected format', () => {
+    it('should fully convert a 0.3 save to 0.4 save in the expected format (Test 1)', () => {
       const v0_3Save = 'v0.3_D-111-111-111_CR-BbBbBbBbBbBbBbBbBb-BbNBbBbNBbBbBbBb-BbBbBbBbBbBbBbBbN-BbBbBbBbBbBbBbBbBb-BbBbBbBbBbBbBbBbBb-BbBbNBbBbNBbBbN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN_D30NrNssL50Cr0.Bb.S7-BbS6'
       const expectedDimensionInfo = 'D-111-111-111'
       const expectedCropsInfo = 'CR-BtBtBtBtBtBtBtBtBt-BtNBtBtNBtBtBtBt-BtBtBtBtBtBtBtBtN-BtBtBtBtBtBtBtBtBt-BtBtBtBtBtBtBtBtBt-BtBtNBtBtNBtBtN-NNNNNNNNN-NNNNNNNNN-NNNNNNNNN'
       const expectedSettingsInfo = 'D30NrNssL50Cr0.Bt.S7-BtS6'
 
-      const {dimensionInfo, version, cropInfo, settingsInfo} = parseSave(v0_3Save)
+      const { dimensionInfo, version, cropInfo, settingsInfo } = parseSave(v0_3Save)
+
+      expect(version).toBe('0.4')
+      expect(dimensionInfo).toBe(expectedDimensionInfo)
+      expect(cropInfo).toBe(expectedCropsInfo)
+      expect(settingsInfo).toBe(expectedSettingsInfo)
+    })
+
+    it('should fully convert a 0.3 save to 0.4 save in the expected format (Test 2)', () => {
+      const v0_3Save = 'v0.3_D-111-111-111_CR-Cb.HP.HO.HBk.HSSO.HSS-BkCbPAAAAAA-OBkCb.HBBPBBO-PCbBkCrWOBkCbP-AAACrCb.YBkAAA-PCbBkOWCrBkCbP-OBBPBBCb.HBkO-AAAAAAPCbBk-SSO.HSSBk.HO.HP.HCb.H_D30L25Cr0.BkS-OP-WS-PS-CrP-CbP-SP-BP-AP'
+      const expectedDimensionInfo = 'D-111-111-111'
+      const expectedCropsInfo = 'CR-Cb.HP.HO.HBk.HSSO.HSS-BkCbPAAAAAA-OBkCb.HBBPBBO-PCbBkCrWOBkCbP-AAACrCb.YBkAAA-PCbBkOWCrBkCbP-OBBPBBCb.HBkO-AAAAAAPCbBk-SSO.HSSBk.HO.HP.HCb.H'
+      const expectedSettingsInfo = 'D30L25Cr0.BkS-OP-WS-PS-CrP-CbP-SP-BP-AP'
+
+      const { dimensionInfo, version, cropInfo, settingsInfo } = parseSave(v0_3Save)
+
 
       expect(version).toBe('0.4')
       expect(dimensionInfo).toBe(expectedDimensionInfo)
