@@ -216,7 +216,7 @@ const selectedCropAsCrop = computed(() => {
             class="flex flex-col gap-2 p-2 border rounded-sm border-misc-dark bg-accent">
             <div>
 
-                <p v-if="canFinishBeforeNextHarvest" class="text-neutral font-semibold text-xs">
+                <p v-if="!canFinishBeforeNextHarvest" class="text-neutral font-semibold text-xs">
                     <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
                     Harvests can't process before next harvest
                 </p>
