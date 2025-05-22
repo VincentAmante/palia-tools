@@ -32,6 +32,26 @@ useHead({
       </div>
 
       <div class="grid gap-2">
+                <ChangelogItem checked>
+          <template #title>
+            <span class="font-bold">
+              May 20, 2025 — Fixes</span>
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">Processor Fix — </span> Fixed a bug where the processor was internally behaving as if the harvest won't
+              finish processing by next harvest when it was, and vice versa.
+            </li>
+          </template>
+          <template #default>
+            <h4 class="font-bold text-xl">Harvest Fix</h4>
+            <p class="indent-6">
+              Highly embarassing bug.. A '<' to compare the timings of a process time and the process time was reversed. 
+              The UI's check was also inversed, meaning it would correctly display that a harvest won't be processed in time because the warning
+              would be displayed if the processor would process in time. Another thanks to Ren for pointing this out!
+            </p>
+          </template>
+        </ChangelogItem>
         <ChangelogItem checked>
           <template #title>
             <span class="font-bold">

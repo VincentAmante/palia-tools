@@ -278,7 +278,6 @@ export default class Processor {
 
     // Calculate processing data for each crop based on settings and harvest data
     const cropData = this.calculateSettings(harvestData, settings)
-    // console.log('cropData', cropData)
 
     // If no crops need processing, return early
     if (cropData.size === 0) {
@@ -367,22 +366,23 @@ export default class Processor {
         const allCycleData: IProcessCycleData[] = [] // Store data for all cycles
 
         // Process a complete cycle
-        const cycleOutput = processCycle({
+        const cycleOutput = Object.freeze(processCycle({
           cycleData,
           isStar,
           crafterCount: processData.craftersToUse,
           cropConversionInfo: crop.conversionInfo,
           processInto: processData.processType,
           goldValues: crop.goldValues,
-        })
+        }))
 
         // Process all complete cycles
         if (cycles > 0) {
           for (let i = 0; i < cycles; i++) {
             let cycleOutputToUse = cycleOutput
-
             if (i === 0 || (i === cycles - 1 && cyclesRemainder === 0)) {
-              cycleOutputToUse = processCycle({
+
+
+              cycleOutputToUse = Object.freeze(processCycle({
                 cycleData,
                 isStar,
                 crafterCount: processData.craftersToUse,
@@ -391,7 +391,7 @@ export default class Processor {
                 goldValues: crop.goldValues,
                 isFirstCycle: i === 0,
                 isLastCycle: (i === cycles - 1 && cyclesRemainder === 0)
-              })
+              }))
             }
 
             totalProduceCount += cycleOutputToUse.totalProduceCount
@@ -399,8 +399,9 @@ export default class Processor {
             longestProcessMinutes += cycleOutputToUse.longestProcessMinutes
             goldGenerated += cycleOutputToUse.goldGenerated
 
-            if (i === 0)
+            if (i === 0) {
               firstHarvestDelayMinutes += cycleOutputToUse.firstHarvestDelayMinutes
+            }
 
             lastCycleData = cycleOutputToUse
             allCycleData.push(cycleOutputToUse)
@@ -614,7 +615,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
 
     // console.log('processTimeMinutes', processTimeMinutes)
     const processesDone = conversionsDivided
-    const canFinishBeforeNextHarvest = (processTimeMinutes / 60) > hoursToNextPhase
+    const canFinishBeforeNextHarvest = (processTimeMinutes / 60) <= hoursToNextPhase
 
     crafterData.push({
       cropsInsertedCount,
@@ -643,7 +644,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
         crafterData[crafterIndex].processesDone++
       }
 
-      crafterData[crafterIndex].canFinishBeforeNextHarvest = ((crafterData[crafterIndex].processTimeMinutes / 60) > hoursToNextPhase)
+      crafterData[crafterIndex].canFinishBeforeNextHarvest = ((crafterData[crafterIndex].processTimeMinutes / 60) <= hoursToNextPhase)
 
       crafterIndex++
       if (crafterIndex > (crafterData.length - 1))
@@ -660,8 +661,9 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
   let longestProcessMinutesNoIdle = Number.NEGATIVE_INFINITY
 
   for (const crafter of crafterData) {
-    if (!crafter.canFinishBeforeNextHarvest)
+    if (!crafter.canFinishBeforeNextHarvest) {
       canFinishBeforeNextHarvest = false
+    }
 
     // Calculate idle and excess time
     crafter.idleTimeMinutes = Math.max(0, (hoursToNextPhase * 60) - crafter.processTimeMinutes)
@@ -683,6 +685,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
     if (crafter.processTimeMinutes > longestProcessMinutesNoIdle)
       longestProcessMinutesNoIdle = crafter.processTimeMinutes
   }
+
 
   // Return the results of processing this harvest
   return {
@@ -828,10 +831,12 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
     else if (isFirstCycle && i === 0 && !canFinishBeforeNextHarvest) {
       longestProcessMinutes += harvestLongestProcessMinutes
     }
-    else if (!canFinishBeforeNextHarvest)
+    else if (!canFinishBeforeNextHarvest) {
       longestProcessMinutes += (averageExcessTimeMinutes + minutesBeforeNextHarvest)
-    else
+    }
+    else {
       longestProcessMinutes += harvestLongestProcessMinutes
+    }
 
 
     // Store detailed data about this phase
