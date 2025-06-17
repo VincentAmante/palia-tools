@@ -170,13 +170,9 @@ export function convertV_0_2Codesto_V_0_3(save: string) {
 }
 
 export function convertV_0_3Codesto_V_0_4(save: string) {
-  // console.log("Converting V_0_3 to V_0_4");
-  // console.log(save);
-
-
-  // Remove the "CR-" prefix
-  const cropSection = save.replace("CR-", "");
-  const cropSections = cropSection.split('-')
+  // Remove the prefix
+  const cropSections = save.split('-');
+  if (["CR", "CROPS"].includes(cropSections[0])) cropSections.shift();
 
   // Regex to capture crop and optional fertiliser
   const regex = /([A-Z][a-z]?)(?:\.([A-Z][a-z]?))?/g;
@@ -249,12 +245,12 @@ export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
     }
   }
 
-  if (convertedCropSettings.length > 0){
+  if (convertedCropSettings.length > 0) {
     // remove the trailing dash
 
     convertedCropSettings = `Cr0.${convertedCropSettings.substring(0, convertedCropSettings.length - 1)}`
     // console.log('convertedCropSettings:', convertedCropSettings)
-    
+
   }
 
   return `${convertedSettings}${convertedCropSettings}`
