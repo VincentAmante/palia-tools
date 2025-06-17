@@ -312,7 +312,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
           </template>
           <template #labels>
             <p>
-              When process, gold average will be calculated by:
+              When processing crops, the gold average will be calculated by:
             </p>
             <p>
               <span class="font-bold">Crafting Time:</span>  Gold / Overall Process Time

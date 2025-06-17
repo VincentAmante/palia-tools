@@ -50,8 +50,16 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
             </span>
           </p>
           <p class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue">
-            per
-            <span class="font-semibold">{{ (processor.highestCraftingTime > 0 && processor.settings.goldAverageSetting === 'crafterTime') ? 'Hour' : 'Growth Tick' }}</span>
+            <span class="@sm:inline-block"
+              :class="{ 'hidden': processor.settings.goldAverageSetting === 'growthTick' }">per</span>
+            <span v-if="processor.settings.goldAverageSetting === 'growthTick'" class="@sm:hidden inline-block">/</span>
+
+            <span v-if="processor.highestCraftingTime > 0 && processor.settings.goldAverageSetting === 'crafterTime'"
+              class="font-bold text-growth-boost-dark">Hour <FontAwesomeIcon :icon="['fas', 'stopwatch']" /></span>
+            <span v-else class="font-bold flex flex-nowrap whitespace-nowrap gap-1 text-harvest-boost-dark">Growth Tick
+              <FontAwesomeIcon class="" :icon="['fas', 'seedling']" />
+            </span>
+
           </p>
         </div>
         <div class="p-1 border rounded-md bg-accent border-misc-dark">
@@ -125,7 +133,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
           </p>
         </li>
         <li class="text-xs badge badge-sm">
-          <span class="font-black">{{ starBaseChance}}%</span>Star Crop Chance
+          <span class="font-black">{{ starBaseChance }}%</span>Star Crop Chance
         </li>
         <li class="text-xs badge badge-sm ">
           No Fertiliser Cost
