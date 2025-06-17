@@ -95,6 +95,7 @@ body {
 
   /* Growth boost */
   --color-growth-boost: oklch(74.23% 0.130 48.85);    /* #ed915e */
+  --color-growth-boost-dark: oklch(0.6656 0.18 38.34);    /* #EC6335 */
 
   /* Quality colors */
   --color-quality-increase: oklch(77.06% 0.128 79.07); /* #e0aa4a */

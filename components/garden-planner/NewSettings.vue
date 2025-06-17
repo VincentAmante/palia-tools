@@ -18,12 +18,15 @@ const activeProcessorSettings = computed(() => {
   const activeSettings = {
     cropSettings: new Map() as Map<ICropNameWithGrowthDiff, ProcessorSetting>,
     crafterSetting: 0,
+    goldAverageSetting: 'crafterTime' as 'crafterTime' | 'growthTick'
   } satisfies ProcessorSettings
 
   for (const [cropId, setting] of processor.settings.cropSettings) {
     if (setting.isActive && setting.count > 0)
       activeSettings.cropSettings.set(cropId, setting)
   }
+
+  activeSettings.goldAverageSetting = processor.settings.goldAverageSetting
 
   return activeSettings
 })
@@ -72,10 +75,12 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
 <template>
   <section id="planner-settings" class="relative flex flex-col gap-1 py-2 ">
     <nav role="tablist" class="font-semibold tabs tabs-box w-fit join">
-      <button role="tab" class="tab join-item" :class="(activeTab === 'Harvest') ? 'tab-active' : ''" @click="activeTab = 'Harvest'" :aria-selected="activeTab === 'Harvest'">
-        <p>Harvest</p>
+      <button role="tab" class="tab join-item" :class="(activeTab === 'Harvest') ? 'tab-active' : ''"
+        @click="activeTab = 'Harvest'" :aria-selected="activeTab === 'Harvest'">
+        <p>General</p>
       </button>
-      <button role="tab" class="tab join-item" :class="(activeTab === 'Crops') ? 'tab-active' : ''" @click="activeTab = 'Crops'" :aria-selected="activeTab === 'Crops'">
+      <button role="tab" class="tab join-item" :class="(activeTab === 'Crops') ? 'tab-active' : ''"
+        @click="activeTab = 'Crops'" :aria-selected="activeTab === 'Crops'">
         <p>Crops</p>
       </button>
     </nav>
@@ -247,18 +252,23 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
         <OptionCard label="level" name="Gardening Level">
           <template #input>
             <div class="join ">
-              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 0" aria-label="Set Level to 0">
+              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 0"
+                aria-label="Set Level to 0">
                 0
               </button>
-              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 10" aria-label="Set Level to 10">
+              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 10"
+                aria-label="Set Level to 10">
                 10
               </button>
               <input v-model="harvester.settings.level"
-                class="input input-sm text-lg max-w-[5rem] join-item text-accent" type="number" min="0" aria-label="Gardening Level">
-              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 25" aria-label="Set Level to 25">
+                class="input input-sm text-lg max-w-[5rem] join-item text-accent" type="number" min="0"
+                aria-label="Gardening Level">
+              <button class="join-item btn btn-sm text-primary" @click="harvester.settings.level = 25"
+                aria-label="Set Level to 25">
                 25
               </button>
-              <button class="join-item btn btn-sm text-primary " @click="harvester.settings.level = 50" aria-label="Set Level to 50">
+              <button class="join-item btn btn-sm text-primary " @click="harvester.settings.level = 50"
+                aria-label="Set Level to 50">
                 50
               </button>
             </div>
@@ -268,8 +278,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
               Decides base star chance of crops
             </p>
             <p>
-              Base Star Chance: <code
-                class="px-2 rounded-xs bg-misc text-accent">{{ starBaseChance }}%</code>
+              Base Star Chance: <code class="px-2 rounded-xs bg-misc text-accent">{{ starBaseChance }}%</code>
             </p>
             <p>Formula in info</p>
           </template>
@@ -286,9 +295,39 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
           </template>
         </OptionCard>
 
+        <OptionCard label="goldAverageSetting" name="Process Gold Average Method">
+          <template #input>
+            <div class="join">
+              <button class="join-item btn text-accent"
+                :class="{ 'bg-palia-blue': (processor.settings.goldAverageSetting === 'crafterTime') }"
+                @click="processor.settings.goldAverageSetting = 'crafterTime'">
+                Crafter Time
+              </button>
+              <button class="join-item btn text-accent"
+                :class="{ 'bg-palia-blue': (processor.settings.goldAverageSetting === 'growthTick') }"
+                @click="processor.settings.goldAverageSetting = 'growthTick'">
+                Growth Ticks
+              </button>
+            </div>
+          </template>
+          <template #labels>
+            <p>
+              When processing crops, the gold average will be calculated by:
+            </p>
+            <p>
+              <span class="font-bold">Crafting Time:</span>  Gold / Overall Process Time
+            </p>
+            <p>
+              <span class="font-bold">Growth Ticks:</span> Gold / Growth Ticks (Day of Last Harvest)
+            </p>
+          </template>
+        </OptionCard>
+
+
         <OptionCard label="includeReplant" name="Include Replant">
           <template #input>
-            <input v-model="harvester.settings.includeReplant" class="toggle" type="checkbox" aria-label="Include Replant">
+            <input v-model="harvester.settings.includeReplant" class="toggle" type="checkbox"
+              aria-label="Include Replant">
           </template>
           <template #labels>
             <p>
@@ -315,7 +354,8 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
 
         <OptionCard label="useGrowthBoost" name="Use Growth Boost">
           <template #input>
-            <input v-model="harvester.settings.useGrowthBoost" class="toggle" type="checkbox" aria-label="Use Growth Boost">
+            <input v-model="harvester.settings.useGrowthBoost" class="toggle" type="checkbox"
+              aria-label="Use Growth Boost">
           </template>
           <template #labels>
             <p>

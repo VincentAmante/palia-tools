@@ -32,27 +32,60 @@ useHead({
       </div>
 
       <div class="grid gap-2">
-                <ChangelogItem checked>
+        <ChangelogItem checked>
           <template #title>
             <span class="font-bold">
-              May 20, 2025 — Fixes</span>
+              June 17, 2025 — Re-added Growth Tick Average for Processing</span>
           </template>
           <template #summary>
             <li>
-              <span class="italic">Processor Fix — </span> Fixed a bug where the processor was internally behaving as if the harvest won't
+              <span class="italic">New Processor Setting — </span> Planner can once again calculate gold average by
+              total growth ticks even if crops are processed
+            </li>
+            <li>
+              <span class="italic">Setting Tab Rename — </span> 'Harvester' setting tab now called 'General' tab to
+              account for no longer being
+              purely harvester-related options
+            </li>
+            <li>
+              <span class="italic">Paliapedia Bug Fix — </span> Fixed bug where PaliaPedia's garden generator links were not being parsed properly
+            </li>
+          </template>
+          <template #default>
+            <p class="indent-6">
+              Since the Garden Planner still does not factor in player's genuine playtime, calculating gold average via
+              crafter time
+              can sometimes feel like a side-grade or worse than the old method of averaging via gold tick even after
+              processing. Other players may have also preferred this method for their calculations in general.
+            </p>
+            <p class="indent-6">
+              To address this, I added a setting to utilise the old method,
+              with the setting being saveable+shareable and displaying it differently to help discussion.
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
+          <template #title>
+            <span class="font-bold">
+              May 22, 2025 — Fixes</span>
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">Processor Fix — </span> Fixed a bug where the processor was internally behaving as if
+              the harvest won't
               finish processing by next harvest when it was, and vice versa.
             </li>
           </template>
           <template #default>
             <h4 class="font-bold text-xl">Harvest Fix</h4>
             <p class="indent-6">
-              Highly embarassing bug.. A '<' to compare the timings of a process time and the process time was reversed. 
-              The UI's check was also inversed, meaning it would correctly display that a harvest won't be processed in time because the warning
-              would be displayed if the processor would process in time. Another thanks to Ren for pointing this out!
-            </p>
+              Highly embarassing bug.. A '<' to compare the timings of a process time and the process time was reversed.
+                The UI's check was also inversed, meaning it would correctly display that a harvest won't be processed
+                in time because the warning would be displayed if the processor would process in time. Another thanks to
+                Ren for pointing this out! </p>
           </template>
         </ChangelogItem>
-        <ChangelogItem checked>
+        <ChangelogItem>
           <template #title>
             <span class="font-bold">
               May 20, 2025 — Fixes</span>
@@ -118,7 +151,7 @@ useHead({
             </p>
           </template>
         </ChangelogItem>
-        <ChangelogItem checked>
+        <ChangelogItem>
           <template #title>
             <span class="font-bold">
               May 15, 2025 — 0.191 Parity</span>
@@ -156,10 +189,10 @@ useHead({
             </p>
           </template>
         </ChangelogItem>
-        <ChangelogItem checked>
+        <ChangelogItem>
           <template #title>
             <span class="font-bold">
-              May 12, 2025 — Save'n Time Update</span>
+              May 12, 2025 — Save'n Time Update (Major)</span>
           </template>
           <template #summary>
             <li>
