@@ -48,7 +48,7 @@ useHead({
               purely harvester-related options
             </li>
             <li>
-              <span class="italic">Paliapedia Bug Fix — </span> Fixed bug where PaliaPedia's garden generator was not being parsed properly
+              <span class="italic">Paliapedia Bug Fix — </span> Fixed bug where PaliaPedia's garden generator links were not being parsed properly
             </li>
           </template>
           <template #default>
