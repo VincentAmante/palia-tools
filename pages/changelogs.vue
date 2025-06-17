@@ -47,6 +47,9 @@ useHead({
               account for no longer being
               purely harvester-related options
             </li>
+            <li>
+              <span class="italic">Paliapedia Bug Fix — </span> Fixed bug where PaliaPedia's garden generator was not being parsed properly
+            </li>
           </template>
           <template #default>
             <p class="indent-6">
