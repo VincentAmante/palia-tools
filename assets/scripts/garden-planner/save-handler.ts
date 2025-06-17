@@ -366,6 +366,9 @@ function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: 
   if (!harvesterOptions.useStarSeeds)
     settings += 'Nss'
 
+  if (processorSettings.goldAverageSetting === 'growthTick')
+    settings += 'Gt'
+
   if (harvesterOptions.level !== 0)
     settings += `L${harvesterOptions.level}`
 
@@ -424,6 +427,7 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
   const processorSettings: ProcessorSettings = {
     cropSettings: new Map(),
     crafterSetting: 0,
+    goldAverageSetting: 'crafterTime'
   }
 
   const settings = settingsInfo.split('Cr0')
@@ -473,6 +477,7 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
         'Nrc': () => { harvesterOptions.includeReplantCost = false; },
         'Nss': () => { harvesterOptions.useStarSeeds = false; },
         'Gb': () => { harvesterOptions.useGrowthBoost = true; },
+        'Gt': () => { processorSettings.goldAverageSetting = 'growthTick' }
       };
 
       for (const harvesterSetting of harvesterSettings) {

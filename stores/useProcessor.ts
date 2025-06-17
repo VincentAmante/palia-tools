@@ -7,6 +7,7 @@ const useProcessor = defineStore('processor', () => {
   const settingsRef = ref<ProcessorSettings>({
     cropSettings: new Map<ICropName, ProcessorSetting>(),
     crafterSetting: 0,
+    goldAverageSetting: 'crafterTime'
   })
 
   function simulateProcessing(
@@ -18,6 +19,7 @@ const useProcessor = defineStore('processor', () => {
 
   function updateSettings(newSettings: ProcessorSettings) {
     settingsRef.value.cropSettings = newSettings.cropSettings
+    settingsRef.value.goldAverageSetting = newSettings.goldAverageSetting
   }
 
   const processor = computed(() => processorRef.value)

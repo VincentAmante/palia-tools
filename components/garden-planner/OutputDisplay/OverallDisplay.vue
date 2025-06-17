@@ -41,7 +41,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
             class="flex items-center justify-end w-full gap-1 text-lg font-semibold text-right @2xl:text-xl text-palia-blue">
             <img width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
               format="webp">
-            <span v-if="processor.highestCraftingTime > 0">
+            <span v-if="processor.highestCraftingTime > 0 && processor.settings.goldAverageSetting === 'crafterTime'">
               &#8776;{{ (processor.averageGoldValue || 0).toLocaleString() }}
             </span>
             <span v-else>
@@ -51,7 +51,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
           </p>
           <p class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue">
             per
-            <span class="font-semibold">{{ processor.highestCraftingTime > 0 ? 'Hour' : 'Growth Tick' }}</span>
+            <span class="font-semibold">{{ (processor.highestCraftingTime > 0 && processor.settings.goldAverageSetting === 'crafterTime') ? 'Hour' : 'Growth Tick' }}</span>
           </p>
         </div>
         <div class="p-1 border rounded-md bg-accent border-misc-dark">

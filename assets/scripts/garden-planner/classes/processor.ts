@@ -58,6 +58,7 @@ export interface ProcessorSetting {
 // Interface for all processor settings
 export interface ProcessorSettings {
   cropSettings: Map<ICropNameWithGrowthDiff, ProcessorSetting>
+  goldAverageSetting: 'crafterTime' | 'growthTick'
   crafterSetting: number // Currently not used
 }
 
@@ -90,6 +91,7 @@ export default class Processor {
   private _settings: ProcessorSettings = {
     cropSettings: new Map() as Map<ICropNameWithGrowthDiff, ProcessorSetting>,
     crafterSetting: 0,
+    goldAverageSetting: 'crafterTime'
   }
 
   // Equipment counts
@@ -133,6 +135,7 @@ export default class Processor {
     this._settings = {
       cropSettings: new Map() as Map<ICropNameWithGrowthDiff, ProcessorSetting>,
       crafterSetting: 0,
+      goldAverageSetting: 'crafterTime'
     }
     this._seedCollectors = new Map<string, IInventoryItem>()
     this._preserveJars = new Map<string, IInventoryItem>()
