@@ -39,10 +39,21 @@ const toastLocation = computed(() => {
   }
 })
 
+const doesUserPreferDark = usePreferredDark()
+
+const useDarkMode = computed(() => {
+  
+    return (uiSettings.settings.colorScheme === 'dark' || (uiSettings.settings.colorScheme === 'system' && doesUserPreferDark))
+})
+
 </script>
 
 <template>
-  <main class="flex flex-col gap-4 py-2">
+  <main 
+  id="main"
+  class="flex flex-col gap-4 py-2" 
+  :class="{ 'dark': false }"
+  >
     <h1 class="sr-only">
       Garden Planner
     </h1>

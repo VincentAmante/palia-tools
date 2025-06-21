@@ -70,6 +70,10 @@ const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
 
 const isUnderleveledForSeeder = computed(() => harvester.settings.level < 5)
 const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8)
+
+const highestTime = computed(() => {
+  return processor.processor.highestCraftingTime
+})
 </script>
 
 <template>
@@ -84,12 +88,12 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
         <p>Crops</p>
       </button>
     </nav>
-    <section v-if="activeTab === 'Crops'" class="h-full rounded-md isolate bg-accent">
+    <section v-if="activeTab === 'Crops'" class="h-full rounded-md isolate bg-accent dark:bg-palia-blue">
       <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
-        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-70 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary" />
+        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-70 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary dark:to-palia-blue-secondary" />
 
       <div v-if="activeProcessorSettings.cropSettings.size > 0"
-        class="z-10 grid items-center grid-cols-12 gap-2 px-1 py-2 border-b text-misc bg-accent rounded-t-md">
+        class="z-10 grid items-center grid-cols-12 gap-2 px-1 py-2 border-b text-misc dark:text-primary rounded-t-md dark:border-b-water-retain/60">
         <div class="relative flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
           <p class="text-sm font-bold">
             Item
@@ -113,15 +117,15 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
       </div>
       <section class="overflow-y-auto max-h-[456px] rounded-b-md pb-2 scrollbar-primary">
         <div v-if="activeProcessorSettings.cropSettings.size === 0"
-          class="flex items-center justify-center p-2 py-4 font-bold rounded-md text-misc bg-accent">
+          class="flex items-center justify-center p-2 py-4 font-bold rounded-md text-misc bg-accent dark:bg-palia-blue-secondary dark:text-accent">
           <p>
             No crops in garden, add some to begin processing.
           </p>
         </div>
         <ul v-if="activeProcessorSettings.cropSettings.size > 0"
-          class="flex flex-col max-h-full gap-1 pb-8 pl-1 pr-2 rounded-b-md bg-accent">
+          class="flex flex-col max-h-full gap-1 pb-8 pl-1 pr-2 rounded-b-md bg-accent dark:bg-palia-blue">
           <li v-for="[cropId, setting] in activeProcessorSettings.cropSettings" :key="cropId"
-            class="grid items-center grid-cols-12 gap-2 py-1 pb-3  text-misc not-last:border-b ">
+            class="grid items-center grid-cols-12 gap-2 py-1 pb-3  text-misc dark:text-accent not-last:border-b dark:not-last:border-b-water-retain/60">
             <div class="flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
               <ItemDisplayAlt :img-src="getCropImgSrc(setting.cropType).src"
                 :img-alt="getCropImgSrc(setting.cropType).alt" :star="setting.isStar" :count="setting.count" />
@@ -181,8 +185,9 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
             <div v-if="setting.processAs !== ItemType.Crop"
               class="relative flex flex-col items-start justify-start w-full h-full col-span-5 gap-x-2 pl-2">
               <div class="join">
-                <button class="btn btn-sm  join-item disabled:bg-palia-blue-dark!" :disabled="setting.crafters <= 1"
-                  @click="() => {
+                <button
+                  class="btn btn-sm  join-item disabled:bg-palia-blue-dark! dark:bg-primary dark:text-palia-blue dark:disabled:bg-palia-blue-light!"
+                  :disabled="setting.crafters <= 1" @click="() => {
                     if (setting.crafters <= 1)
                       return
 
@@ -199,16 +204,26 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
 
                     onChangeSettings()
                   }">
-                <button class="btn-square btn btn-sm join-item disabled:bg-palia-blue-dark!" @click="() => {
-                  setting.crafters++
+                <button
+                  class="btn-square btn btn-sm join-item disabled:bg-palia-blue-dark! dark:bg-primary dark:text-palia-blue dark:disabled:bg-palia-blue-light!"
+                  @click="() => {
+                    setting.crafters++
 
-                  onChangeSettings()
-                }" aria-label="Add 1 Crafter">
+                    onChangeSettings()
+                  }" aria-label="Add 1 Crafter">
                   <font-awesome-icon :icon="['fas', 'chevron-right']" />
                 </button>
               </div>
-              <SettingsMinutesDisplay class="absolute bottom-0 w-full translate-y-2 whitespace-nowrap"
-                :minutes="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
+              <p class="absolute bottom-0 w-full translate-y-3 pt-1">
+                <SettingsMinutesDisplay class="whitespace-nowrap dark:text-accent"
+                  :minutes="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
+                <span
+                  v-if="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective === highestTime"
+                  class="inline-grid *:[grid-area:1/1] pl-1">
+                  <span class="status status-info animate-ping"></span>
+                  <span class="status status-info"></span>
+                </span>
+              </p>
             </div>
           </li>
         </ul>
@@ -216,7 +231,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
     </section>
     <section v-else-if="activeTab === 'Harvest'" class="relative h-full isolate">
       <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
-        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-90 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary" />
+        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-90 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary dark:to-palia-blue-secondary" />
       <ul class="grid gap-1 max-h-[488px] overflow-y-auto pr-2 rounded-md scrollbar-primary">
         <OptionCard label="days" name="Days">
           <template #input>
@@ -315,7 +330,7 @@ const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8
               When processing crops, the gold average will be calculated by:
             </p>
             <p>
-              <span class="font-bold">Crafting Time:</span>  Gold / Overall Process Time
+              <span class="font-bold">Crafting Time:</span> Gold / Overall Process Time
             </p>
             <p>
               <span class="font-bold">Growth Ticks:</span> Gold / Growth Ticks (Day of Last Harvest)

@@ -30,7 +30,7 @@ useHead({
           Garden Planner Roadmap
         </h1>
         <p class="text-xs md:text-sm">
-          Last Updated: October 14, 2023
+          Last Updated: May 17, 2025
         </p>
       </div>
       <div class="flex flex-col gap-2 text-justify max-w-3xl md:text-base leading-7">
@@ -80,16 +80,11 @@ useHead({
 
           <RoadmapCard>
             <template #title>
-              Crafter Support
+              <span class="line-through opacity-50">Crafter Support (Mostly Here)</span>
             </template>
             <template #description>
               <p>
-                Currently, the garden planner does not take into account the processing time of the Seed Collector and
-                Preserve Jar.
-              </p>
-              <p>
-                Crafters will be implemented, with the ability to configure the amount of each crafter,
-                and then display accurate processing data for each crop.
+                As of May 12, 2025 the Palia Garden Planner finally got crafter timing support
               </p>
             </template>
           </RoadmapCard>

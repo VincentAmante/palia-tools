@@ -67,7 +67,7 @@ const dragHandler = useDragAndDrop()
 
 <template>
   <button v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)" draggable="true"
-    class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc"
+    class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue dark:border-palia-blue-dark"
     :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''" :name="`select ${crop.type}`"
     @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)" @dragend="(e: DragEvent) => dragHandler.stopDrag()"
     :aria-label="`Crop ${crop.type} ${count > 0 ? `, ${count}` : ''}`">
@@ -78,7 +78,7 @@ const dragHandler = useDragAndDrop()
       class="absolute bottom-0 left-0 p-1 text-xs leading-0 stroke-black  text-quality-increase-dark"
       :icon="['fas', 'star']" />
     <p v-if="count > 0"
-      class="absolute top-0 right-0 pt-0.25 pr-0.5 text-xs leading-none font-bold text-palia-blue">
+      class="absolute top-0 right-0 pt-0.25 pr-0.5 text-xs leading-none font-bold text-palia-blue dark:text-accent">
       {{ count }}
     </p>
     <img v-if="(crop && crop.image != null && crop.image !== '')" class="absolute -z-10 max-w-[26px] " draggable="false"

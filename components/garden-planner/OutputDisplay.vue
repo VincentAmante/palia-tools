@@ -32,7 +32,7 @@ defineProps({
 <template>
   <section class="p-2 ">
     <section v-if="!isTakingScreenshot.get"
-      class="flex flex-row-reverse justify-between border-b border-b-misc pb-1 px-1">
+      class="flex flex-row-reverse justify-between border-b border-b-palia-blue-light pb-1 px-1">
       <section class="flex justify-end gap-1">
         <button id="approximator-display-tab" aria-label="Display Tab"
           class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip" data-tip="Output Display"

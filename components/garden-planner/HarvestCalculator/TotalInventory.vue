@@ -7,10 +7,10 @@ const processor = useProcessor()
 
 <template>
   <section class="">
-    <h2 class="text-sm font-semibold capitalize text-palia-blue-dark">
+    <h2 class="text-sm font-semibold capitalize text-palia-blue-dark dark:text-accent">
       Produce
     </h2>
-    <ul class="flex flex-wrap gap-1 p-2 bg-opacity-50 rounded-md bg-accent min-h-16 gap-y-2 border border-misc-dark">
+    <ul class="flex flex-wrap gap-1 p-2 bg-opacity-50 rounded-md bg-accent min-h-16 gap-y-2 border border-misc-dark dark:bg-palia-blue-light dark:border-palia-blue-dark">
       <ItemDisplay
         v-for="[name, item] in processor.inventory"
         :key="name"

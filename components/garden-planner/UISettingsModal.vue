@@ -20,6 +20,7 @@ defineExpose({
   openModal,
 });
 
+
 </script>
 
 <template>
@@ -53,6 +54,15 @@ defineExpose({
           <option value="bottom-right">Bottom Right</option>
         </select>
         <p class="text-xxs label font-light pb-2">Location of Toast alerts</p>
+
+        <label class="label">
+          <span class="label-text">Colour Scheme</span>
+        </label>
+        <select v-model="settings.colorScheme" class="select select-bordered">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="system">System</option>
+        </select>
       </fieldset>
       <fieldset class="fieldset bg-base-200 p-2 rounded-sm gap-4">
         <legend class="fieldset-legend">Crop Tile settings</legend>

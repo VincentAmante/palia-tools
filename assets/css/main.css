@@ -4,6 +4,12 @@ body {
   font-display: swap;
 }
 
+html:not(.no-transition) * {
+  transition: none !important;
+}
+
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @import 'tailwindcss';
 
@@ -84,7 +90,9 @@ body {
   
 
   /* Palia blues */
+  --color-palia-blue-light: oklch(49.00% 0.062 264.72); /* #4F6084 */
   --color-palia-blue: oklch(41.04% 0.059 264.11);   /* #3a4a6b */
+  --color-palia-blue-secondary: oklch(37.77% 0.062 264.40) /* #314163 */;
   --color-palia-blue-dark: oklch(33.78% 0.047 264.32); /* #2b3750 */
 
   /* Misc colors */
@@ -214,7 +222,6 @@ body {
     opacity: 0;
   }
 }
-
 
 html {
   ::-webkit-scrollbar {

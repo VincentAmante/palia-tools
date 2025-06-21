@@ -159,44 +159,44 @@ watchEffect(() => {
       <section v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
         class="flex flex-col order-1 w-full xl:col-span-4" :class="[isTakingScreenshot.get ? 'col-span-4' : '']">
         <div class="flex gap-2">
-          <h3 class="font-semibold text-palia-blue">
+          <h3 class="font-semibold text-palia-blue dark:text-accent">
             Crops
           </h3>
 
 
           <ul class="flex items-center gap-1 text-sm" :class="{ hidden: isTakingScreenshot.get }">
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
-              :class="[bonusToSortBy === null ? 'bg-palia-blue text-accent' : 'hover:bg-opacity-10 text-palia-blue-dark']"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square dark:border-water-retain/60 hover:dark:bg-water-retain/20"
+              :class="[bonusToSortBy === null ? 'bg-palia-blue text-accent' : 'hover:bg-opacity-10 text-palia-blue-dark dark:text-accent']"
               @click="bonusToSortBy = null">
               <font-awesome-icon class="" :icon="['fas', 'asterisk']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square dark:border-water-retain/60 hover:dark:bg-water-retain/20"
               :class="[bonusToSortBy === Bonus.WaterRetain ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.WaterRetain">
               <font-awesome-icon class="text-water-retain" :icon="['fas', 'droplet']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square dark:border-water-retain/60 hover:dark:bg-water-retain/20"
               :class="[bonusToSortBy === Bonus.HarvestIncrease ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.HarvestIncrease">
               <font-awesome-icon class="text-harvest-boost-dark" :icon="['fas', 'wheat-awn']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square dark:border-water-retain/60 hover:dark:bg-water-retain/20"
               :class="[bonusToSortBy === Bonus.QualityIncrease ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.QualityIncrease">
               <font-awesome-icon class="text-quality-increase-dark" :icon="['fas', 'star']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square dark:border-water-retain/60 hover:dark:bg-water-retain/20"
               :class="[bonusToSortBy === Bonus.WeedPrevention ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.WeedPrevention">
               <font-awesome-icon class="text-weed-prevention" :icon="['fas', 'shield']" />
             </li>
             <li
-              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square"
+              class="flex items-center justify-center w-6 p-1 border border-solid rounded-xs cursor-pointer hover:bg-palia-blue border-palia-blue-dark aspect-square dark:border-water-retain/60 hover:dark:bg-water-retain/20"
               :class="[bonusToSortBy === Bonus.SpeedIncrease ? 'bg-palia-blue' : 'hover:bg-opacity-10']"
               @click="bonusToSortBy = Bonus.SpeedIncrease">
               <font-awesome-icon class="text-growth-boost" :icon="['fas', 'forward-fast']" />
@@ -206,8 +206,8 @@ watchEffect(() => {
         <div class="flex gap-1 py-1 rounded-md w-fit items-start">
           <div class="hidden pb-1 sm:flex lg:items-center">
             <button id="crop-eraser" aria-label="Select Crop Eraser"
-              class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc"
-              :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
+              class="relative border rounded-xs btn btn-lg btn-square btn-secondary dark:bg-palia-blue-secondary isolate hover:bg-palia-blue-secondary/20 border-misc dark:border-water-retain/60"
+              :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white dark:bg-water-retain/20' : (isTakingScreenshot.get) ? 'hidden' : ''"
               :in-picture-mode="isTakingScreenshot.get" @click="selectedItem.select('crop-erase')"
               @mouseover="selectedItem.hover('crop-erase')" @mouseleave="selectedItem.hover(null)">
               <font-awesome-icon class="absolute -z-10 max-w-[45px] text-success text-2xl " :icon="['fas', 'eraser']" />
@@ -215,7 +215,7 @@ watchEffect(() => {
           </div>
           <div class="flex">
             <button aria-label="Scroll Items to left"
-              class="hidden px-2 btn-lg rounded-r-none btn btn-primary w-fit sm:block disabled:text-transparent"
+              class="hidden px-2 btn-lg rounded-r-none btn btn-primary w-fit sm:block disabled:text-transparent dark:bg-palia-blue dark:border-palia-blue dark:text-water-retain"
               :class="{ 'hidden!': isTakingScreenshot.get || (reachedLeft && reachedRight) }" @mousedown="resumeLeft"
               @mouseup="pauseLeft" @mouseleave="pauseLeft">
               <font-awesome-icon :icon="['fas', 'chevron-left']" />
@@ -226,9 +226,9 @@ watchEffect(() => {
               <!--
                 :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''" -->
               <button id="crop-eraser" aria-label="Select Crop Eraser"
-                class="relative border rounded-xs btn btn-square btn-lg btn-secondary isolate border-misc sm:hidden"
+                class="relative border rounded-xs btn btn-square btn-lg btn-secondary isolate border-misc sm:hidden dark:border-water-retain/60 dark:bg-palia-blue-secondary"
                 :class="{
-                  'bg-white': selectedItem.val === 'crop-erase' && !isTakingScreenshot.get,
+                  'bg-white dark:bg-water-retain/20': selectedItem.val === 'crop-erase' && !isTakingScreenshot.get,
                   'hidden': isTakingScreenshot.get,
                 }" :in-picture-mode="isTakingScreenshot.get" @click="selectedItem.select('crop-erase')"
                 @mouseover="selectedItem.hover(SelectedItemType.CropErase)" @mouseleave="selectedItem.hover(null)">
@@ -245,7 +245,7 @@ watchEffect(() => {
               </template>
             </div>
             <button aria-label="Scroll Right"
-              class="hidden px-2 rounded-l-none btn btn-primary btn-lg w-fit sm:block z-50"
+              class="hidden px-2 rounded-l-none btn btn-primary btn-lg w-fit sm:block z-50 dark:bg-palia-blue dark:border-palia-blue dark:text-water-retain"
               :class="{ 'hidden!': isTakingScreenshot.get || (reachedLeft && reachedRight) }" @mousedown="resumeRight"
               @mouseup="pauseRight" @mouseleave="pauseRight">
               <font-awesome-icon :icon="['fas', 'chevron-right']" />
@@ -257,7 +257,7 @@ watchEffect(() => {
       <section class="flex flex-wrap order-2 xl:justify-end xl:col-span-3"
         :class="[isTakingScreenshot.get ? 'col-span-3' : '']">
         <div v-if="!(isTakingScreenshot.get && totalFertilisers <= 0)">
-          <h3 class="font-semibold text-palia-blue">
+          <h3 class="font-semibold text-palia-blue dark:text-accent">
             Fertilisers per Day
           </h3>
           <div class="flex flex-wrap gap-1 pt-2 items-start">

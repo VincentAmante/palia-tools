@@ -10,12 +10,12 @@ defineProps({
   <li>
     <label
       :for="label"
-      class="flex flex-col justify-start p-2 px-3 rounded-md bg-accent text-misc"
+      class="flex flex-col justify-start p-2 px-3 rounded-md bg-accent text-misc dark:bg-palia-blue-light dark:text-accent"
       :class="(disabled) ? 'opacity-50' : ''"
     >
       <div class="grid items-center gap-1 md:grid-cols-2">
         <div>
-          <p class="py-1 text-sm font-bold text-palia-blue">
+          <p class="py-1 text-sm font-bold text-palia-blue dark:text-harvest-boost">
             {{ name }}
           </p>
 

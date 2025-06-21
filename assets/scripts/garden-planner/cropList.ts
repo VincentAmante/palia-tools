@@ -4,6 +4,14 @@ import Bonus from './enums/bonus'
 import CropCode from './enums/cropCode'
 import CropSize from './enums/crop-size'
 
+const WATER_RETAIN_BG = 'bg-water-retain/20 dark:bg-water-retain/40';
+const HARVEST_BOOST_BG = 'bg-harvest-boost/20 dark:bg-harvest-boost/30';
+const WEED_PREVENTION_BG = 'bg-weed-prevention/20 dark:bg-weed-prevention/40';
+const QUALITY_INCREASE_BG = 'bg-quality-increase/20 dark:bg-quality-increase/40'
+const GROWTH_BOOST_BG = 'bg-growth-boost/20'; 
+
+
+
 const TOMATO = new Crop(
   CropType.Tomato,
   Bonus.WaterRetain,
@@ -44,7 +52,7 @@ const TOMATO = new Crop(
   {
     cropCode: CropCode.Tomato,
     cropTooltip: 'Tomato: Water Retention',
-    cropBackgroundColor: 'bg-water-retain/20',
+    cropBackgroundColor: WATER_RETAIN_BG,
   },
 )
 
@@ -80,7 +88,7 @@ const POTATO = new Crop(
   {
     cropCode: CropCode.Potato,
     cropTooltip: 'Potato: Water Retention',
-    cropBackgroundColor: 'bg-water-retain/20',
+    cropBackgroundColor: WATER_RETAIN_BG,
   },
 )
 
@@ -117,7 +125,7 @@ const RICE = new Crop(
   {
     cropCode: CropCode.Rice,
     cropTooltip: 'Rice: Harvest Increase',
-    cropBackgroundColor: 'bg-harvest-boost/20',
+    cropBackgroundColor: HARVEST_BOOST_BG,
   },
 )
 
@@ -153,7 +161,7 @@ const WHEAT = new Crop(
   {
     cropCode: CropCode.Wheat,
     cropTooltip: 'Wheat: Harvest Increase',
-    cropBackgroundColor: 'bg-harvest-boost/20',
+    cropBackgroundColor: HARVEST_BOOST_BG,
   },
 )
 
@@ -189,7 +197,7 @@ const CARROT = new Crop(
   {
     cropCode: CropCode.Carrot,
     cropTooltip: 'Carrot: Weed Prevention',
-    cropBackgroundColor: 'bg-weed-prevention/20',
+    cropBackgroundColor: WEED_PREVENTION_BG,
   },
 )
 
@@ -225,7 +233,7 @@ const ONION = new Crop(
   {
     cropCode: CropCode.Onion,
     cropTooltip: 'Onion: Weed Prevention',
-    cropBackgroundColor: 'bg-weed-prevention/20',
+    cropBackgroundColor: WEED_PREVENTION_BG,
   },
 )
 
@@ -261,7 +269,7 @@ const COTTON = new Crop(
   {
     cropCode: CropCode.Cotton,
     cropTooltip: 'Cotton: Quality Increase',
-    cropBackgroundColor: 'bg-quality-increase/20',
+    cropBackgroundColor: QUALITY_INCREASE_BG,
   },
 )
 
@@ -300,7 +308,7 @@ const BLUEBERRY = new Crop(
   {
     cropCode: CropCode.Blueberry,
     cropTooltip: 'Berry Bush: Harvest Increase. 2x2, needs 2 of a bonus for the buff to activate',
-    cropBackgroundColor: 'bg-harvest-boost/20',
+    cropBackgroundColor: HARVEST_BOOST_BG,
   },
 )
 
@@ -339,7 +347,7 @@ const APPLE = new Crop(
   {
     cropCode: CropCode.Apple,
     cropTooltip: 'Apple Tree: Harvest Increase. 3x3, needs 3 of a bonus for the buff to activate',
-    cropBackgroundColor: 'bg-harvest-boost/20',
+    cropBackgroundColor: HARVEST_BOOST_BG,
   },
 )
 
@@ -375,7 +383,7 @@ const CORN = new Crop(
   {
     cropCode: CropCode.Corn,
     cropTooltip: 'Corn: Harvest Increase',
-    cropBackgroundColor: 'bg-harvest-boost/20',
+    cropBackgroundColor: HARVEST_BOOST_BG,
   },
 )
 
@@ -414,7 +422,7 @@ const SPICY_PEPPER = new Crop(
   {
     cropCode: CropCode.SpicyPepper,
     cropTooltip: 'Spicy Pepper: Quality Increase. 2x2, needs 2 of a bonus for the buff to activate',
-    cropBackgroundColor: 'bg-quality-increase/20',
+    cropBackgroundColor: QUALITY_INCREASE_BG,
   },
 )
 
@@ -450,7 +458,7 @@ const NAPA_CABBAGE = new Crop(
   {
     cropCode: CropCode.NapaCabbage,
     cropTooltip: 'Napa Cabbage: Water Retention',
-    cropBackgroundColor: 'bg-water-retain/20',
+    cropBackgroundColor: WATER_RETAIN_BG,
   },
 )
 
@@ -486,7 +494,7 @@ const BOK_CHOY = new Crop(
   {
     cropCode: CropCode.BokChoy,
     cropTooltip: 'Bok Choy: Weed Prevention',
-    cropBackgroundColor: 'bg-weed-prevention/20',
+    cropBackgroundColor: WEED_PREVENTION_BG,
   },
 )
 
@@ -525,7 +533,7 @@ const BATTERFLY_BEAN = new Crop(
   {
     cropCode: CropCode.BatterflyBean,
     cropTooltip: 'Batterfly Bean',
-    cropBackgroundColor: 'bg-harvest-boost/20',
+    cropBackgroundColor: HARVEST_BOOST_BG,
   },
 )
 
@@ -564,7 +572,7 @@ const ROCKHOPPER_PUMPKIN = new Crop(
   {
     cropCode: CropCode.RockhopperPumpkin,
     cropTooltip: 'Rockhopper Pumpkin',
-    cropBackgroundColor: 'bg-quality-increase/20',
+    cropBackgroundColor: QUALITY_INCREASE_BG,
   },
 )
 

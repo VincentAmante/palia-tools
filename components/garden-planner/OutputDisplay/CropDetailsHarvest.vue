@@ -55,8 +55,8 @@ const size = computed(() => {
 
 <template>
     <section class="h-full">
-        <h3 class="text-sm font-semibold">Harvests</h3>
-        <div class="bg-secondary p-2 rounded-sm border border-misc" v-bind="containerProps" :style="{height: `${size}px`}">
+        <h3 class="text-sm font-semibold dark:text-accent">Harvests</h3>
+        <div class="bg-secondary p-2 rounded-sm border border-misc dark:bg-palia-blue dark:border-palia-blue-light" v-bind="containerProps" :style="{height: `${size}px`}">
             <div v-bind="wrapperProps" class="">
                 <InventoryRow v-for="item in list" :key="item.data.day" :day-harvest="item.data" :crop-to-filter-for="cropToFilter" />
             </div>
