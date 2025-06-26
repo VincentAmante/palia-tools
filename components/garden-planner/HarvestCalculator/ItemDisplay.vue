@@ -39,7 +39,7 @@ defineProps({
       :class="{'sm:tooltip': tooltip || (baseGoldValue !== 0)}"
     />
     <div class="relative w-full h-full p-2 pt-[10px] rounded-md isolate overflow-clip">
-      <div class="absolute top-0 left-0 w-full h-full -translate-y-1 rounded-md select-none opacity-40 -z-10 bg-linear-to-b from-misc to-primary dark:from-palia-blue dark:to-palia-blue-dark" />
+      <div class="absolute top-0 left-0 w-full h-full -translate-y-1 rounded-md select-none opacity-40 -z-10 bg-linear-to-b from-misc to-primary dark:from-palia-blue dark:to-water-retain/80" />
       <img
         v-if="imgSrc"
         :src="imgSrc"
