@@ -8,10 +8,13 @@ html:not(.no-transition) * {
   transition: none !important;
 }
 
+@import 'tailwindcss';
+@plugin 'tailwind-scrollbar' {
+  nocompatible: true;
+}
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@import 'tailwindcss';
 
 @source inline("{xs:,sm:,lg:,}grid");
 @plugin 'daisyui';
@@ -170,48 +173,6 @@ html:not(.no-transition) * {
   background: linear-gradient(180deg, #3a4a6b 43.75%, #467386 100%);
 }
 
-@utility scrollbar-primary {
-  &::-webkit-scrollbar {
-    @apply h-1 lg:h-0 lg:w-1 rounded-md;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-palia-blue rounded-md;
-  }
-
-  &::-webkit-scrollbar-track {
-    @apply bg-accent rounded-md;
-  }
-}
-
-@utility scrollbar-primary-horizontal {
-  &::-webkit-scrollbar {
-    @apply w-1 lg:w-0 h-1 lg:h-[2px] rounded-md;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-palia-blue rounded-md;
-  }
-
-  &::-webkit-scrollbar-track {
-    @apply bg-accent rounded-md h-1;
-  }
-}
-
-@utility scrollbar-invisible-horizontal {
-  &::-webkit-scrollbar {
-    @apply w-0 h-1 lg:h-[2px] rounded-md;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-transparent rounded-md;
-  }
-
-  &::-webkit-scrollbar-track {
-    @apply bg-transparent rounded-md h-1;
-  }
-}
-
 @layer utilities {
   .page-enter-active,
   .page-leave-active {
@@ -223,7 +184,7 @@ html:not(.no-transition) * {
   }
 }
 
-html {
+/* html {
   ::-webkit-scrollbar {
     @apply h-1 lg:h-0 lg:w-1 rounded-md;
   }
@@ -235,21 +196,7 @@ html {
   ::-webkit-scrollbar-track {
     @apply bg-palia-blue rounded-md;
   }
-}
-
-body {
-  ::-webkit-scrollbar {
-    @apply h-1 lg:h-0 lg:w-1 rounded-md;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    @apply bg-misc rounded-md;
-  }
-  
-  ::-webkit-scrollbar-track {
-    @apply bg-accent rounded-md;
-  }
-}
+} */
 
   
 * {

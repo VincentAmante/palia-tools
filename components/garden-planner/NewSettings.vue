@@ -111,11 +111,11 @@ const highestTime = computed(() => {
             <span v-if="isOverCrafterLimit">
               <FontAwesomeIcon :icon="['fas', 'triangle-exclamation']" />
             </span>
-            Crafters {{ (activeCrafterCount > 0) ? `- ${activeCrafterCount}` : '' }}
+            Crafters{{ (activeCrafterCount > 0) ? `: ${activeCrafterCount}` : '' }}
           </p>
         </div>
       </div>
-      <section class="overflow-y-auto max-h-[456px] rounded-b-md pb-2 scrollbar-primary">
+      <section class="overflow-y-auto max-h-[456px] rounded-b-md pb-2 scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
         <div v-if="activeProcessorSettings.cropSettings.size === 0"
           class="flex items-center justify-center p-2 py-4 font-bold rounded-md text-misc bg-accent dark:bg-palia-blue-secondary dark:text-accent">
           <p>
@@ -135,8 +135,8 @@ const highestTime = computed(() => {
             </div>
             <div class="flex flex-col items-start justify-start w-full h-full col-span-5 md:col-span-6 xl:col-span-5">
               <div class="join">
-                <button class="p-2 btn join-item btn-primary btn-square"
-                  :class="(setting.processAs === ItemType.Crop) ? 'btn-active' : ''" @click="async () => {
+                <button class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-water-retain/60"
+                  :class="(setting.processAs === ItemType.Crop) ? 'btn-active dark:bg-palia-blue-dark/40' : ''" @click="async () => {
                     if (setting.processAs === ItemType.Crop)
                       return
 
@@ -148,8 +148,8 @@ const highestTime = computed(() => {
                   <img class="w-full h-full" :src="getCropFromType(setting.cropType)?.cropImage"
                     :alt="`${setting.cropType} Crop`">
                 </button>
-                <button class="p-2 btn join-item btn-primary btn-square"
-                  :class="(setting.processAs === ItemType.Seed) ? 'btn-active' : ''" @click="() => {
+                <button class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-water-retain/60"
+                  :class="(setting.processAs === ItemType.Seed) ? 'btn-active dark:bg-palia-blue-dark/40' : ''" @click="() => {
                     if (setting.processAs === ItemType.Seed)
                       return
 
@@ -161,8 +161,8 @@ const highestTime = computed(() => {
                     :alt="`${setting.cropType} Seed`">
                 </button>
                 <button v-if="getCropFromType(setting.cropType)?.goldValues.hasPreserve"
-                  class="p-2 btn join-item btn-primary btn-square "
-                  :class="(setting.processAs === ItemType.Preserve) ? 'btn-active' : ''" @click="() => {
+                  class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-water-retain/60"
+                  :class="(setting.processAs === ItemType.Preserve) ? 'btn-active dark:bg-palia-blue-dark/40' : ''" @click="() => {
                     if (setting.processAs === ItemType.Preserve)
                       return
                     setting.processAs = ItemType.Preserve
@@ -186,7 +186,7 @@ const highestTime = computed(() => {
               class="relative flex flex-col items-start justify-start w-full h-full col-span-5 gap-x-2 pl-2">
               <div class="join">
                 <button
-                  class="btn btn-sm  join-item disabled:bg-palia-blue-dark! dark:bg-primary dark:text-palia-blue dark:disabled:bg-palia-blue-light!"
+                  class="btn btn-sm  join-item disabled:bg-palia-blue-dark! dark:bg-water-retain dark:text-palia-blue dark:disabled:bg-palia-blue-light!"
                   :disabled="setting.crafters <= 1" @click="() => {
                     if (setting.crafters <= 1)
                       return
@@ -205,7 +205,7 @@ const highestTime = computed(() => {
                     onChangeSettings()
                   }">
                 <button
-                  class="btn-square btn btn-sm join-item disabled:bg-palia-blue-dark! dark:bg-primary dark:text-palia-blue dark:disabled:bg-palia-blue-light!"
+                  class="btn-square btn btn-sm join-item disabled:bg-palia-blue-dark! dark:bg-water-retain dark:text-palia-blue dark:disabled:bg-palia-blue-light!"
                   @click="() => {
                     setting.crafters++
 
@@ -232,7 +232,7 @@ const highestTime = computed(() => {
     <section v-else-if="activeTab === 'Harvest'" class="relative h-full isolate">
       <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
         class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-90 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary dark:to-palia-blue-secondary" />
-      <ul class="grid gap-1 max-h-[488px] overflow-y-auto pr-2 rounded-md scrollbar-primary">
+      <ul class="grid gap-1 max-h-[488px] overflow-y-auto pr-2 rounded-md max-w-full scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
         <OptionCard label="days" name="Days">
           <template #input>
             <div class="join">

@@ -222,7 +222,7 @@ watchEffect(() => {
             </button>
             <div ref="cropsListRef"
               class="flex flex-wrap items-center justify-start w-full gap-1 pb-1 transition-all sm:max-w-lg md:max-w-xl lg:max-w-2xl sm:flex-nowrap sm:overflow-x-auto"
-              :class="[(reachedLeft && reachedLeft) ? 'sm:scrollbar-invisible-horizontal' : 'sm:scrollbar-primary-horizontal']">
+              :class="[(reachedLeft && reachedRight) ? 'sm:scrollbar-none' : 'overflow-x-scroll max-w-full scrollbar scrollbar-h-1 pb-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent']">
               <!--
                 :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''" -->
               <button id="crop-eraser" aria-label="Select Crop Eraser"
