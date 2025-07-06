@@ -35,6 +35,73 @@ useHead({
         <ChangelogItem checked>
           <template #title>
             <span class="font-bold">
+              July 6, 2025 — Dark Mode, Setting Presets</span>
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">Dark Mode UI — </span> Dark mode now enabled and configurable in UI Settings
+            </li>
+            <li>
+              <span class="italic">Setting Presets — </span> You can now save and load settings in the settings' presets
+              tab
+            </li>
+            <li>
+              <span class="italic">Fix: Negative Displays — </span> Crop deficit now visible in the output display
+            </li>
+            
+            <li>
+              <span class="italic">Fix: Scrollbars — </span> Fixed issue with horizontal scrollbars not appearing
+            </li>
+            <li>
+              <span class="italic">QoL Changes</span>
+              <ul class="pl-3 list-disc list-inside text-sm">
+                <li>Can now open up a new layout in a new tab</li>
+                <li>New indicator for which crop takes the longest to process</li>
+              </ul>
+            </li>
+          </template>
+          <template #default>
+            <p class="indent-6">
+              Hello! I didn't like how the website look when browsers gave it its own dark mode,
+              so I decided to implement my own take on it. It definitely matches the non-planner areas of the website,
+              which feels more in-line with how I would've liked it.
+              Regardless, feel free to revert to light mode in the UI settings. It should default to your system
+              preferences so you can hard set it there instead.
+            </p>
+
+            <p class="indent-6">
+              Setting presets are now a thing! The pre-crafter update planner had support for settings being auto-saved.
+              With crafters in the mix, that system might've been inconvenient to re-implement 1 for 1. So, with
+              settings now saveable, I've decided
+              to make it so you can instead manually set a default settings. In addition, I've allowed the ability for
+              you to have different setting configurations that you
+              can manage in the new Settings Modal.
+            </p>
+
+            <p class="indent-6">
+              Finally, some minor changes. Negative values will now show in the output tab. This was hidden by default,
+              but it does lead to some layouts looking better than others.
+              For transparency, it should now display crop deficits for when your layout can't support the replant
+              costs. Also, you can now create a new layout in a new tab for convenience.
+            </p>
+
+            <div class="divider"></div>
+            <p class="indent-6">
+              As per usual, I may have missed some things with these changes and bugs could appear. Please
+              report them or any other feedback on the Github or on my Discord.
+              Both are available on the Footer area below.
+            </p>
+            <p class="indent-6">
+              I'll next be looking at improving the garden displays next round,
+              and then looking into ways to expand crafters or whether I'd go straight to the plot system re-write. See
+              you till then!
+              Happy Gardening!
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
+          <template #title>
+            <span class="font-bold">
               June 17, 2025 — Re-added Growth Tick Average for Processing</span>
           </template>
           <template #summary>
@@ -48,7 +115,8 @@ useHead({
               purely harvester-related options
             </li>
             <li>
-              <span class="italic">Paliapedia Bug Fix — </span> Fixed bug where PaliaPedia's garden generator links were not being parsed properly
+              <span class="italic">Paliapedia Bug Fix — </span> Fixed bug where PaliaPedia's garden generator links were
+              not being parsed properly
             </li>
           </template>
           <template #default>

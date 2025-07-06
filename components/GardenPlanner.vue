@@ -108,7 +108,7 @@ watch(updateIsRequested, () => {
 
 <template>
   <section ref="display" id="garden-planner" class="@container">
-    <div class="sm:py-1 rounded-t-md sm:px-2 bg-accent">
+    <div class="sm:py-1 rounded-t-md sm:px-2 bg-accent dark:bg-palia-blue-dark">
       <ItemSelector />
       <AppDivider class="order-3 mx-4 my-1 @:col-span-7 " :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
       <section class="flex @sm:py-2 gap-y-2 justify-between"
@@ -123,14 +123,14 @@ watch(updateIsRequested, () => {
           </template>
           <template v-if="(plannerDisplayConfig.get === 'display+display')">
             <section class="w-full">
-              <div class="h-full @sm:rounded-lg bg-primary">
+              <div class="h-full @sm:rounded-lg bg-primary dark:bg-palia-blue-secondary">
                 <OutputDisplay />
               </div>
             </section>
           </template>
         </section>
         <section class="w-full sm:px-2">
-          <div class="h-full sm:rounded-lg bg-primary">
+          <div class="h-full sm:rounded-lg bg-primary dark:bg-palia-blue-secondary">
             <OutputDisplay is-main-output-display />
           </div>
         </section>

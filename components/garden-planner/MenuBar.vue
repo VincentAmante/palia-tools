@@ -7,6 +7,7 @@
 import useGarden from '~/stores/useGarden'
 import { useSaveCode } from '~/stores/useSaveCode'
 import { useSettingsCode } from '~/stores/useSettingsCode'
+import { loadDefaultSettingsCode } from '~/components/garden-planner/SaveLoadUtils'
 import SaveModal from '~/components/garden-planner/SaveModal.vue'
 import LoadModal from '~/components/garden-planner/LoadModal.vue'
 import LayoutCreator from '@/components/LayoutCreator.vue'
@@ -16,7 +17,8 @@ import UISettingsModal from './UISettingsModal.vue'
 
 const toasts = useToasts()
 const gardenHandler = useGarden()
-
+const harvester = useHarvester()
+const processor = useProcessor()
 const { garden } = gardenHandler
 
 function clearGarden() {
@@ -28,7 +30,8 @@ function clearGarden() {
 const saveCode = useSaveCode()
 const settingsCode = useSettingsCode()
 
-function loadLayoutFromCode(code: string) {
+function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
+
   const hasLoadedSuccessfully = garden.loadLayout(code)
   settingsCode.set(garden.loadSettingsCode)
   settingsCode.requestUpdate()
@@ -41,6 +44,19 @@ function loadLayoutFromCode(code: string) {
       type: 'alert-success',
       duration: 2000,
     })
+  }
+
+  if (useDefaultSettings) {
+
+    const defaultCode = loadDefaultSettingsCode()?.code
+
+    if (defaultCode) {
+
+      settingsCode.set(defaultCode)
+      const { harvesterOptions, processorSettings } = gardenHandler.garden.loadSettings(defaultCode)
+      processor.updateSettings(processorSettings)
+      harvester.updateSettings(harvesterOptions)
+    }
   }
 }
 
@@ -77,9 +93,19 @@ function openNewLayoutModal() {
 
 const urlParams = useUrlSearchParams('history')
 onMounted(() => {
+
   // Load layout from URL parameter if available
   if (urlParams.layout) {
     loadLayoutFromCode(urlParams.layout as string)
+  } else {
+    const defaultSettings = loadDefaultSettingsCode()
+
+    if (defaultSettings) {
+      const { harvesterOptions, processorSettings: loadedProcessorSettings } = gardenHandler.garden.loadSettings(defaultSettings.code)
+      harvester.updateSettings(Object.assign({}, harvesterOptions))
+      processor.updateSettings(Object.assign({}, loadedProcessorSettings))
+      settingsCode.set(defaultSettings.code)
+    }
   }
 })
 
@@ -127,7 +153,7 @@ onMounted(() => {
       <SaveModal ref="saveModal" @save-layout="saveLayout()" />
       <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
       <UISettingsModal ref="uiSettingsModal" />
-      <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
+      <LayoutCreator ref="createLayoutDialog" @create-new-layout="(code: string) => loadLayoutFromCode(code, true)" />
       <ExportModal ref="exportModal" />
     </Teleport>
   </section>

@@ -303,7 +303,7 @@ export default class Processor {
       if (processData.processType === ItemType.Crop) {
         const count = cropHarvestData?.totalWithDeductions || 0
 
-        if (count > 0) {
+        if (count !== 0) {
           output.crops.set(cropName, {
             count,
             itemType: ItemType.Crop,
@@ -735,6 +735,7 @@ interface IProcessCycleData {
     crafterData: IProcessHarvestData['crafterData']
     longestProcessMinutesNoIdle: number
     produceCount: number
+    minutesBeforeNextHarvest: number
   }[]
   totalProcessMinutes: number
   longestProcessMinutes: number
@@ -786,13 +787,7 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
   let canFinishBeforeNextHarvest = true
   let totalProcessMinutes = 0
   let longestProcessMinutes = 0
-  const cycleCrafterData = [] as {
-    canFinishBeforeNextHarvest: boolean
-    longestProcessMinutes: number
-    crafterData: IProcessHarvestData['crafterData']
-    longestProcessMinutesNoIdle: number
-    produceCount: number
-  }[]
+  const cycleCrafterData = [] as IProcessCycleData['cycleCrafterData']
   let goldGenerated = 0
 
   // Process each phase in the cycle
@@ -848,7 +843,8 @@ function processCycle(processCycleArgs: IProcessCycleArgs, phasesOverride = 0): 
       longestProcessMinutes: harvestLongestProcessMinutes,
       crafterData,
       longestProcessMinutesNoIdle,
-      produceCount: harvestProduceCount
+      produceCount: harvestProduceCount,
+      minutesBeforeNextHarvest
     })
 
     goldGenerated += harvestGoldGenerated

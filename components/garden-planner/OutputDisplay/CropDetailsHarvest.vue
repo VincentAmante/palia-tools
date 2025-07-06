@@ -23,9 +23,6 @@ const props = defineProps({
 })
 
 const listArr = computed(() => {
-    console.log(props.dayHarvests)
-    console.log(Object.values(props.dayHarvests))
-
     return Array.from(props.dayHarvests.values())
 })
 
@@ -33,9 +30,7 @@ const listFiltered = computed(() => {
     const cropToFilter = props.cropToFilter
     let filteredList = listArr.value
 
-    console.log(listArr.value)
     if (cropToFilter) {
-        console.log('toFilter', cropToFilter)
         filteredList = listArr.value.filter((dayHarvest) => {
             return dayHarvest.crops.has(cropToFilter)
         })
@@ -55,8 +50,8 @@ const size = computed(() => {
 
 <template>
     <section class="h-full">
-        <h3 class="text-sm font-semibold">Harvests</h3>
-        <div class="bg-secondary p-2 rounded-sm border border-misc" v-bind="containerProps" :style="{height: `${size}px`}">
+        <h3 class="text-sm font-semibold dark:text-accent">Harvests</h3>
+        <div class="bg-secondary p-2 rounded-sm border border-misc dark:bg-palia-blue dark:border-palia-blue-light" v-bind="containerProps" :style="{height: `${size}px`}">
             <div v-bind="wrapperProps" class="">
                 <InventoryRow v-for="item in list" :key="item.data.day" :day-harvest="item.data" :crop-to-filter-for="cropToFilter" />
             </div>

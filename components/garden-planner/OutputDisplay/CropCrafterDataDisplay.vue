@@ -18,7 +18,7 @@ const cropDetailCyclePhaseIndex = ref(0);
 </script>
 
 <template>
-    <div v-if="selectedCropProcessingData && selectedCropDetail" class="grid gap-1">
+    <div v-if="selectedCropProcessingData && selectedCropDetail" class="grid gap-1  dark:text-accent">
         <div class="flex justify-between">
             <!-- <div class="flex flex-col">
                 <p class="text-sm">Cycle</p>
@@ -50,10 +50,10 @@ const cropDetailCyclePhaseIndex = ref(0);
                 </div>
             </div>
         </div>
-        <div class="max-h-48 overflow-y-scroll overflow-x-auto ">
+        <div class="max-h-72 overflow-y-scroll overflow-x-auto rounded-md">
             <table class="table bg-primary table-sm table-pin-rows">
                 <thead>
-                    <tr class="font-light text-accent">
+                    <tr class="font-light text-accent ">
                         <th class="">
                             Crafter #
                         </th>
@@ -73,6 +73,7 @@ const cropDetailCyclePhaseIndex = ref(0);
                 </thead>
                 <tbody>
                     <tr v-for="(crafter, crafterIndex) in selectedCropProcessingData.cycleData[cropDetailCycleIndex].cycleCrafterData[cropDetailCyclePhaseIndex].crafterData"
+                        class="bg-accent dark:bg-palia-blue not-last:border-b  not-last:border-b-primary"
                         :key="`${cropDetailCycleIndex}-${selectedCropDetail}-${crafterIndex}`">
                         <td class="">
                             {{ crafterIndex + 1 }}

@@ -8,6 +8,7 @@ interface UISettings {
     showBonusIcons: boolean;
     showBonusBackground: boolean;
   };
+  colorScheme: 'light' | 'dark' | 'system'
 }
 
 export const useUiSettings = defineStore('uiSettings', () => {
@@ -18,6 +19,7 @@ export const useUiSettings = defineStore('uiSettings', () => {
       showBonusIcons: true,
       showBonusBackground: true,
     },
+    colorScheme: 'system'
   });
 
   const loadInitialised = ref(false);
@@ -29,10 +31,6 @@ export const useUiSettings = defineStore('uiSettings', () => {
 
   function loadSettings() {
     const savedSettings = localStorage.getItem('ui-settings');
-
-
-
-
     if (savedSettings) {
       // Ensure the settings have all the properties of UISettings
       let newSettings = JSON.parse(savedSettings) as UISettings;
@@ -43,6 +41,7 @@ export const useUiSettings = defineStore('uiSettings', () => {
         showBonusIcons: true,
         showBonusBackground: true,
       };
+      if (!newSettings.colorScheme) newSettings.colorScheme = 'system'
 
       saveSettings(JSON.parse(savedSettings));
     }
@@ -52,6 +51,14 @@ export const useUiSettings = defineStore('uiSettings', () => {
     // Prevents the initial settings from being saved to local storage before they are even loaded.
     if (loadInitialised.value) {
       saveSettings(newSettings);
+
+      if (settings.value.colorScheme === 'dark') {
+        document.documentElement.classList.add('dark')
+      } else if (settings.value.colorScheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
     }
   }, { deep: true })
 

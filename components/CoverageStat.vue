@@ -31,7 +31,7 @@ const percentString = computed(() => {
 <template>
   <div class="coverage-stat flex flex-col items-center  gap-[1px] group relative">
     <div
-      class="radial-progress bg-secondary hover:bg-accent"
+      class="radial-progress bg-secondary hover:bg-accent dark:bg-palia-blue dark:hover:bg-palia-blue-light"
       :style="[percent, '--size: clamp(8px, 3.7rem, 17vw)']"
     >
       <div class="relative flex flex-col gap-[0px] pt-1">
@@ -45,7 +45,7 @@ const percentString = computed(() => {
         </div>
       </div>
     </div>
-    <div class="capitalise font-semibold max-w-[8ch] text-palia-blue text-xs h-fit text-center break-words align-top flex items-start pt-[2px]">
+    <div class="capitalise font-semibold max-w-[8ch] text-palia-blue dark:text-accent text-xs h-fit text-center break-words align-top flex items-start pt-[2px]">
       <slot name="title">
         Title missing
       </slot>

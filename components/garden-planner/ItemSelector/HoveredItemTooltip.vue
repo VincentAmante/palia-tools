@@ -184,11 +184,11 @@ const isTakingScreenshot = useTakingScreenshot()
 <template>
   <p
     v-if="!isTakingScreenshot.get"
-    class="gap-1 pt-1 text-palia-blue-dark min-h-12 xs:min-h-10 lg:min-h-4"
+    class="gap-1 pt-1 text-palia-blue-dark dark:text-accent min-h-12 xs:min-h-10 lg:min-h-4"
   >
     <span
       v-if="title !== 'Remove crop from tile(s)' && title !== 'Remove fertiliser from tile(s)'"
-      class="font-semibold capitalize text-palia-blue"
+      class="font-semibold capitalize text-palia-blue dark:text-primary"
     >
       {{ title }}
 
@@ -196,7 +196,7 @@ const isTakingScreenshot = useTakingScreenshot()
         [{{ code }}]
       </span>
     </span>
-    <span v-else class="font-semibold text-palia-blue">
+    <span v-else class="font-semibold text-palia-blue dark:text-primary">
       {{ title }}
     </span>
     <template v-if="bonus.icon !== ''">

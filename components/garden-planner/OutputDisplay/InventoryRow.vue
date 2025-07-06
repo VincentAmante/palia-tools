@@ -39,9 +39,9 @@ const plannerDisplayConfig = usePlannerDisplayConfig()
 
 <template>
   <section class="pb-1">
-    <p class="text-xs text-palia-blue-dark">Day {{ dayHarvest?.day }}</p>
+    <p class="text-xs text-palia-blue-dark dark:text-primary">Day {{ dayHarvest?.day }}</p>
     <ul
-      class="flex w-full overflow-x-auto max-w-117 gap-1 p-1 bg-opacity-50 rounded-md bg-accent border border-misc-dark"
+      class="flex w-full overflow-x-auto max-w-117 gap-1 p-1 bg-opacity-50 rounded-md bg-accent border border-misc-dark dark:border-water-retain/60 dark:bg-palia-blue-light"
       :class="[plannerDisplayConfig.get === 'display+display' ? 'xl:max-w-138 ' : 'lg:max-w-130 xl:max-w-167 2xl:max-w-170']"
       >
       <ItemDisplayAlt v-for="item of itemsFromHarvest" :key="item.name" :img-src="item.image" :img-alt="item.name"

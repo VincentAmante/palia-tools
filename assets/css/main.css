@@ -4,8 +4,17 @@ body {
   font-display: swap;
 }
 
+html:not(.no-transition) * {
+  transition: none !important;
+}
 
 @import 'tailwindcss';
+@plugin 'tailwind-scrollbar' {
+  nocompatible: true;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
 
 @source inline("{xs:,sm:,lg:,}grid");
 @plugin 'daisyui';
@@ -79,12 +88,15 @@ body {
 }
 
 
+
 @theme {
   --color-*: initial;
   
 
   /* Palia blues */
+  --color-palia-blue-light: oklch(49.00% 0.062 264.72); /* #4F6084 */
   --color-palia-blue: oklch(41.04% 0.059 264.11);   /* #3a4a6b */
+  --color-palia-blue-secondary: oklch(37.77% 0.062 264.40) /* #314163 */;
   --color-palia-blue-dark: oklch(33.78% 0.047 264.32); /* #2b3750 */
 
   /* Misc colors */
@@ -137,12 +149,17 @@ body {
   color utility to any element that depends on these defaults.
 */
 @layer base {
+  html {
+    @apply scrollbar-w-1 scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent scrollbar-thumb-rounded-lg;
+  }
+
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-misc, currentcolor);
+    @apply scrollbar;
   }
 
   button, input, select, optgroup, textarea, ::file-selector-button {
@@ -162,48 +179,6 @@ body {
   background: linear-gradient(180deg, #3a4a6b 43.75%, #467386 100%);
 }
 
-@utility scrollbar-primary {
-  &::-webkit-scrollbar {
-    @apply h-1 lg:h-0 lg:w-1 rounded-md;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-palia-blue rounded-md;
-  }
-
-  &::-webkit-scrollbar-track {
-    @apply bg-accent rounded-md;
-  }
-}
-
-@utility scrollbar-primary-horizontal {
-  &::-webkit-scrollbar {
-    @apply w-1 lg:w-0 h-1 lg:h-[2px] rounded-md;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-palia-blue rounded-md;
-  }
-
-  &::-webkit-scrollbar-track {
-    @apply bg-accent rounded-md h-1;
-  }
-}
-
-@utility scrollbar-invisible-horizontal {
-  &::-webkit-scrollbar {
-    @apply w-0 h-1 lg:h-[2px] rounded-md;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-transparent rounded-md;
-  }
-
-  &::-webkit-scrollbar-track {
-    @apply bg-transparent rounded-md h-1;
-  }
-}
-
 @layer utilities {
   .page-enter-active,
   .page-leave-active {
@@ -213,10 +188,11 @@ body {
   .page-leave-active {
     opacity: 0;
   }
+
+  
 }
 
-
-html {
+/* html {
   ::-webkit-scrollbar {
     @apply h-1 lg:h-0 lg:w-1 rounded-md;
   }
@@ -228,21 +204,7 @@ html {
   ::-webkit-scrollbar-track {
     @apply bg-palia-blue rounded-md;
   }
-}
-
-body {
-  ::-webkit-scrollbar {
-    @apply h-1 lg:h-0 lg:w-1 rounded-md;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    @apply bg-misc rounded-md;
-  }
-  
-  ::-webkit-scrollbar-track {
-    @apply bg-accent rounded-md;
-  }
-}
+} */
 
   
 * {

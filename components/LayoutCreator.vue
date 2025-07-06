@@ -1,13 +1,21 @@
 <script setup lang="ts">
 import { CropCode } from '@/assets/scripts/garden-planner/imports'
 import PGPModal from '@/components/PGPModal.vue'
+import { loadDefaultSettingsCode } from './garden-planner/SaveLoadUtils'
 
 const emit = defineEmits(['createNewLayout'])
 
 const modal = ref<InstanceType<typeof PGPModal> | null>(null)
+  
+const defaultSettings = ref('')
 // const createLayoutDialog = ref<HTMLDialogElement | null>(null)
 function openModal() {
   modal.value?.showModal()
+
+
+  const loadedDefaultSettings = loadDefaultSettingsCode()
+  if (loadedDefaultSettings)
+    defaultSettings.value = `_${loadedDefaultSettings.code}`
 }
 defineExpose({
   openModal,
@@ -24,7 +32,7 @@ enum PlotStatus {
   active = 1,
   inactive = 0,
 }
-// Creates a v.02 code from the layout
+// Creates a v.03 code from the layout
 function layoutToCode(layout: PlotStatus[][]) {
   // ? technically 'plot' is just a boolean, do I really need to use an enum?
   let code = 'v0.3_D-'
@@ -168,6 +176,12 @@ function trimLayout(): PlotStatus[][] {
   colInput.value = layout[0].length
   return layout
 }
+
+
+function createInNewTab() {
+  return `${layoutToCode(trimLayout())}${defaultSettings.value}`
+}
+
 </script>
 
 <template>
@@ -297,10 +311,17 @@ function trimLayout(): PlotStatus[][] {
         <p>This will reset everything, so consider saving beforehand</p>
       </div>
       <div class="flex flex-col gap-1">
-        <button :disabled="selectedNewLayout === 'select' || activePlots <= 0" class="btn w-fit"
-          @click="createNewLayout()">
-          Create
-        </button>
+        <div class="flex gap-1">
+          <button :disabled="selectedNewLayout === 'select' || activePlots <= 0" class="btn w-fit"
+            @click="createNewLayout()">
+            Create
+          </button>
+          <NuxtLink :disabled="selectedNewLayout === 'select' || activePlots <= 0" class="btn w-fit" target="_blank"
+            :to="`?layout=${createInNewTab()}`">
+            Create in New Tab
+          </NuxtLink>
+
+        </div>
 
         <p v-show="(activePlots <= 0)" class="text-xs text-warning">
           <font-awesome-icon icon="exclamation-triangle" class="text-warning" />

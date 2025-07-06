@@ -50,7 +50,7 @@ const bgColour = computed(() => {
   return `${props.tile?.crop?.cropBackgroundColor}` || ''
 })
 
-const TILE_HIGHLIGHT_STYLE = 'opacity-100 bg-white'
+const TILE_HIGHLIGHT_STYLE = 'opacity-100 bg-white dark:bg-white/80'
 const TILE_NO_HIGHLIGHT_STYLE = ''
 // Highlights tile if it has the bonus being hovered
 const tileHighlightBgStyle = computed(() => {
@@ -133,16 +133,16 @@ const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcon
 
 <template>
   <button
-    class="border-misc-saturated relative select-none min-w-[3rem] xl:min-w-[3.25rem] hover:bg-primary aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
+    class="border-misc-saturated dark:border-water-retain relative dark:hover:bg-water-retain/80 select-none min-w-[3rem] xl:min-w-[3.25rem] aspect-square cursor-pointer flex flex-col overflow-hidden isolate items-center justify-center"
     :class="[(isDisabled ? 'invisible' : ''),
       border,
       borderRadius,
-    (tile?.isHovered ? 'bg-primary' : ' bg-secondary'),
+    (tile?.isHovered ? 'bg-primary dark:bg-water-retain/80' : 'bg-secondary dark:bg-palia-blue'),
     ]" :aria-label="tile?.crop ? `Tile with ${tile.crop.cropTooltip}` : 'Empty Tile'">
     <div v-show="showBonusBackground" class="absolute w-full h-full -z-10" :class="bgColour" />
     <div class="font-bold uppercase select-none lg:text-3xl">
       <img v-if="(selectedItem.val instanceof Crop && tile?.isHovered)" format="webp" draggable="false"
-        class="select-none p-1 max-w-[38px] md:max-w-[36px] 2xl:max-w-[38px] opacity-50" :src="selectedItem.val.image"
+        class="select-none p-1 max-w-[38px] md:max-w-[36px] 2xl:max-w-[38px] opacity-50 dark:opacity-60" :src="selectedItem.val.image"
         :srcset="undefined" :alt="selectedItem.val.type">
       <img v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px" format="webp"
         draggable="false" class="select-none p-1 max-w-[36px] md:max-w-[36px] 2xl:max-w-[38px]" :src="tile?.crop?.image"
@@ -160,11 +160,11 @@ const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcon
       </li>
       <li v-show="bonuses?.includes(Bonus.HarvestIncrease)" :aria-hidden="bonuses?.includes(Bonus.HarvestIncrease)"
         aria-label="Harvest Increase">
-        <font-awesome-icon class="text-harvest-boost-dark" :icon="['fas', 'wheat-awn']" aria-hidden="true" />
+        <font-awesome-icon class="text-harvest-boost-dark dark:text-harvest-boost" :icon="['fas', 'wheat-awn']" aria-hidden="true" />
       </li>
       <li v-show="bonuses?.includes(Bonus.QualityIncrease)" :aria-hidden="bonuses?.includes(Bonus.QualityIncrease)"
         aria-label="Quality Increase">
-        <font-awesome-icon class="text-quality-increase-dark" :icon="['fas', 'star']" aria-hidden="true" />
+        <font-awesome-icon class="text-quality-increase-dark dark:text-quality-increase" :icon="['fas', 'star']" aria-hidden="true" />
       </li>
       <li v-show="bonuses?.includes(Bonus.WaterRetain)" :aria-hidden="bonuses?.includes(Bonus.WaterRetain)"
         aria-label="Water Retain">
@@ -177,7 +177,7 @@ const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcon
     </ul>
     <div class="absolute bottom-0 right-0 p-[2px]">
       <img v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)" :src="selectedItem.val.image"
-        draggable="false" class="select-none max-w-[16px] opacity-50" :srcset="undefined"
+        draggable="false" class="select-none max-w-[16px] opacity-50 dark:opacity-80" :srcset="undefined"
         :alt="selectedItem.val.effect">
       <img v-else-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0" format="webp" draggable="false"
         class="select-none max-w-[16px]" :src="tile?.fertiliser?.image" :srcset="undefined"

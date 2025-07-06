@@ -99,17 +99,17 @@ watchEffect(() => {
 </script>
 <template>
   <section class="flex flex-col gap-1 pt-1 text-palia-blue-dark">
-    <h2 class="text-sm font-semibold text-palia-blue-dark">
+    <h2 class="text-sm font-semibold text-palia-blue-dark dark:text-accent">
       Crop Details
     </h2>
 
     <!-- Crop Selector -->
-    <nav class="flex flex-wrap gap-2 p-2 border rounded-sm border-misc-dark bg-accent">
-      <p v-if="presentCrops.size === 0" class="text-lg  text-misc-dark">
+    <nav class="flex flex-wrap gap-2 p-2 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue">
+      <p v-if="presentCrops.size === 0" class="text-lg  text-misc-dark dark:text-accent">
         No crops in layout to display details for.
       </p>
       <button v-if="presentCrops.size > 0" @click="selectCropForDetail(null)"
-        class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc tooltip"
+        class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue dark:border-palia-blue-dark text-harvest-boost tooltip"
         data-tip="All harvests"
         >
         <FontAwesomeIcon :icon="['fas', 'wheat-awn']" />
@@ -123,10 +123,10 @@ watchEffect(() => {
     <!-- Details Display -->
     <div v-if="selectedCropDetail && selectedCropCycleData" class="py-1 flex flex-col gap-1 @container">
       <div class="flex gap-1 flex-col lg:flex-row  gap-x-4">
-        <p class="text-sm font-semibold text-palia-blue-dark flex gap-1 items-center bg-accent px-3 rounded-sm">
+        <p class="text-sm font-semibold text-palia-blue-dark flex gap-1 items-center bg-accent dark:bg-palia-blue-light dark:text-accent px-3 rounded-sm">
           <span class="capitalize font-bold">{{ selectedCropCycleData.cropType }}</span>
           <FontAwesomeIcon v-if="selectedCropDetail.includes('-Star')" :icon="['fas', 'star']"
-            class="text-sm text-quality-increase-dark" aria-label="Star Seed" />
+            class="text-sm text-quality-increase-dark dark:text-quality-increase" aria-label="Star Seed" />
           <FontAwesomeIcon v-if="selectedCropDetail.includes('-Growth')" :icon="['fas', 'forward-fast']"
             class="ml-1 text-sm text-growth-boost" title="Growth Boost Applied" aria-label="Growth Boost Applied" />
         </p>
