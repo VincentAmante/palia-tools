@@ -23,9 +23,6 @@ const props = defineProps({
 })
 
 const listArr = computed(() => {
-    console.log(props.dayHarvests)
-    console.log(Object.values(props.dayHarvests))
-
     return Array.from(props.dayHarvests.values())
 })
 
@@ -33,9 +30,7 @@ const listFiltered = computed(() => {
     const cropToFilter = props.cropToFilter
     let filteredList = listArr.value
 
-    console.log(listArr.value)
     if (cropToFilter) {
-        console.log('toFilter', cropToFilter)
         filteredList = listArr.value.filter((dayHarvest) => {
             return dayHarvest.crops.has(cropToFilter)
         })
