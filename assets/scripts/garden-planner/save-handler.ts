@@ -8,6 +8,7 @@ import type { ProcessorSetting, ProcessorSettings } from './classes/processor'
 import { parseCropId, type ICropNameWithGrowthDiff, encodeCropId, ItemType } from './utils/garden-helpers'
 import { Crop, getCropFromCode } from './imports'
 import FertiliserCode from './enums/fertilisercode'
+import { LATEST_VERSION } from './types/version'
 
 
 /**
@@ -262,8 +263,6 @@ export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
   * @param save a save code for the garden planner
  */
 export function parseSave(save: string) {
-  const LATEST_VERSION = '0.4';
-
   // console.log('Parsing save code...', save);
 
   // * This format makes it permanent that the first part of the save is the version number

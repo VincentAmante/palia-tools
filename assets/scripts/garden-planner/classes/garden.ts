@@ -15,7 +15,7 @@ import CropTiles from './cropTiles'
 import type Harvester from './harvester'
 import { type IHarvesterOptions } from './harvester'
 import type { ProcessorSettings } from './processor'
-
+import { LATEST_VERSION } from '../types/version'
 
 import Plot from './plot'
 import Tile from './tile'
@@ -25,7 +25,7 @@ import type Crop from './crop'
 
 class Garden {
   private _layout: Plot[][] = []
-  private _version: string = '0.4'
+  private _version: string = LATEST_VERSION
   private _cropTiles = new CropTiles()
   private _settingsCode: string = ''
   private _settingsHaveBeenLoaded = false
