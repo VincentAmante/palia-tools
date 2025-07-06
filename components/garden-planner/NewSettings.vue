@@ -93,7 +93,7 @@ const highestTime = computed(() => {
         </button>
         <button role="tab" class="tab join-item" :class="(activeTab === 'Misc') ? 'tab-active' : ''"
           @click="activeTab = 'Misc'" :aria-selected="activeTab === 'Misc'">
-          <p>Misc</p>
+          <p>Presets</p>
         </button>
       </nav>
     </div>

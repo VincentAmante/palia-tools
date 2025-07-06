@@ -30,7 +30,7 @@ function clearGarden() {
 const saveCode = useSaveCode()
 const settingsCode = useSettingsCode()
 
-function loadLayoutFromCode(code: string) {
+function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
 
   const hasLoadedSuccessfully = garden.loadLayout(code)
   settingsCode.set(garden.loadSettingsCode)
@@ -44,6 +44,19 @@ function loadLayoutFromCode(code: string) {
       type: 'alert-success',
       duration: 2000,
     })
+  }
+
+  if (useDefaultSettings) {
+
+    const defaultCode = loadDefaultSettingsCode()?.code
+
+    if (defaultCode) {
+
+      settingsCode.set(defaultCode)
+      const { harvesterOptions, processorSettings } = gardenHandler.garden.loadSettings(defaultCode)
+      processor.updateSettings(processorSettings)
+      harvester.updateSettings(harvesterOptions)
+    }
   }
 }
 
@@ -140,7 +153,7 @@ onMounted(() => {
       <SaveModal ref="saveModal" @save-layout="saveLayout()" />
       <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
       <UISettingsModal ref="uiSettingsModal" />
-      <LayoutCreator ref="createLayoutDialog" @create-new-layout="loadLayoutFromCode" />
+      <LayoutCreator ref="createLayoutDialog" @create-new-layout="(code: string) => loadLayoutFromCode(code, true)" />
       <ExportModal ref="exportModal" />
     </Teleport>
   </section>

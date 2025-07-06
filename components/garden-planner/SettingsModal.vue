@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { deleteSettingsCode, loadSavedSettingsCodes, saveSettingsCode, savedSettingsCodes, updateSettingsCodeTitle } from './SaveLoadUtils'
+import { deleteSettingsCode, loadSavedSettingsCode, loadSavedSettingsCodes, saveSettingsCode, savedSettingsCodes, updateSettingsCodeTitle } from './SaveLoadUtils'
 import PGPModal from '@/components/PGPModal.vue'
 import { useSettingsCode } from '~/stores/useSettingsCode'
 import { LATEST_VERSION } from '~/assets/scripts/garden-planner/types/version'
 
 const settingsCode = useSettingsCode()
+const emit = defineEmits<{
+  (e: 'load', code: string): void
+}>()
+
 
 const title = ref('New Settings Preset')
 const version = ref(1)
@@ -20,6 +24,17 @@ function openModal() {
 defineExpose({
   openModal,
 })
+
+
+function load(code: string) {
+  emit('load', code)
+  modal.value?.hideModal()
+}
+
+function loadSavedCode(code: string) {
+  emit('load', code)
+  modal.value?.hideModal()
+}
 
 const toasts = useToasts()
 
@@ -41,12 +56,11 @@ function addDeleteToast() {
 function saveAndClose() {
   saveSettingsCode(title.value, `${LATEST_VERSION}_${settingsCode.code}`, version.value)
   modal.value?.hideModal()
-
   addSuccessToast()
 }
+
 function saveWithoutClose() {
   saveSettingsCode(title.value, `${LATEST_VERSION}_${settingsCode.code}`, version.value)
-
   addSuccessToast()
 }
 
@@ -58,17 +72,24 @@ function deleteCode(index: number) {
   deleteSettingsCode(index)
 }
 
+const loadCode = ref('')
+
+
 watch(settingsCode, () => {
+
 })
 
 
-const activeTab = ref('clipboard-tab')
+const activeTab = ref('browser-tab')
+async function paste() {
+  loadCode.value = await navigator.clipboard.readText()
+}
 </script>
 
 <template>
   <PGPModal ref="modal" useFullHeight>
     <template #header>
-      Save Settings Preset
+      Settings Presets
     </template>
     <template #body>
       <div class="flex justify-between">
@@ -100,6 +121,22 @@ const activeTab = ref('clipboard-tab')
             </div>
           </div>
         </div>
+        <div class="card card-compact">
+          <div class="relative flex flex-col p-4 px-3 rounded-md card-body bg-palia-blue-dark">
+            <p class="card-title">
+              Clipboard
+            </p>
+            <textarea v-model="loadCode" class="textarea h-fit font-mono min-h-[8rem]" />
+            <div class="card-actions">
+              <button class="normal-case btn btn-sm btn-ghost" @click="paste()">
+                Paste Code
+              </button>
+            </div>
+          </div>
+        </div>
+        <button class="normal-case btn btn-sm w-fit" @click="() => load(loadCode)">
+          Load
+        </button>
       </div>
       <div v-if="activeTab === 'browser-tab'" id="browser-tab" class="">
         <div class="gap-2 card card-compact">
@@ -112,7 +149,7 @@ const activeTab = ref('clipboard-tab')
                 <span class="label-text">Title</span>
               </label>
               <input v-model="title" max="64" type="text" placeholder="Enter title"
-                class="w-full max-w-xs input input-bordered input-sm">
+                class="w-full max-w-sm input input-bordered input-sm">
               <p class="pt-1 font-mono text-justify opacity-50 text-xxs wrap-anywhere">
                 {{ `${LATEST_VERSION}_${settingsCode.code}` }}
               </p>
@@ -142,9 +179,18 @@ const activeTab = ref('clipboard-tab')
                         {{ `${code.code}` }}
                       </p>
                     </div>
-                    <button class="btn btn-xs btn-square btn-ghost" @click="deleteCode(index)">
-                      <font-awesome-icon class="text-sm text-weed-prevention" icon="trash" />
-                    </button>
+                    <div class="flex gap-1">
+                      <button class="btn btn-xs btn-circle btn-ghost" @click="loadSavedCode(code.code)">
+                        <font-awesome-icon class="text-sm" icon="download" />
+                      </button>
+                      <button class="btn btn-xs btn-circle btn-ghost" :class="{ 'btn-disabled': code.code === text }"
+                        @click="copy(code.code)">
+                        <font-awesome-icon class="text-sm" icon="copy" />
+                      </button>
+                      <button class="btn btn-xs btn-square btn-ghost" @click="deleteCode(index)">
+                        <font-awesome-icon class="text-sm text-weed-prevention" icon="trash" />
+                      </button>
+                    </div>
                   </li>
                 </ul>
               </div>
