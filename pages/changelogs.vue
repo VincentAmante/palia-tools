@@ -82,6 +82,10 @@ useHead({
               As per usual, I may have missed some things with these changes and bugs could appear. Please
               report them or any other feedback on the Github or on my Discord.
               Both are available on the Footer area below.
+            </p>
+            <p class="indent-6">
+              I'll next be looking at improving the garden displays next round,
+              and then looking into ways to expand crafters or whether I'd go straight to the plot system re-write. See you till then!
               Happy Gardening!
             </p>
           </template>
