@@ -41,6 +41,46 @@ export function deleteGardenCode(index: number) {
   }
 }
 
+export interface SavedSettingsCode {
+  title: string
+  code: string
+  dateCreated: string
+  version: string
+}
+
+export const savedSettingsCodes = ref<SavedSettingsCode[]>([])
+
+export function loadSavedSettingsCodes() {
+  const savedCodes = localStorage.getItem('savedSettingsCodes')
+  if (savedCodes)
+    savedSettingsCodes.value = (JSON.parse(savedCodes) as SavedSettingsCode[]).sort((codeA, codeB) => ((new Date(codeA.dateCreated).getTime() - new Date(codeB.dateCreated).getTime()) * -1))
+}
+
+export function saveSettingsCode(title: string, code: string, version: string) {
+  const newCode: SavedSettingsCode = {
+    title,
+    code,
+    dateCreated: new Date().toISOString(),
+    version,
+  }
+  savedSettingsCodes.value.push(newCode)
+  localStorage.setItem('savedSettingsCodes', JSON.stringify(savedSettingsCodes.value))
+}
+
+export function updateSettingsCodeTitle(index: number, newTitle: string) {
+  if (index >= 0 && index < savedSettingsCodes.value.length) {
+    savedSettingsCodes.value[index].title = newTitle
+    localStorage.setItem('savedSettingsCodes', JSON.stringify(savedSettingsCodes.value))
+  }
+}
+
+export function deleteSettingsCode(index: number) {
+  if (index >= 0 && index < savedSettingsCodes.value.length) {
+    savedSettingsCodes.value.splice(index, 1)
+    localStorage.setItem('savedSettingsCodes', JSON.stringify(savedSettingsCodes.value))
+  }
+}
+
 
 export function saveDefaultSettingsCode(settingsCode: string) {
   const savedCode = `${LATEST_VERSION}_${settingsCode}`;

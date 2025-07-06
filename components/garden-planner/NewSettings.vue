@@ -3,26 +3,17 @@ import OptionCard from './HarvestCalculator/OptionCard.vue'
 import SettingsMinutesDisplay from './SettingsMinutesDisplay.vue'
 import ItemDisplayAlt from './HarvestCalculator/ItemDisplayAlt.vue'
 import useHarvester from '~/stores/useHarvester'
-import { saveDefaultSettingsCode, loadDefaultSettingsCode } from '~/components/garden-planner/SaveLoadUtils'
 import type { ProcessorSetting, ProcessorSettings } from '~/assets/scripts/garden-planner/classes/processor'
 import { type ICropNameWithGrowthDiff, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { CropType, getCropFromType } from '~/assets/scripts/garden-planner/imports'
 import useProcessor from '~/stores/useProcessor'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import SettingsCodeSettings from './OutputDisplay/SettingsCodeSettings.vue'
 
 const harvester = useHarvester()
 const starBaseChance = computed(() => Math.trunc(Math.min(100, (0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)) * 100)))
 const processor = useProcessor()
-const settingsCode = useSettingsCode()
-const defaultSettingsCode = ref<string>('')
-const garden = useGarden()
 
-onMounted(() => {
-  const defaultSettings = loadDefaultSettingsCode()
-  if (defaultSettings) {
-    defaultSettingsCode.value = defaultSettings.code
-  }
-})
 
 // Allows us to save settings of unselected crops
 const activeProcessorSettings = computed(() => {
@@ -73,29 +64,6 @@ function updateSettings() {
   processor.simulateProcessing(harvester.totalHarvest)
 }
 
-function saveDefaultSettings() {
-  saveDefaultSettingsCode(settingsCode.code)
-  defaultSettingsCode.value = settingsCode.code
-}
-
-function loadDefaultSettings() {
-  const defaultSettings = loadDefaultSettingsCode()
-  if (defaultSettings) {
-    settingsCode.set(defaultSettings.code)
-    const { harvesterOptions, processorSettings } = garden.garden.loadSettings(defaultSettings.code)
-    processor.updateSettings(processorSettings)
-    harvester.updateSettings(harvesterOptions)
-    updateSettings()
-  }
-}
-
-function resetToDefaultSettings() {
-  settingsCode.set('')
-  const { harvesterOptions, processorSettings } = garden.garden.loadSettings('')
-  processor.updateSettings(processorSettings)
-  harvester.updateSettings(harvesterOptions)
-  updateSettings()
-}
 
 function onChangeSettings() {
   updateSettings()
@@ -447,29 +415,6 @@ const highestTime = computed(() => {
         </ul>
       </section>
     </section>
-    <section v-else-if="activeTab === 'Misc'" class="relative h-full isolate flex flex-col gap-1 py-2 ">
-      <div class="flex flex-col gap-1 bg-accent p-2 rounded-md dark:bg-palia-blue">
-        <div class="text-palia-blue-dark flex flex-col gap-1 dark:text-accent">
-          <p class="">Default Settings Configuration</p>
-          <p class="text-xs">Configures your default settings by saving them to a code</p>
-          <p class="text-xs bg-info p-1 rounded-sm w-fit text-palia-blue-dark">
-            <FontAwesomeIcon :icon="['fas', 'info-circle']" class="" /> Will not trigger if a layout is loaded
-          </p>
-        </div>
-        <div class="flex gap-1 flex-col">
-          <p class="bg-palia-blue-dark p-1 text-sm px-2 rounded-sm">Default Settings: <span class="font-mono">{{
-            defaultSettingsCode }}</span></p>
-          <p class="bg-palia-blue-dark p-1 text-sm px-2 rounded-sm">Current Settings: <span class="font-mono">{{
-            settingsCode.code
-              }}</span></p>
-        </div>
-
-        <div class="flex gap-1 sm:gap-0 flex-col sm:join sm:flex-row">
-          <button class="btn join-item" @click="saveDefaultSettings">Set as Default</button>
-          <button class="btn join-item" @click="loadDefaultSettings">Load Default</button>
-          <button class="btn join-item" @click="resetToDefaultSettings">Revert to Planner Default</button>
-        </div>
-      </div>
-    </section>
+    <SettingsCodeSettings v-else-if="activeTab === 'Misc'"></SettingsCodeSettings>
   </section>
 </template>
