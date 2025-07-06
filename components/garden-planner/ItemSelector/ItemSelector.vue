@@ -262,8 +262,8 @@ watchEffect(() => {
           </h3>
           <div class="flex flex-wrap gap-1 pt-2 items-start">
             <button id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
-              class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc" :class="{
-                'bg-white': selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get,
+              class="relative border rounded-xs btn btn-lg btn-square btn-secondary dark:bg-palia-blue-secondary isolate hover:bg-palia-blue-secondary/20 border-misc dark:border-water-retain/60" :class="{
+                'bg-white dark:bg-water-retain/20': selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get,
                 'hidden': isTakingScreenshot.get,
               }" @click="selectedItem.select('fertiliser-erase')"
               @mouseover="selectedItem.hover(SelectedItemType.FertiliserErase)" @mouseleave="selectedItem.hover(null)">
