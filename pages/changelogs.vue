@@ -46,10 +46,18 @@ useHead({
               tab
             </li>
             <li>
-              <span class="italic">Negative Displays — </span> Crop deficit now visible in the output display
+              <span class="italic">Fix: Negative Displays — </span> Crop deficit now visible in the output display
+            </li>
+            
+            <li>
+              <span class="italic">Fix: Scrollbars — </span> Fixed issue with horizontal scrollbars not appearing
             </li>
             <li>
-              <span class="italic">QoL: Create layout in new tab — </span> Open up a new layout in a new tab
+              <span class="italic">QoL Changes</span>
+              <ul class="pl-3 list-disc list-inside text-sm">
+                <li>Can now open up a new layout in a new tab</li>
+                <li>New indicator for which crop takes the longest to process</li>
+              </ul>
             </li>
           </template>
           <template #default>
@@ -85,7 +93,8 @@ useHead({
             </p>
             <p class="indent-6">
               I'll next be looking at improving the garden displays next round,
-              and then looking into ways to expand crafters or whether I'd go straight to the plot system re-write. See you till then!
+              and then looking into ways to expand crafters or whether I'd go straight to the plot system re-write. See
+              you till then!
               Happy Gardening!
             </p>
           </template>
