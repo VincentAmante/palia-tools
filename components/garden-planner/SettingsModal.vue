@@ -8,7 +8,7 @@ import { LATEST_VERSION } from '~/assets/scripts/garden-planner/types/version'
 const settingsCode = useSettingsCode()
 
 const title = ref('New Settings Preset')
-const version = ref(LATEST_VERSION)
+const version = ref(1)
 
 const { text, copy } = useClipboard()
 
@@ -39,13 +39,13 @@ function addDeleteToast() {
 }
 
 function saveAndClose() {
-  saveSettingsCode(title.value, settingsCode.code, version.value)
+  saveSettingsCode(title.value, `${LATEST_VERSION}_${settingsCode.code}`, version.value)
   modal.value?.hideModal()
 
   addSuccessToast()
 }
 function saveWithoutClose() {
-  saveSettingsCode(title.value, settingsCode.code, version.value)
+  saveSettingsCode(title.value, `${LATEST_VERSION}_${settingsCode.code}`, version.value)
 
   addSuccessToast()
 }
@@ -139,7 +139,7 @@ const activeTab = ref('clipboard-tab')
                       <input v-model="code.title" class="w-full max-w-xs py-0 pl-0 input input-ghost input-xs"
                         @change="editTitle(index, code.title)">
                       <p class="font-mono leading-none opacity-50 text-xxs text-justify line-clamp-3 md:line-clamp-4">
-                        {{ `${code.version}_${code.code}` }}
+                        {{ `${code.code}` }}
                       </p>
                     </div>
                     <button class="btn btn-xs btn-square btn-ghost" @click="deleteCode(index)">

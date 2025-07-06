@@ -45,7 +45,7 @@ export interface SavedSettingsCode {
   title: string
   code: string
   dateCreated: string
-  version: string
+  version: number
 }
 
 export const savedSettingsCodes = ref<SavedSettingsCode[]>([])
@@ -56,7 +56,7 @@ export function loadSavedSettingsCodes() {
     savedSettingsCodes.value = (JSON.parse(savedCodes) as SavedSettingsCode[]).sort((codeA, codeB) => ((new Date(codeA.dateCreated).getTime() - new Date(codeB.dateCreated).getTime()) * -1))
 }
 
-export function saveSettingsCode(title: string, code: string, version: string) {
+export function saveSettingsCode(title: string, code: string, version: number) {
   const newCode: SavedSettingsCode = {
     title,
     code,
