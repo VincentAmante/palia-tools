@@ -5,8 +5,8 @@
 import CropCode from './enums/cropCode'
 import type { IHarvesterOptions } from './classes/harvester'
 import type { ProcessorSetting, ProcessorSettings } from './classes/processor'
-import { parseCropId, type ICropNameWithGrowthDiff, encodeCropId, ItemType } from './utils/garden-helpers'
-import { Crop, getCropFromCode } from './imports'
+import { parseCropId, encodeCropId, ItemType } from './utils/garden-helpers'
+import { getCropFromCode } from './imports'
 import FertiliserCode from './enums/fertilisercode'
 import { LATEST_VERSION } from './types/version'
 
