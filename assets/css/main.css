@@ -88,6 +88,7 @@ html:not(.no-transition) * {
 }
 
 
+
 @theme {
   --color-*: initial;
   
@@ -148,12 +149,17 @@ html:not(.no-transition) * {
   color utility to any element that depends on these defaults.
 */
 @layer base {
+  html {
+    @apply scrollbar-w-1 scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent scrollbar-thumb-rounded-lg;
+  }
+
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-misc, currentcolor);
+    @apply scrollbar;
   }
 
   button, input, select, optgroup, textarea, ::file-selector-button {
@@ -182,6 +188,8 @@ html:not(.no-transition) * {
   .page-leave-active {
     opacity: 0;
   }
+
+  
 }
 
 /* html {

@@ -1,5 +1,5 @@
 <template>
-  <div v-once class="flex flex-col gap-2 px-2 py-4 text-accent bg-palia-blue-dark rounded-lg overflow-auto max-h-132">
+  <div v-once class="flex flex-col gap-2 px-2 py-4 text-accent bg-palia-blue-dark rounded-lg overflow-auto scrollbar-thumb-accent max-h-132">
     <p class="px-2 text-xl font-black">Info</p>
     <div class="grid gap-2 px-2">
       <div class="p-3 rounded-md bg-palia-blue">

@@ -303,7 +303,7 @@ export default class Processor {
       if (processData.processType === ItemType.Crop) {
         const count = cropHarvestData?.totalWithDeductions || 0
 
-        if (count > 0) {
+        if (count !== 0) {
           output.crops.set(cropName, {
             count,
             itemType: ItemType.Crop,
