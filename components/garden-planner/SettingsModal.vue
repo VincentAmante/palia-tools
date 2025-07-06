@@ -149,7 +149,7 @@ async function paste() {
                 <span class="label-text">Title</span>
               </label>
               <input v-model="title" max="64" type="text" placeholder="Enter title"
-                class="w-full max-w-sm input input-bordered input-sm">
+                class="w-full input input-bordered input-sm">
               <p class="pt-1 font-mono text-justify opacity-50 text-xxs wrap-anywhere">
                 {{ `${LATEST_VERSION}_${settingsCode.code}` }}
               </p>
@@ -172,8 +172,8 @@ async function paste() {
               <div class="h-full overflow-hidden">
                 <ul class="flex flex-col w-full gap-3 p-2 overflow-y-auto rounded-xs bg-base-100 max-h-50 md:max-h-72">
                   <li v-for="(code, index) in savedSettingsCodes" :key="index" class="flex items-start justify-between">
-                    <div class="flex flex-col gap-1">
-                      <input v-model="code.title" class="w-full max-w-xs py-0 pl-0 input input-ghost input-xs"
+                    <div class="flex flex-col gap-1 w-full">
+                      <input v-model="code.title" class="w-full py-0 pl-0 input input-ghost input-xs"
                         @change="editTitle(index, code.title)">
                       <p class="font-mono leading-none opacity-50 text-xxs text-justify line-clamp-3 md:line-clamp-4">
                         {{ `${code.code}` }}
