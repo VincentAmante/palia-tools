@@ -3,6 +3,7 @@ import OptionCard from './HarvestCalculator/OptionCard.vue'
 import SettingsMinutesDisplay from './SettingsMinutesDisplay.vue'
 import ItemDisplayAlt from './HarvestCalculator/ItemDisplayAlt.vue'
 import useHarvester from '~/stores/useHarvester'
+import { saveDefaultSettingsCode, loadDefaultSettingsCode } from '~/components/garden-planner/SaveLoadUtils'
 import type { ProcessorSetting, ProcessorSettings } from '~/assets/scripts/garden-planner/classes/processor'
 import { type ICropNameWithGrowthDiff, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { CropType, getCropFromType } from '~/assets/scripts/garden-planner/imports'
@@ -12,6 +13,16 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 const harvester = useHarvester()
 const starBaseChance = computed(() => Math.trunc(Math.min(100, (0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)) * 100)))
 const processor = useProcessor()
+const settingsCode = useSettingsCode()
+const defaultSettingsCode = ref<string>('')
+const garden = useGarden()
+
+onMounted(() => {
+  const defaultSettings = loadDefaultSettingsCode()
+  if (defaultSettings) {
+    defaultSettingsCode.value = defaultSettings.code
+  }
+})
 
 // Allows us to save settings of unselected crops
 const activeProcessorSettings = computed(() => {
@@ -62,6 +73,30 @@ function updateSettings() {
   processor.simulateProcessing(harvester.totalHarvest)
 }
 
+function saveDefaultSettings() {
+  saveDefaultSettingsCode(settingsCode.code)
+  defaultSettingsCode.value = settingsCode.code
+}
+
+function loadDefaultSettings() {
+  const defaultSettings = loadDefaultSettingsCode()
+  if (defaultSettings) {
+    settingsCode.set(defaultSettings.code)
+    const { harvesterOptions, processorSettings } = garden.garden.loadSettings(defaultSettings.code)
+    processor.updateSettings(processorSettings)
+    harvester.updateSettings(harvesterOptions)
+    updateSettings()
+  }
+}
+
+function resetToDefaultSettings() {
+  settingsCode.set('')
+  const { harvesterOptions, processorSettings } = garden.garden.loadSettings('')
+  processor.updateSettings(processorSettings)
+  harvester.updateSettings(harvesterOptions)
+  updateSettings()
+}
+
 function onChangeSettings() {
   updateSettings()
 }
@@ -78,161 +113,28 @@ const highestTime = computed(() => {
 
 <template>
   <section id="planner-settings" class="relative flex flex-col gap-1 py-2 ">
-    <nav role="tablist" class="font-semibold tabs tabs-box w-fit join">
-      <button role="tab" class="tab join-item" :class="(activeTab === 'Harvest') ? 'tab-active' : ''"
-        @click="activeTab = 'Harvest'" :aria-selected="activeTab === 'Harvest'">
-        <p>General</p>
-      </button>
-      <button role="tab" class="tab join-item" :class="(activeTab === 'Crops') ? 'tab-active' : ''"
-        @click="activeTab = 'Crops'" :aria-selected="activeTab === 'Crops'">
-        <p>Crops</p>
-      </button>
-    </nav>
-    <section v-if="activeTab === 'Crops'" class="h-full rounded-md isolate bg-accent dark:bg-palia-blue">
-      <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
-        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-70 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary dark:to-palia-blue-secondary" />
+    <div class="flex justify-between">
+      <nav role="tablist" class="font-semibold tabs tabs-box w-fit join">
+        <button role="tab" class="tab join-item" :class="(activeTab === 'Harvest') ? 'tab-active' : ''"
+          @click="activeTab = 'Harvest'" :aria-selected="activeTab === 'Harvest'">
+          <p>General</p>
+        </button>
+        <button role="tab" class="tab join-item" :class="(activeTab === 'Crops') ? 'tab-active' : ''"
+          @click="activeTab = 'Crops'" :aria-selected="activeTab === 'Crops'">
+          <p>Crops</p>
+        </button>
+        <button role="tab" class="tab join-item" :class="(activeTab === 'Misc') ? 'tab-active' : ''"
+          @click="activeTab = 'Misc'" :aria-selected="activeTab === 'Misc'">
+          <p>Misc</p>
+        </button>
+      </nav>
+    </div>
 
-      <div v-if="activeProcessorSettings.cropSettings.size > 0"
-        class="z-10 grid items-center grid-cols-12 gap-2 px-1 py-2 border-b text-misc dark:text-primary rounded-t-md dark:border-b-water-retain/60">
-        <div class="relative flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
-          <p class="text-sm font-bold">
-            Item
-          </p>
-        </div>
-        <div class="flex items-center justify-start w-full h-full col-span-5 md:col-span-6 xl:col-span-5">
-          <p class="text-sm font-bold">
-            Process As
-          </p>
-        </div>
-        <div class="flex items-center justify-start w-full h-full col-span-5 gap-2 pl-2"
-          :class="{ 'text-warning': isOverCrafterLimit }">
-          <p class="text-sm font-bold" :class="{ tooltip: isOverCrafterLimit }"
-            data-tip="Known max of 30 crafters reached">
-            <span v-if="isOverCrafterLimit">
-              <FontAwesomeIcon :icon="['fas', 'triangle-exclamation']" />
-            </span>
-            Crafters{{ (activeCrafterCount > 0) ? `: ${activeCrafterCount}` : '' }}
-          </p>
-        </div>
-      </div>
-      <section class="overflow-y-auto max-h-[456px] rounded-b-md pb-2 scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
-        <div v-if="activeProcessorSettings.cropSettings.size === 0"
-          class="flex items-center justify-center p-2 py-4 font-bold rounded-md text-misc bg-accent dark:bg-palia-blue-secondary dark:text-accent">
-          <p>
-            No crops in garden, add some to begin processing.
-          </p>
-        </div>
-        <ul v-if="activeProcessorSettings.cropSettings.size > 0"
-          class="flex flex-col max-h-full gap-1 pb-8 pl-1 pr-2 rounded-b-md bg-accent dark:bg-palia-blue">
-          <li v-for="[cropId, setting] in activeProcessorSettings.cropSettings" :key="cropId"
-            class="grid items-center grid-cols-12 gap-2 py-1 pb-3  text-misc dark:text-accent not-last:border-b dark:not-last:border-b-water-retain/60">
-            <div class="flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
-              <ItemDisplayAlt :img-src="getCropImgSrc(setting.cropType).src"
-                :img-alt="getCropImgSrc(setting.cropType).alt" :star="setting.isStar" :count="setting.count" />
-              <p class="hidden font-bold capitalize xl:text-xs xl:block">
-                {{ setting.cropType }}
-              </p>
-            </div>
-            <div class="flex flex-col items-start justify-start w-full h-full col-span-5 md:col-span-6 xl:col-span-5">
-              <div class="join">
-                <button class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-water-retain/60"
-                  :class="(setting.processAs === ItemType.Crop) ? 'btn-active dark:bg-palia-blue-dark/40' : ''" @click="async () => {
-                    if (setting.processAs === ItemType.Crop)
-                      return
-
-                    setting.processAs = ItemType.Crop
-
-                    await nextTick()
-                    onChangeSettings()
-                  }" aria-label="Process as Crop">
-                  <img class="w-full h-full" :src="getCropFromType(setting.cropType)?.cropImage"
-                    :alt="`${setting.cropType} Crop`">
-                </button>
-                <button class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-water-retain/60"
-                  :class="(setting.processAs === ItemType.Seed) ? 'btn-active dark:bg-palia-blue-dark/40' : ''" @click="() => {
-                    if (setting.processAs === ItemType.Seed)
-                      return
-
-                    setting.processAs = ItemType.Seed
-
-                    onChangeSettings()
-                  }" aria-label="Process as Seed">
-                  <img class="w-full h-full" :src="getCropFromType(setting.cropType)?.seedImage"
-                    :alt="`${setting.cropType} Seed`">
-                </button>
-                <button v-if="getCropFromType(setting.cropType)?.goldValues.hasPreserve"
-                  class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-water-retain/60"
-                  :class="(setting.processAs === ItemType.Preserve) ? 'btn-active dark:bg-palia-blue-dark/40' : ''" @click="() => {
-                    if (setting.processAs === ItemType.Preserve)
-                      return
-                    setting.processAs = ItemType.Preserve
-                    onChangeSettings()
-                  }" aria-label="Process as Preserve">
-                  <img class="h-full" :src="getCropFromType(setting.cropType)?.preserveImage"
-                    :alt="`${setting.cropType} Preserve`">
-                </button>
-              </div>
-              <p v-if="(setting.processAs === ItemType.Preserve && isUnderleveledForPreserveJar)
-                || (setting.processAs === ItemType.Seed && isUnderleveledForSeeder)"
-                class="text-xxs pl-1 flex items-center gap-0.5 text-warning font-bold">
-                <FontAwesomeIcon :icon="['fas', 'triangle-exclamation']" />
-                Need level
-                <template v-if="setting.processAs === ItemType.Preserve">8+</template>
-                <template v-else>5+</template>
-              </p>
-            </div>
-
-            <div v-if="setting.processAs !== ItemType.Crop"
-              class="relative flex flex-col items-start justify-start w-full h-full col-span-5 gap-x-2 pl-2">
-              <div class="join">
-                <button
-                  class="btn btn-sm  join-item disabled:bg-palia-blue-dark! dark:bg-water-retain dark:text-palia-blue dark:disabled:bg-palia-blue-light!"
-                  :disabled="setting.crafters <= 1" @click="() => {
-                    if (setting.crafters <= 1)
-                      return
-
-                    setting.crafters--
-
-                    onChangeSettings()
-                  }" aria-label="Remove 1 Crafter">
-                  <font-awesome-icon :icon="['fas', 'chevron-left']" />
-                </button>
-                <input v-model="setting.crafters" class="input input-sm text-center w-12 text-white! join-item"
-                  type="number" min="1" @change="() => {
-                    if (setting.crafters < 1)
-                      setting.crafters = 1
-
-                    onChangeSettings()
-                  }">
-                <button
-                  class="btn-square btn btn-sm join-item disabled:bg-palia-blue-dark! dark:bg-water-retain dark:text-palia-blue dark:disabled:bg-palia-blue-light!"
-                  @click="() => {
-                    setting.crafters++
-
-                    onChangeSettings()
-                  }" aria-label="Add 1 Crafter">
-                  <font-awesome-icon :icon="['fas', 'chevron-right']" />
-                </button>
-              </div>
-              <p class="absolute bottom-0 w-full translate-y-3 pt-1">
-                <SettingsMinutesDisplay class="whitespace-nowrap dark:text-accent"
-                  :minutes="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
-                <span
-                  v-if="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective === highestTime"
-                  class="inline-grid *:[grid-area:1/1] pl-1">
-                  <span class="status status-info animate-ping"></span>
-                  <span class="status status-info"></span>
-                </span>
-              </p>
-            </div>
-          </li>
-        </ul>
-      </section>
-    </section>
-    <section v-else-if="activeTab === 'Harvest'" class="relative h-full isolate">
+    <section v-if="activeTab === 'Harvest'" class="relative h-full isolate">
       <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
         class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-90 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary dark:to-palia-blue-secondary" />
-      <ul class="grid gap-1 max-h-[488px] overflow-y-auto pr-2 rounded-md max-w-full scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
+      <ul
+        class="grid max-h-[488px] gap-1 overflow-y-auto pr-2 rounded-md max-w-full scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
         <OptionCard label="days" name="Days">
           <template #input>
             <div class="join">
@@ -401,6 +303,173 @@ const highestTime = computed(() => {
           </template>
         </OptionCard>
       </ul>
+    </section>
+    <section v-else-if="activeTab === 'Crops'" class="h-full rounded-md isolate bg-accent dark:bg-palia-blue-dark">
+      <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
+        class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-70 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary dark:to-palia-blue-secondary" />
+
+      <div v-if="activeProcessorSettings.cropSettings.size > 0"
+        class="z-10 grid items-center grid-cols-12 gap-2 px-3 py-2 pt-3 border-b text-misc dark:text-primary rounded-t-md dark:border-b-water-retain/60">
+        <div class="relative flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
+          <p class="text-sm font-bold">
+            Item
+          </p>
+        </div>
+        <div class="flex items-center justify-start w-full h-full col-span-5 md:col-span-6 xl:col-span-5">
+          <p class="text-sm font-bold">
+            Process As
+          </p>
+        </div>
+        <div class="flex items-center justify-start w-full h-full col-span-5 gap-2 pl-2"
+          :class="{ 'text-warning': isOverCrafterLimit }">
+          <p class="text-sm font-bold" :class="{ tooltip: isOverCrafterLimit }"
+            data-tip="Known max of 30 crafters reached">
+            <span v-if="isOverCrafterLimit">
+              <FontAwesomeIcon :icon="['fas', 'triangle-exclamation']" />
+            </span>
+            Crafters{{ (activeCrafterCount > 0) ? `: ${activeCrafterCount}` : '' }}
+          </p>
+        </div>
+      </div>
+      <section
+        class="overflow-y-auto max-h-[436px] rounded-b-md scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
+        <div v-if="activeProcessorSettings.cropSettings.size === 0"
+          class="flex items-center justify-center p-2 py-4 font-bold rounded-md text-misc bg-accent dark:bg-palia-blue-secondary dark:text-accent">
+          <p>
+            No crops in garden, add some to begin processing.
+          </p>
+        </div>
+        <ul v-if="activeProcessorSettings.cropSettings.size > 0"
+          class="flex flex-col max-h-full gap-1 pb-8 pl-1 pr-2 rounded-b-md bg-accent dark:bg-palia-blue">
+          <li v-for="[cropId, setting] in activeProcessorSettings.cropSettings" :key="cropId"
+            class="grid items-start grid-cols-12 gap-2 py-1.5 pb-2.5 overflow-hidden  text-misc dark:text-accent not-last:border-b dark:not-last:border-b-water-retain/60">
+            <div class="flex items-center w-full col-span-2 gap-2 md:col-span-1 xl:col-span-2">
+              <ItemDisplayAlt :img-src="getCropImgSrc(setting.cropType).src"
+                :img-alt="getCropImgSrc(setting.cropType).alt" :star="setting.isStar" :count="setting.count" />
+              <p class="hidden font-bold capitalize xl:text-xs xl:block">
+                {{ setting.cropType }}
+              </p>
+            </div>
+            <div class="flex flex-col items-start justify-start w-full h-full col-span-5 md:col-span-6 xl:col-span-5">
+              <div class="join">
+                <button class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-water-retain/60"
+                  :class="(setting.processAs === ItemType.Crop) ? 'btn-active dark:bg-palia-blue-dark/40' : ''" @click="async () => {
+                    if (setting.processAs === ItemType.Crop)
+                      return
+
+                    setting.processAs = ItemType.Crop
+
+                    await nextTick()
+                    onChangeSettings()
+                  }" aria-label="Process as Crop">
+                  <img class="w-full h-full" :src="getCropFromType(setting.cropType)?.cropImage"
+                    :alt="`${setting.cropType} Crop`">
+                </button>
+                <button class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-water-retain/60"
+                  :class="(setting.processAs === ItemType.Seed) ? 'btn-active dark:bg-palia-blue-dark/40' : ''" @click="() => {
+                    if (setting.processAs === ItemType.Seed)
+                      return
+
+                    setting.processAs = ItemType.Seed
+
+                    onChangeSettings()
+                  }" aria-label="Process as Seed">
+                  <img class="w-full h-full" :src="getCropFromType(setting.cropType)?.seedImage"
+                    :alt="`${setting.cropType} Seed`">
+                </button>
+                <button v-if="getCropFromType(setting.cropType)?.goldValues.hasPreserve"
+                  class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-water-retain/60"
+                  :class="(setting.processAs === ItemType.Preserve) ? 'btn-active dark:bg-palia-blue-dark/40' : ''"
+                  @click="() => {
+                    if (setting.processAs === ItemType.Preserve)
+                      return
+                    setting.processAs = ItemType.Preserve
+                    onChangeSettings()
+                  }" aria-label="Process as Preserve">
+                  <img class="h-full" :src="getCropFromType(setting.cropType)?.preserveImage"
+                    :alt="`${setting.cropType} Preserve`">
+                </button>
+              </div>
+              <p v-if="(setting.processAs === ItemType.Preserve && isUnderleveledForPreserveJar)
+                || (setting.processAs === ItemType.Seed && isUnderleveledForSeeder)"
+                class="text-xxs pl-1 flex items-center gap-0.5 text-warning font-bold">
+                <FontAwesomeIcon :icon="['fas', 'triangle-exclamation']" />
+                Need level
+                <template v-if="setting.processAs === ItemType.Preserve">8+</template>
+                <template v-else>5+</template>
+              </p>
+            </div>
+
+            <div v-if="setting.processAs !== ItemType.Crop"
+              class="relative flex flex-col items-start justify-start w-full h-full col-span-5 gap-x-2 pl-2">
+              <div class="join">
+                <button
+                  class="btn btn-sm  join-item disabled:bg-palia-blue-dark! dark:bg-water-retain dark:text-palia-blue dark:disabled:bg-palia-blue-light!"
+                  :disabled="setting.crafters <= 1" @click="() => {
+                    if (setting.crafters <= 1)
+                      return
+
+                    setting.crafters--
+
+                    onChangeSettings()
+                  }" aria-label="Remove 1 Crafter">
+                  <font-awesome-icon :icon="['fas', 'chevron-left']" />
+                </button>
+                <input v-model="setting.crafters" class="input input-sm text-center w-12 text-white! join-item"
+                  type="number" min="1" @change="() => {
+                    if (setting.crafters < 1)
+                      setting.crafters = 1
+
+                    onChangeSettings()
+                  }">
+                <button
+                  class="btn-square btn btn-sm join-item disabled:bg-palia-blue-dark! dark:bg-water-retain dark:text-palia-blue dark:disabled:bg-palia-blue-light!"
+                  @click="() => {
+                    setting.crafters++
+
+                    onChangeSettings()
+                  }" aria-label="Add 1 Crafter">
+                  <font-awesome-icon :icon="['fas', 'chevron-right']" />
+                </button>
+              </div>
+              <p class="absolute bottom-0 w-full translate-y-2.5 whitespace-nowrap">
+                <SettingsMinutesDisplay class="whitespace-nowrap dark:text-accent"
+                  :minutes="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
+                <span
+                  v-if="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective === highestTime"
+                  class="inline-grid *:[grid-area:1/1] pl-1">
+                  <span class="status status-info animate-ping"></span>
+                  <span class="status status-info"></span>
+                </span>
+              </p>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </section>
+    <section v-else-if="activeTab === 'Misc'" class="relative h-full isolate flex flex-col gap-1 py-2 ">
+      <div class="flex flex-col gap-1 bg-accent p-2 rounded-md dark:bg-palia-blue">
+        <div class="text-palia-blue-dark flex flex-col gap-1 dark:text-accent">
+          <p class="">Default Settings Configuration</p>
+          <p class="text-xs">Configures your default settings by saving them to a code</p>
+          <p class="text-xs bg-info p-1 rounded-sm w-fit text-palia-blue-dark">
+            <FontAwesomeIcon :icon="['fas', 'info-circle']" class="" /> Will not trigger if a layout is loaded
+          </p>
+        </div>
+        <div class="flex gap-1 flex-col">
+          <p class="bg-palia-blue-dark p-1 text-sm px-2 rounded-sm">Default Settings: <span class="font-mono">{{
+            defaultSettingsCode }}</span></p>
+          <p class="bg-palia-blue-dark p-1 text-sm px-2 rounded-sm">Current Settings: <span class="font-mono">{{
+            settingsCode.code
+              }}</span></p>
+        </div>
+
+        <div class="flex gap-1 sm:gap-0 flex-col sm:join sm:flex-row">
+          <button class="btn join-item" @click="saveDefaultSettings">Set as Default</button>
+          <button class="btn join-item" @click="loadDefaultSettings">Load Default</button>
+          <button class="btn join-item" @click="resetToDefaultSettings">Revert to Planner Default</button>
+        </div>
+      </div>
     </section>
   </section>
 </template>

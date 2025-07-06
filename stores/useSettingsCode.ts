@@ -19,13 +19,12 @@ export const useSettingsCode = defineStore('settingsCode', () => {
     updateIsRequestedVal.value = false
   }
 
-
   return {
     code,
     set,
     updateIsRequested,
     requestUpdate,
     resetUpdateRequest,
-     includeSettingsCode
+    includeSettingsCode
   }
 })

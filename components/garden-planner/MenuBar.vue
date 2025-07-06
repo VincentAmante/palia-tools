@@ -7,6 +7,7 @@
 import useGarden from '~/stores/useGarden'
 import { useSaveCode } from '~/stores/useSaveCode'
 import { useSettingsCode } from '~/stores/useSettingsCode'
+import { loadDefaultSettingsCode } from '~/components/garden-planner/SaveLoadUtils'
 import SaveModal from '~/components/garden-planner/SaveModal.vue'
 import LoadModal from '~/components/garden-planner/LoadModal.vue'
 import LayoutCreator from '@/components/LayoutCreator.vue'
@@ -16,7 +17,8 @@ import UISettingsModal from './UISettingsModal.vue'
 
 const toasts = useToasts()
 const gardenHandler = useGarden()
-
+const harvester = useHarvester()
+const processor = useProcessor()
 const { garden } = gardenHandler
 
 function clearGarden() {
@@ -29,6 +31,7 @@ const saveCode = useSaveCode()
 const settingsCode = useSettingsCode()
 
 function loadLayoutFromCode(code: string) {
+
   const hasLoadedSuccessfully = garden.loadLayout(code)
   settingsCode.set(garden.loadSettingsCode)
   settingsCode.requestUpdate()
@@ -77,9 +80,19 @@ function openNewLayoutModal() {
 
 const urlParams = useUrlSearchParams('history')
 onMounted(() => {
+
   // Load layout from URL parameter if available
   if (urlParams.layout) {
     loadLayoutFromCode(urlParams.layout as string)
+  } else {
+    const defaultSettings = loadDefaultSettingsCode()
+
+    if (defaultSettings) {
+      const { harvesterOptions, processorSettings: loadedProcessorSettings } = gardenHandler.garden.loadSettings(defaultSettings.code)
+      harvester.updateSettings(Object.assign({}, harvesterOptions))
+      processor.updateSettings(Object.assign({}, loadedProcessorSettings))
+      settingsCode.set(defaultSettings.code)
+    }
   }
 })
 
