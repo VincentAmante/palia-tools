@@ -84,7 +84,7 @@ useHead({
             </template>
             <template #description>
               <p>
-                As of May 12, 2025 the Palia Garden Planner finally got crafter timing support
+                As of May 12, 2025 the Palia Garden Planner finally got crafter timing support. Still pending improvements
               </p>
             </template>
           </RoadmapCard>
