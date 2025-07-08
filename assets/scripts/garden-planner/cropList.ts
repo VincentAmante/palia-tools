@@ -520,10 +520,10 @@ const BATTERFLY_BEAN = new Crop(
     preserveStar: 61,
   },
   {
-    cropsPerSeed: 2,
+    cropsPerSeed: 1,
     seedsPerConversion: 1,
     cropsPerPreserve: 1,
-    seedProcessMinutes: 85,
+    seedProcessMinutes: 120,
     preserveProcessMinutes: 33,
   },
   {
