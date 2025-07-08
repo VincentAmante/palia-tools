@@ -182,6 +182,13 @@ function createInNewTab() {
   return `${layoutToCode(trimLayout())}${defaultSettings.value}`
 }
 
+function   openInNewTab() {
+    if (selectedNewLayout.value !== 'select' && activePlots.value > 0) {
+      const url = `?layout=${createInNewTab()}`;
+      window.open(url, '_blank');
+    }
+  }
+
 </script>
 
 <template>
@@ -316,11 +323,10 @@ function createInNewTab() {
             @click="createNewLayout()">
             Create
           </button>
-          <NuxtLink :disabled="selectedNewLayout === 'select' || activePlots <= 0" class="btn w-fit" target="_blank"
-            :to="`?layout=${createInNewTab()}`">
-            Create in New Tab
-          </NuxtLink>
-
+          <button :disabled="selectedNewLayout === 'select' || activePlots <= 0" class="btn w-fit"
+            @click="openInNewTab()">
+            Create In New Tab
+          </button>
         </div>
 
         <p v-show="(activePlots <= 0)" class="text-xs text-warning">
