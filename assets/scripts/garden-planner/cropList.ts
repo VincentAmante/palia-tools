@@ -511,8 +511,8 @@ const BATTERFLY_BEAN = new Crop(
     reharvestLimit: 3,
   },
   {
-    crop: 23,
-    cropStar: 34,
+    crop: 28,
+    cropStar: 42,
     seed: 90,
     seedStar: 135,
     hasPreserve: true,
@@ -520,10 +520,10 @@ const BATTERFLY_BEAN = new Crop(
     preserveStar: 61,
   },
   {
-    cropsPerSeed: 1,
+    cropsPerSeed: 2,
     seedsPerConversion: 1,
     cropsPerPreserve: 1,
-    seedProcessMinutes: 120,
+    seedProcessMinutes: 85,
     preserveProcessMinutes: 33,
   },
   {
