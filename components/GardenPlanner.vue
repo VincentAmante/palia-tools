@@ -110,10 +110,10 @@ watch(updateIsRequested, () => {
 <template>
   <section ref="display" id="garden-planner" class="@container">
     <div class="sm:py-1 rounded-t-md sm:px-2 bg-accent dark:bg-palia-blue-dark">
-      <p class="bg-warning rounded-sm p-2 mt-1 text-palia-blue-dark text-sm font-semibold">
+      <!-- <p class="bg-warning rounded-sm p-2 mt-1 text-palia-blue-dark text-sm font-semibold">
         <font-awesome-icon class="text-sm" :icon="['fas', 'triangle-exclamation']" />
         Some time & gold values not updated to 0.193 values. Changes will come shortly
-      </p>
+      </p> -->
       <ItemSelector />
       <AppDivider class="order-3 mx-4 my-1 @:col-span-7 " :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
       <section class="flex @sm:py-2 gap-y-2 justify-between"
