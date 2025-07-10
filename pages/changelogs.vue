@@ -32,7 +32,29 @@ useHead({
       </div>
 
       <div class="grid gap-2">
-        <ChangelogItem checked>
+                <ChangelogItem>
+          <template #title>
+            <span class="font-bold">
+              July 10, 2025 — 0.192 Parity</span>
+          </template>
+          <template #summary>
+            <li>
+              <span class="italic">Modified Crops —</span> Batterfly Bean changes applied
+            </li>
+            
+            <li>
+              <span class="italic">Internal: Changed Image Host —</span> Image host has been changed, please urgently report any issues if found
+            </li>
+          </template>
+          <template #default>
+            <p>
+              Planner has now updated the website to include known crop changes.
+              I've also decided to move the images to another CDN to test out their usage costs.
+              Please report if you're not able to access these images so I can revert.
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
           <template #title>
             <span class="font-bold">
               July 6, 2025 — Dark Mode, Setting Presets</span>
