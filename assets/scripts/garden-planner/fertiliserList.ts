@@ -7,27 +7,27 @@ const fertilisers = {
   [FertiliserType.HarvestBoost]: new Fertiliser(
     FertiliserType.HarvestBoost,
     Bonus.HarvestIncrease,
-    '/fertilisers/harvest-boost.webp',
+    'https://pgp-cdn.b-cdn.net/harvest-boost.webp',
   ),
   [FertiliserType.SpeedyGro]: new Fertiliser(
     FertiliserType.SpeedyGro,
     Bonus.SpeedIncrease,
-    '/fertilisers/speedy-gro.webp',
+    'https://pgp-cdn.b-cdn.net/speedy-gro.webp',
   ),
   [FertiliserType.QualityUp]: new Fertiliser(
     FertiliserType.QualityUp,
     Bonus.QualityIncrease,
-    '/fertilisers/quality-up.webp',
+    'https://pgp-cdn.b-cdn.net/quality-up.webp',
   ),
   [FertiliserType.HydratePro]: new Fertiliser(
     FertiliserType.HydratePro,
     Bonus.WaterRetain,
-    '/fertilisers/hydrate-pro.webp',
+    'https://pgp-cdn.b-cdn.net/hydrate-pro.webp',
   ),
   [FertiliserType.WeedBlock]: new Fertiliser(
     FertiliserType.WeedBlock,
     Bonus.WeedPrevention,
-    '/fertilisers/weed-block.webp',
+    'https://pgp-cdn.b-cdn.net/weed-block.webp',
   ),
   [FertiliserType.None]: null,
 }
