@@ -24,7 +24,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
             Total
           </p>
           <p class="flex items-center justify-end gap-1 text-lg font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
-            <img width="12" height="12" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+            <img width="12" height="12" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
               format="webp">
             {{ parseInt((processor.finalGoldValue || 0).toFixed(0)).toLocaleString() }}
           </p>
@@ -39,7 +39,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
           </p>
           <p
             class="flex items-center justify-end w-full gap-1 text-lg font-semibold text-right @2xl:text-xl text-palia-blue dark:text-accent">
-            <img width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+            <img width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
               format="webp">
             <span v-if="processor.highestCraftingTime > 0 && processor.settings.goldAverageSetting === 'crafterTime'">
               &#8776;{{ (processor.averageGoldValue || 0).toLocaleString() }}
