@@ -133,7 +133,7 @@ useHead({
             <template #name>
               <NuxtLink to="https://paliapedia.com/" class="flex items-center gap-1 underline underline-offset-4"
                 rel="noopener" target="_blank" :prefetch="false">
-                <img src="/externals/paliapedia.svg" width="18px" height="18px"
+                <img src="https://pgp-cdn.b-cdn.net/paliapedia.svg" width="18px" height="18px"
                   class="max-w-[1.5rem] inline-block text-lg" alt="Paliapedia Logo">
                 Paliapedia
               </NuxtLink>

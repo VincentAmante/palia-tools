@@ -216,7 +216,7 @@ const paginationButtons = computed<PaginationButton[]>(() => {
                 <p class="flex items-center justify-end gap-1 pr-1 font-bold">
                   <img
                     format="webp"
-                    src="/gold.webp"
+                    src="https://pgp-cdn.b-cdn.net/gold.webp"
                     class="max-h-[1.5rem]"
                     width="1rem"
                     height="1rem"

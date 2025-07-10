@@ -13,7 +13,7 @@
     </NuxtLink>
     <NuxtLink to="https://ko-fi.com/aisencrown" target="_blank" :prefetch="false"
       class="flex items-center justify-center w-full gap-1 p-4 normal-case rounded-lg bg-opacity-70 md:p-2 h-fit btn bg-palia-blue-dark hover:text-palia-blue-dark hover:border-none hover:bg-primary">
-      <img src="/externals/kofi.webp" alt="Ko-fi Logo" width="28" class="mr-1" />
+      <img src="https://pgp-cdn.b-cdn.net/kofi.webp" alt="Ko-fi Logo" width="28" class="mr-1" />
       <p class="flex items-center gap-2 text-sm font-semibold md:text-base">
         Buy me a coffee?
         <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="mr-1 text-xs opacity-50" />

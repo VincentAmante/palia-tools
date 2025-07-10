@@ -211,7 +211,7 @@ const selectedCropAsCrop = computed(() => {
                 <div class="flex flex-col gap-1 py-1 border border-palia-blue px-2 justify-between rounded-xs">
                     <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Gold Generated</p>
                     <div class="font-bold text-lg flex items-center gap-1">
-                        <img width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+                        <img width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
                             format="webp">
                         <p>{{
                             Math.round(selectedCropProcessingData.averageGoldGenerated).toLocaleString()

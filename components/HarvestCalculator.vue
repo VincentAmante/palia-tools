@@ -197,7 +197,7 @@ watchEffect(() => {
                 <div class="flex items-center gap-1 ">
                   Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
                   <div class="flex items-center gap-1">
-                    <img width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+                    <img width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
                       format="webp">{{
                         processedYields?.totalResult.totalGold.toLocaleString() }}
                   </div>
@@ -209,7 +209,7 @@ watchEffect(() => {
                 data-tip="Raw average is without processing time">
                 <p class="flex items-center gap-1">
                   Raw Average:
-                  <span class="flex items-center gap-1"><img src="/gold.webp" class="max-h-[1rem]" format="webp"
+                  <span class="flex items-center gap-1"><img src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" format="webp"
                       alt="Gold" width="16" height="16" :srcset="undefined">{{
                         (Math.round(processedYields.totalResult.totalGold
                           / processedYields.totalResult.day)).toLocaleString() }}</span>/ day
@@ -245,7 +245,7 @@ watchEffect(() => {
             <div class="flex items-center gap-1 ">
               Last Harvest: Day {{ Math.max(processedYields?.totalResult.day || 0, options.days) }} —
               <div class="flex items-center gap-1">
-                <img width="16" height="16" src="/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+                <img width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
                   format="webp">{{
                     processedYields?.totalResult.totalGold.toLocaleString() }}
               </div>
@@ -257,7 +257,7 @@ watchEffect(() => {
             data-tip="Raw average is without processing time">
             <p class="flex items-center gap-1">
               Raw Average:
-              <span class="flex items-center gap-1"><img src="/gold.webp" class="max-h-[1rem]" format="webp" alt="Gold"
+              <span class="flex items-center gap-1"><img src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" format="webp" alt="Gold"
                   width="16" height="16" :srcset="undefined">{{
                     (Math.round(processedYields.totalResult.totalGold
                       / processedYields.totalResult.day)).toLocaleString() }}</span>/ day
