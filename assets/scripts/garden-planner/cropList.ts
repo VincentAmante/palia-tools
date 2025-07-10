@@ -16,7 +16,7 @@ const TOMATO = new Crop(
   CropType.Tomato,
   Bonus.WaterRetain,
   CropSize.Single,
-  '/crops/tomato.webp',
+  'https://pgp-cdn.b-cdn.net/tomato-crop.webp',
   // Base Values
   {
     base: 2,
@@ -46,8 +46,8 @@ const TOMATO = new Crop(
     preserveProcessMinutes: 27,
   },
   {
-    preserve: '/jars/tomato.webp',
-    seed: '/seeds/tomato.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/tomato-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/tomato-seed.webp',
   },
   {
     cropCode: CropCode.Tomato,
@@ -60,7 +60,7 @@ const POTATO = new Crop(
   CropType.Potato,
   Bonus.WaterRetain,
   CropSize.Single,
-  '/crops/potato.webp',
+  'https://pgp-cdn.b-cdn.net/potato-crop.webp',
   {
     base: 2,
     growthTime: 5,
@@ -82,8 +82,8 @@ const POTATO = new Crop(
     preserveProcessMinutes: 54,
   },
   {
-    preserve: '/jars/potato.webp',
-    seed: '/seeds/potato.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/potato-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/potato-seed.webp',
   },
   {
     cropCode: CropCode.Potato,
@@ -96,7 +96,7 @@ const RICE = new Crop(
   CropType.Rice,
   Bonus.HarvestIncrease,
   CropSize.Single,
-  '/crops/rice.webp',
+  'https://pgp-cdn.b-cdn.net/rice-crop.webp',
   {
     base: 2,
     growthTime: 3,
@@ -120,7 +120,7 @@ const RICE = new Crop(
   },
   {
     preserve: '',
-    seed: '/seeds/rice.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/rice-seed.webp',
   },
   {
     cropCode: CropCode.Rice,
@@ -133,7 +133,7 @@ const WHEAT = new Crop(
   CropType.Wheat,
   Bonus.HarvestIncrease,
   CropSize.Single,
-  '/crops/wheat.webp',
+  'https://pgp-cdn.b-cdn.net/wheat-crop.webp',
   {
     base: 2,
     growthTime: 4,
@@ -156,7 +156,7 @@ const WHEAT = new Crop(
   },
   {
     preserve: '',
-    seed: '/seeds/wheat.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/wheat-seed.webp',
   },
   {
     cropCode: CropCode.Wheat,
@@ -169,7 +169,7 @@ const CARROT = new Crop(
   CropType.Carrot,
   Bonus.WeedPrevention,
   CropSize.Single,
-  '/crops/carrot.webp',
+  'https://pgp-cdn.b-cdn.net/carrot-crop.webp',
   {
     base: 2,
     growthTime: 3,
@@ -191,8 +191,8 @@ const CARROT = new Crop(
     preserveProcessMinutes: 27,
   },
   {
-    preserve: '/jars/carrot.webp',
-    seed: '/seeds/carrot.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/carrot-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/carrot-seed.webp',
   },
   {
     cropCode: CropCode.Carrot,
@@ -205,7 +205,7 @@ const ONION = new Crop(
   CropType.Onion,
   Bonus.WeedPrevention,
   CropSize.Single,
-  '/crops/onion.webp',
+  'https://pgp-cdn.b-cdn.net/onion-crop.webp',
   {
     base: 2,
     growthTime: 4,
@@ -227,8 +227,8 @@ const ONION = new Crop(
     preserveProcessMinutes: 36,
   },
   {
-    preserve: '/jars/onion.webp',
-    seed: '/seeds/onion.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/onion-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/onion-seed.webp',
   },
   {
     cropCode: CropCode.Onion,
@@ -241,7 +241,7 @@ const COTTON = new Crop(
   CropType.Cotton,
   Bonus.QualityIncrease,
   CropSize.Single,
-  '/crops/cotton.webp',
+  'https://pgp-cdn.b-cdn.net/cotton-crop.webp',
   {
     base: 2,
     growthTime: 5,
@@ -264,7 +264,7 @@ const COTTON = new Crop(
   },
   {
     preserve: '',
-    seed: '/seeds/cotton.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/cotton-seed.webp',
   },
   {
     cropCode: CropCode.Cotton,
@@ -277,7 +277,7 @@ const BLUEBERRY = new Crop(
   CropType.Blueberry,
   Bonus.HarvestIncrease,
   CropSize.Bush,
-  '/crops/blueberry.webp',
+  'https://pgp-cdn.b-cdn.net/blueberry-crop.webp',
   {
     base: 6,
     growthTime: 9,
@@ -302,8 +302,8 @@ const BLUEBERRY = new Crop(
     preserveProcessMinutes: 47.25,
   },
   {
-    preserve: '/jars/blueberry.webp',
-    seed: '/seeds/blueberry.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/blueberry-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/blueberry-seed.webp',
   },
   {
     cropCode: CropCode.Blueberry,
@@ -316,7 +316,7 @@ const APPLE = new Crop(
   CropType.Apple,
   Bonus.HarvestIncrease,
   CropSize.Tree,
-  '/crops/apple.webp',
+  'https://pgp-cdn.b-cdn.net/apple-crop.webp',
   {
     base: 16,
     growthTime: 12,
@@ -341,8 +341,8 @@ const APPLE = new Crop(
     preserveProcessMinutes: 76,
   },
   {
-    preserve: '/jars/apple.webp',
-    seed: '/seeds/apple.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/apple-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/apple-seed.webp',
   },
   {
     cropCode: CropCode.Apple,
@@ -355,7 +355,7 @@ const CORN = new Crop(
   CropType.Corn,
   Bonus.HarvestIncrease,
   CropSize.Single,
-  '/crops/corn.webp',
+  'https://pgp-cdn.b-cdn.net/corn-crop.webp',
   {
     base: 2,
     growthTime: 5,
@@ -377,8 +377,8 @@ const CORN = new Crop(
     preserveProcessMinutes: 48,
   },
   {
-    preserve: '/jars/corn.webp',
-    seed: '/seeds/corn.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/corn-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/corn-seed.webp',
   },
   {
     cropCode: CropCode.Corn,
@@ -391,7 +391,7 @@ const SPICY_PEPPER = new Crop(
   CropType.SpicyPepper,
   Bonus.QualityIncrease,
   CropSize.Bush,
-  '/crops/spicy-pepper.webp',
+  'https://pgp-cdn.b-cdn.net/spicy-pepper-crop.webp',
   {
     base: 6,
     growthTime: 6,
@@ -416,8 +416,8 @@ const SPICY_PEPPER = new Crop(
     preserveProcessMinutes: 38.5,
   },
   {
-    preserve: '/jars/spicy-pepper.webp',
-    seed: '/seeds/spicy-pepper.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/spicy-pepper-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/spicy-pepper-seed.webp',
   },
   {
     cropCode: CropCode.SpicyPepper,
@@ -430,7 +430,7 @@ const NAPA_CABBAGE = new Crop(
   CropType.NapaCabbage,
   Bonus.WaterRetain,
   CropSize.Single,
-  '/crops/napa-cabbage.webp',
+  'https://pgp-cdn.b-cdn.net/napa-cabbage-crop.webp',
   {
     base: 2,
     growthTime: 6,
@@ -452,8 +452,8 @@ const NAPA_CABBAGE = new Crop(
     preserveProcessMinutes: 48,
   },
   {
-    preserve: '/jars/napa-cabbage.webp',
-    seed: '/seeds/napa-cabbage.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/napa-cabbage-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/napa-cabbage-seed.webp',
   },
   {
     cropCode: CropCode.NapaCabbage,
@@ -466,7 +466,7 @@ const BOK_CHOY = new Crop(
   CropType.BokChoy,
   Bonus.WeedPrevention,
   CropSize.Single,
-  '/crops/bok-choy.webp',
+  'https://pgp-cdn.b-cdn.net/bok-choy-crop.webp',
   {
     base: 2,
     growthTime: 3,
@@ -488,8 +488,8 @@ const BOK_CHOY = new Crop(
     preserveProcessMinutes: 36,
   },
   {
-    preserve: '/jars/bok-choy.webp',
-    seed: '/seeds/bok-choy.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/bok-choy-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/bok-choy-seed.webp',
   },
   {
     cropCode: CropCode.BokChoy,
@@ -502,7 +502,7 @@ const BATTERFLY_BEAN = new Crop(
   CropType.BatterflyBean,
   Bonus.HarvestIncrease,
   CropSize.Bush,
-  '/crops/batterfly-bean.webp',
+  'https://pgp-cdn.b-cdn.net/batterfly-bean-crop.webp',
   {
     base: 6,
     growthTime: 6,
@@ -527,8 +527,8 @@ const BATTERFLY_BEAN = new Crop(
     preserveProcessMinutes: 33,
   },
   {
-    preserve: '/jars/batterfly-bean.webp',
-    seed: '/seeds/batterfly-bean.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/batterfly-bean-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/batterfly-bean-seed.webp',
   },
   {
     cropCode: CropCode.BatterflyBean,
@@ -541,7 +541,7 @@ const ROCKHOPPER_PUMPKIN = new Crop(
   CropType.RockhopperPumpkin,
   Bonus.QualityIncrease,
   CropSize.Bush,
-  '/crops/rockhopper-pumpkin.webp',
+  'https://pgp-cdn.b-cdn.net/pumpkin-crop.webp',
   {
     base: 2,
     growthTime: 9,
@@ -566,8 +566,8 @@ const ROCKHOPPER_PUMPKIN = new Crop(
     preserveProcessMinutes: 31.5,
   },
   {
-    preserve: '/jars/rockhopper-pumpkin.webp',
-    seed: '/seeds/rockhopper-pumpkin.webp',
+    preserve: 'https://pgp-cdn.b-cdn.net/pumpkin-jar.webp',
+    seed: 'https://pgp-cdn.b-cdn.net/pumpkin-seed.webp',
   },
   {
     cropCode: CropCode.RockhopperPumpkin,
