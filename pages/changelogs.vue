@@ -32,7 +32,7 @@ useHead({
       </div>
 
       <div class="grid gap-2">
-                <ChangelogItem>
+        <ChangelogItem>
           <template #title>
             <span class="font-bold">
               July 10, 2025 — 0.192 Parity</span>
@@ -41,9 +41,10 @@ useHead({
             <li>
               <span class="italic">Modified Crops —</span> Batterfly Bean changes applied
             </li>
-            
+
             <li>
-              <span class="italic">Internal: Changed Image Host —</span> Image host has been changed, please urgently report any issues if found
+              <span class="italic">Internal: Changed Image Host —</span> Image host has been changed, please urgently
+              report any issues if found
             </li>
           </template>
           <template #default>
@@ -70,7 +71,7 @@ useHead({
             <li>
               <span class="italic">Fix: Negative Displays — </span> Crop deficit now visible in the output display
             </li>
-            
+
             <li>
               <span class="italic">Fix: Scrollbars — </span> Fixed issue with horizontal scrollbars not appearing
             </li>
