@@ -6,7 +6,7 @@ useHead({
   link: [
     {
       rel: 'icon',
-      href: '/housing-logo.webp',
+      href: 'https://pgp-cdn.b-cdn.net/housing-logo.webp',
     },
   ],
   meta: [

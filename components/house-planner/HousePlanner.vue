@@ -540,34 +540,34 @@ function fitStageIntoParentContainer() {
             Cursor
           </p>
         </button>
-        <BuildingButton src="/buildings/icons/harvest-house.webp" label="Harvest House"
+        <BuildingButton src="https://pgp-cdn.b-cdn.net/harvest-house.webp" label="Harvest House"
           :is-active="(activeBuilding && activeBuilding.type) === BuildingType.HarvestHouse"
           @click="setActiveBuilding(createNewBuilding(BuildingType.HarvestHouse))" />
-        <BuildingButton src="/buildings/icons/large-room.webp" label="Large Room"
+        <BuildingButton src="https://pgp-cdn.b-cdn.net/large-room.webp" label="Large Room"
           :is-active="(activeBuilding && activeBuilding.type) === BuildingType.LargeHouse"
           @click="setActiveBuilding(createNewBuilding(BuildingType.LargeHouse))" />
-        <BuildingButton src="/buildings/icons/medium-room.webp" label="Medium Room"
+        <BuildingButton src="https://pgp-cdn.b-cdn.net/medium-room.webp" label="Medium Room"
           :is-active="(activeBuilding && activeBuilding.type) === BuildingType.MediumHouse"
           @click="setActiveBuilding(createNewBuilding(BuildingType.MediumHouse))" />
-        <BuildingButton src="/buildings/icons/small-room.webp" label="Small Room"
+        <BuildingButton src="https://pgp-cdn.b-cdn.net/small-room.webp" label="Small Room"
           :is-active="(activeBuilding && activeBuilding.type) === BuildingType.SmallHouse"
           @click="setActiveBuilding(createNewBuilding(BuildingType.SmallHouse))" />
-        <BuildingButton src="/buildings/icons/hallway.webp" label="Hallway"
+        <BuildingButton src="https://pgp-cdn.b-cdn.net/hallway.webp" label="Hallway"
           :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Hallway"
           @click="setActiveBuilding(createNewBuilding(BuildingType.Hallway))" />
-        <BuildingButton src="/buildings/icons/fireplace.webp" label="Fireplace"
+        <BuildingButton src="https://pgp-cdn.b-cdn.net/fireplace.webp" label="Fireplace"
           :is-active="(activeBuilding && activeBuilding.type) === BuildingType.Fireplace"
           @click="setActiveBuilding(createNewBuilding(BuildingType.Fireplace))" />
-        <BuildingButton src="/buildings/icons/kilima-porch.webp" label="Kilima Porch"
+        <BuildingButton src="https://pgp-cdn.b-cdn.net/kilima-porch.webp" label="Kilima Porch"
           :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaPorch"
           @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaPorch))" />
-        <BuildingButton src="/buildings/icons/kilima-door.webp" label="Kilima Door"
+        <BuildingButton src="https://pgp-cdn.b-cdn.net/kilima-door.webp" label="Kilima Door"
           :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaDoor"
           @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaDoor))" />
-        <BuildingButton src="/buildings/icons/bay-window.webp" label="Bay Window"
+        <BuildingButton src="https://pgp-cdn.b-cdn.net/bay-window.webp" label="Bay Window"
           :is-active="(activeBuilding && activeBuilding.type) === BuildingType.BayWindow"
           @click="setActiveBuilding(createNewBuilding(BuildingType.BayWindow))" />
-        <BuildingButton src="/buildings/icons/kilima-courtyard.webp" label="Kilima Courtyard"
+        <BuildingButton src="https://pgp-cdn.b-cdn.net/kilima-courtyard.webp" label="Kilima Courtyard"
           :is-active="(activeBuilding && activeBuilding.type) === BuildingType.KilimaCourtyard"
           @click="setActiveBuilding(createNewBuilding(BuildingType.KilimaCourtyard))" />
       </div>

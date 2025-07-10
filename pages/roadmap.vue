@@ -37,7 +37,7 @@ useHead({
         <div class="card card-compact bg-palia-blue-dark rounded-md max-w-2xl px-4">
           <div class="card-body">
             <p class="leading-6 text-sm">
-              <span class="font-bold text-base">Update (October 14):</span>
+              <span class="font-bold text-base">Update (October 14, 2023):</span>
               I've been working slower than before on the Garden Planner. I'm busy on other things,
               and my hands are recovering from issues I've been having for a while.
             </p>

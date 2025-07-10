@@ -6,7 +6,7 @@
         <div class="w-full py-3 navbar sm:px-12">
           <div class="flex-1">
             <NuxtLink to="/" class="flex items-center gap-2">
-              <img format="webp" src="/logo.webp" width="48px" height="48px" alt="Palia Garden Planner Logo"
+              <img format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48px" alt="Palia Garden Planner Logo"
                 class="max-w-[3rem]">
               <div class="flex flex-col gap-0 leading-tight">
                 <h1 class="text-xl font-bold leading-tight text-left lg:text-2xl">
