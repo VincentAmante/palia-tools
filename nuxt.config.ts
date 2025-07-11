@@ -8,14 +8,19 @@ export default defineNuxtConfig({
   ],
 
   routeRules: {
-    '/_nuxt/**': { 
-      headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=604800'
-      }
-    },
-    '/**': { 
+    '/**': {
       headers: {
         'Cache-Control': 'public, max-age=0, s-maxage=3600'
+      }
+    },
+    '/_nuxt/**': {
+      headers: {
+        'Cache-Control': 'public, max-age=604800, immutable'
+      }
+    },
+    '/_nuxt/builds/**': {
+      headers: {
+        'Cache-Control': 'public, max-age=0, s-maxage=60, must-revalidate'
       }
     }
   },
@@ -38,7 +43,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@pinia/nuxt',
     '@nuxt/devtools',
-        '@nuxt/test-utils/module'
+    '@nuxt/test-utils/module'
   ],
 
   build: {
