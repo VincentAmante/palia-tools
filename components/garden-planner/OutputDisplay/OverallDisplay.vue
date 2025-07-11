@@ -144,7 +144,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
     <section class="grid gap-1 md:grid-cols-2">
       <div class="flex flex-col w-full" v-if="processor.seedCollectorsCount > 0">
         <div class="flex items-end">
-          <img src="/public/crafters/seeder.webp" class="max-w-6" alt="Seed Collectors" aria-hidden="true">
+          <img src="https://pgp-cdn.b-cdn.net/seeder.webp" class="max-w-6" alt="Seed Collectors" aria-hidden="true">
           <p class="px-1 text-sm font-semibold text-palia-blue-dark dark:text-accent">
             Seed Collectors
             <span v-if="processor.seedCollectorsCount > 0">- {{ processor.seedCollectorsCount }}</span>
@@ -159,7 +159,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
       </div>
       <div class="flex flex-col w-full" v-if="processor.preserveJarsCount > 0">
         <div class="flex items-end">
-          <img src="/public/crafters/preserve-jar.webp" class="max-w-6" alt="Preserve Jars" aria-hidden="true">
+          <img src="https://pgp-cdn.b-cdn.net/preserve-jar.webp" class="max-w-6" alt="Preserve Jars" aria-hidden="true">
           <p class="px-1 text-sm font-semibold text-palia-blue-dark dark:text-accent">
             Preserve Jars
             <span v-if="processor.preserveJarsCount > 0">- {{ processor.preserveJarsCount }}</span>
