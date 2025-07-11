@@ -7,6 +7,19 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-svg-core/styles.css',
   ],
 
+  routeRules: {
+    '/_nuxt/**': { 
+      headers: {
+        'Cache-Control': 'public, max-age=0, s-maxage=604800'
+      }
+    },
+    '/**': { 
+      headers: {
+        'Cache-Control': 'public, max-age=0, s-maxage=3600'
+      }
+    }
+  },
+
   devtools: {
     enabled: true,
   },
