@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import PGPFooter from '~/components/PGPFooter.vue';
+import PGPHeader from '~/components/PGPHeader.vue';
 
 useHead({
   title: 'Palia Garden Planner',

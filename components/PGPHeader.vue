@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import AppDivider from './AppDivider.vue'
+
+</script>
 <template>
   <div>
     <header class="z-50 drawer drawer-end">
