@@ -69,10 +69,14 @@ export default defineNuxtConfig({
           chunkFileNames: `_nuxt/[name].[hash:16].js`,
           assetFileNames: `_nuxt/[name].[hash:16].[ext]`,
           manualChunks: (id) => {
-            if (id.includes('/house-planner/')){
-              return 'housing-components'
+            if (id.includes('node_modules')) {
+              return 'vendor'
             }
 
+            if (id.includes('/components/house-planner/')){
+              return 'housing-components'
+            }
+            
             if (id.includes('/components/')){
               return 'components'
             }
