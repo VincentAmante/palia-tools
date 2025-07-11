@@ -11,9 +11,9 @@ import type { TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-
 import { useSettingsCode } from '~/stores/useSettingsCode'
 import { ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
+import AppDivider from './AppDivider.vue'
 
 import { usePlannerDisplayConfig } from '~/stores/usePlannerDisplayConfig'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const display = ref<HTMLElement | null>(null)
 const isTakingScreenshot = useTakingScreenshot()
