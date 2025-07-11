@@ -67,20 +67,7 @@ export default defineNuxtConfig({
           // This will change the hash to 16 characters
           entryFileNames: `_nuxt/[name].[hash:16].js`,
           chunkFileNames: `_nuxt/[name].[hash:16].js`,
-          assetFileNames: `_nuxt/[name].[hash:16].[ext]`,
-          manualChunks: (id) => {
-            if (id.includes('node_modules')) {
-              return 'vendor'
-            }
-
-            if (id.includes('/components/house-planner/')){
-              return 'housing-components'
-            }
-            
-            if (id.includes('/components/')){
-              return 'components'
-            }
-          }
+          assetFileNames: `_nuxt/[name].[hash:16].[ext]`
         }
       }
     }
