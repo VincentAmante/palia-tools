@@ -6,6 +6,52 @@ import type { CropItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IInventoryIt
 import type { ICropConversions } from './crop'
 import { parseCropId } from '../utils/garden-helpers'
 
+
+
+/**
+ * Unified time trackers for my sanity, cause what did I write LMAO
+ * 
+ * Minutes tracked
+ * - ProcessMinutes = time spent processing
+ * - IdleMinutes = hours to next phase
+ * - DelayMinutes = time spent waiting for first harvest
+ * 
+ * Time Modifiers
+ * - Busiest = Time taken from the crafter with the longest process time
+ * - Fastest = Opposite
+ * - Average = Mean time between all crafters
+ * - Total = Time has not been divided by crafters
+ * - Effective = Time considers crafter division
+ * - WithDelay = Process time includes delay waiting for first harvest
+ * - NoIdle = Time will not include hours to the next cycle if finished
+ * - Arbitrary = Time chosen based on inter-cycle relations (First cycle, mid cycle, last cycle)
+ * 
+ * Note: Arbitrary is to be used for estimating fastest time to process
+ */
+interface IProcessTimeCycleStats {
+  idleMinutes: number
+  delayMinutes: number
+
+  processMinutesTotal: number
+
+  processMinutesEffectiveAverage: number
+  processMinutesEffectiveAverageNoIdle: number
+  processMinutesEffectiveAverageWithDelay: number
+  processMinutesEffectiveAverageNoIdleWithDelay: number
+
+  processMinutesEffectiveBusiest: number
+  processMinutesEffectiveBusiestNoIdle: number
+  processMinutesEffectiveBusiestWithDelay: number
+
+  processMinutesArbitrary: number
+}
+
+
+interface IGoldStats {
+
+}
+
+
 // Interface for the final output of the processor
 export interface ProcessorOutput {
   crops: Map<ICropNameWithGrowthDiff, Pick<ProcessOutputInfo, 'count' | 'cropType' | 'itemType'>>
@@ -725,7 +771,6 @@ interface IProcessCycleArgs {
   isFirstCycle?: boolean,
   isLastCycle?: boolean
 }
-
 // Interface for cycle processing data
 interface IProcessCycleData {
   totalProduceCount: number
