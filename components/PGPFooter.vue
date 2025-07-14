@@ -9,6 +9,9 @@
         <p>
           This tool is fan-made and not affliated in any way with Singularity 6 or Palia.
         </p>
+        <NuxtLink to="/privacy-policy" :prefetch="false" class="btn text-left justify-start normal-case btn-sm w-fit">
+          Privacy Policy
+        </NuxtLink>
       </div>
       <div class="flex flex-col w-full items-center lg:w-fit lg:items-end gap-1">
         <div class="flex items-center gap-1">
