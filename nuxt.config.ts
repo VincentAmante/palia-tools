@@ -15,26 +15,16 @@ export default defineNuxtConfig({
     },
     '/_nuxt/**': {
       headers: {
-        'Cache-Control': 'public, max-age=604800, immutable'
+        'Cache-Control': 'public, max-age=31536000, immutable'
       }
     },
     '/_nuxt/builds/**': {
       headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=60, must-revalidate'
+        'Cache-Control': 'public, max-age=0, s-maxage=3600'
       }
     }
   },
 
-  devtools: {
-    enabled: true,
-  },
-  postcss: {
-    plugins: {
-      // tailwindcss: {},
-      // autoprefixer: {},
-      // '@tailwindcss/postcss': {}
-    },
-  },
   nitro: {
     static: true
   },

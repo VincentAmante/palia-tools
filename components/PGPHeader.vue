@@ -9,7 +9,7 @@ import AppDivider from './AppDivider.vue'
       <div class="flex flex-col drawer-content">
         <div class="w-full py-3 navbar sm:px-12">
           <div class="flex-1">
-            <NuxtLink to="/" class="flex items-center gap-2">
+            <NuxtLink to="/" class="flex items-center gap-2" :prefetch="false">
               <img format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48px" alt="Palia Garden Planner Logo"
                 class="max-w-[3rem]">
               <div class="flex flex-col gap-0 leading-tight">
@@ -108,17 +108,17 @@ import AppDivider from './AppDivider.vue'
             </label>
           </li>
           <li class="text-lg font-bold normal-case">
-            <NuxtLink to="/roadmap">
+            <NuxtLink to="/roadmap" :prefetch="false">
               Roadmap
             </NuxtLink>
           </li>
           <li class="text-lg font-bold normal-case">
-            <NuxtLink to="/changelogs">
+            <NuxtLink to="/changelogs" :prefetch="false">
               Changelogs
             </NuxtLink>
           </li>
           <li class="text-lg font-bold normal-case">
-            <NuxtLink to="/credits">
+            <NuxtLink to="/credits" :prefetch="false">
               Credits
             </NuxtLink>
           </li>
