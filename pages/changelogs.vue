@@ -18,7 +18,7 @@ useHead({
 
 <template>
   <main v-once class="flex flex-col gap-2 px-2 py-2 text-justify sm:px-4 lg:px-14">
-    <NuxtLink to="/" class="flex items-center gap-2 btn w-fit btn-sm btn-ghost">
+    <NuxtLink to="/" class="flex items-center gap-2 btn w-fit btn-sm btn-ghost" :prefetch="false">
       <font-awesome-icon :icon="['fas', 'arrow-left']" class="" />
       <p class="">
         Return
@@ -498,7 +498,7 @@ useHead({
             </li>
             <li>
               <span class="italic">House Planner development now indefinitely halted —</span> Please see the
-              <NuxtLink class="link" to="/house-planner">
+              <NuxtLink class="link" to="/house-planner" :prefetch="false">
                 House Planner page
               </NuxtLink> for more information
             </li>
@@ -661,7 +661,7 @@ useHead({
             </li>
             <li>
               <span class="ml-5">Experimental Release</span> - Added a proof of concept house planner: <NuxtLink
-                class="link" to="/house-planner">
+                class="link" to="/house-planner" :prefetch="false">
                 Link Here
               </NuxtLink> (Warning: Heavily early stage, not recommended for regular use)
             </li>
@@ -679,7 +679,7 @@ useHead({
               potential feature on another website that's not mine to announce :D
             </li>
             <li class="ml-5">
-              See here: <NuxtLink class="link" to="/compact">
+              See here: <NuxtLink class="link" to="/compact" :prefetch="false">
                 Compact View
               </NuxtLink>
             </li>
@@ -747,7 +747,7 @@ useHead({
               Otherwise, this opens up a new end goal of being the one-stop shop for simulating certain Palia mechanics.
             </p>
             <p>
-              You may try it out yourself here: <NuxtLink class="link" to="/house-planner">
+              You may try it out yourself here: <NuxtLink class="link" to="/house-planner" :prefetch="false">
                 House Planner
               </NuxtLink>
             </p>

@@ -18,7 +18,7 @@ useHead({
 
 <template>
   <main class="flex flex-col gap-2 px-4 py-2 text-justify md:px-8 lg:px-14">
-    <NuxtLink to="/" class="flex items-center gap-2 btn w-fit btn-sm btn-ghost">
+    <NuxtLink to="/" class="flex items-center gap-2 btn w-fit btn-sm btn-ghost" :prefetch="false">
       <font-awesome-icon :icon="['fas', 'arrow-left']" class="" />
       <p class="">
         Return
