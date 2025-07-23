@@ -72,7 +72,7 @@ export default defineNuxtConfig({
   ],
 
   app: {
-    cdnURL: "https://pgp-cdn.b-cdn.net/25-07-23/dist/",
+    // cdnURL: "https://pgp-cdn.b-cdn.net/25-07-23/dist/",
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
