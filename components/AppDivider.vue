@@ -7,8 +7,10 @@
           clip-rule="evenodd" />
       </svg>
     </div>
+
+
     <div class="divider m-0 before:bg-misc after:bg-misc dark:before:bg-water-retain dark:after:bg-water-retain before:h-[1px] after:h-[1px] w-full px-[2px]" />
-    <div class="absolute right-0">
+    <div class=" right-0 absolute">
       <!-- <img
         class="w-auto h-3"
         format="webp"

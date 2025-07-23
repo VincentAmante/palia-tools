@@ -54,7 +54,6 @@ export default defineNuxtConfig({
       chunkSizeWarningLimit: 250,
       rollupOptions: {
         output: {
-          // This will change the hash to 16 characters
           entryFileNames: `_nuxt/[name].[hash:16].js`,
           chunkFileNames: `_nuxt/[name].[hash:16].js`,
           assetFileNames: `_nuxt/[name].[hash:16].[ext]`
