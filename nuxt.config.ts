@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     },
     '/_nuxt/builds/**': {
       headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=3600'
+        'Cache-Control': 'public, max-age=60, stale-while-revalidate=3600'
       }
     }
   },
@@ -54,7 +54,6 @@ export default defineNuxtConfig({
       chunkSizeWarningLimit: 250,
       rollupOptions: {
         output: {
-          // This will change the hash to 16 characters
           entryFileNames: `_nuxt/[name].[hash:16].js`,
           chunkFileNames: `_nuxt/[name].[hash:16].js`,
           assetFileNames: `_nuxt/[name].[hash:16].[ext]`
@@ -72,6 +71,7 @@ export default defineNuxtConfig({
   ],
 
   app: {
+    // cdnURL: "https://pgp-cdn.b-cdn.net/25-07-23/dist/",
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
