@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 useServerSeoMeta({
   ogTitle: 'Palia Garden Planner',
   ogDescription: 'A fan-made tool for planning out your garden. Displays crop and fertiliser bonuses, approximates harvest yield, and provides shareable save codes!',
@@ -27,6 +28,11 @@ useHead({
   htmlAttrs: {
     lang: 'en',
   },
+  link: [
+    {
+      rel: 'icon', type: 'image/x-icon', href: 'https://pgp-cdn.b-cdn.net/favicon.ico'
+    }
+  ]
 })
 </script>
 
