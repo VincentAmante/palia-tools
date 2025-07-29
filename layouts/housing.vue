@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import PGPFooter from '~/components/PGPFooter.vue';
 import HousingHeader from '~/components/house-planner/HousingHeader.vue'
 
 
