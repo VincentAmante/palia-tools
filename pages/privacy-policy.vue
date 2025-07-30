@@ -74,7 +74,7 @@ useHead({
                     </ul>
                     <h3 class="text-xl font-semibold">Bunny CDN</h3>
                     <ul class="list-disc list-inside">
-                        <li>Static assets (like images or scripts) are delivered using Bunny CDN.</li>
+                        <li>Static assets — including fonts, images, and scripts — are delivered using Bunny CDN.</li>
                         <li>Bunny CDN may temporarily log IP addresses to prevent abuse and improve delivery speed.</li>
                         <li>They do not store personal data beyond what is required for operation.</li>
                         <li>

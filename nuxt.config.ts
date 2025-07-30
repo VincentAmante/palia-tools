@@ -7,6 +7,10 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-svg-core/styles.css',
   ],
 
+  experimental: {
+    payloadExtraction: false
+  },
+
   routeRules: {
     '/**': {
       headers: {
