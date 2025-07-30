@@ -36,7 +36,7 @@ useHead({
                     Effective Date: July 14, 2025
                 </p>
                 <p class="text-sm">
-                    Last Updated: July 14, 2025
+                    Last Updated: July 30, 2025
                 </p>
             </div>
             <div class="flex flex-col gap-8 p-4">
