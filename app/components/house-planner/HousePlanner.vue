@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import Konva from 'konva'
-import { BuildingType } from 'assets/scripts/house-planner/enums/buildingType'
+import { BuildingType } from '@/assets/scripts/house-planner/imports'
 import HouseGrid from './HouseGrid.vue'
 import BuildingButton from './BuildingButton.vue'
 import type { Building } from '@/assets/scripts/house-planner/classes/building'
 import type { Direction } from '@/assets/scripts/house-planner/imports'
 import { BayWindow, Fireplace, Hallway, HarvestHouse, KilimaCourtyard, KilimaDoor, KilimaPorch, LargeHouse, MediumHouse, NullHouse, SmallHouse } from '@/assets/scripts/house-planner/imports'
 
-import { useHousePlanConfig } from '@/stores/useHousePlanConfig'
 
 const houseConfig = useHousePlanConfig()
 const harvestHouse = ref(new HarvestHouse({ cellSize: houseConfig.CELL_SIZE, sizeMultiplier: houseConfig.SIZE_MULTIPLIER }))

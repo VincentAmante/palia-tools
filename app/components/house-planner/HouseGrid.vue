@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type Konva from 'konva'
-import { useHousePlanConfig } from '@/stores/useHousePlanConfig'
 
 const stageConfig = useHousePlanConfig()
 
