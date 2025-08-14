@@ -165,6 +165,8 @@ export interface ITotalHarvest {
 
 export interface IHarvestCyclePhase {
   dayOfHarvest: number
+
+  // phase length = number of growth ticks
   phaseLength: number
   yield: {
     base: ICropYield & {

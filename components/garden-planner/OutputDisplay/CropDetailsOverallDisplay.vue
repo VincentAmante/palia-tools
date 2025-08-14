@@ -8,6 +8,7 @@ import { CropType } from '~/assets/scripts/garden-planner/imports'
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
 import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue'
 import { formatMinutesToDaysHoursMinutes } from '~/utils/formatters' // Assuming a formatter utility exists or needs creation
+import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue'
 
 
 const harvester = useHarvester()
@@ -140,7 +141,8 @@ const selectedCropAsCrop = computed(() => {
 <template>
     <section v-if="selectedCropDetail && selectedCropCycleData" class="py-1 flex flex-col gap-1 dark:text-accent">
         <!-- Cycle Info -->
-        <section class="p-2 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue-dark">
+        <section
+            class="p-2 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue-dark">
             <div class="flex flex-col gap-1">
                 <div class="flex flex-wrap gap-1 text-sm">
                     <p class="font-semibold badge badge-sm">{{ selectedCropCycleData.phases.length }}<span
@@ -200,38 +202,45 @@ const selectedCropAsCrop = computed(() => {
                     Harvests can't process before next harvest
                 </p>
             </div>
-            <div class="grid grid-cols-2 flex-wrap gap-1 gap-y-2 text-sm xl:grid-cols-3 pb-4">
-                <div class="flex flex-col gap-1 py-1 border border-palia-blue px-1 rounded-xs justify-between">
-                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Average Produce/Cycle:</p>
-                    <ItemDisplay class="max-w-12"
+            <div class="grid grid-cols-2 flex-wrap gap-1 text-sm xl:grid-cols-3 pb-4">
+                <div class="flex gap-1 py-1 border flex-col border-palia-blue px-1 rounded-xs justify-between">
+                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Average Produce per
+                        Cycle</p>
+
+                    <ItemDisplay class="max-w-10"
                         :imgSrc="selectedCropAsCrop![`${selectedCropIsProcessedAs === ItemType.Preserve ? 'preserveImage' : 'seedImage'}`]"
-                        :imgAlt="`${selectedCropAsCrop!.type} ${selectedCropIsProcessedAs}`"
-                        :count="selectedCropProcessingData.averageProduce" />
+                        :imgAlt="`${selectedCropAsCrop!.type} ${selectedCropIsProcessedAs}`" :count="selectedCropProcessingData.averageProduce" />
                 </div>
-                <div class="flex flex-col gap-1 py-1 border border-palia-blue px-2 justify-between rounded-xs">
+                <!-- <div class="flex gap-1 py-1 border border-palia-blue px-2 justify-between rounded-xs">
                     <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Gold Generated</p>
-                    <div class="font-bold text-lg flex items-center gap-1">
+                    <div class="font-bold flex items-center gap-1">
                         <img width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
                             format="webp">
                         <p>{{
                             Math.round(selectedCropProcessingData.averageGoldGenerated).toLocaleString()
                         }}</p>
                     </div>
-                </div>
-                <div class="flex flex-col gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
-                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Total Active Processing Minutes</p>
-                    <p class="font-bold text-lg"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
+                </div> -->
+                <div class="flex gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
+                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Total Active
+                        Processing
+                        Minutes</p>
+                    <p class="font-bold"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
                         formatMinutesToDaysHoursMinutes(selectedCropProcessingData.totalProcessMinutes) }}</p>
                 </div>
-                <div class="flex flex-col gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
-                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Average Cycle Processing Time</p>
-                    <p class="font-bold text-lg"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
+                <div class="flex gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
+                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Average Cycle
+                        Processing Time
+                    </p>
+                    <p class="font-bold"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
                         formatMinutesToDaysHoursMinutes(selectedCropProcessingData.averageProcessMinutes)
                     }}</p>
                 </div>
-                <div class="flex flex-col gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
-                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Estimated Time to Process Everything</p>
-                    <p class="font-bold text-lg"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
+                <div class="flex gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
+                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Estimated Time to
+                        Process
+                        Everything</p>
+                    <p class="font-bold"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
                         formatMinutesToDaysHoursMinutes(selectedCropProcessingData.effectiveProcessMinutes) }}</p>
                 </div>
             </div>

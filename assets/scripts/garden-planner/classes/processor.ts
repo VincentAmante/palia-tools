@@ -14,7 +14,7 @@ import { parseCropId } from '../utils/garden-helpers'
  * Minutes tracked
  * - ProcessMinutes = time spent processing
  * - IdleMinutes = hours to next phase
- * - DelayMinutes = time spent waiting for first harvest
+ * - DelayMinutes = time spent waiting for current harvest
  * 
  * Time Modifiers
  * - Busiest = Time taken from the crafter with the longest process time
@@ -28,27 +28,42 @@ import { parseCropId } from '../utils/garden-helpers'
  * 
  * Note: Arbitrary is to be used for estimating fastest time to process
  */
-interface IProcessTimeCycleStats {
-  idleMinutes: number
+interface IProcessTimeStats {
+  idleMinutesAverage: number;
   delayMinutes: number
 
   processMinutesTotal: number
 
   processMinutesEffectiveAverage: number
-  processMinutesEffectiveAverageNoIdle: number
+  processMinutesEffectiveAverageWithIdle: number
   processMinutesEffectiveAverageWithDelay: number
-  processMinutesEffectiveAverageNoIdleWithDelay: number
+  processMinutesEffectiveAverageWithIdleWithDelay: number
 
   processMinutesEffectiveBusiest: number
-  processMinutesEffectiveBusiestNoIdle: number
+  processMinutesEffectiveBusiestWithIdle: number
   processMinutesEffectiveBusiestWithDelay: number
 
   processMinutesArbitrary: number
 }
 
 
+// TODO: Moved to a more universal spot
+// This is meant to be a universal gold stat per crop group
 interface IGoldStats {
+  // overall gold produced during the duration of the stat
+  goldTotal: number
 
+  // gold per each minute spent
+  goldPerMinute: number
+
+  // gold per how many tiles this crop group uses up
+  goldPerTile: number
+
+  // gold per growth tick based on duration
+  goldPerGrowthTick: number
+
+  // gold per how many crafters this crop uses up
+  goldPerCrafter: number
 }
 
 
@@ -68,6 +83,7 @@ export interface IDetailedProcessingInfo {
   averageProduce: number,
   totalProcessMinutes: number
   effectiveProcessMinutes: number
+  timeStats?: IProcessTimeStats
 }
 
 // Interface for processing output information
@@ -143,7 +159,6 @@ export default class Processor {
   // Equipment counts
   private _seedCollectorsCount = 0
   private _preserveJarsCount = 0
-
   // Getters for private properties
   get output(): ProcessorOutput {
     return this._output
@@ -189,6 +204,8 @@ export default class Processor {
     this._preserveJarsCount = 0
     this._output.detailedProcessingInfo = new Map() // Reset detailed info
   }
+
+
 
   // Main processing method that delegates to process_v2
   process(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>): void {
@@ -628,12 +645,14 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
   const conversionsDivided = Math.floor(conversionsToMake / crafterCount)
   const conversionsDividedRemainder = ((conversionsToMake % crafterCount) + conversionsRemainder)
 
+
   // Calculate total produce and gold
   const totalProduceCount = (conversionsToMake + conversionsRemainder) * producePerConversion
   const goldGenerated = totalProduceCount * produceGoldValue
 
-  // Calculate time until next harvest phase
+  // calculate time until next harvest phase
   let hoursToNextPhase = phaseData.phaseLength
+
   if (cycleData.phases.length > 1) {
     if (currentPhaseIndex === (cycleData.phases.length - 1))
       hoursToNextPhase = cycleData.phases[0].phaseLength
@@ -641,20 +660,13 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
       hoursToNextPhase = cycleData.phases[currentPhaseIndex + 1].phaseLength
   }
 
-  // console.log('*---*')
-
-  // console.log('time', hoursToNextPhase * 60, minutesPerConversion)
-
   const conversionsPossiblePerCrafter = (hoursToNextPhase * 60) / minutesPerConversion
   const conversionsPossible = conversionsPossiblePerCrafter * crafterCount
 
   let averageExcessTimeMinutes = 0
 
-  if ((cropCount / cropsPerConversion) > conversionsPossible) {
-    // averageExcessTimeMinutes = (((conversionsToMake + conversionsRemainder) - conversionsPossible) * minutesPerConversion)
+  if ((cropCount / cropsPerConversion) > conversionsPossible)
     averageExcessTimeMinutes = (((conversionsToMake + conversionsRemainder) - conversionsPossible) * minutesPerConversion) / crafterCount
-    // console.log('average excess time', averageExcessTimeMinutes / crafterCount)
-  }
 
 
   // Initialize crafter data
@@ -704,10 +716,12 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
   // Aggregate results from all crafters
   let canFinishBeforeNextHarvest = true
   let totalProcessMinutes = 0
+  let totalProcessMinutesWithIdle = 0
   let lowestCrafterTimeMinutes = Number.POSITIVE_INFINITY
   let highestCrafterTimeMinutes = Number.NEGATIVE_INFINITY
   let longestProcessMinutes = Number.NEGATIVE_INFINITY
   let longestProcessMinutesNoIdle = Number.NEGATIVE_INFINITY
+  let idleMinutesAverage = 0
 
   for (const crafter of crafterData) {
     if (!crafter.canFinishBeforeNextHarvest) {
@@ -719,6 +733,8 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
     crafter.excessTimeMinutes = Math.max(0, crafter.processTimeMinutes - (hoursToNextPhase * 60))
 
     totalProcessMinutes += crafter.processTimeMinutes
+    totalProcessMinutesWithIdle += crafter.processTimeMinutes + crafter.idleTimeMinutes
+    idleMinutesAverage += crafter.idleTimeMinutes
 
     // Track min/max times
     if (crafter.processTimeMinutes < lowestCrafterTimeMinutes)
@@ -734,6 +750,27 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
     if (crafter.processTimeMinutes > longestProcessMinutesNoIdle)
       longestProcessMinutesNoIdle = crafter.processTimeMinutes
   }
+
+  // TODO: Finish this
+  const timeStats: IProcessTimeStats = {
+    idleMinutesAverage: idleMinutesAverage / crafterCount,
+    delayMinutes: phaseData.phaseLength,
+
+    processMinutesTotal: totalProcessMinutes,
+
+    processMinutesEffectiveAverage: totalProcessMinutes / crafterCount,
+    processMinutesEffectiveAverageWithIdle: totalProcessMinutesWithIdle / crafterCount,
+    processMinutesEffectiveAverageWithDelay: totalProcessMinutesWithIdle + (phaseData.phaseLength * crafterCount),
+    processMinutesEffectiveAverageWithIdleWithDelay: totalProcessMinutesWithIdle + (phaseData.phaseLength * crafterCount),
+
+    processMinutesEffectiveBusiest: highestCrafterTimeMinutes,
+    processMinutesEffectiveBusiestWithDelay: highestCrafterTimeMinutes + phaseData.phaseLength,
+    processMinutesEffectiveBusiestWithIdle: highestCrafterTimeMinutes + (phaseData.phaseLength),
+
+    processMinutesArbitrary: longestProcessMinutes
+  }
+
+  console.log('timeStats', timeStats)
 
 
   // Return the results of processing this harvest
