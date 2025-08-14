@@ -49,7 +49,7 @@
     "eslint-plugin-vue": "^10.0.1",
     "globals": "^16.0.0",
     "happy-dom": "^17.4.7",
-    "nuxt": "^3.17.2",
+    "nuxt": "^4.0.3",
     "playwright-core": "^1.52.0",
     "postcss": "^8.4.28",
     "tailwind-scrollbar": "^4.0.2",

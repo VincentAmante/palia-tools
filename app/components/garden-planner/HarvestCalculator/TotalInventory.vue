@@ -1,0 +1,24 @@
+<script setup lang="ts">
+import ItemDisplay from './ItemDisplay.vue'
+
+const processor = useProcessor()
+</script>
+
+<template>
+  <section class="">
+    <h2 class="text-sm font-semibold capitalize text-palia-blue-dark dark:text-accent">
+      Produce
+    </h2>
+    <ul class="flex flex-wrap gap-1 p-2 bg-opacity-50 rounded-md bg-accent min-h-16 gap-y-2 border border-misc-dark dark:bg-palia-blue-light dark:border-palia-blue-dark">
+      <ItemDisplay
+        v-for="[name, item] in processor.inventory"
+        :key="name"
+        :img-src="item.img.src"
+        :img-alt="item.img.alt"
+        :star="item.isStar"
+        :count="item.count"
+        :base-gold-value="item.baseGoldValue"
+      />
+    </ul>
+  </section>
+</template>
