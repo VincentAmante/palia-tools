@@ -71,7 +71,7 @@ export default defineNuxtConfig({
   },
 
   plugins: [
-    { src: '~/plugins/vuekonva', mode: 'client' },
+    { src: '~/app/plugins/vuekonva', mode: 'client' },
   ],
 
   app: {
