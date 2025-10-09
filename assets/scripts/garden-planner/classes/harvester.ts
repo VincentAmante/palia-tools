@@ -23,7 +23,7 @@ interface IGardenStats {
 
   // if weeding is needed, then every day is potentially a busy day
   weedingIsNeeded: boolean
-} 
+}
 
 /**
  * The Harvester class is responsible for simulating the yield of crops over a given number of days.
@@ -177,7 +177,6 @@ export default class Harvester {
        *  Days left after harvest time ends but a crop still has an unfinished cycle
        */
       const cycleRemainder = dayOfLastHarvest % lastDayOfCycle
-      // console.log(`Cycles: ${cycles}, Cycle Remainder: ${cycleRemainder}, Last Day of Cycle: ${lastDayOfCycle}, Day of Last Harvest: ${dayOfLastHarvest}`);
 
       let remainingHarvests = 0
       if (cycleRemainder > 0) {
@@ -228,6 +227,7 @@ export default class Harvester {
         ? `${crop.type}-${options.useStarSeeds ? 'Star' : 'Base'}-Growth`
         : seedsRequiredId) satisfies ICropNameWithGrowthDiff
 
+
       const baseId = (differentiateByGrowthBoost ? `${crop.type}-Base-Growth` : `${crop.type}-Base`) satisfies ICropNameWithGrowthDiff
       const starId = (differentiateByGrowthBoost ? `${crop.type}-Star-Growth` : `${crop.type}-Star`) satisfies ICropNameWithGrowthDiff
 
@@ -258,8 +258,8 @@ export default class Harvester {
             seedsRequired: new Map(),
           }
 
-          const baseCropYield = harvestDay.crops.get(`${crop.type}-Base`) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } satisfies ICropYield
-          const starCropYield = harvestDay.crops.get(`${crop.type}-Star`) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } satisfies ICropYield
+          const baseCropYield = harvestDay.crops.get(baseId) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } satisfies ICropYield
+          const starCropYield = harvestDay.crops.get(starId) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } satisfies ICropYield
 
           harvestDay.crops.set(baseId, {
             ...addCropYields(baseCropYield, baseCrop),
@@ -338,7 +338,6 @@ export default class Harvester {
     // Sort the harvests by day for chronological calculations
     dayHarvests = new Map([...dayHarvests.entries()].sort(([a], [b]) => a - b))
 
-    // console.log('dayHarvests', dayHarvests)
     /**
      * Contains the remainder of seeds after replanting for the next replant cycle
      */
@@ -358,7 +357,9 @@ export default class Harvester {
       totalCropsConsumed: 0,
       deductionsDone: 0
     }
-    for (const [, harvest] of dayHarvests) {
+
+
+    for (const [day, harvest] of dayHarvests) {
       // Deduct seeds required for replanting
       if (options.includeReplantCost) {
         for (const [id, seedsRequiredInfo] of harvest.seedsRequired) {
@@ -439,8 +440,11 @@ export default class Harvester {
           totalWithDeductions: 0,
         } satisfies ICropYield
 
+        const newYield = addCropYields(total, cropYield)
+        
+
         this._totalHarvest.crops.set(cropId, {
-          ...addCropYields(total, cropYield),
+          ...newYield,
           cropType: crop,
           isStar,
         })
@@ -484,11 +488,6 @@ export default class Harvester {
 
     this._dayHarvests = dayHarvests
     this._totalHarvest.lastHarvestDay = dayOfLastHarvest
-
-
-    // this._dayHarvests
-    // this._totalHarvest.crops
-    // this._totalHarvest.seedsRemainder
   }
 }
 
