@@ -7,6 +7,13 @@ class Fertiliser {
   private _effect: Bonus
   private _image: string
   private _id: string = uniqid()
+  private _value = {
+    goldShop: 0,
+    medalsShop: 0,
+
+    // inherent value from wormers
+    goldValue: 0,
+  }
 
   constructor(
     type: FertiliserType,

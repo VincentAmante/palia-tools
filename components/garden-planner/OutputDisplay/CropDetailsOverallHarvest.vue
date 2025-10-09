@@ -46,14 +46,29 @@ const { list, containerProps, wrapperProps } = useVirtualList(listFiltered, {
 const size = computed(() => {
     return props.shouldBeMaxSize ? 368 : 338
 })
+
+const selectedTab = ref<'harvests' | 'details'>('harvests')
 </script>
 
 <template>
-    <section class="h-full">
-        <h3 class="text-sm font-semibold dark:text-accent">Harvests</h3>
-        <div class="bg-secondary p-2 rounded-sm border border-misc dark:bg-palia-blue dark:border-palia-blue-light" v-bind="containerProps" :style="{height: `${size}px`}">
+    <section class="h-full flex flex-col gap-1">
+        <div class="flex gap-1 flex-col lg:flex-row  py-1 gap-x-4 items-center">
+            <h3
+                class="text-sm font-semibold w-fit text-palia-blue-dark p-0.5 flex gap-1 items-center bg-accent dark:bg-palia-blue-light dark:text-accent px-3 rounded-sm">
+                All Harvests
+            </h3>
+            <!-- <h3 class="text-sm font-semibold dark:text-accent">Harvests</h3> -->
+             <p v-if="listArr.length > 0" class="text-sm dark:text-accent">
+                {{ listArr.length }} Harvests / {{ listArr[listArr.length - 1].day }} Growth Ticks - {{ Math.round((listArr.length / listArr[listArr.length - 1].day) * 100) }}% Harvest Days
+             </p>
+        </div>
+
+        <div v-if="selectedTab === 'harvests'"
+            class="bg-accent p-2 rounded-sm border border-misc dark:bg-palia-blue dark:border-palia-blue-light"
+            v-bind="containerProps" :style="{ height: `${size}px` }">
             <div v-bind="wrapperProps" class="">
-                <InventoryRow v-for="item in list" :key="item.data.day" :day-harvest="item.data" :crop-to-filter-for="cropToFilter" />
+                <InventoryRow v-for="item in list" :key="item.data.day" :day-harvest="item.data"
+                    :crop-to-filter-for="cropToFilter" />
             </div>
         </div>
     </section>

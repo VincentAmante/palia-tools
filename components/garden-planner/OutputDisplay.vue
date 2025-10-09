@@ -20,13 +20,6 @@ defineProps({
     default: false
   }
 })
-
-// const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
-// const emit = defineEmits(['tabChanged'])
-// watchEffect(() => {
-//   emit('tabChanged', selectedTab.value)
-// })
-
 </script>
 
 <template>

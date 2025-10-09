@@ -11,6 +11,20 @@ export interface IHarvesterOptions {
   level: number
 }
 
+// Tracker for garden stats
+interface IGardenStats {
+  lastGrowthTick: number
+
+  // how many days were spent harvesting this crop group
+  daysSpentHarvesting: Set<Number>
+
+  // if watering is needed, then every day is a busy day
+  wateringIsNeeded: boolean
+
+  // if weeding is needed, then every day is potentially a busy day
+  weedingIsNeeded: boolean
+} 
+
 /**
  * The Harvester class is responsible for simulating the yield of crops over a given number of days.
  *
@@ -437,10 +451,8 @@ export default class Harvester {
     if (options.includeReplantCost) {
       if (cropTotalsForAveraging.size > 0) {
         for (const [cropId, cropTotal] of cropTotalsForAveraging) {
-
           const averageCropsConsumed = cropsRequiredTracker.totalCropsConsumed / cropsRequiredTracker.deductionsDone
-
-          const isStar = cropId.includes('-Star')
+          const isStarModifier = cropId.includes('-Star') ? 'star' : 'base'
 
           const cropCycleData = this._totalHarvest.cycleData.get(cropId)
 
@@ -448,16 +460,8 @@ export default class Harvester {
             console.error('Somehow undefined')
             return
           }
-
-          // Change the appropriate yield
-          if (isStar) {
-            cropCycleData.phases.at(-1)!.yield.star.totalWithDeductions -= Math.round(averageCropsConsumed)
-            cropCycleData.phases.at(-1)!.yield.star.isAveraged = true
-          }
-          else {
-            cropCycleData.phases.at(-1)!.yield.base.totalWithDeductions -= Math.round(averageCropsConsumed)
-            cropCycleData.phases.at(-1)!.yield.base.isAveraged = true
-          }
+          cropCycleData.phases.at(-1)!.yield[isStarModifier].totalWithDeductions -= Math.round(averageCropsConsumed)
+          cropCycleData.phases.at(-1)!.yield[isStarModifier].isAveraged = true
         }
       }
     }
@@ -482,45 +486,10 @@ export default class Harvester {
     this._totalHarvest.lastHarvestDay = dayOfLastHarvest
 
 
-    this._dayHarvests
-    this._totalHarvest.crops
-    this._totalHarvest.seedsRemainder
+    // this._dayHarvests
+    // this._totalHarvest.crops
+    // this._totalHarvest.seedsRemainder
   }
-
-  /**
-   * Temporary until the processor is implemented
-   */
-  // get asInventory(): IInventory {
-  //   const inventory: IInventory = {}
-
-  //   inventory.crop = {}
-  //   for (const [cropId, cropYield] of this.totalHarvest.crops) {
-  //     const crop = cropYield.cropType
-  //     const isStar = (cropId.includes('Star'))
-  //     const cropInfo = getCropFromType(crop)
-  //     if (!cropInfo) {
-  //       console.error('Crop not found')
-  //       continue
-  //     }
-
-  //     if (cropYield.totalWithDeductions <= 0)
-  //       continue
-
-  //     const item: IInventoryItem = {
-  //       count: cropYield.totalWithDeductions,
-  //       img: {
-  //         src: cropInfo.image,
-  //         alt: cropInfo.type,
-  //       },
-  //       isStar,
-  //       baseGoldValue: isStar ? cropInfo.goldValues.cropStar : cropInfo.goldValues.crop,
-  //     }
-
-  //     inventory.crop[cropId] = item
-  //   }
-
-  //   return inventory
-  // }
 }
 
 function hasYield(cropYield: ICropYield) {
@@ -564,7 +533,6 @@ function getHighestGrowthTime(cropTiles: TUniqueTiles, factorInGrowthBoost: bool
  */
 function getGrowthTimeLCM(crops: TUniqueTiles, factorInGrowthBoost: boolean = false): number {
   if (crops.size === 0) {
-    // console.warn('No crops found')
     return 0
   }
 
@@ -577,10 +545,7 @@ function getGrowthTimeLCM(crops: TUniqueTiles, factorInGrowthBoost: boolean = fa
     growthTimes.add(tile.crop.getTotalGrowTime(group.tile.bonuses.includes(Bonus.SpeedIncrease) && factorInGrowthBoost))
   }
 
-  if (growthTimes.size === 0) {
-    // console.warn('No growth times found')
-    return 0
-  }
+  if (growthTimes.size === 0) return 0
 
   return Array.from(growthTimes).reduce((acc, cur) => (acc * cur) / getGCD(acc, cur))
 }

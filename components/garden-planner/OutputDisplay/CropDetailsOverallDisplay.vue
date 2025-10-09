@@ -169,7 +169,7 @@ const selectedCropAsCrop = computed(() => {
                                 selectedCropTotalSeedsRequired }}</p>
                 </div>
                 <div>
-                    <p class="text-sm pb-1">Harvest days/cycle</p>
+                    <p class="text-sm pb-1">Growth Ticks / Cycle</p>
                     <ul class="flex flex-wrap gap-2">
                         <template v-for="harvestYield in selectedCropCycleData.phases">
                             <li class="flex flex-col">

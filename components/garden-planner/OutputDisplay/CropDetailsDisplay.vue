@@ -9,10 +9,12 @@ import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
 
 import CropCrafterDataDisplay from './CropCrafterDataDisplay.vue'
 import CropDetailsOverallDisplay from './CropDetailsOverallDisplay.vue'
-import CropDetailsHarvest from './CropDetailsHarvest.vue'
+import CropDetailsHarvest from './CropDetailsOverallHarvest.vue'
+import CropMiscDetails from './CropMiscDetails.vue'
 
 const harvester = useHarvester()
 const processor = useProcessor()
+const { get: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
 
 // --- Crop Details Tab Logic ---
 const selectedCropDetail = ref<ICropNameWithGrowthDiff | null>(null)
@@ -81,7 +83,7 @@ const selectedCropProcessingData = computed(() => {
 
 
 
-const cropDetailsTab = ref<'overall' | 'crafter-data' | 'day-by-day'>('overall')
+const cropDetailsTab = ref<'overall' | 'crafter-data' | 'day-by-day' | 'misc'>('overall')
 
 // Resets selected crop detail to null if no crop cycle data is available and the selected crop detail is not null
 watchEffect(() => {
@@ -104,14 +106,15 @@ watchEffect(() => {
     </h2>
 
     <!-- Crop Selector -->
-    <nav class="flex flex-wrap gap-2 p-2 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue">
+    <nav
+      class="flex flex-wrap gap-2 p-2 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue">
       <p v-if="presentCrops.size === 0" class="text-lg  text-misc-dark dark:text-accent">
         No crops in layout to display details for.
       </p>
       <button v-if="presentCrops.size > 0" @click="selectCropForDetail(null)"
         class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue dark:border-palia-blue-dark text-harvest-boost tooltip"
-        data-tip="All harvests"
-        >
+        :class="(selectedCropDetail === null && !isTakingScreenshot) ? 'bg-white' : ''"
+        data-tip="All harvests">
         <FontAwesomeIcon :icon="['fas', 'wheat-awn']" />
       </button>
       <template v-for="([cropId, data]) in presentCrops" :key="cropId">
@@ -123,7 +126,8 @@ watchEffect(() => {
     <!-- Details Display -->
     <div v-if="selectedCropDetail && selectedCropCycleData" class="py-1 flex flex-col gap-1 @container">
       <div class="flex gap-1 flex-col lg:flex-row  gap-x-4">
-        <p class="text-sm font-semibold text-palia-blue-dark flex gap-1 items-center bg-accent dark:bg-palia-blue-light dark:text-accent px-3 rounded-sm">
+        <p
+          class="text-sm w-fit font-semibold text-palia-blue-dark flex gap-1 items-center bg-accent dark:bg-palia-blue-light dark:text-accent px-3 rounded-sm">
           <span class="capitalize font-bold">{{ selectedCropCycleData.cropType }}</span>
           <FontAwesomeIcon v-if="selectedCropDetail.includes('-Star')" :icon="['fas', 'star']"
             class="text-sm text-quality-increase-dark dark:text-quality-increase" aria-label="Star Seed" />
@@ -142,6 +146,8 @@ watchEffect(() => {
             :class="{ 'tab-active text-accent': cropDetailsTab === 'day-by-day' }"
             @click="cropDetailsTab = 'day-by-day'" :aria-selected="cropDetailsTab === 'day-by-day'">Harvest
             Days</button>
+          <button role="tab" class="tab bg-transparent" :class="{ 'tab-active text-accent': cropDetailsTab === 'misc' }"
+            @click="cropDetailsTab = 'misc'" :aria-selected="cropDetailsTab === 'misc'">Misc</button>
         </div>
       </div>
       <div v-if="cropDetailsTab === 'overall'">
@@ -151,17 +157,20 @@ watchEffect(() => {
         <CropCrafterDataDisplay :selected-crop-processing-data="selectedCropProcessingData"
           :selected-crop-detail="selectedCropDetail" />
       </div>
-      <div class="pt-1" v-if="cropDetailsTab === 'day-by-day'">
+      <div class="pt-1" v-else-if="cropDetailsTab === 'day-by-day'">
         <CropDetailsHarvest :day-harvests="harvester.harvester.dayHarvests" :crop-to-filter="selectedCropDetail" />
       </div>
+      <div class="pt-1" v-else-if="cropDetailsTab === 'misc'">
+        <CropMiscDetails />
+      </div>
     </div>
-    <div v-else-if="selectedCropDetail" class="mt-2">
+    <div v-else-if="selectedCropDetail" class="mt-1">
       <p class="italic font-bold text-warning" role="alert">
         ERROR: No data available for {{ selectedCropDetail }}...
       </p>
     </div>
-    <div v-else class="mt-2">
-      <CropDetailsHarvest  should-be-max-size :day-harvests="harvester.harvester.dayHarvests" />
+    <div v-else class="">
+      <CropDetailsHarvest should-be-max-size :day-harvests="harvester.harvester.dayHarvests" />
     </div>
   </section>
 </template>

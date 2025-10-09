@@ -99,7 +99,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
         </div>
         <div class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
           <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
-            Days of Harvest
+            Growth Ticks
           </p>
           <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
             {{ harvester.totalHarvest.lastHarvestDay }}

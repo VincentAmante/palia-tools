@@ -18,7 +18,7 @@ const cropDetailCyclePhaseIndex = ref(0);
 </script>
 
 <template>
-    <div v-if="selectedCropProcessingData && selectedCropDetail" class="grid gap-1  dark:text-accent">
+    <div v-if="selectedCropProcessingData && selectedCropDetail" class="grid gap-1 dark:text-accent">
         <div class="flex justify-between">
             <!-- <div class="flex flex-col">
                 <p class="text-sm">Cycle</p>
@@ -39,23 +39,23 @@ const cropDetailCyclePhaseIndex = ref(0);
                   }">»</button>
                 </div>
               </div> -->
-            <div class="flex flex-row gap-2 items-center">
+            <div class="flex flex-row gap-2 items-end">
                 <p class="text-sm font-bold">Harvest</p>
                 <div class="join">
                     <button
                         v-for="phaseIndex in selectedCropProcessingData!.cycleData[cropDetailCycleIndex].cycleCrafterData.length"
-                        @click="cropDetailCyclePhaseIndex = (phaseIndex - 1)" class="join-item btn btn-soft btn-sm"
-                        :class="{ 'btn-active': (phaseIndex - 1) === cropDetailCyclePhaseIndex }" :aria-label="`Phase ${phaseIndex}`">{{ phaseIndex
-                        }}</button>
+                        @click="cropDetailCyclePhaseIndex = (phaseIndex - 1)" class="join-item btn btn-soft btn-xs px-4"
+                        :class="{ 'btn-active': (phaseIndex - 1) === cropDetailCyclePhaseIndex }" :aria-label="`Phase ${phaseIndex}`">
+                        {{ phaseIndex}}</button>
                 </div>
             </div>
         </div>
         <div class="max-h-72 overflow-y-scroll overflow-x-auto rounded-md">
-            <table class="table bg-primary table-sm table-pin-rows">
-                <thead>
+            <table class="table bg-primary table-sm table-pin-rows ">
+                <thead class="rounded-t-md">
                     <tr class="font-light text-accent ">
-                        <th class="">
-                            Crafter #
+                        <th class=" rounded-tl-md">
+                            Crafter
                         </th>
                         <th class="">
                             Crops Added
@@ -66,7 +66,7 @@ const cropDetailCyclePhaseIndex = ref(0);
                         <th class="">
                             Time
                         </th>
-                        <th class="">
+                        <th class="rounded-tr-md">
                             +Idle / >Excess
                         </th>
                     </tr>
@@ -75,9 +75,9 @@ const cropDetailCyclePhaseIndex = ref(0);
                     <tr v-for="(crafter, crafterIndex) in selectedCropProcessingData.cycleData[cropDetailCycleIndex].cycleCrafterData[cropDetailCyclePhaseIndex].crafterData"
                         class="bg-accent dark:bg-palia-blue not-last:border-b  not-last:border-b-primary"
                         :key="`${cropDetailCycleIndex}-${selectedCropDetail}-${crafterIndex}`">
-                        <td class="">
+                        <th class="">
                             {{ crafterIndex + 1 }}
-                        </td>
+                        </th>
                         <td class="">
                             {{ crafter.cropsInsertedCount.toLocaleString() }}
                         </td>
