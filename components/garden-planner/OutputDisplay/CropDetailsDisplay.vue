@@ -161,7 +161,7 @@ watchEffect(() => {
         <CropDetailsHarvest :day-harvests="harvester.harvester.dayHarvests" :crop-to-filter="selectedCropDetail" />
       </div>
       <div class="pt-1" v-else-if="cropDetailsTab === 'misc'">
-        <CropMiscDetails />
+        <CropMiscDetails :crop-type="selectedCropCycleData.cropType" />
       </div>
     </div>
     <div v-else-if="selectedCropDetail" class="mt-1">

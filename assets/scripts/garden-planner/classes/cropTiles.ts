@@ -5,43 +5,36 @@ import type { TCropTiles, TUniqueTiles } from '../utils/garden-helpers'
 import type Tile from './tile'
 import type Plot from './plot'
 
+
+type CropGroupBonusStats = Record<Bonus, number>
 // Stores information about the tiles
 export default class CropTiles {
   private _individualCrops: TCropTiles
   private _fertiliserCount: Record<string, number>
   private _bonusCoverage: Record<string, number>
   private _cropTypeCount: Record<string, number>
+  private _cropGroupStats: Map<CropType, CropGroupBonusStats>
 
   // Unique crops have the same crop type and bonuses
   private _uniqueTiles: TUniqueTiles
 
   constructor() {
     this._individualCrops = new Map()
-    this._fertiliserCount = Object.fromEntries(
-      Object.values(FertiliserType).map(fertiliserType => [fertiliserType, 0]),
-    )
-    this._bonusCoverage = Object.fromEntries(
-      Object.values(Bonus).map(bonus => [bonus, 0]),
-    )
-    this._cropTypeCount = Object.fromEntries(
-      Object.values(CropType).map(cropType => [cropType, 0]),
-    )
+    this._fertiliserCount = this.initialiseCounts(FertiliserType)
+    this._bonusCoverage = this.initialiseCounts(Bonus)
+    this._cropTypeCount = this.initialiseCounts(CropType)
     this._uniqueTiles = new Map()
+    this._cropGroupStats = new Map<CropType, CropGroupBonusStats>()
   }
 
   updateTiles(layout: Plot[][]) {
     // Reset the values
     this._individualCrops = new Map<string, Tile>()
-    this._fertiliserCount = Object.fromEntries(
-      Object.values(FertiliserType).map(fertiliserType => [fertiliserType, 0]),
-    )
-    this._bonusCoverage = Object.fromEntries(
-      Object.values(Bonus).map(bonus => [bonus, 0]),
-    )
-    this._cropTypeCount = Object.fromEntries(
-      Object.values(CropType).map(cropType => [cropType, 0]),
-    )
+    this._fertiliserCount = this.initialiseCounts(FertiliserType)
+    this._bonusCoverage = this.initialiseCounts(Bonus)
+    this._cropTypeCount = this.initialiseCounts(CropType)
     this._uniqueTiles = new Map()
+    this._cropGroupStats = new Map<CropType, CropGroupBonusStats>()
 
     for (const plot of layout.flat()) {
       if (!plot.isActive)
@@ -78,6 +71,23 @@ export default class CropTiles {
             count: 1,
           })
         }
+
+        if (this._cropGroupStats.has(tile.crop.type)) {
+          const cropGroupStats = this._cropGroupStats.get(tile.crop.type)!
+
+          for (const bonus of tile.bonuses) {
+            cropGroupStats[bonus]++
+          }
+        } else {
+          const cropGroupStats: Record<Bonus, number> = this.initialiseCounts(Bonus)
+
+          
+          for (const bonus of tile.bonuses) {
+            cropGroupStats[bonus]++
+          }
+
+          this._cropGroupStats.set(tile.crop.type, cropGroupStats)
+        }
       }
     }
   }
@@ -104,5 +114,15 @@ export default class CropTiles {
 
   get cropCount(): number {
     return this._individualCrops.size
+  }
+
+  get cropGroupBonusStats(): Map<CropType, CropGroupBonusStats> {
+    return this._cropGroupStats
+  }
+
+  private initialiseCounts<T extends string>(enumType: Record<string, T>): Record<T, number> {
+    return Object.fromEntries(
+      Object.values(enumType).map(value => [value, 0])
+    ) as Record<T, number>
   }
 }

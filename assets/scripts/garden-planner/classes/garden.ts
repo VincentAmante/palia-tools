@@ -638,6 +638,10 @@ class Garden {
   get uniqueTiles() {
     return this._cropTiles.uniqueTiles satisfies TUniqueTiles
   }
+
+  get cropGroupBonusStats(){
+    return this._cropTiles.cropGroupBonusStats
+  }
 }
 
 /**

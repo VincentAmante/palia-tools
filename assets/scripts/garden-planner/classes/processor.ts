@@ -770,7 +770,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
     processMinutesArbitrary: longestProcessMinutes
   }
 
-  console.log('timeStats', timeStats)
+  // console.log('timeStats', timeStats)
 
 
   // Return the results of processing this harvest

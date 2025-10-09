@@ -3,7 +3,6 @@ import useGarden from '~/stores/useGarden'
 import { Bonus } from '~/assets/scripts/garden-planner/imports'
 
 const gardenHandler = useGarden()
-
 const plotStat = computed(() => gardenHandler.plotStat)
 </script>
 

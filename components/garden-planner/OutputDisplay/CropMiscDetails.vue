@@ -1,4 +1,18 @@
 <script setup lang="ts">
+import { Bonus, CropType } from '~/assets/scripts/garden-planner/imports';
+
+const props = defineProps({
+    cropType: {
+        type: String as PropType<CropType>,
+        required: true
+    }
+})
+
+const gardenHandler = useGarden()
+
+
+const plotStat = computed(() => gardenHandler.plotStat)
+const cropGroupBonusStats = computed(() => gardenHandler.cropGropBonusStats)
 </script>
 <template>
     <section class="bg-accent border-misc-dark rounded-sm border overflow-y-auto max-h-96">
@@ -13,25 +27,32 @@
             </thead>
 
             <tbody class="">
+                
                 <tr>
-                    <th>Water Boosted Crops</th>
-                    <td>?? / ??</td>
+                    <th>Growth Boosted Crops</th>
+                    <td>{{ cropGroupBonusStats.get(cropType)?.[Bonus.SpeedIncrease] }} / {{ plotStat.cropTypeCount[cropType]  }} 
+                        ({{ Math.round(((cropGroupBonusStats.get(cropType)?.[Bonus.SpeedIncrease] || 0) / (plotStat.cropTypeCount[cropType])) * 100) }}%)</td>
                 </tr>
+                
                 <tr>
                     <th>Harvest Boosted Crops</th>
-                    <td>?? / ??</td>
+                    <td>{{ cropGroupBonusStats.get(cropType)?.[Bonus.HarvestIncrease] }} / {{ plotStat.cropTypeCount[cropType]  }} 
+                        ({{ Math.round(((cropGroupBonusStats.get(cropType)?.[Bonus.HarvestIncrease] || 0) / (plotStat.cropTypeCount[cropType])) * 100) }}%)</td>
                 </tr>
                 <tr>
                     <th>Quality Boosted Crops</th>
-                    <td>?? / ??</td>
+                    <td>{{ cropGroupBonusStats.get(cropType)?.[Bonus.QualityIncrease] }} / {{ plotStat.cropTypeCount[cropType]  }} 
+                        ({{ Math.round(((cropGroupBonusStats.get(cropType)?.[Bonus.QualityIncrease] || 0) / (plotStat.cropTypeCount[cropType])) * 100) }}%)</td>
+                </tr>
+                <tr>
+                    <th>Water Boosted Crops</th>
+                    <td>{{ cropGroupBonusStats.get(cropType)?.[Bonus.WaterRetain] }} / {{ plotStat.cropTypeCount[cropType]  }} 
+                        ({{ Math.round(((cropGroupBonusStats.get(cropType)?.[Bonus.WaterRetain] || 0) / (plotStat.cropTypeCount[cropType])) * 100) }}%)</td>
                 </tr>
                 <tr>
                     <th>Weed Protected Crops</th>
-                    <td>?? / ??</td>
-                </tr>
-                <tr>
-                    <th>Growth Boosted Crops</th>
-                    <td>?? / ??</td>
+                    <td>{{ cropGroupBonusStats.get(cropType)?.[Bonus.WeedPrevention] }} / {{ plotStat.cropTypeCount[cropType]  }} 
+                        ({{ Math.round(((cropGroupBonusStats.get(cropType)?.[Bonus.WeedPrevention] || 0) / (plotStat.cropTypeCount[cropType])) * 100) }}%)</td>
                 </tr>
             </tbody>
 
