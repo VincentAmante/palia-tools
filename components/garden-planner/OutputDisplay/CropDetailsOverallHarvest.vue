@@ -52,7 +52,7 @@ const selectedTab = ref<'harvests' | 'details'>('harvests')
 
 <template>
     <section class="h-full flex flex-col gap-1">
-        <div class="flex gap-1 flex-col lg:flex-row  py-1 gap-x-4 items-center">
+        <div v-if="!cropToFilter" class="flex gap-1 flex-col lg:flex-row  py-1 gap-x-4 items-center">
             <h3
                 class="text-sm font-semibold w-fit text-palia-blue-dark p-0.5 flex gap-1 items-center bg-accent dark:bg-palia-blue-light dark:text-accent px-3 rounded-sm">
                 All Harvests
