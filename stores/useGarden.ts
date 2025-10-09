@@ -17,6 +17,8 @@ const useGarden = defineStore('garden', () => {
 
   const plotStat = computed(() => gardenRef.value.calculateStats() as PlotStat)
 
+  const cropGropBonusStats = computed(() => gardenRef.value.cropGroupBonusStats)
+
   const isGardenWide = computed(() => gardenRef.value.plots[0].length > 3)
 
   const garden = computed(() => gardenRef.value)
@@ -43,6 +45,7 @@ const useGarden = defineStore('garden', () => {
     requestFullUpdate,
     resetRequestFullUpdate,
     isFullUpdateRequested,
+    cropGropBonusStats
   }
 })
 
