@@ -17,18 +17,18 @@ const processor = useProcessor()
 const { get: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
 
 // --- Crop Details Tab Logic ---
-const selectedCropDetail = ref<ICropNameWithGrowthDiff | null>(null)
+const selectedCropId = ref<ICropNameWithGrowthDiff | null>(null)
 
 // Gets cycle detail which relies on selected crop detail
 const cycleId = computed(() => {
-  if (!selectedCropDetail.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
+  if (!selectedCropId.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
     return ''
 
-  return `${parseCropId(selectedCropDetail.value).type}${harvester.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
+  return `${parseCropId(selectedCropId.value).type}${harvester.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
 })
 
 const cropInfo = computed(() => {
-  return parseCropId(selectedCropDetail.value || '')
+  return parseCropId(selectedCropId.value || '')
 })
 
 // Get unique crop types present in the harvest, maintaining the growth diff identifier
@@ -51,15 +51,15 @@ const presentCrops = computed(() => {
 })
 
 function selectCropForDetail(cropId: ICropNameWithGrowthDiff | null) {
-  selectedCropDetail.value = cropId
+  selectedCropId.value = cropId
 }
 
 // Computed property for selected crop's cycle data
 const selectedCropCycleData = computed(() => {
-  if (!selectedCropDetail.value || !harvester.harvester.totalHarvest?.cycleData)
+  if (!selectedCropId.value || !harvester.harvester.totalHarvest?.cycleData)
     return null
 
-  const { type, hasGrowthBoost } = parseCropId(selectedCropDetail.value)
+  const { type, hasGrowthBoost } = parseCropId(selectedCropId.value)
   const totalHarvestCycleId = `${type}${(harvester.settings.useStarSeeds ? '-Star' : '-Base')}${(harvester.settings.useGrowthBoost && hasGrowthBoost) ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
 
   return harvester.harvester.totalHarvest.cycleData.get(totalHarvestCycleId)
@@ -68,10 +68,10 @@ const selectedCropCycleData = computed(() => {
 // Computed property for selected crop's processing data
 const selectedCropProcessingData = computed(() => {
 
-  if (!selectedCropDetail.value || !processor.output?.detailedProcessingInfo)
+  if (!selectedCropId.value || !processor.output?.detailedProcessingInfo)
     return null
 
-  const detailedProcessingInfoOutput = processor.output.detailedProcessingInfo.get(selectedCropDetail.value)
+  const detailedProcessingInfoOutput = processor.output.detailedProcessingInfo.get(selectedCropId.value)
 
 
   if (detailedProcessingInfoOutput && detailedProcessingInfoOutput.cycleData.length > 0) {
@@ -87,8 +87,8 @@ const cropDetailsTab = ref<'overall' | 'crafter-data' | 'day-by-day' | 'misc'>('
 
 // Resets selected crop detail to null if no crop cycle data is available and the selected crop detail is not null
 watchEffect(() => {
-  if (!selectedCropCycleData.value && selectedCropDetail.value !== null) {
-    selectedCropDetail.value = null
+  if (!selectedCropCycleData.value && selectedCropId.value !== null) {
+    selectedCropId.value = null
   }
 })
 
@@ -113,25 +113,25 @@ watchEffect(() => {
       </p>
       <button v-if="presentCrops.size > 0" @click="selectCropForDetail(null)"
         class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue dark:border-palia-blue-dark text-harvest-boost tooltip"
-        :class="(selectedCropDetail === null && !isTakingScreenshot) ? 'bg-white' : ''"
+        :class="(selectedCropId === null && !isTakingScreenshot) ? 'bg-white' : ''"
         data-tip="All harvests">
         <FontAwesomeIcon :icon="['fas', 'wheat-awn']" />
       </button>
       <template v-for="([cropId, data]) in presentCrops" :key="cropId">
         <CropDetailButton :crop="getCropFromType(parseCropId(cropId).type)!" :count="data.count"
-          @click="selectCropForDetail(cropId)" :isSelected="cropId === selectedCropDetail" :cropId="cropId" />
+          @click="selectCropForDetail(cropId)" :isSelected="cropId === selectedCropId" :cropId="cropId" />
       </template>
     </nav>
 
     <!-- Details Display -->
-    <div v-if="selectedCropDetail && selectedCropCycleData" class="py-1 flex flex-col gap-1 @container">
+    <div v-if="selectedCropId && selectedCropCycleData" class="py-1 flex flex-col gap-1 @container">
       <div class="flex gap-1 flex-col lg:flex-row  gap-x-4">
         <p
           class="text-sm w-fit font-semibold text-palia-blue-dark flex gap-1 items-center bg-accent dark:bg-palia-blue-light dark:text-accent px-3 rounded-sm">
           <span class="capitalize font-bold">{{ selectedCropCycleData.cropType }}</span>
-          <FontAwesomeIcon v-if="selectedCropDetail.includes('-Star')" :icon="['fas', 'star']"
+          <FontAwesomeIcon v-if="selectedCropId.includes('-Star')" :icon="['fas', 'star']"
             class="text-sm text-quality-increase-dark dark:text-quality-increase" aria-label="Star Seed" />
-          <FontAwesomeIcon v-if="selectedCropDetail.includes('-Growth')" :icon="['fas', 'forward-fast']"
+          <FontAwesomeIcon v-if="selectedCropId.includes('-Growth')" :icon="['fas', 'forward-fast']"
             class="ml-1 text-sm text-growth-boost" title="Growth Boost Applied" aria-label="Growth Boost Applied" />
         </p>
         <div role="tablist" class="tabs tabs-xs tabs-border bg-palia-blue-dark rounded-sm gap-1 w-fit">
@@ -151,22 +151,22 @@ watchEffect(() => {
         </div>
       </div>
       <div v-if="cropDetailsTab === 'overall'">
-        <CropDetailsOverallDisplay :selected-crop-detail="selectedCropDetail" />
+        <CropDetailsOverallDisplay :selected-crop-detail="selectedCropId" />
       </div>
       <div v-else-if="selectedCropProcessingData && cropDetailsTab === 'crafter-data'">
         <CropCrafterDataDisplay :selected-crop-processing-data="selectedCropProcessingData"
-          :selected-crop-detail="selectedCropDetail" />
+          :selected-crop-detail="selectedCropId" />
       </div>
       <div class="pt-1" v-else-if="cropDetailsTab === 'day-by-day'">
-        <CropDetailsHarvest :day-harvests="harvester.harvester.dayHarvests" :crop-to-filter="selectedCropDetail" />
+        <CropDetailsHarvest :day-harvests="harvester.harvester.dayHarvests" :crop-to-filter="selectedCropId" />
       </div>
       <div class="pt-1" v-else-if="cropDetailsTab === 'misc'">
-        <CropMiscDetails :crop-type="selectedCropCycleData.cropType" />
+        <CropMiscDetails :crop-type="selectedCropCycleData.cropType" :crop-id="selectedCropId" />
       </div>
     </div>
-    <div v-else-if="selectedCropDetail" class="mt-1">
+    <div v-else-if="selectedCropId" class="mt-1">
       <p class="italic font-bold text-warning" role="alert">
-        ERROR: No data available for {{ selectedCropDetail }}...
+        ERROR: No data available for {{ selectedCropId }}...
       </p>
     </div>
     <div v-else class="">

@@ -13,21 +13,12 @@ export interface IHarvesterOptions {
 
 // Tracker for garden stats
 interface IGardenStats {
-  lastGrowthTick: number
-
-  // how many days were spent harvesting this crop group
-  daysSpentHarvesting: Set<Number>
-
-  // if watering is needed, then every day is a busy day
-  wateringIsNeeded: boolean
-
-  // if weeding is needed, then every day is potentially a busy day
-  weedingIsNeeded: boolean
+  lastGrowthTick: number // the last tick this crop was harvested
+  daysSpentHarvesting: Set<Number> // which days this crop was harvested
 }
 
 /**
  * The Harvester class is responsible for simulating the yield of crops over a given number of days.
- *
  */
 export default class Harvester {
   private _dayHarvests: DayHarvests = new Map()
