@@ -15,6 +15,7 @@ const props = defineProps({
 
 const gardenHandler = useGarden()
 const harvester = useHarvester()
+const processor = useProcessor()
 
 
 const plotStat = computed(() => gardenHandler.plotStat)
@@ -142,6 +143,10 @@ const lastDayCropWasHarvested = computed(() => {
                                 {{ incompleteHarvests }}
                             </td>
                         </tr>
+
+                        <tr>
+                            <td colspan="2" class="italic">Growth Tick: See Info Tab</td>
+                        </tr>
                         <tr>
                             <th>Growth Ticks / Harvest <span>(First)</span></th>
                             <td>{{ cycleData.phases.at(0)?.phaseLength }}</td>
@@ -177,13 +182,11 @@ const lastDayCropWasHarvested = computed(() => {
             </template>
             <thead>
                 <tr class="bg-misc text-accent">
-                    <th colspan="2" class="capitalize">Process Data</th>
+                    <th colspan="2" class="capitalize">Process Stats</th>
                 </tr>
             </thead>
 
             <tbody class="">
-
-
                 <tr>
                     <th>Process Time (1st harvest)</th>
                     <td>?? Days ?? Hrs ?? Minutes</td>
@@ -192,23 +195,49 @@ const lastDayCropWasHarvested = computed(() => {
                     <th>Process Time (Final harvest)</th>
                     <td>?? Days ?? Hrs ?? Minutes</td>
                 </tr>
-
-
                 <tr>
-                    <th colspan="2" class="italic">Average Harvest</th>
+                    <th colspan="2" class="italic">Crafter Stats</th>
                 </tr>
-
                 <tr>
-                    <th>Process Time / Harvest: 1st - 3rd</th>
+                    <th colspan="2" class="italic">Absolute Time: Time without crafter division</th>
+                </tr>
+                <tr>
+                    <th>Absolute Process Time</th>
                     <td>?? Days ?? Hrs ?? Minutes</td>
                 </tr>
                 <tr>
-                    <th>Process Time / Harvest: 4th</th>
+                    <th>Absolute Process Time / Cycle</th>
                     <td>?? Days ?? Hrs ?? Minutes</td>
                 </tr>
-            
                 <tr>
-                    <th>Overall Processing Time</th>
+                    <th>Crafters</th>
+                    <td>?? Crafters</td>
+                </tr>
+
+
+                <tr>
+                    <th colspan="2" class="italic">Average Harvest Time Stats</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="italic">Effective Time: Time with crafter division</th>
+                </tr>
+
+                <tr>
+                    <th>Effective Process Time / Harvest: 1st - 3rd</th>
+                    <td>?? Days ?? Hrs ?? Minutes</td>
+                </tr>
+                <tr>
+                    <th>Effective Process Time / Harvest: 4th</th>
+                    <td>?? Days ?? Hrs ?? Minutes</td>
+                </tr>
+
+                <tr>
+                    <th>Effective Process Time / Cycle</th>
+                    <td>?? Days ?? Hrs ?? Minutes</td>
+                </tr>
+
+                <tr>
+                    <th>Overall Effective Processing Time</th>
                     <td>?? Days ?? Hrs ?? Minutes</td>
                 </tr>
 
@@ -218,19 +247,42 @@ const lastDayCropWasHarvested = computed(() => {
                 </tr>
 
                 <tr>
-                    <th>Growth Ticks / Process Time (Harvest: 1st - 3rd)</th>
+                    <th>Growth Ticks / Effective Process Time (Harvest: 1st - 3rd)</th>
                     <td>?? Days ?? Hrs ?? Minutes per Tick</td>
                 </tr>
                 <tr>
-                    <th>Growth Ticks / Process Time (Harvest: 4th)</th>
+                    <th>Growth Ticks / Effective Process Time (Harvest: 4th)</th>
                     <td>?? Days ?? Hrs ?? Minutes per Tick</td>
                 </tr>
                 <tr>
-                    <th>Growth Ticks / Process Time (Cycle)</th>
+                    <th>Growth Ticks / Effective Process Time (Cycle)</th>
                     <td>?? Days ?? Hrs ?? Minutes per Tick</td>
                 </tr>
                 <tr>
-                    <th>Growth Ticks / Process Time (Overall)</th>
+                    <th>Growth Ticks / Effective Process Time (Overall)</th>
+                    <td>?? Days ?? Hrs ?? Minutes per Tick</td>
+                </tr>
+                <tr>
+                    <th colspan="2" class="italic">Gold Stats</th>
+                </tr>
+                <tr>
+                    <th>Overall Gold Produced</th>
+                    <td>?? Gold</td>
+                </tr>
+                <tr>
+                    <th>Overall Gold / Cycle</th>
+                    <td>Gold per Cycle</td>
+                </tr>
+                <tr>
+                    <th>Overall Gold / Hour</th>
+                    <td>Gold per Cycle</td>
+                </tr>
+                <tr>
+                    <th>Overall Gold / Hour (No Idle Time)</th>
+                    <td>Gold per Cycle</td>
+                </tr>
+                <tr>
+                    <th>Gold (Overall) / Tile</th>
                     <td>?? Days ?? Hrs ?? Minutes per Tick</td>
                 </tr>
             </tbody>
