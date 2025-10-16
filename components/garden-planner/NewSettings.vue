@@ -401,7 +401,7 @@ const highestTime = computed(() => {
                 </button>
               </div>
               <p class="absolute bottom-0 w-full translate-y-2.5 whitespace-nowrap">
-                <SettingsMinutesDisplay class="whitespace-nowrap dark:text-accent"
+                <SettingsMinutesDisplay class=""
                   :minutes="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
                 <span
                   v-if="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective === highestTime"
