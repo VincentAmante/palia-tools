@@ -17,22 +17,28 @@ import { usePlannerDisplayConfig } from '~/stores/usePlannerDisplayConfig'
 
 const display = ref<HTMLElement | null>(null)
 const isTakingScreenshot = useTakingScreenshot()
-const gardenHandler = useGarden()
 const harvester = useHarvester()
 const processor = useProcessor()
 const plannerDisplayConfig = usePlannerDisplayConfig()
-
-
-watchEffect(() => {
-  gardenHandler.update()
-  harvester.harvester.simulateYield(gardenHandler.garden.uniqueTiles as TUniqueTiles, harvester.settings)
-  processor.simulateProcessing(harvester.totalHarvest)
-})
 
 const garden = useGarden()
 const settingsCode = useSettingsCode()
 const saveCode = useSaveCode()
 
+watchEffect(() => {
+  // console.log('garden updated')
+  garden.update()
+})
+
+watchEffect(() => {
+  // console.log('harvester updated', new Date().getTime())
+  harvester.harvester.simulateYield(garden.garden.uniqueTiles as TUniqueTiles, harvester.settings)
+})
+
+watchEffect(() => {
+  // console.log('processor changed', new Date().getTime())
+  processor.simulateProcessing(harvester.totalHarvest)
+})
 
 const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
 
@@ -118,13 +124,13 @@ watch(updateIsRequested, () => {
       <AppDivider class="order-3 mx-4 my-1 @:col-span-7 " :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
       <section class="flex @sm:py-2 gap-y-2 justify-between"
         :class="{ '@5xl:flex-row': !garden.isGardenWide && (!isTakingScreenshot.get), 'flex-col': !isTakingScreenshot.get || (!isTakingScreenshot.get && garden.isGardenWide) }">
-        <section class="h-full" :class="[gardenHandler.isGardenWide ? 'flex flex-col items-center pb-2' : '',
+        <section class="h-full" :class="[garden.isGardenWide ? 'flex flex-col items-center pb-2' : '',
         (plannerDisplayConfig.get === 'display+display') ? 'w-full' : ''
         ]">
           <template v-if="(plannerDisplayConfig.get === 'garden+display')">
             <NewGardenDisplay />
             <NewStatsDisplay class="pt-2 @sm:mx-auto @xs:px-2 w-fit "
-              :class="[gardenHandler.isGardenWide ? 'w-fit' : '@lg:w-full']" />
+              :class="[garden.isGardenWide ? 'w-fit' : '@lg:w-full']" />
           </template>
           <template v-if="(plannerDisplayConfig.get === 'display+display')">
             <section class="w-full">
