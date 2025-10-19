@@ -72,10 +72,8 @@ function setScreenshotLayout() {
   if (useGarden().isGardenWide)
     displayWidth.value += gardenDisplay.clientWidth || 0
 
-  // console.log('Setting width')
   displayWidth.value = Math.max(displayWidth.value, 1368)
   display.style.width = `${displayWidth.value}px`
-  // console.log('Finish setting width', display.style)
 }
 
 function resetScreenshotLayout() {
@@ -83,12 +81,8 @@ function resetScreenshotLayout() {
   const gardenDisplay = document.getElementById('garden-display')
   const display = document.getElementById('garden-planner')
 
-  if (!gardenDisplay || !display) {
-    // console.error('HTML element not found for garden-display or display', gardenDisplay, display)
-    return
-  }
+  if (!gardenDisplay || !display) return
 
-  // console.log('DISPLAY STYLE:', display.style)
   display.style.width = ''
 }
 

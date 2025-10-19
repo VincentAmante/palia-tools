@@ -198,8 +198,6 @@ export function convertV_0_3Codesto_V_0_4(save: string) {
     }
     newCode += newSection
   }
-
-  // console.log(newCode)
   return `CR-${newCode}`
 }
 
@@ -247,11 +245,7 @@ export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
   }
 
   if (convertedCropSettings.length > 0) {
-    // remove the trailing dash
-
     convertedCropSettings = `Cr0.${convertedCropSettings.substring(0, convertedCropSettings.length - 1)}`
-    // console.log('convertedCropSettings:', convertedCropSettings)
-
   }
 
   return `${convertedSettings}${convertedCropSettings}`
@@ -263,8 +257,6 @@ export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
   * @param save a save code for the garden planner
  */
 export function parseSave(save: string) {
-  // console.log('Parsing save code...', save);
-
   // * This format makes it permanent that the first part of the save is the version number
   const [version, ...rest] = save.split('_')
   let dimensionInfo = rest[0] || ''
@@ -283,37 +275,27 @@ export function parseSave(save: string) {
         validatePlotMatrix(dimensionInfo)
         cropInfo = convertV0_1CodestoV0_2(cropInfo)
         strippedVersion = '0.2'
-        // console.log('0.1 -> 0.2', cropInfo)
         break
       case '0.2':
         validatePlotMatrix(dimensionInfo)
         cropInfo = convertV_0_2Codesto_V_0_3(cropInfo)
         strippedVersion = '0.3'
-        // console.log('0.2 -> 0.3', cropInfo)
         break
       case '0.3':
         validatePlotMatrix(dimensionInfo)
         cropInfo = convertV_0_3Codesto_V_0_4(cropInfo)
         settingsInfo = convertV_0_3SettingsToV_0_4Settings(settingsInfo)
         strippedVersion = '0.4'
-        // console.log('0.3 -> 0.4', cropInfo, settingsInfo)
         break
       case '0.4':
         validatePlotMatrix(dimensionInfo)
         cropInfo = cropInfo
         settingsInfo = settingsInfo
-        // console.log('0.4 -> Final')
         break
       default:
         throw new Error('Invalid save version')
     }
   } while (strippedVersion !== LATEST_VERSION)
-
-  // console.log('Final stripped version:', strippedVersion)
-  // console.log('Final dimensionInfo:', dimensionInfo)
-  // console.log('Final cropInfo:', cropInfo)
-  // console.log('Final settingsInfo:', settingsInfo)
-
 
   return { version: strippedVersion, dimensionInfo, cropInfo, settingsInfo }
 }
