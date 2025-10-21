@@ -2,6 +2,7 @@ import uniqid from 'uniqid'
 import type FertiliserType from '../enums/fertiliser'
 import type Bonus from '../enums/bonus'
 
+  goldSellValue: number // sell value
 class Fertiliser {
   private _type: FertiliserType
   private _effect: Bonus

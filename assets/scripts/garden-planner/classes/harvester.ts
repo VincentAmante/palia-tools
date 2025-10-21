@@ -324,6 +324,7 @@ export default class Harvester {
           dayHarvests.set(dayInCycle, harvestDay)
         }
       }
+
     }
 
     // Sort the harvests by day for chronological calculations
@@ -344,11 +345,10 @@ export default class Harvester {
       days: number
     }>
 
-    let cropsRequiredTracker = {
-      totalCropsConsumed: 0,
-      deductionsDone: 0
-    }
-
+    let cropsRequiredTracker = new Map() as Map<ICropNameWithGrowthDiff, {
+      totalCropsConsumed: number,
+      deductionsDone: number
+    }>
 
     for (const [day, harvest] of dayHarvests) {
       // Deduct seeds required for replanting
@@ -362,6 +362,11 @@ export default class Harvester {
           }
           const { cropsPerSeed, seedsPerConversion } = crop.conversionInfo
 
+          const cropsTracker = cropsRequiredTracker.get(id) || {
+            totalCropsConsumed: 0,
+            deductionsDone: 0
+          }
+
           // Calculate how many seeds need to be produced to replant, factoring in remainder from previous harvests
           const remainingSeeds = seedsRemainder.get(id) ?? 0
 
@@ -372,8 +377,10 @@ export default class Harvester {
           const conversionsNeeded = Math.ceil(seedsRequiredCount / seedsPerConversion)
 
           const cropsRequired = conversionsNeeded * cropsPerSeed
-          cropsRequiredTracker.totalCropsConsumed += cropsRequired
-          cropsRequiredTracker.deductionsDone += 1
+
+
+          cropsTracker.totalCropsConsumed += cropsRequired
+          cropsTracker.deductionsDone += 1
 
           const cropData = harvest.crops.get(id) || {
             base: 0,
@@ -415,6 +422,7 @@ export default class Harvester {
           const newRemainingSeeds = (remainingSeeds - remainderSeedsToBeUsed) + (seedsGenerated - seedsRequiredCount)
           // Add the harvest to the total harvest
           seedsRemainder.set(id, newRemainingSeeds)
+          cropsRequiredTracker.set(id, cropsTracker)
         }
       }
 
@@ -432,7 +440,6 @@ export default class Harvester {
         } satisfies ICropYield
 
         const newYield = addCropYields(total, cropYield)
-        
 
         this._totalHarvest.crops.set(cropId, {
           ...newYield,
@@ -446,7 +453,10 @@ export default class Harvester {
     if (options.includeReplantCost) {
       if (cropTotalsForAveraging.size > 0) {
         for (const [cropId, cropTotal] of cropTotalsForAveraging) {
-          const averageCropsConsumed = cropsRequiredTracker.totalCropsConsumed / cropsRequiredTracker.deductionsDone
+          const cropsTracker = cropsRequiredTracker.get(cropId)!
+
+          // console.log(`totalCropsConsumed: ${cropsRequiredTracker.totalCropsConsumed} | deductionsDone ${cropsRequiredTracker.deductionsDone}`)
+          const averageCropsConsumed = cropsTracker.totalCropsConsumed / cropsTracker.deductionsDone
           const isStarModifier = cropId.includes('-Star') ? 'star' : 'base'
 
           const cropCycleData = this._totalHarvest.cycleData.get(cropId)
@@ -455,8 +465,11 @@ export default class Harvester {
             console.error('Somehow undefined')
             return
           }
+
           cropCycleData.phases.at(-1)!.yield[isStarModifier].totalWithDeductions -= Math.round(averageCropsConsumed)
           cropCycleData.phases.at(-1)!.yield[isStarModifier].isAveraged = true
+
+          // console.log(cropId, averageCropsConsumed)
         }
       }
     }
@@ -479,13 +492,7 @@ export default class Harvester {
 
     this._dayHarvests = dayHarvests
     this._totalHarvest.lastHarvestDay = dayOfLastHarvest
-  }
-}
-
-function hasYield(cropYield: ICropYield) {
-  for (const val of Object.values(cropYield)) {
-    if (val > 0)
-      return true
+    // console.log('cycleData', this._totalHarvest.cycleData)
   }
 }
 
