@@ -8,9 +8,10 @@ import { CropType } from '~/assets/scripts/garden-planner/imports'
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
 
 import CropCrafterDataDisplay from './CropCrafterDataDisplay.vue'
-import CropDetailsOverallDisplay from './CropDetailsOverallDisplay.vue'
-import CropDetailsHarvest from './CropDetailsOverallHarvest.vue'
-import CropMiscDetails from './CropMiscDetails.vue'
+import CropDetailsSummaryDisplay from './CropDetailsSummaryDisplay.vue'
+import CropDetailsHarvestDisplay from './CropDetailsHarvestDisplay.vue'
+import CropDetailsGardenDataDisplay from './CropDetailsGardenDataDisplay.vue'
+import CropMiscDetails from './CropDetailsMiscDisplay.vue'
 
 const harvester = useHarvester()
 const processor = useProcessor()
@@ -113,8 +114,7 @@ watchEffect(() => {
       </p>
       <button v-if="presentCrops.size > 0" @click="selectCropForDetail(null)"
         class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue dark:border-palia-blue-dark text-harvest-boost tooltip"
-        :class="(selectedCropId === null && !isTakingScreenshot) ? 'bg-white' : ''"
-        data-tip="All harvests">
+        :class="(selectedCropId === null && !isTakingScreenshot) ? 'bg-white' : ''" data-tip="All harvests">
         <FontAwesomeIcon :icon="['fas', 'wheat-awn']" />
       </button>
       <template v-for="([cropId, data]) in presentCrops" :key="cropId">
@@ -151,14 +151,14 @@ watchEffect(() => {
         </div>
       </div>
       <div v-if="cropDetailsTab === 'overall'">
-        <CropDetailsOverallDisplay :selected-crop-detail="selectedCropId" />
+        <CropDetailsSummaryDisplay :selected-crop-detail="selectedCropId" />
       </div>
       <div v-else-if="selectedCropProcessingData && cropDetailsTab === 'crafter-data'">
         <CropCrafterDataDisplay :selected-crop-processing-data="selectedCropProcessingData"
           :selected-crop-detail="selectedCropId" />
       </div>
       <div class="pt-1" v-else-if="cropDetailsTab === 'day-by-day'">
-        <CropDetailsHarvest :day-harvests="harvester.harvester.dayHarvests" :crop-to-filter="selectedCropId" />
+        <CropDetailsHarvestDisplay :day-harvests="harvester.harvester.dayHarvests" :crop-to-filter="selectedCropId" />
       </div>
       <div class="pt-1" v-else-if="cropDetailsTab === 'misc'">
         <CropMiscDetails :crop-type="selectedCropCycleData.cropType" :crop-id="selectedCropId" />
@@ -170,7 +170,7 @@ watchEffect(() => {
       </p>
     </div>
     <div v-else class="">
-      <CropDetailsHarvest should-be-max-size :day-harvests="harvester.harvester.dayHarvests" />
+      <CropDetailsGardenDataDisplay />
     </div>
   </section>
 </template>
