@@ -12,6 +12,7 @@ export interface Item {
   readonly maxStack: number
   count: number
   readonly itemId: string // Unique identifier (e.g., Tomato-Crop-Star)
+  readonly totalGoldValue: number
 
   equals(item: Item): boolean
   add(count: number): void
@@ -64,6 +65,10 @@ export class CropItem implements Item {
 
   get count(): number {
     return this._count
+  }
+
+  get totalGoldValue() {
+    return this._count * this.price
   }
 
   set count(count: number) {
