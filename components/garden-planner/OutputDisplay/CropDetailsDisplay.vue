@@ -10,7 +10,7 @@ import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
 import CropCrafterDataDisplay from './CropCrafterDataDisplay.vue'
 import CropDetailsSummaryDisplay from './CropDetailsSummaryDisplay.vue'
 import CropDetailsHarvestDisplay from './CropDetailsHarvestDisplay.vue'
-import CropDetailsGardenDataDisplay from './CropDetailsGardenDataDisplay.vue'
+import CropDetailsGardenDataDisplay from './CropDetailsGardenMainDisplay.vue'
 import CropMiscDetails from './CropDetailsMiscDisplay.vue'
 
 const harvester = useHarvester()
