@@ -38,7 +38,8 @@
         <h3 class="text-lg font-bold ">
           Glossary
         </h3>
-        <p class="text-sm pt-2">List of terms used in the planner. Some of these terms are used primarily within the planner for differentiating similar values.</p>
+        <p class="text-sm pt-2">List of terms used in the planner. Some of these terms are used primarily within the
+          planner for differentiating similar values.</p>
         <ol class="list">
           <li class="list-row">
             <p>
@@ -49,26 +50,36 @@
           </li>
           <li class="list-row">
             <p>
-              <span class="font-bold">Earth Time</span> — Time in the real world / outside the game. Earth time means that the associated time is capable of passing even if the player is logged off.
-            </p>
-          </li>
-          
-          <li class="list-row">
-            <p>
-              <span class="font-bold">Harvest / Harvest Day</span> — A day where a crop is ready for harvest, typically also replanted within the day if required.
+              <span class="font-bold">Earth Time</span> — Time in the real world / outside the game. Earth time means
+              that the associated time is capable of passing even if the player is logged off.
             </p>
           </li>
 
           <li class="list-row">
             <p>
-              <span class="font-bold">Cycle</span> — Some crops take multiple harvests before needing a re-plant (Such as Blueberries).
+              <span class="font-bold">Harvest / Harvest Day</span> — A day where a crop is ready for harvest, typically
+              also replanted within the day if required.
+            </p>
+          </li>
+
+          <li class="list-row">
+            <p>
+              <span class="font-bold">Cycle</span> — Some crops take multiple harvests before needing a re-plant (Such
+              as Blueberries).
               A cycle factors in the harvests between each replant.
             </p>
           </li>
           <li class="list-row">
             <p>
-              <span class="font-bold">Overall</span> — The entire length of growth ticks / palian days that the planner accounts for.
-              This is the amount of growth ticks seen in the overview display as well as the number of days within the setting.
+              <span class="font-bold">Total</span> — The entire length of growth ticks / palian days that the planner
+              accounts for.
+              This is the amount of growth ticks seen in the overview display as well as the number of days within the
+              setting.
+            </p>
+          </li>
+          <li class="list-row">
+            <p>
+              <span class="font-bold">Absolute</span> — Undivided time. 
             </p>
           </li>
         </ol>
