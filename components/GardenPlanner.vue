@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import NewGardenDisplay from './garden-planner/NewGardenDisplay.vue'
-import NewStatsDisplay from './garden-planner/NewStatsDisplay.vue'
+import NewGardenDisplay from './garden-planner/GardenDisplay.vue'
+import NewStatsDisplay from './garden-planner/StatsDisplay.vue'
 import OutputDisplay from './garden-planner/OutputDisplay.vue'
 import ItemSelector from '~/components/garden-planner/ItemSelector/ItemSelector.vue'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'

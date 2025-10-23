@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import NewSettings from './NewSettings.vue'
+import NewSettings from './SettingsPanel.vue'
 import LazyHCInfo from './HarvestCalculator/HCInfo.vue'
 import CropDetailsDisplay from './OutputDisplay/CropDetailsDisplay.vue'
 import OverallDisplay from './OutputDisplay/OverallDisplay.vue'
