@@ -8,7 +8,7 @@ const WATER_RETAIN_BG = 'bg-water-retain/20 dark:bg-water-retain/40';
 const HARVEST_BOOST_BG = 'bg-harvest-boost/20 dark:bg-harvest-boost/30';
 const WEED_PREVENTION_BG = 'bg-weed-prevention/20 dark:bg-weed-prevention/40';
 const QUALITY_INCREASE_BG = 'bg-quality-increase/20 dark:bg-quality-increase/40'
-const GROWTH_BOOST_BG = 'bg-growth-boost/20'; 
+const GROWTH_BOOST_BG = 'bg-growth-boost/20';
 
 
 
@@ -548,7 +548,7 @@ const ROCKHOPPER_PUMPKIN = new Crop({
     crop: 88,
     cropStar: 132,
     seed: 25,
-    seedStar: 37,  
+    seedStar: 37,
     hasPreserve: true,
     preserve: 101,
     preserveStar: 151,
