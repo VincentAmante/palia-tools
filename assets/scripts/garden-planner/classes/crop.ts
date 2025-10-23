@@ -3,7 +3,10 @@ import type CropType from '../enums/crops'
 import type CropSize from '../enums/crop-size'
 import { CropCode } from '../imports'
 
-interface IProduceInfoOptions {
+/**
+ * Used only for constructor
+ */
+interface IGrowthInfoParams {
   base: number
   withBonus?: number
   growthTime: number
@@ -12,15 +15,19 @@ interface IProduceInfoOptions {
   reharvestLimit?: number
 }
 
-interface IProduceInfo extends IProduceInfoOptions {
-  // NOTE: withBonus is an override, I'm not sure if all crops follow the (1.5x) rule
-  withBonus: number
+interface IGrowthInfo extends IGrowthInfoParams {
+  withBonus: number // an override incase a crop ever betrays the 1.5x rule
   isReharvestable: boolean
+
+  // for multi-harcest crops
+  reharvestLimit: number
   reharvestCooldown: number
-  reharvestLimit: number // Amount of times the crop can be reharvested
 }
 
-interface IGoldValuesOptions {
+/**
+ * Used only for constructor
+ */
+interface IGoldValuesParams {
   crop: number
   cropStar: number
   seed: number
@@ -30,7 +37,7 @@ interface IGoldValuesOptions {
   hasPreserve: boolean
 }
 
-interface IGoldValues extends IGoldValuesOptions {
+interface IGoldValues extends IGoldValuesParams {
   preserveStar: number
 }
 
@@ -53,23 +60,27 @@ interface ICropMetadata {
   cropBackgroundColor: string
 }
 
-class Crop {
-  private _produceInfo: IProduceInfo
-  private _goldValues: IGoldValues
-  private _images: {
-    preserve: string
-    seed: string
-  }
 
-  private _metadata: ICropMetadata
+interface ICropConstructorParams {
+  readonly type: CropType
+  readonly cropBonus: Bonus
+  readonly size: CropSize
+  readonly image: string
+  readonly growthInfoData: IGrowthInfoParams
+  readonly goldValueData: IGoldValuesParams
+  readonly conversionInfo: ICropConversions
+  readonly images: IProductImages
+  readonly metadata: ICropMetadata
+}
 
-  constructor(
+/**
+ *   constructor(
     public readonly type: CropType,
     public readonly cropBonus: Bonus,
     public readonly size: CropSize,
-    public readonly image: string,
-    produceInfoOptions: IProduceInfoOptions,
-    goldValuesOptions: IGoldValuesOptions,
+    public readonly imgSrc: string,
+    produceInfoOptions: IGrowthInfoParams,
+    goldValuesOptions: IGoldValuesParams,
     public readonly conversionInfo: ICropConversions, // How much of each crop is required to make a seed/preserve
     images: IProductImages = {
       preserve: '',
@@ -81,24 +92,58 @@ class Crop {
       cropBackgroundColor: '',
     },
   ) {
-    this._images = images
-    this._metadata = metadata
+ */
+class Crop {
+  private _produceInfo: IGrowthInfo
+  private _goldValues: IGoldValues
+  private _images: {
+    preserve: string
+    seed: string
+  }
+
+  private _metadata: ICropMetadata
+
+
+  public readonly type: CropType
+  public readonly cropBonus: Bonus
+  public readonly size: CropSize
+  public readonly image: string
+  public readonly conversionInfo: ICropConversions // How much of each crop is required to make a seed/preserve
+
+  constructor(params: ICropConstructorParams) {
+    this.type = params.type
+    this.cropBonus = params.cropBonus
+    this.size = params.size
+    this.image = params.image
+    this.conversionInfo= params.conversionInfo
+
+    this._images = params.images || {
+      preserve: '',
+      seed: '',
+    }
+
+    this._metadata = params.metadata || {
+      cropCode: CropCode.None,
+      cropTooltip: 'Remove Crop',
+      cropBackgroundColor: '',
+    }
 
     this._produceInfo = {
-      ...produceInfoOptions,
-      withBonus: produceInfoOptions.withBonus || produceInfoOptions.base * 1.5,
-      isReharvestable: produceInfoOptions.isReharvestable || false,
-      reharvestCooldown: produceInfoOptions.reharvestCooldown || 0,
-      reharvestLimit: produceInfoOptions.reharvestLimit || 0,
+      ...params.growthInfoData,
+      withBonus: params.growthInfoData.withBonus || params.growthInfoData.base * 1.5,
+      isReharvestable: params.growthInfoData.isReharvestable || false,
+      reharvestCooldown: params.growthInfoData.reharvestCooldown || 0,
+      reharvestLimit: params.growthInfoData.reharvestLimit || 0,
     }
 
     this._goldValues = {
-      ...goldValuesOptions,
-      preserveStar: goldValuesOptions.preserveStar || goldValuesOptions.preserve * 1.5, // We want to assume the same 1.5x rule if not proivided
+      ...params.goldValueData,
+      // assume 1.5x rule if not provided
+      preserveStar: params.goldValueData.preserveStar || params.goldValueData.preserve * 1.5,
     }
   }
 
-  get produceInfo(): IProduceInfo {
+  get produceInfo(): IGrowthInfo {
     return this._produceInfo
   }
 
@@ -295,4 +340,4 @@ class Crop {
 }
 
 export default Crop
-export type { IProduceInfo, IProduceInfoOptions }
+export type { IGrowthInfo as IProduceInfo, IGrowthInfoParams as IProduceInfoOptions }
