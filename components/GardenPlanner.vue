@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import NewGardenDisplay from './garden-planner/GardenDisplay.vue'
-import NewStatsDisplay from './garden-planner/StatsDisplay.vue'
+import GardenDisplay from './garden-planner/GardenDisplay.vue'
+import StatsDisplay from './garden-planner/StatsDisplay.vue'
 import OutputDisplay from './garden-planner/OutputDisplay.vue'
 import ItemSelector from '~/components/garden-planner/ItemSelector/ItemSelector.vue'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
@@ -128,8 +128,8 @@ watch(updateIsRequested, () => {
         (plannerDisplayConfig.get === 'display+display') ? 'w-full' : ''
         ]">
           <template v-if="(plannerDisplayConfig.get === 'garden+display')">
-            <NewGardenDisplay />
-            <NewStatsDisplay class="pt-2 @sm:mx-auto @xs:px-2 w-fit "
+            <GardenDisplay />
+            <StatsDisplay class="pt-2 @sm:mx-auto @xs:px-2 w-fit "
               :class="[garden.isGardenWide ? 'w-fit' : '@lg:w-full']" />
           </template>
           <template v-if="(plannerDisplayConfig.get === 'display+display')">

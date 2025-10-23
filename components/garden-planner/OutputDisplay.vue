@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import NewSettings from './SettingsPanel.vue'
+import SettingsPanel from './SettingsPanel.vue'
 import LazyHCInfo from './HarvestCalculator/HCInfo.vue'
 import CropDetailsDisplay from './OutputDisplay/CropDetailsDisplay.vue'
 import OverallDisplay from './OutputDisplay/OverallDisplay.vue'
@@ -66,7 +66,7 @@ defineProps({
       <p class="sr-only">
         Settings
       </p>
-      <NewSettings />
+      <SettingsPanel />
     </section>
     <CropDetailsDisplay v-show="activeTab === 'crop-details'" />
     <section v-show="activeTab === 'info'" id="info-tab" class="pt-2">
