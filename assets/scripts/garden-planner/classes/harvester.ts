@@ -11,12 +11,6 @@ export interface IHarvesterOptions {
   level: number
 }
 
-// Tracker for garden stats
-interface IGardenStats {
-  lastGrowthTick: number // the last tick this crop was harvested
-  daysSpentHarvesting: Set<Number> // which days this crop was harvested
-}
-
 /**
  * The Harvester class is responsible for simulating the yield of crops over a given number of days.
  */
@@ -182,6 +176,7 @@ export default class Harvester {
         cropType: tile.crop.type,
         totalHarvestsCount: (cycles * harvestableDays.length) + remainingHarvests,
         phases: [] as IHarvestCyclePhase[],
+        cropCount: group.count
       } satisfies ICropHarvestCycle
 
       for (let phase = 0; phase < harvestableDays.length; phase++) {
@@ -229,9 +224,13 @@ export default class Harvester {
           for (let i = 0; i < totalHarvestCycleData!.phases.length; i++) {
             totalHarvestCycleData!.phases[i].yield.base = { ...addCropYields(totalHarvestCycleData!.phases[i].yield.base, cropHarvestCycle.phases[i].yield.base), isAveraged: false }
             totalHarvestCycleData!.phases[i].yield.star = { ...addCropYields(totalHarvestCycleData!.phases[i].yield.star, cropHarvestCycle.phases[i].yield.star), isAveraged: false }
+
           }
 
+          totalHarvestCycleData.cropCount += cropHarvestCycle.cropCount
+
           this._totalHarvest.cycleData.set(seedsRequiredIdWithGrowth, totalHarvestCycleData)
+
         }
       }
       else {
@@ -327,6 +326,7 @@ export default class Harvester {
 
     }
 
+
     // Sort the harvests by day for chronological calculations
     dayHarvests = new Map([...dayHarvests.entries()].sort(([a], [b]) => a - b))
 
@@ -350,7 +350,20 @@ export default class Harvester {
       deductionsDone: number
     }>
 
+    let harvestDayGaps: number[] = []
+    let harvestDayGapsSum = 0
+    let latestHarvestDayForGap = 0
+    let harvestDayGapLowest = Number.POSITIVE_INFINITY
+    let harvestDayGapHighest = Number.NEGATIVE_INFINITY
+
     for (const [day, harvest] of dayHarvests) {
+      const harvestDayGap = day - latestHarvestDayForGap
+      harvestDayGaps.push(harvestDayGap)
+      harvestDayGapsSum += harvestDayGap
+      latestHarvestDayForGap = day
+      harvestDayGapLowest = Math.min(harvestDayGapLowest, harvestDayGap)
+      harvestDayGapHighest = Math.max(harvestDayGapHighest, harvestDayGap)
+
       // Deduct seeds required for replanting
       if (options.includeReplantCost) {
         for (const [id, seedsRequiredInfo] of harvest.seedsRequired) {
@@ -369,13 +382,9 @@ export default class Harvester {
 
           // Calculate how many seeds need to be produced to replant, factoring in remainder from previous harvests
           const remainingSeeds = seedsRemainder.get(id) ?? 0
-
           const remainderSeedsToBeUsed = Math.min(remainingSeeds, seedsRequiredInfo.count)
-
           const seedsRequiredCount = seedsRequiredInfo.count - remainderSeedsToBeUsed
-
           const conversionsNeeded = Math.ceil(seedsRequiredCount / seedsPerConversion)
-
           const cropsRequired = conversionsNeeded * cropsPerSeed
 
 
@@ -447,6 +456,14 @@ export default class Harvester {
           isStar,
         })
       }
+    }
+
+    const harvestDayAverage = harvestDayGapsSum / harvestDayGaps.length
+    const harvestDayGapStats = {
+      gaps: harvestDayGaps,
+      highest: harvestDayGapHighest,
+      lowest: harvestDayGapLowest,
+      average: Math.round(harvestDayAverage)
     }
 
     // Get the average yield on days where crops are harvested
