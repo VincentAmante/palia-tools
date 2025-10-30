@@ -56,6 +56,10 @@ class Fertiliser {
     return this._id
   }
 
+  get costData(): IFertiliserCostSources {
+    return this._costs
+  }
+
   // id can be set so that fertilisers used on large crops can be identified
   set id(id: string) {
     this._id = id
