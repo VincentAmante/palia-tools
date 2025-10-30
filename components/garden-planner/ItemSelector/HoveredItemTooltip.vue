@@ -5,6 +5,7 @@ import { Bonus, Crop, getCodeFromCrop, getCodeFromFertiliser } from '~/assets/sc
 import type { Fertiliser } from '~/assets/scripts/garden-planner/imports'
 import CropSize from '~/assets/scripts/garden-planner/enums/crop-size'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
+import { getBonusData } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 
 const props = defineProps<{
   hoveredItem: SelectedItem | null
@@ -29,51 +30,6 @@ const title = computed(() => {
   }
 })
 
-function getBonus(bonus: Bonus) {
-  switch (bonus) {
-    case Bonus.WaterRetain:
-      return {
-        icon: 'droplet',
-        colour: 'text-water-retain',
-        type: 'Water Retain',
-        extraDetail: 'Helps keeps other nearby crop types hydrated',
-      }
-    case Bonus.QualityIncrease:
-      return {
-        icon: 'star',
-        colour: 'text-quality-increase',
-        type: 'Quality Increase',
-        extraDetail: 'Boosts quality of other nearby crop types',
-      }
-    case Bonus.HarvestIncrease:
-      return {
-        icon: 'wheat-awn',
-        colour: 'text-harvest-boost',
-        type: 'Harvest Increase',
-        extraDetail: 'Boosts amount harvested from other nearby crop types',
-      }
-    case Bonus.WeedPrevention:
-      return {
-        icon: 'shield',
-        colour: 'text-weed-prevention',
-        type: 'Weed Prevention',
-        extraDetail: 'Prevents weeds from growing on other nearby crop types',
-      }
-    case Bonus.SpeedIncrease:
-      return {
-        icon: 'forward-fast',
-        colour: 'text-growth-boost',
-        type: 'Growth Boost',
-        extraDetail: 'Boosts growth speed of other nearby crop types',
-      }
-    default:
-      return {
-        icon: '',
-        colour: 'text-misc',
-        type: '',
-      }
-  }
-}
 
 function getBonusFert(bonus: Bonus) {
   switch (bonus) {
@@ -124,11 +80,11 @@ function getBonusFert(bonus: Bonus) {
 const bonus = computed(() => {
   switch (getSelectedItemType(props.hoveredItem)) {
     case (SelectedItemType.Crop):
-      return getBonus((props.hoveredItem as Crop).cropBonus)
+      return getBonusData((props.hoveredItem as Crop).cropBonus)
     case (SelectedItemType.Fertiliser):
       return getBonusFert((props.hoveredItem as Fertiliser).effect)
     default:
-      return getBonus(Bonus.None)
+      return getBonusData(Bonus.None)
   }
 })
 
