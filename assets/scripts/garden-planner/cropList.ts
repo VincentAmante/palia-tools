@@ -49,6 +49,11 @@ const TOMATO = new Crop({
     cropTooltip: 'Tomato: Water Retention',
     cropBackgroundColor: WATER_RETAIN_BG,
   },
+  costs: {
+    zekiPrice: 80,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const POTATO = new Crop({
@@ -85,6 +90,11 @@ const POTATO = new Crop({
     cropTooltip: 'Potato: Water Retention',
     cropBackgroundColor: WATER_RETAIN_BG,
   },
+  costs: {
+    zekiPrice: 40,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const RICE = new Crop({
@@ -122,6 +132,12 @@ const RICE = new Crop({
     cropTooltip: 'Rice: Harvest Increase',
     cropBackgroundColor: HARVEST_BOOST_BG,
   },
+
+  costs: {
+    zekiPrice: 23,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const WHEAT = new Crop({
@@ -158,6 +174,12 @@ const WHEAT = new Crop({
     cropTooltip: 'Wheat: Harvest Increase',
     cropBackgroundColor: HARVEST_BOOST_BG,
   },
+
+  costs: {
+    zekiPrice: 25,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const CARROT = new Crop({
@@ -194,6 +216,12 @@ const CARROT = new Crop({
     cropTooltip: 'Carrot: Weed Prevention',
     cropBackgroundColor: WEED_PREVENTION_BG,
   },
+
+  costs: {
+    zekiPrice: 15,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const ONION = new Crop({
@@ -230,6 +258,12 @@ const ONION = new Crop({
     cropTooltip: 'Onion: Weed Prevention',
     cropBackgroundColor: WEED_PREVENTION_BG,
   },
+
+  costs: {
+    zekiPrice: 20,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const COTTON = new Crop({
@@ -266,6 +300,12 @@ const COTTON = new Crop({
     cropTooltip: 'Cotton: Quality Increase',
     cropBackgroundColor: QUALITY_INCREASE_BG,
   },
+
+  costs: {
+    zekiPrice: 40,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const BLUEBERRY = new Crop({
@@ -305,6 +345,12 @@ const BLUEBERRY = new Crop({
     cropTooltip: 'Berry Bush: Harvest Increase. 2x2, needs 2 of a bonus for the buff to activate',
     cropBackgroundColor: HARVEST_BOOST_BG,
   },
+
+  costs: {
+    zekiPrice: 0,
+    guildPrice: 45,
+    potionPrice: 0
+  }
 })
 
 const APPLE = new Crop({
@@ -344,6 +390,12 @@ const APPLE = new Crop({
     cropTooltip: 'Apple Tree: Harvest Increase. 3x3, needs 3 of a bonus for the buff to activate',
     cropBackgroundColor: HARVEST_BOOST_BG,
   },
+
+  costs: {
+    zekiPrice: 0,
+    guildPrice: 280,
+    potionPrice: 0
+  }
 })
 
 const CORN = new Crop({
@@ -380,6 +432,12 @@ const CORN = new Crop({
     cropTooltip: 'Corn: Harvest Increase',
     cropBackgroundColor: HARVEST_BOOST_BG,
   },
+
+  costs: {
+    zekiPrice: 30,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const SPICY_PEPPER = new Crop({
@@ -419,6 +477,12 @@ const SPICY_PEPPER = new Crop({
     cropTooltip: 'Spicy Pepper: Quality Increase. 2x2, needs 2 of a bonus for the buff to activate',
     cropBackgroundColor: QUALITY_INCREASE_BG,
   },
+
+  costs: {
+    zekiPrice: 170,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const NAPA_CABBAGE = new Crop({
@@ -455,6 +519,12 @@ const NAPA_CABBAGE = new Crop({
     cropTooltip: 'Napa Cabbage: Water Retention',
     cropBackgroundColor: WATER_RETAIN_BG,
   },
+
+  costs: {
+    zekiPrice: 20,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const BOK_CHOY = new Crop({
@@ -491,6 +561,12 @@ const BOK_CHOY = new Crop({
     cropTooltip: 'Bok Choy: Weed Prevention',
     cropBackgroundColor: WEED_PREVENTION_BG,
   },
+
+  costs: {
+    zekiPrice: 30,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const BATTERFLY_BEAN = new Crop({
@@ -530,6 +606,12 @@ const BATTERFLY_BEAN = new Crop({
     cropTooltip: 'Batterfly Bean',
     cropBackgroundColor: HARVEST_BOOST_BG,
   },
+
+  costs: {
+    zekiPrice: 0,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 const ROCKHOPPER_PUMPKIN = new Crop({
@@ -569,6 +651,12 @@ const ROCKHOPPER_PUMPKIN = new Crop({
     cropTooltip: 'Rockhopper Pumpkin',
     cropBackgroundColor: QUALITY_INCREASE_BG,
   },
+
+  costs: {
+    zekiPrice: 0,
+    guildPrice: 0,
+    potionPrice: 500
+  }
 })
 
 const NULLCROP = new Crop({
@@ -605,6 +693,11 @@ const NULLCROP = new Crop({
     cropTooltip: '',
     cropBackgroundColor: '',
   },
+  costs: {
+    zekiPrice: 0,
+    guildPrice: 0,
+    potionPrice: 0
+  }
 })
 
 // Helper functions to get crop data from the crop code

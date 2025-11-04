@@ -42,7 +42,7 @@ const fertiliserShopCostTracker = computed(() => {
     Object.entries(plotStat.value.fertiliserCount).forEach(([id, count]) => {
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
-        const { zekiBatchPrice, zekiBatchCount } = fertiliser.costData
+        const { zekiBatchPrice, zekiBatchCount } = fertiliser.costs
 
         if (zekiBatchPrice === 0) return;
 
@@ -77,7 +77,7 @@ const fertiliserGuildCostTracker = computed(() => {
     Object.entries(plotStat.value.fertiliserCount).forEach(([id, count]) => {
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
-        const { guildBatchPrice, guildBatchCount } = fertiliser.costData
+        const { guildBatchPrice, guildBatchCount } = fertiliser.costs
 
         if (guildBatchPrice === 0) return;
 
@@ -115,7 +115,7 @@ const fertiliserSellCostTracker = computed(() => {
     Object.entries(plotStat.value.fertiliserCount).forEach(([id, count]) => {
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
-        const { goldSellValue } = fertiliser.costData
+        const { goldSellValue } = fertiliser.costs
 
         if (goldSellValue === 0) return;
 
@@ -149,7 +149,7 @@ const fertilisersEligibleForStorePurchase = computed(() => {
         if (count === 0) return
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
-        const { zekiBatchPrice } = fertiliser.costData
+        const { zekiBatchPrice } = fertiliser.costs
 
         if (zekiBatchPrice !== 0 && count !== 0)
             fertilisersFound.push({
@@ -171,7 +171,7 @@ const fertilisersEligibleForGuildPurchase = computed(() => {
         if (count === 0) return
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
-        const { guildBatchPrice } = fertiliser.costData
+        const { guildBatchPrice } = fertiliser.costs
 
         if (guildBatchPrice !== 0 && count !== 0)
             fertilisersFound.push({
@@ -193,7 +193,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
         if (count === 0) return
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
-        const { guildBatchPrice, zekiBatchPrice } = fertiliser.costData
+        const { guildBatchPrice, zekiBatchPrice } = fertiliser.costs
 
         if (guildBatchPrice === 0 && zekiBatchPrice === 0 && count !== 0)
             fertilisersFound.push({

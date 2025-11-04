@@ -56,7 +56,7 @@ class Fertiliser {
     return this._id
   }
 
-  get costData(): IFertiliserCostSources {
+  get costs(): IFertiliserCostSources {
     return this._costs
   }
 

@@ -41,6 +41,13 @@ interface IGoldValues extends IGoldValuesParams {
   preserveStar: number
 }
 
+// * Seed info is already stored in IGoldValues
+interface ISeedCostSources {
+  zekiPrice: number // how much gold per batch (Zeki's)
+  guildPrice: number // how many medals to buy a batch (Guild Store)
+  potionPrice: number
+}
+
 export interface ICropConversions {
   cropsPerSeed: number
   seedsPerConversion: number
@@ -71,28 +78,9 @@ interface ICropConstructorParams {
   readonly conversionInfo: ICropConversions
   readonly images: IProductImages
   readonly metadata: ICropMetadata
+  readonly costs: ISeedCostSources
 }
 
-/**
- *   constructor(
-    public readonly type: CropType,
-    public readonly cropBonus: Bonus,
-    public readonly size: CropSize,
-    public readonly imgSrc: string,
-    produceInfoOptions: IGrowthInfoParams,
-    goldValuesOptions: IGoldValuesParams,
-    public readonly conversionInfo: ICropConversions, // How much of each crop is required to make a seed/preserve
-    images: IProductImages = {
-      preserve: '',
-      seed: '',
-    },
-    metadata: ICropMetadata = {
-      cropCode: CropCode.None,
-      cropTooltip: 'Remove Crop',
-      cropBackgroundColor: '',
-    },
-  ) {
- */
 class Crop {
   private _produceInfo: IGrowthInfo
   private _goldValues: IGoldValues
@@ -102,6 +90,7 @@ class Crop {
   }
 
   private _metadata: ICropMetadata
+  private _costs: ISeedCostSources
 
 
   public readonly type: CropType
@@ -115,7 +104,8 @@ class Crop {
     this.cropBonus = params.cropBonus
     this.size = params.size
     this.image = params.image
-    this.conversionInfo= params.conversionInfo
+    this.conversionInfo = params.conversionInfo
+    this._costs = params.costs
 
     this._images = params.images || {
       preserve: '',
@@ -173,6 +163,10 @@ class Crop {
 
   get cropBackgroundColor(): string {
     return this._metadata.cropBackgroundColor
+  }
+
+  get costs() {
+    return this._costs
   }
 
   // Assumes player harvests on the day it is harvestable
