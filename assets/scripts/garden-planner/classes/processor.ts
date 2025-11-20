@@ -2,7 +2,7 @@ import { getCropFromType } from '../cropList'
 import type { Crop } from '../imports'
 import { CropType } from '../imports'
 import { ItemType } from '../utils/garden-helpers'
-import type { CropItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IHarvestCyclePhase, IInventoryItem, ISeedTracker, ITotalHarvest } from '../utils/garden-helpers'
+import type { CropItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IDayHarvest, IHarvestCyclePhase, IInventoryItem, ISeedTracker, ITotalHarvest } from '../utils/garden-helpers'
 import type { ICropConversions } from './crop'
 import { parseCropId } from '../utils/garden-helpers'
 
@@ -206,126 +206,12 @@ export default class Processor {
     this._output.detailedProcessingInfo = new Map() // Reset detailed info
   }
 
-
-
-  // Main processing method that delegates to process_v2
-  process(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>): void {
-    this.process_v2(harvestData, processorSettings)
-    return
-  }
-
-  /**
-   * Calculates processing settings for each crop based on harvest data and user settings
-   * @param totalHarvest - Harvest data to process
-   * @param settings - User-defined processing settings
-   * @returns TCropProcessData - Calculated processing data for each crop
-   */
-  private calculateSettings(totalHarvest: Readonly<ITotalHarvest>, settings: Readonly<ProcessorSettings>): TCropProcessData {
-    const cropData = new Map<ICropNameWithGrowthDiff, {
-      totalProcessMinutes: number
-      processType: ItemType.Crop | ItemType.Seed | ItemType.Preserve
-      craftersToUse: number
-      conversionsToMake: number
-    }>()
-
-    // Iterate through each crop in the harvest data
-    for (const [cropName, cropYield] of totalHarvest.crops) {
-      const crop = getCropFromType(cropYield.cropType)
-      if (!crop)
-        throw new Error(`Missing crop data for crop: ${cropName}`)
-
-      // Get user-defined settings for this crop or use defaults
-      const setting = settings.cropSettings.get(cropName) || {
-        cropType: cropYield.cropType,
-        isStar: cropYield.isStar,
-        processAs: ItemType.Crop,
-        crafters: 0,
-        targetTime: 0,
-        isActive: false,
-      }
-
-      if (!setting)
-        throw new Error(`Missing setting for crop: ${cropName}`)
-
-      const processSetting = setting.processAs
-
-      // If processing as crop, no conversion needed
-      if (processSetting === ItemType.Crop) {
-        cropData.set(cropName, {
-          totalProcessMinutes: 0,
-          processType: ItemType.Crop,
-          craftersToUse: 0,
-          conversionsToMake: 0,
-        })
-        continue
-      }
-
-      // Get conversion information for this crop
-      const conversionInfo = crop.conversionInfo
-      if (!conversionInfo)
-        throw new Error(`Missing conversion info for crop: ${cropName}`)
-
-      // Determine conversion ratios based on processing type (seed or preserve)
-      const cropsPerConversion = (processSetting === ItemType.Seed) ? conversionInfo.cropsPerSeed : conversionInfo.cropsPerPreserve
-
-      // Means there's nothing to work with for this crop
-      if (cropYield.totalRaw === 0 && cropYield.totalWithDeductions === 0) {
-        continue
-      }
-
-      // Track seed collectors and preserve jars
-      if (processSetting === ItemType.Seed) {
-        this._seedCollectors.set(cropName, {
-          count: setting.crafters,
-          img: {
-            src: crop.cropImage,
-            alt: crop.type,
-          },
-          isStar: cropYield.isStar,
-          baseGoldValue: 0,
-          itemType: ItemType.Crop,
-          cropType: crop.type,
-        })
-        this._seedCollectorsCount += setting.crafters
-      }
-      else {
-        this._preserveJars.set(cropName, {
-          count: setting.crafters,
-          img: {
-            src: crop.cropImage,
-            alt: crop.type,
-          },
-          isStar: cropYield.isStar,
-          baseGoldValue: 0,
-          itemType: ItemType.Crop,
-          cropType: crop.type,
-        })
-        this._preserveJarsCount += setting.crafters
-      }
-
-      // Calculate conversion time and number of conversions needed
-      const conversionTime = (processSetting === ItemType.Seed) ? conversionInfo.seedProcessMinutes : conversionInfo.preserveProcessMinutes
-      const conversionsToMake = Math.floor(cropYield.totalWithDeductions / cropsPerConversion)
-      const totalProcessMinutes = conversionsToMake * conversionTime
-
-      // Store calculated data
-      cropData.set(cropName, {
-        totalProcessMinutes,
-        processType: processSetting,
-        craftersToUse: setting.crafters,
-        conversionsToMake,
-      })
-    }
-
-    return cropData
-  }
-
   /**
    * Main processing function that handles the actual calculation of processing results
    * @param harvestData - Harvest data to process
    * @param processorSettings - User-defined processing settings
    */
-  process_v2(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>) {
+  process(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>): void {
     this.reset() // Reset all state before starting new processing
 
     // Initialize output and inventory
@@ -549,10 +435,124 @@ export default class Processor {
         })
       }
     }
-    
+
     // Update class properties with the final output
     this._inventory = inventory
     this._output = output
+
+    return
+  }
+
+  /**
+   * Calculates processing settings for each crop based on harvest data and user settings
+   * @param harvestInfo - Harvest data to process
+   * @param settings - User-defined processing settings
+   * @param skipCrafterTracking - Whether to skip tracking crafters (default: false)
+   * 
+   * Use skipCrafterTracking when processing single day harvests to avoid double counting equipment
+   * 
+   * @returns TCropProcessData - Calculated processing data for each crop
+   */
+  private calculateSettings(harvestInfo: Readonly<ITotalHarvest> | Readonly<IDayHarvest>, settings: Readonly<ProcessorSettings>, skipCrafterTracking: boolean = false): TCropProcessData {
+    const cropData = new Map<ICropNameWithGrowthDiff, {
+      totalProcessMinutes: number
+      processType: ItemType.Crop | ItemType.Seed | ItemType.Preserve
+      craftersToUse: number
+      conversionsToMake: number
+    }>()
+
+    // Iterate through each crop in the harvest data
+    for (const [cropName, cropYield] of harvestInfo.crops) {
+      const crop = getCropFromType(cropYield.cropType)
+      if (!crop)
+        throw new Error(`Missing crop data for crop: ${cropName}`)
+
+      // Get user-defined settings for this crop or use defaults
+      const setting = settings.cropSettings.get(cropName) || {
+        cropType: cropYield.cropType,
+        isStar: cropYield.isStar,
+        processAs: ItemType.Crop,
+        crafters: 0,
+        targetTime: 0,
+        isActive: false,
+      }
+
+      if (!setting)
+        throw new Error(`Missing setting for crop: ${cropName}`)
+
+      const processSetting = setting.processAs
+
+      // If processing as crop, no conversion needed
+      if (processSetting === ItemType.Crop) {
+        cropData.set(cropName, {
+          totalProcessMinutes: 0,
+          processType: ItemType.Crop,
+          craftersToUse: 0,
+          conversionsToMake: 0,
+        })
+        continue
+      }
+
+      // Get conversion information for this crop
+      const conversionInfo = crop.conversionInfo
+      if (!conversionInfo)
+        throw new Error(`Missing conversion info for crop: ${cropName}`)
+
+      // Determine conversion ratios based on processing type (seed or preserve)
+      const cropsPerConversion = (processSetting === ItemType.Seed) ? conversionInfo.cropsPerSeed : conversionInfo.cropsPerPreserve
+
+      // Means there's nothing to work with for this crop
+      if (cropYield.totalRaw === 0 && cropYield.totalWithDeductions === 0) {
+        continue
+      }
+
+      if (!skipCrafterTracking) {
+        // Track seed collectors and preserve jars
+        if (processSetting === ItemType.Seed) {
+          this._seedCollectors.set(cropName, {
+            count: setting.crafters,
+            img: {
+              src: crop.cropImage,
+              alt: crop.type,
+            },
+            isStar: cropYield.isStar,
+            baseGoldValue: 0,
+            itemType: ItemType.Crop,
+            cropType: crop.type,
+          })
+          this._seedCollectorsCount += setting.crafters
+        }
+        else {
+          this._preserveJars.set(cropName, {
+            count: setting.crafters,
+            img: {
+              src: crop.cropImage,
+              alt: crop.type,
+            },
+            isStar: cropYield.isStar,
+            baseGoldValue: 0,
+            itemType: ItemType.Crop,
+            cropType: crop.type,
+          })
+          this._preserveJarsCount += setting.crafters
+        }
+      }
+
+      // Calculate conversion time and number of conversions needed
+      const conversionTime = (processSetting === ItemType.Seed) ? conversionInfo.seedProcessMinutes : conversionInfo.preserveProcessMinutes
+      const conversionsToMake = Math.floor(cropYield.totalWithDeductions / cropsPerConversion)
+      const totalProcessMinutes = conversionsToMake * conversionTime
+
+      // Store calculated data
+      cropData.set(cropName, {
+        totalProcessMinutes,
+        processType: processSetting,
+        craftersToUse: setting.crafters,
+        conversionsToMake,
+      })
+    }
+
+    return cropData
   }
 }
 
@@ -622,9 +622,9 @@ function aggregateHarvestResults(params: {
   minutesPerConversion: number;
   crafterCount: number;
 }): IProcessHarvestData {
-  const { 
-    crafterData, totalProduceCount, remainderCrops, goldGenerated, 
-    minutesToNextHarvest, totalConversionsRequired, minutesPerConversion, crafterCount 
+  const {
+    crafterData, totalProduceCount, remainderCrops, goldGenerated,
+    minutesToNextHarvest, totalConversionsRequired, minutesPerConversion, crafterCount
   } = params;
 
   let canFinishBeforeNextHarvest = true;
@@ -636,8 +636,8 @@ function aggregateHarvestResults(params: {
   let totalIdleMinutes = 0;
 
   crafterData.forEach(crafter => {
-    crafter.idleTimeMinutes = Math.min(0, minutesToNextHarvest - crafter.processTimeMinutes);
-    crafter.excessTimeMinutes = Math.min(0, crafter.processTimeMinutes - minutesToNextHarvest);
+    crafter.idleTimeMinutes = Math.max(0, minutesToNextHarvest - crafter.processTimeMinutes);
+    crafter.excessTimeMinutes = Math.max(0, crafter.processTimeMinutes - minutesToNextHarvest);
     crafter.canFinishBeforeNextHarvest = crafter.processTimeMinutes <= minutesToNextHarvest;
 
     if (!crafter.canFinishBeforeNextHarvest) {
@@ -646,7 +646,7 @@ function aggregateHarvestResults(params: {
 
     totalProcessMinutes += crafter.processTimeMinutes;
     totalIdleMinutes += crafter.idleTimeMinutes; // TODO: Utilise this somehow
-    
+
     lowestCrafterTime = Math.min(lowestCrafterTime, crafter.processTimeMinutes);
     highestCrafterTime = Math.max(highestCrafterTime, crafter.processTimeMinutes);
     longestProcessMinutes = Math.max(longestProcessMinutes, crafter.processTimeMinutes, minutesToNextHarvest);
@@ -654,8 +654,8 @@ function aggregateHarvestResults(params: {
   });
 
   const conversionsPossible = (minutesToNextHarvest / minutesPerConversion) * crafterCount;
-  const averageExcessTimeMinutes = totalConversionsRequired > conversionsPossible 
-    ? ((totalConversionsRequired - conversionsPossible) * minutesPerConversion) / crafterCount 
+  const averageExcessTimeMinutes = totalConversionsRequired > conversionsPossible
+    ? ((totalConversionsRequired - conversionsPossible) * minutesPerConversion) / crafterCount
     : 0;
 
   return {
