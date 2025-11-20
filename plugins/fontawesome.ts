@@ -54,6 +54,7 @@ import {
   faCheck,
   faCog,
   faPoop,
+  faEye,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons'
@@ -113,7 +114,8 @@ library.add(
   faWindowMaximize,
   faCheck,
   faCog,
-  faPoop
+  faPoop,
+  faEye
 )
 
 // This is important, we are going to let Nuxt worry about the CSS
