@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import useHarvester from '~/stores/useHarvester'
 import useGarden from '~/stores/useGarden'
-import CropDetailsHarvestDisplay from './CropDetailsHarvestDisplay.vue'
-import CropDetailsGardenFertiliserTables from './CropDetailsGardenFertiliserTables.vue'
-import CropDetailsGardenSeedTables from './CropDetailsGardenSeedTables.vue'
+import CropDetailsHarvestDisplay from './CropHarvestDaysPanel.vue'
+import GardenFertiliserTables from './GardenFertiliserTables.vue'
+import GardenSeedTables from './GardenSeedTables.vue'
+import TendingPanel from './TendingPanel.vue'
 const harvester = useHarvester()
 const garden = useGarden()
 
@@ -25,10 +26,10 @@ const plotStat = computed(() => garden.plotStat)
                 @click="tab = 'Harvest'" :aria-selected="tab === 'Harvest'">
                 <p>Harvest</p>
             </button>
-            <!-- <button role="tab" class="tab join-item" :class="(tab === 'Tending') ? 'tab-active text-accent' : ''"
-                    @click="tab = 'Tending'" :aria-selected="tab === 'Tending'">
-                    <p>Tending</p>
-                </button> -->
+            <button role="tab" class="tab join-item" :class="(tab === 'Tending') ? 'tab-active text-accent' : ''"
+                @click="tab = 'Tending'" :aria-selected="tab === 'Tending'">
+                <p>Tending</p>
+            </button>
             <button role="tab" class="tab join-item" :class="(tab === 'Misc') ? 'tab-active text-accent' : ''"
                 @click="tab = 'Misc'" :aria-selected="tab === 'Misc'">
                 <p>Misc</p>
@@ -38,14 +39,17 @@ const plotStat = computed(() => garden.plotStat)
     <CropDetailsHarvestDisplay v-if="tab === 'Harvest'" should-be-max-size
         :day-harvests="harvester.harvester.dayHarvests" />
     <div v-if="tab === 'Misc'">
-        <section class="bg-accent border-misc-dark rounded-sm border overflow-y-auto max-h-102">
+        <section
+            class="bg-accent dark:bg-palia-blue dark:text-accent border-misc-dark dark:border-palia-blue-dark rounded-sm border overflow-y-auto max-h-102">
             <table
-                class="table table-sm table-pin-rows [&_tr]:not-last:border-b [&_tr]:even:bg-secondary/80 [&_] [&_th]:whitespace-break-spaces [&_tr]:border-b-misc">
+                class="table table-sm table-pin-rows [&_tr]:not-last:border-b [&_tr]:even:bg-secondary/90  [&_] [&_th]:whitespace-break-spaces [&_tr]:border-b-misc dark:[&_tr]:even:bg-palia-blue-light/60 dark:[&_tr]:border-b-palia-blue-dark">
 
-                <CropDetailsGardenSeedTables />
-                <CropDetailsGardenFertiliserTables />
-
+                <GardenFertiliserTables />
+                <GardenSeedTables />
             </table>
         </section>
+    </div>
+    <div v-if="tab === 'Tending'">
+        <TendingPanel />
     </div>
 </template>

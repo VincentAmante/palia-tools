@@ -3,15 +3,15 @@ import { computed, ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
-import { ItemType, parseCropId, type ICropName, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { parseCropId, type ICropName, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { CropType } from '~/assets/scripts/garden-planner/imports'
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
 
-import CropCrafterDataDisplay from './CropCrafterDataDisplay.vue'
-import CropDetailsSummaryDisplay from './CropDetailsSummaryDisplay.vue'
-import CropDetailsHarvestDisplay from './CropDetailsHarvestDisplay.vue'
-import CropDetailsGardenDataDisplay from './CropDetailsGardenMainDisplay.vue'
-import CropMiscDetails from './CropDetailsMiscDisplay.vue'
+import CropCrafterDataDisplay from './CropCrafterPanel.vue'
+import CropSummaryPanel from './CropSummaryPanel.vue'
+import CropHarvestDaysPanel from './CropHarvestDaysPanel.vue'
+import CropGardenMainDisplay from './CropGardenMainDisplay.vue'
+import CropMiscDetails from './CropMiscPanel.vue'
 
 const harvester = useHarvester()
 const processor = useProcessor()
@@ -108,7 +108,7 @@ watchEffect(() => {
 
     <!-- Crop Selector -->
     <nav
-      class="flex flex-wrap gap-2 p-2 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue">
+      class="flex flex-wrap gap-1 p-1 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue">
       <p v-if="presentCrops.size === 0" class="text-lg  text-misc-dark dark:text-accent">
         No crops in layout to display details for.
       </p>
@@ -124,7 +124,7 @@ watchEffect(() => {
     </nav>
 
     <!-- Details Display -->
-    <div v-if="selectedCropId && selectedCropCycleData" class="py-1 flex flex-col gap-1 @container">
+    <div v-if="selectedCropId && selectedCropCycleData" class="py-1 flex flex-col gap-2 @container">
       <div class="flex gap-1 flex-col lg:flex-row  gap-x-4">
         <p
           class="text-sm w-fit font-semibold text-palia-blue-dark flex gap-1 items-center bg-accent dark:bg-palia-blue-light dark:text-accent px-3 rounded-sm">
@@ -151,16 +151,16 @@ watchEffect(() => {
         </div>
       </div>
       <div v-if="cropDetailsTab === 'overall'">
-        <CropDetailsSummaryDisplay :selected-crop-detail="selectedCropId" />
+        <CropSummaryPanel :selected-crop-detail="selectedCropId" />
       </div>
       <div v-else-if="selectedCropProcessingData && cropDetailsTab === 'crafter-data'">
         <CropCrafterDataDisplay :selected-crop-processing-data="selectedCropProcessingData"
           :selected-crop-detail="selectedCropId" />
       </div>
-      <div class="pt-1" v-else-if="cropDetailsTab === 'day-by-day'">
-        <CropDetailsHarvestDisplay :day-harvests="harvester.harvester.dayHarvests" :crop-to-filter="selectedCropId" />
+      <div class="" v-else-if="cropDetailsTab === 'day-by-day'">
+        <CropHarvestDaysPanel :day-harvests="harvester.harvester.dayHarvests" :crop-to-filter="selectedCropId" />
       </div>
-      <div class="pt-1" v-else-if="cropDetailsTab === 'misc'">
+      <div class="" v-else-if="cropDetailsTab === 'misc'">
         <CropMiscDetails :crop-type="selectedCropCycleData.cropType" :crop-id="selectedCropId" />
       </div>
     </div>
@@ -170,7 +170,7 @@ watchEffect(() => {
       </p>
     </div>
     <div v-else class="">
-      <CropDetailsGardenDataDisplay />
+      <CropGardenMainDisplay />
     </div>
   </section>
 </template>

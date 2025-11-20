@@ -210,7 +210,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
 
 <template>
     <thead>
-        <tr class="bg-misc text-accent">
+        <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
             <th colspan="2" class="">
                 <FontAwesomeIcon :icon="['fas', 'poop']" class="text-accent pr-1" />Fertiliser Data
             </th>
@@ -239,7 +239,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
 
 
     <thead>
-        <tr class="bg-misc text-accent">
+        <tr class="bg-misc text-accent dark:bg-palia-blue-dark">
             <th colspan="2">Fertiliser Costs <span class="text-xs"> - Shows costs of procuring fertiliser
                     from different
                     sources (if available)</span>
@@ -249,7 +249,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
 
     <tbody class="">
 
-        <tr class="not-first:border-t-4">
+        <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
             <th colspan="2">Value Cost: <span class="font-normal">Shipping Bin Value</span></th>
         </tr>
         <tr>
@@ -272,9 +272,9 @@ const fertilisersIneligibleForPurchase = computed(() => {
                 <th></th>
                 <td></td>
             </tr> -->
-            <tr class="not-first:border-t-6">
+            <tr class="not-first:border-t-6 not-first:dark:border-t-palia-blue-dark">
                 <th colspan="2">Unit Cost: <span class="font-normal">Cost of 1 fertiliser in their
-                        purchasable batch * fertilisers
+                        purchasable batch mulitplied by the fertilisers
                         needed</span></th>
             </tr>
 
@@ -286,7 +286,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
         </template>
 
         <template v-if="fertilisersEligibleForStorePurchase.length > 0">
-            <tr class="not-first:border-t-4">
+            <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
                 <th colspan="2" class="">Fertilisers eligible for Store Purchase <span class="font-normal">(e.g.
                         Zeki)</span>
                 </th>
@@ -297,7 +297,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
                 </th>
                 <td>{{ fertiliser.count }} / Day</td>
             </tr>
-            <tr class="border-t-2">
+            <tr class="border-t-2 dark:border-t-palia-blue-dark">
                 <th class="indent-3">Daily Store Price</th>
                 <td class="flex items-center gap-0.5"><img width="16" height="16"
                         src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
@@ -322,7 +322,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
             </tr>
         </template>
         <template v-if="fertilisersEligibleForGuildPurchase.length > 0">
-            <tr class="not-first:border-t-4">
+            <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
                 <th colspan="2" class="">Fertilisers eligible for Guild Purchase <span class="font-normal">(e.g.
                         Badruu)</span>
                 </th>
@@ -380,7 +380,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
         </template> -->
         <template v-for="[fertiliser, fertiliserCount] of Object.entries(plotStat.fertiliserCount)" :key="fertiliser">
             <template v-if="fertiliser !== FertiliserType.None && fertiliserCount > 0">
-                <tr class="not-first:border-t-4">
+                <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
                     <th class="capitalize">{{
                         fertiliser }} <font-awesome-icon
                             :icon="['fas', getBonusDataByFertiliser(fertiliser as FertiliserType).icon]"

@@ -139,77 +139,87 @@ const selectedCropAsCrop = computed(() => {
 
 
 <template>
-    <section v-if="selectedCropDetail && selectedCropCycleData" class="py-1 flex flex-col gap-1 dark:text-accent">
+    <section v-if="selectedCropDetail && selectedCropCycleData"
+        class="flex flex-col gap-2 dark:text-accent">
         <!-- Cycle Info -->
-        <section
-            class="p-2 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue-dark">
-            <div class="flex flex-col gap-1">
-                <div class="flex flex-wrap gap-1 text-sm">
-                    <p class="font-semibold badge badge-sm">{{ selectedCropCycleData.phases.length }}<span
-                            class="">Harvest<template
-                                v-if="selectedCropCycleData.phases.length > 1">s</template></span>/ {{
-                                    selectedCropCycleDuration }} Days
-                    </p>
-                    <p class="font-semibold badge badge-sm">{{ selectedCropTotalFullCycles }} Cycle<template
-                            v-if="selectedCropTotalFullCycles > 1">s</template></p>
-                    <p v-if="selectedCropTotalFullCycles !== selectedCropCycleData.totalHarvestsCount"
-                        class="font-semibold badge badge-sm">
-                        {{ selectedCropCycleData.totalHarvestsCount }} Total Harvests</p>
-                    <p class="font-semibold badge badge-sm"
-                        v-if="selectedCropSeedsRequiredPerHarvest && (cropInfo.isStar === parseCropId(cycleId).isStar)">
-                        <span class="font-semibold">Seeds per Replant:</span>&nbsp;{{
-                            selectedCropSeedsRequiredPerHarvest.count }}
-                    </p>
-                    <p class="font-semibold badge badge-sm" v-else>
-                        <span class="font-semibold">Seeds per Replant:</span>&nbsp;N/A
-                    </p>
-                    <p v-if="(selectedCropSeedsRequiredPerHarvest?.count || 0) !== selectedCropTotalSeedsRequired && (cropInfo.isStar === parseCropId(cycleId).isStar)"
-                        class="font-semibold badge badge-sm"><span class="font-semibold">Total Seeds
-                            Used:</span>&nbsp;{{
-                                selectedCropTotalSeedsRequired }}</p>
-                </div>
-                <div>
-                    <p class="text-sm pb-1">Growth Ticks / Cycle</p>
-                    <ul class="flex flex-wrap gap-2">
+        <section class="p-2 bg-accent dark:bg-palia-blue-dark rounded-md flex flex-col gap-1">
+            <h3 class="text-sm font-semibold text-palia-blue-dark dark:text-accent">Harvest Info</h3>
+            <div class="flex flex-wrap gap-1 text-sm">
+                <p class="font-semibold badge badge-sm dark:bg-palia-blue">{{ selectedCropCycleData.phases.length
+                }}<span class="">{{ selectedCropCycleData.phases.length !== 1 ? 'Harvests' : 'Harvest' }}</span>/
+                    {{
+                        selectedCropCycleDuration }} Days
+                </p>
+                <p class="font-semibold badge badge-sm dark:bg-palia-blue">{{ selectedCropTotalFullCycles }}
+                    {{ selectedCropTotalFullCycles !== 1 ? 'Cycles' : 'Cycle' }}</p>
+                <p v-if="selectedCropTotalFullCycles !== selectedCropCycleData.totalHarvestsCount"
+                    class="font-semibold badge badge-sm dark:bg-palia-blue">
+                    {{ selectedCropCycleData.totalHarvestsCount }} Total Harvests</p>
+                <p class="font-semibold badge badge-sm dark:bg-palia-blue"
+                    v-if="selectedCropSeedsRequiredPerHarvest && (cropInfo.isStar === parseCropId(cycleId).isStar)">
+                    <span class="font-semibold">Seeds per Replant:</span>&nbsp;{{
+                        selectedCropSeedsRequiredPerHarvest.count }}
+                </p>
+                <p class="font-semibold badge badge-sm dark:bg-palia-blue" v-else>
+                    <span class="font-semibold">Seeds per Replant:</span>&nbsp;N/A
+                </p>
+                <p v-if="(selectedCropSeedsRequiredPerHarvest?.count || 0) !== selectedCropTotalSeedsRequired && (cropInfo.isStar === parseCropId(cycleId).isStar)"
+                    class="font-semibold badge badge-sm dark:bg-palia-blue"><span class="font-semibold">Total Seeds
+                        Used:</span>&nbsp;{{
+                            selectedCropTotalSeedsRequired }}</p>
+            </div>
+            <div class="flex gap-1">
+                <div class="bg-primary dark:bg-palia-blue p-2 rounded-sm w-fit">
+                    <p class="text-xs p-0.5 font-bold">Growth Ticks / Cycle</p>
+                    <ul class="flex flex-wrap gap-2 pt-1">
                         <template v-for="harvestYield in selectedCropCycleData.phases">
                             <li class="flex flex-col">
                                 <p class="text-xs">Day {{ harvestYield.dayOfHarvest }}</p>
-                                <ItemDisplay class="max-w-12" :imgSrc="selectedCropAsCrop?.image"
+                                <ItemDisplay class="max-w-12 dark:border dark:border-water-retain" :imgSrc="selectedCropAsCrop?.image"
                                     :imgAlt="selectedCropAsCrop?.type" :star="cropInfo.isStar"
                                     :count="(harvestYield.yield[(cropInfo.isStar ? 'star' : 'base')].totalWithDeductions)" />
                             </li>
                         </template>
-                        <li class="flex flex-col md:pl-4 md:border-l-2 border-l-misc"
-                            v-if="harvester.settings.includeReplantCost && (cropInfo.isStar === parseCropId(cycleId).isStar)">
-                            <p class="text-xs">Average deduction (Day {{
-                                selectedCropCycleData.phases.at(-1)!.dayOfHarvest }})
+                    </ul>
+                </div>
+                <div v-if="harvester.settings.includeReplantCost && (cropInfo.isStar === parseCropId(cycleId).isStar)"
+                    class="bg-primary dark:bg-palia-blue rounded-sm p-2">
+                    <div class="h-full flex flex-col justify-between">
+                        <p class="text-xs font-bold">Average deduction
+                        </p>
+                        <div class="flex flex-col">
+                            <p class="text-xs">Day {{
+                                selectedCropCycleData.phases.at(-1)!.dayOfHarvest }}
                             </p>
-                            <ItemDisplay class="max-w-12" :imgSrc="selectedCropAsCrop?.image"
+                            <ItemDisplay class="max-w-12 dark:border dark:border-water-retain" :imgSrc="selectedCropAsCrop?.image"
                                 :imgAlt="selectedCropAsCrop?.type" :star="cropInfo.isStar"
                                 :count="(selectedCropCycleData.phases.at(-1)!.yield[(cropInfo.isStar ? 'star' : 'base')].totalWithDeductions - selectedCropCycleData.phases.at(-1)!.yield[(cropInfo.isStar ? 'star' : 'base')].totalRaw)" />
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Processing Info -->
         <section v-if="selectedCropProcessingData && selectedCropProcessingData.cycleData.length > 0"
-            class="flex flex-col gap-2 p-2 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue-dark">
+            class="p-2 bg-accent dark:bg-palia-blue-dark rounded-md flex flex-col gap-1">
+            <h3 class="text-sm font-semibold text-palia-blue-dark dark:text-accent">Processing Info</h3>
             <div>
                 <p v-if="!canFinishBeforeNextHarvest" class="text-neutral font-semibold text-xs dark:text-warning">
                     <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
                     Harvests can't process before next harvest
                 </p>
             </div>
-            <div class="grid grid-cols-2 flex-wrap gap-1 text-sm xl:grid-cols-3 pb-4">
-                <div class="flex gap-1 py-1 border flex-col border-palia-blue px-1 rounded-xs justify-between">
-                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Average Produce per
-                        Cycle</p>
+            <div class="grid grid-cols-2 grid-rows-2 gap-1 text-sm xl:grid-cols-3">
+                <div class="flex gap-1 p-2 bg-primary dark:bg-palia-blue rounded-xs justify-between flex-col">
+                    <p class="text-palia-blue font-semibold text-xs dark:text-accent dark:opacity-90">Average Produce /
+                        Cycle
+                    </p>
 
                     <ItemDisplay class="max-w-10"
                         :imgSrc="selectedCropAsCrop![`${selectedCropIsProcessedAs === ItemType.Preserve ? 'preserveImage' : 'seedImage'}`]"
-                        :imgAlt="`${selectedCropAsCrop!.type} ${selectedCropIsProcessedAs}`" :count="selectedCropProcessingData.averageProduce" />
+                        :imgAlt="`${selectedCropAsCrop!.type} ${selectedCropIsProcessedAs}`"
+                        :count="selectedCropProcessingData.averageProduce" />
                 </div>
                 <!-- <div class="flex gap-1 py-1 border border-palia-blue px-2 justify-between rounded-xs">
                     <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Gold Generated</p>
@@ -221,33 +231,31 @@ const selectedCropAsCrop = computed(() => {
                         }}</p>
                     </div>
                 </div> -->
-                <div class="flex gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
-                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Total Active
-                        Processing
-                        Minutes</p>
-                    <p class="font-bold"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
+                <div class="flex gap-1 p-2 bg-primary dark:bg-palia-blue rounded-xs justify-between flex-col">
+                    <p class="text-palia-blue font-semibold text-xs dark:text-accent">Absolute Processing Time</p>
+                    <p class="font-bold text-base"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
                         formatMinutesToDaysHoursMinutes(selectedCropProcessingData.totalProcessMinutes) }}</p>
                 </div>
-                <div class="flex gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
-                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Average Cycle
+                <div class="flex gap-1 p-2 bg-primary dark:bg-palia-blue rounded-xs justify-between flex-col">
+                    <p class="text-palia-blue font-semibold text-xs dark:text-accent">Average Cycle
                         Processing Time
                     </p>
-                    <p class="font-bold"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
+                    <p class="font-bold text-base"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
                         formatMinutesToDaysHoursMinutes(selectedCropProcessingData.averageProcessMinutes)
-                    }}</p>
+                        }}</p>
                 </div>
-                <div class="flex gap-1 py-1 border border-palia-blue px-2 rounded-xs justify-between">
-                    <p class="text-palia-blue opacity-80 text-xs dark:text-accent dark:opacity-90">Estimated Time to
+                <div class="flex gap-1 p-2 bg-primary dark:bg-palia-blue rounded-xs justify-between flex-col">
+                    <p class="text-palia-blue font-semibold text-xs dark:text-accent">Estimated Time to
                         Process
                         Everything</p>
-                    <p class="font-bold"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
+                    <p class="font-bold text-base"> <font-awesome-icon :icon="['fas', 'stopwatch']" /> {{
                         formatMinutesToDaysHoursMinutes(selectedCropProcessingData.effectiveProcessMinutes) }}</p>
                 </div>
             </div>
         </section>
         <section
             v-else-if="selectedCropProcessingData === null || selectedCropProcessingData.cycleData[0].cycleCrafterData === undefined"
-            class="p-2 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue-dark">
+            class="p-2 border rounded-sm ">
             <p class="text-sm py-2 text-misc-dark dark:text-primary">
                 No Process Data
             </p>

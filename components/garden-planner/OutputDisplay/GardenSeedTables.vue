@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useHarvester from '~/stores/useHarvester'
 import useGarden from '~/stores/useGarden'
-import { parseCropId, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { parseCropId } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { CropType, getCropFromType } from '~/assets/scripts/garden-planner/imports'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -145,7 +145,7 @@ const seedData = computed(() => {
 
 <template>
     <thead>
-        <tr class="bg-misc text-accent">
+        <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
             <th colspan="2">
                 <FontAwesomeIcon :icon="['fas', 'seedling']" class="text-accent pr-1" />Seed Data
             </th>
@@ -162,19 +162,20 @@ const seedData = computed(() => {
         </tr>
     </tbody>
     <thead>
-        <tr class="bg-misc text-accent">
-            <th colspan="2">Seed Costs</th>
+        <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
+            <th colspan="2">Seed Costs <span class="text-xs font-normal"> - Shows different sources of seeds and how
+                    much they would cost</span></th>
         </tr>
     </thead>
     <tbody>
         <template v-if="seedData.replantCostsZeki.size > 0">
-            <tr class="not-first:border-t-4">
+            <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
                 <th colspan="2" class="">Seeds eligible for Store Purchase <span class="font-normal">(e.g.
                         Zeki)</span>
                 </th>
             </tr>
             <template v-for="[type, count] of seedData.replantCostsZeki">
-                <tr>
+                <tr class="border-t-2 dark:border-t-palia-blue-dark">
                     <th class="capitalize indent-3" colspan="">{{ type }}</th>
                     <td class="flex items-center gap-0.5"><img width="16" height="16"
                             src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
@@ -189,7 +190,7 @@ const seedData = computed(() => {
                 </tr>
             </template>
 
-            <tr v-if="seedData.replantCostsZeki.size > 1" class="border-t-2">
+            <tr v-if="seedData.replantCostsZeki.size > 1" class="border-t-2 dark:border-t-palia-blue-dark">
                 <th class="indent-3 font-bold">Total Costs Combined</th>
                 <td class="flex items-center gap-0.5"><img width="16" height="16"
                         src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
@@ -199,13 +200,13 @@ const seedData = computed(() => {
         </template>
 
         <template v-if="seedData.replantCostsGuild.size > 0">
-            <tr class="not-first:border-t-4">
+            <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
                 <th colspan="2" class="">Seeds eligible for Guild Purchase <span class="font-normal">(e.g.
                         Badruu)</span>
                 </th>
             </tr>
             <template v-for="[type, count] of seedData.replantCostsGuild">
-                <tr>
+                <tr class="border-t-2 dark:border-t-palia-blue-dark">
                     <th class="capitalize indent-3" colspan="">{{ type }}</th>
                     <td class="flex items-center gap-0.5"><img width="16" height="16"
                             src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-[1rem]"
@@ -222,7 +223,7 @@ const seedData = computed(() => {
                             }}</td>
                 </tr>
             </template>
-            <tr v-if="seedData.replantCostsGuild.size > 1" class="border-t-2">
+            <tr v-if="seedData.replantCostsGuild.size > 1" class="border-t-2 dark:border-t-palia-blue-dark">
                 <th>Total Costs Combined</th>
                 <td class="flex items-center gap-0.5"><img width="16" height="16"
                         src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-[1rem]" :srcset="undefined"
@@ -231,8 +232,8 @@ const seedData = computed(() => {
             </tr>
         </template>
 
-        <template v-if="seedData.replantCostsPotion.size > 0" class="not-first:border-t-4">
-            <tr>
+        <template v-if="seedData.replantCostsPotion.size > 0">
+            <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
                 <th colspan="2" class="">Seeds available via Infected Essence<span class="font-normal">(e.g.
                         Tamala)</span>
                 </th>
@@ -253,7 +254,7 @@ const seedData = computed(() => {
                                 formatToOneDecimal(seedData.totalCostsPotion.get(type) ?? 0).toLocaleString() }}</td>
                 </tr>
 
-                <tr v-if="seedData.replantCostsPotion.size > 1" class="border-t-2">
+                <tr v-if="seedData.replantCostsPotion.size > 1" class="border-t-2 dark:border-t-palia-blue-dark">
                     <th>Total Costs Combined</th>
                     <td class="flex items-center gap-0.5"><img width="16" height="16"
                             src="https://pgp-cdn.b-cdn.net/infected-essence.webp" class="max-h-[1rem]"
@@ -261,10 +262,30 @@ const seedData = computed(() => {
                                 formatToOneDecimal(seedData.totalCostsPotionCombined).toLocaleString() }}</td>
                 </tr>
             </template>
-            <!-- <tr>
-                <th></th>
-                <td></td>
-            </tr> -->
         </template>
+        <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
+            <th colspan="2">Value Cost: <span class="font-normal">Shipping Bin Value</span></th>
+        </tr>
+        <template v-for="[type, count] of seedData.replantCostsValue">
+            <tr class="border-t-2 dark:border-t-palia-blue-dark">
+                <th class="capitalize indent-3" colspan="">{{ type }}</th>
+                <td class="flex items-center gap-0.5"><img width="16" height="16"
+                        src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+                        format="webp">{{ formatToOneDecimal(count).toLocaleString() }} / Replant</td>
+            </tr>
+            <tr v-if="seedData.totalCostsValue.get(type)" class="">
+                <th class="indent-6">Total Cost</th>
+                <td class="flex items-center gap-0.5"><img width="16" height="16"
+                        src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+                        format="webp">{{
+                            formatToOneDecimal(seedData.totalCostsValue.get(type) ?? 0).toLocaleString() }}</td>
+            </tr>
+        </template>
+        <tr v-if="seedData.replantCostsValue.size > 1" class="border-t-2 dark:border-t-palia-blue-dark">
+            <th>Total Costs Combined</th>
+            <td class="flex items-center gap-0.5"><img width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp"
+                    class="max-h-[1rem]" :srcset="undefined" alt="Gold" format="webp">{{
+                        formatToOneDecimal(seedData.totalCostsValueCombined).toLocaleString() }}</td>
+        </tr>
     </tbody>
 </template>

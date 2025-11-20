@@ -35,17 +35,29 @@ const itemsFromHarvest = computed(() => {
 })
 
 const plannerDisplayConfig = usePlannerDisplayConfig()
+// const totalGoldValue = computed(() => {
+
+//   return itemsFromHarvest.value.reduce((acc, item) => {
+//     return acc + item.totalGoldValue
+//   }, 0)
+// })
 </script>
 
 <template>
   <section class="pb-1">
-    <p class="text-xs text-palia-blue-dark dark:text-primary font-semibold">Day {{ dayHarvest?.day }}</p>
+    <p class="text-xs text-palia-blue-dark dark:text-primary font-semibold flex gap-2 items-center align-end">Day
+      {{ dayHarvest?.day }}
+      <!-- <span class="flex items-center align-middle gap-0.5">
+        <img width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+          alt="Gold" format="webp">{{ totalGoldValue.toLocaleString() }}
+      </span> -->
+    </p>
     <ul
-      class="flex w-full overflow-x-auto max-w-117 gap-1 p-1 scrollbar-h-2 bg-opacity-50 rounded-md bg-secondary/50 border border-misc-dark dark:border-water-retain/60 dark:bg-palia-blue-light"
+      class="flex w-full overflow-x-auto max-w-117 gap-1 p-1 scrollbar-h-2 bg-opacity-50 rounded-md bg-misc-dark/20  dark:bg-palia-blue-dark"
       :class="[plannerDisplayConfig.get === 'display+display' ? 'xl:max-w-138 ' : 'lg:max-w-130 xl:max-w-167 2xl:max-w-170']">
       <template v-for="item of itemsFromHarvest" :key="item.name">
-        <ItemDisplayAlt v-if="item.count !== 0" :img-src="item.image" :img-alt="item.name" :star="item.isStar" :count="item.count"
-          :base-gold-value="item.price" />
+        <ItemDisplayAlt class="border-misc border" v-if="item.count !== 0" :img-src="item.image" :img-alt="item.name" :star="item.isStar"
+          :count="item.count" :base-gold-value="item.price" />
       </template>
     </ul>
   </section>

@@ -143,12 +143,13 @@ const totalGoldGenerated = computed(() => {
 
 </script>
 <template>
-    <section class="bg-accent border-misc-dark rounded-sm border overflow-y-auto max-h-102">
+    <section
+        class="bg-accent  border-misc-dark rounded-sm border overflow-y-auto max-h-102 dark:bg-palia-blue dark:text-accent dark:border-palia-blue-dark">
         <table
-            class="table table-sm table-pin-rows [&_tr]:not-last:border-b [&_tr]:even:bg-secondary/80 [&_tr]:border-b-misc">
+            class="table table-sm table-pin-rows [&_tr]:not-last:border-b [&_tr]:even:bg-secondary/80 [&_tr]:border-b-misc dark:[&_tr]:even:bg-palia-blue-light/70 dark:[&_tr]:border-b-palia-blue-dark">
 
             <thead>
-                <tr class="bg-misc text-accent">
+                <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
                     <th>Crop Data
                         <span class="text-xs italic" v-if="hasGrowthBoostDivide">- Includes {{
                             cropIdParsed.hasGrowthBoost ? 'Non-Growth-Boosted Crops' : 'Growth-Boosted Crops' }}</span>
@@ -210,7 +211,7 @@ const totalGoldGenerated = computed(() => {
 
             <template v-if="cycleData">
                 <thead>
-                    <tr class="bg-misc text-accent">
+                    <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
                         <th>Harvest Data
                             <span class="text-xs italic" v-if="hasGrowthBoostDivide">- {{
                                 cropIdParsed.hasGrowthBoost ? 'Non-Growth-Boosted Crops' : 'Growth-Boosted Crops' }}
@@ -273,7 +274,7 @@ const totalGoldGenerated = computed(() => {
             </template>
             <template v-if="outputInfo">
                 <thead>
-                    <tr class="bg-misc text-accent">
+                    <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
                         <th colspan="2" class="capitalize">Output Stats</th>
                     </tr>
                 </thead>
@@ -281,9 +282,8 @@ const totalGoldGenerated = computed(() => {
                 <tbody class="">
                     <tr>
                         <th>Produce Sold</th>
-                        <td>{{ outputInfo.count }}
-                            <span class="capitalize">{{ outputInfo.itemType }}</span><template
-                                v-if="outputInfo.count > 1">s</template>
+                        <td>{{ (outputInfo.count).toLocaleString() }}
+                            <span class="capitalize">{{ outputInfo.itemType + (outputInfo.count > 1 ? 's' : '') }}</span>
                         </td>
                     </tr>
                     <tr>
@@ -320,7 +320,7 @@ const totalGoldGenerated = computed(() => {
             <template
                 v-if="processor.settings.cropSettings.get(cropId)?.processAs !== ItemType.Crop && outputInfoWithProcessing && detailedProcessingInfo">
                 <thead>
-                    <tr class="bg-misc text-accent">
+                    <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
                         <th colspan="2" class="capitalize">Process Stats</th>
                     </tr>
                 </thead>
@@ -350,7 +350,7 @@ const totalGoldGenerated = computed(() => {
                     </tr>
                     <tr>
                         <th class="indent-3">Crafters</th>
-                        <td>{{ cropSettings.crafters }} Crafter<span v-show="cropSettings.crafters !== 1">s</span></td>
+                        <td>{{ cropSettings.crafters }} {{ cropSettings.crafters !== 1 ? 'Crafters' : 'Crafter' }}</td>
                     </tr>
                     <tr>
                         <th colspan="2">Effective Time: Time with crafter division</th>
