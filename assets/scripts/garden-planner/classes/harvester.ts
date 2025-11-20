@@ -23,6 +23,18 @@ export default class Harvester {
     cycleData: new Map(),
   }
 
+  private _harvestDayGaps: {
+    gaps: number[]
+    highest: number
+    lowest: number
+    average: number
+  } = {
+      gaps: [],
+      highest: 0,
+      lowest: 0,
+      average: 0,
+    }
+
   get dayHarvests(): DayHarvests {
     return this._dayHarvests
   }
@@ -31,14 +43,12 @@ export default class Harvester {
     return this._totalHarvest
   }
 
+  get harvestDayGaps(): { gaps: number[]; highest: number; lowest: number, average: number } {
+    return this._harvestDayGaps
+  }
+
   constructor() {
-    this._dayHarvests = new Map()
-    this._totalHarvest = {
-      lastHarvestDay: 0,
-      crops: new Map(),
-      seedsRemainder: new Map(),
-      cycleData: new Map(),
-    }
+    this.reset()
   }
 
   private reset(): void {
@@ -49,6 +59,12 @@ export default class Harvester {
       seedsRemainder: new Map(),
       cycleData: new Map(),
     } as ITotalHarvest
+    this._harvestDayGaps = {
+      gaps: [],
+      highest: 0,
+      lowest: 0,
+      average: 0,
+    }
   }
 
   simulateYield(tiles: TUniqueTiles, options: IHarvesterOptions): void {
@@ -246,6 +262,7 @@ export default class Harvester {
             day: dayInCycle,
             crops: new Map(),
             seedsRequired: new Map(),
+            cropsHarvested: new Set(),
           }
 
           const baseCropYield = harvestDay.crops.get(baseId) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } satisfies ICropYield
@@ -276,6 +293,8 @@ export default class Harvester {
               })
             }
           }
+          harvestDay.cropsHarvested.add(crop.type)
+
           dayHarvests.set(dayInCycle, harvestDay)
         })
       }
@@ -293,6 +312,7 @@ export default class Harvester {
             day: dayInCycle,
             crops: new Map(),
             seedsRequired: new Map(),
+            cropsHarvested: new Set(),
           }
 
           harvestDay.crops.set(`${crop.type}-Base${differentiateByGrowthBoost ? '-Growth' : ''}`, {
@@ -319,6 +339,7 @@ export default class Harvester {
               })
             }
           }
+          harvestDay.cropsHarvested.add(crop.type)
 
           dayHarvests.set(dayInCycle, harvestDay)
         }
@@ -357,7 +378,7 @@ export default class Harvester {
     let harvestDayGapHighest = Number.NEGATIVE_INFINITY
 
     for (const [day, harvest] of dayHarvests) {
-      const harvestDayGap = day - latestHarvestDayForGap
+      const harvestDayGap = day - (latestHarvestDayForGap + 1)
       harvestDayGaps.push(harvestDayGap)
       harvestDayGapsSum += harvestDayGap
       latestHarvestDayForGap = day
@@ -463,7 +484,7 @@ export default class Harvester {
       gaps: harvestDayGaps,
       highest: harvestDayGapHighest,
       lowest: harvestDayGapLowest,
-      average: Math.round(harvestDayAverage)
+      average: harvestDayAverage
     }
 
     // Get the average yield on days where crops are harvested
@@ -509,6 +530,7 @@ export default class Harvester {
 
     this._dayHarvests = dayHarvests
     this._totalHarvest.lastHarvestDay = dayOfLastHarvest
+    this._harvestDayGaps = harvestDayGapStats
     // console.log('cycleData', this._totalHarvest.cycleData)
   }
 }

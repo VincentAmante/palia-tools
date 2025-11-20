@@ -148,6 +148,7 @@ export interface IDayHarvest {
   day: number
   crops: Map<ICropNameWithGrowthDiff, ICropYield & ICropInfo>
   seedsRequired: Map<ICropNameWithGrowthDiff, ISeedTracker>
+  cropsHarvested: Set<CropType>
 }
 
 export type DayHarvests = Map<number, IDayHarvest>
