@@ -21,23 +21,23 @@ function getBgStyle(cropsHarvested: number) {
     if (cropsHarvested <= 0)
         return 'bg-secondary dark:bg-palia-blue'
     else if (cropsHarvested <= 1)
-        return 'bg-harvest-boost/10 dark:bg-harvest-boost-dark/10'
+        return 'bg-harvest-boost/10 dark:bg-harvest-boost/10'
     else if (cropsHarvested <= 2)
-        return 'bg-harvest-boost/20 dark:bg-harvest-boost-dark/20'
+        return 'bg-harvest-boost/20 dark:bg-harvest-boost/20'
     else if (cropsHarvested <= 3)
-        return 'bg-harvest-boost/30 dark:bg-harvest-boost-dark/30'
+        return 'bg-harvest-boost/30 dark:bg-harvest-boost/30'
     else if (cropsHarvested <= 4)
-        return 'bg-harvest-boost/40 dark:bg-harvest-boost-dark/40'
+        return 'bg-harvest-boost/40 dark:bg-harvest-boost/40'
     else if (cropsHarvested <= 5)
-        return 'bg-harvest-boost/50 dark:bg-harvest-boost-dark/50'
+        return 'bg-harvest-boost/50 dark:bg-harvest-boost/50'
     else if (cropsHarvested <= 6)
-        return 'bg-harvest-boost/60 dark:bg-harvest-boost-dark/60'
+        return 'bg-harvest-boost/60 dark:bg-harvest-boost/60'
     else if (cropsHarvested <= 7)
-        return 'bg-harvest-boost/70 dark:bg-harvest-boost-dark/70'
+        return 'bg-harvest-boost/70 dark:bg-harvest-boost/70'
     else if (cropsHarvested <= 8)
-        return 'bg-harvest-boost/80 dark:bg-harvest-boost-dark/80'
+        return 'bg-harvest-boost/80 dark:bg-harvest-boost/80'
     else if (cropsHarvested <= 9)
-        return 'bg-harvest-boost/90 dark:bg-harvest-boost-dark/90'
+        return 'bg-harvest-boost/90 dark:bg-harvest-boost/90'
     else
         return 'bg-harvest-boost'
 }
@@ -48,9 +48,9 @@ function getTextStyle(cropsHarvested: number) {
     else if (cropsHarvested < 4)
         return 'text-harvest-boost-dark dark:text-harvest-boost'
     else if (cropsHarvested < 8)
-        return 'text-harvest-boost-dark dark:text-harvest-boost'
+        return 'text-harvest-boost-dark dark:text-accent/70'
     else
-        return 'text-harvest-boost-dark dark:text-harvest-boost'
+        return 'text-harvest-boost-dark dark:text-accent'
 
 }
 
@@ -80,14 +80,14 @@ const harvestChart = computed(() => {
         <h2 class="font-bold">Tending Activity<span class="font-normal text-xs"> &mdash; How often you have to check on
                 your
                 crops</span></h2>
-        <section class="bg-accent p-1 rounded-sm dark:bg-palia-blue-dark"
+        <section class="bg-accent p-1 rounded-sm  border border-misc dark:bg-palia-blue-dark dark:border-water-retain"
             v-if="(cropsToWaterDaily > 0) || (cropsToCheckForWeedDaily > 0)">
             <p class="text-sm font-bold pb-1">Daily Maintenance</p>
             <ul class="flex gap-1">
                 <li v-if="cropsToWaterDaily > 0"
                     class="p-2 bg-accent/40 border-water-retain border px-3 rounded-sm w-fit dark:bg-palia-blue-light/40">
-                    <p class="flex items-center gap-1">
-                        <FontAwesomeIcon :icon="['fas', 'droplet']" class="text-water-retain w-4" />
+                    <p class="">
+                        <FontAwesomeIcon :icon="['fas', 'droplet']" class="text-water-retain w-4 pr-1" />
                         <span class="font-semibold">{{ cropsToWaterDaily }}</span>
                         {{ cropsToWaterDaily !== 1 ? "crops need" : 'crop needs' }} watering
                     </p>
@@ -95,19 +95,19 @@ const harvestChart = computed(() => {
 
                 <li v-if="cropsToCheckForWeedDaily > 0"
                     class="p-2 bg-accent/40 border-weed-prevention border px-3 rounded-sm w-fit dark:bg-palia-blue-light/40">
-                    <p class="flex items-center gap-1">
-                        <FontAwesomeIcon :icon="['fas', 'eye']" class="text-weed-prevention w-4" /><span
+                    <p class="">
+                        <FontAwesomeIcon :icon="['fas', 'eye']" class="text-weed-prevention w-4 pr-1" /><span
                             class="font-semibold">
                             {{ cropsToCheckForWeedDaily }}
                         </span> {{ cropsToCheckForWeedDaily !== 1 ? 'crops need' : 'crop needs' }} to be checked
-                        for weed
+                        for knapweed
                     </p>
                 </li>
             </ul>
         </section>
         <section v-if="harvestChart.length > 0"
-            class="bg-accent p-1 gap-0.5 flex flex-col rounded-sm dark:bg-palia-blue-dark">
-            <h3 class="font-semibold">Harvest Calendar <span class="font-normal text-xs"> &mdash; Palian days spent
+            class="bg-accent p-2 gap-0.5 flex flex-col rounded-sm border border-misc dark:bg-palia-blue-dark dark:border-water-retain">
+            <h3 class="font-semibold">Harvest Chart <span class="font-normal text-xs"> &mdash; Palian days spent
                     harvesting</span></h3>
             <p class="text-xs">
                 <FontAwesomeIcon :icon="['fas', 'wheat-awn']" class="text-harvest-boost-dark dark:text-harvest-boost" />
@@ -115,7 +115,7 @@ const harvestChart = computed(() => {
 
                 <span>
                     {{ Math.round((harvester.harvester.dayHarvests.size / harvester.totalHarvest.lastHarvestDay) * 100)
-                    }}% of Palian Days/Growth Ticks ({{ harvester.harvester.dayHarvests.size }} Days of {{
+                    }}% of Palian Days / Growth Ticks ({{ harvester.harvester.dayHarvests.size }} Days of {{
                         harvester.totalHarvest.lastHarvestDay }})
                 </span>
             </p>
@@ -154,8 +154,9 @@ const harvestChart = computed(() => {
                 </li>
             </ul>
         </section>
-        <!-- <section>
-            <p>Processing</p>
-        </section> -->
+        <section v-if="((cropsToWaterDaily <= 0) && (cropsToCheckForWeedDaily <= 0) && !(harvestChart.length > 0))"
+            class="bg-accent p-4 rounded-sm  dark:bg-palia-blue-dark ">
+            <p class="text-misc font-semibold dark:text-accent/50">Nothing to report</p>
+        </section>
     </section>
 </template>

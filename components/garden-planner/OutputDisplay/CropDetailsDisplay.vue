@@ -108,8 +108,8 @@ watchEffect(() => {
 
     <!-- Crop Selector -->
     <nav
-      class="flex flex-wrap gap-1 p-1 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue">
-      <p v-if="presentCrops.size === 0" class="text-lg  text-misc-dark dark:text-accent">
+      class="flex flex-wrap scrollbar-h-2 gap-1 p-1 border rounded-sm border-misc-dark bg-accent dark:bg-palia-blue-light dark:border-palia-blue">
+      <p v-if="presentCrops.size === 0" class="text px-2 py-3 text-sm lg:text-base  text-misc-dark dark:text-accent">
         No crops in layout to display details for.
       </p>
       <button v-if="presentCrops.size > 0" @click="selectCropForDetail(null)"
@@ -158,7 +158,7 @@ watchEffect(() => {
           :selected-crop-detail="selectedCropId" />
       </div>
       <div class="" v-else-if="cropDetailsTab === 'day-by-day'">
-        <CropHarvestDaysPanel :day-harvests="harvester.harvester.dayHarvests" :crop-to-filter="selectedCropId" />
+        <CropHarvestDaysPanel :crop-to-filter="selectedCropId" />
       </div>
       <div class="" v-else-if="cropDetailsTab === 'misc'">
         <CropMiscDetails :crop-type="selectedCropCycleData.cropType" :crop-id="selectedCropId" />

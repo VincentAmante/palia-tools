@@ -4,6 +4,8 @@ import useGarden from '~/stores/useGarden'
 import { getFertiliserFromType } from '~/assets/scripts/garden-planner/fertiliserList'
 import { FertiliserType } from '~/assets/scripts/garden-planner/imports'
 import { getBonusDataByFertiliser } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { formatToOneDecimal } from '~/utils/formatters'
+
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 const harvester = useHarvester()
@@ -136,9 +138,6 @@ const fertiliserSellCostTracker = computed(() => {
     }
 })
 
-function formatToOneDecimal(num: number) {
-    return (parseFloat(num.toFixed(1)));
-}
 
 
 const fertilisersEligibleForStorePurchase = computed(() => {
@@ -249,7 +248,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
 
     <tbody class="">
 
-        <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
+        <tr class="not-first:border-t-2 not-first:dark:border-t-palia-blue-dark">
             <th colspan="2">Value Cost: <span class="font-normal">Shipping Bin Value</span></th>
         </tr>
         <tr>
@@ -272,7 +271,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
                 <th></th>
                 <td></td>
             </tr> -->
-            <tr class="not-first:border-t-6 not-first:dark:border-t-palia-blue-dark">
+            <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
                 <th colspan="2">Unit Cost: <span class="font-normal">Cost of 1 fertiliser in their
                         purchasable batch mulitplied by the fertilisers
                         needed</span></th>
@@ -280,13 +279,12 @@ const fertilisersIneligibleForPurchase = computed(() => {
 
             <tr>
                 <th colspan="2">Batch Cost: <span class="font-normal">Cost of the minimum amount of batches needed to
-                        purchase
-                        the required amount</span></th>
+                        purchase</span></th>
             </tr>
         </template>
 
         <template v-if="fertilisersEligibleForStorePurchase.length > 0">
-            <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
+            <tr class="not-first:border-t-2 not-first:dark:border-t-palia-blue-dark">
                 <th colspan="2" class="">Fertilisers eligible for Store Purchase <span class="font-normal">(e.g.
                         Zeki)</span>
                 </th>
@@ -297,7 +295,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
                 </th>
                 <td>{{ fertiliser.count }} / Day</td>
             </tr>
-            <tr class="border-t-2 dark:border-t-palia-blue-dark">
+            <tr class="border-t dark:border-t-palia-blue-dark">
                 <th class="indent-3">Daily Store Price</th>
                 <td class="flex items-center gap-0.5"><img width="16" height="16"
                         src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
@@ -322,18 +320,22 @@ const fertilisersIneligibleForPurchase = computed(() => {
             </tr>
         </template>
         <template v-if="fertilisersEligibleForGuildPurchase.length > 0">
-            <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
+            <tr class="not-first:border-t-2 not-first:dark:border-t-palia-blue-dark">
                 <th colspan="2" class="">Fertilisers eligible for Guild Purchase <span class="font-normal">(e.g.
                         Badruu)</span>
                 </th>
             </tr>
-            <tr v-for="fertiliser in fertilisersEligibleForGuildPurchase">
+            <tr class="">
+                <th colspan="2">Note: <span class="font-normal"> Usually better to get elsewhere if possible</span>
+                </th>
+            </tr>
+            <tr class="border-t-2 " v-for="fertiliser in fertilisersEligibleForGuildPurchase">
                 <th class="capitalize indent-3">
                     {{ fertiliser.type }}
                 </th>
                 <td>{{ fertiliser.count }} / Day</td>
             </tr>
-            <tr class="border-t-2">
+            <tr class="border-t">
                 <th class="indent-3">Daily Guild Price</th>
                 <td class="flex items-center gap-0.5"><img width="16" height="16"
                         src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-[1rem]" :srcset="undefined"
@@ -461,7 +463,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
                         <th class="capitalize indent-3">Total Batches to Buy (Guild)</th>
                         <td>{{ formatToOneDecimal(fertiliserGuildCostTracker.fertilisers[fertiliser as
                             FertiliserType].batches).toLocaleString()
-                            }}</td>
+                        }}</td>
                     </tr>
                     <tr>
                         <th class="capitalize indent-3">Total Batches Cost (Guild)</th>

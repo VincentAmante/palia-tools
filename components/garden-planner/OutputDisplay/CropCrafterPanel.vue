@@ -86,13 +86,13 @@ watchEffect(() => {
                         <th class="text-sm">
                             {{ crafterIndex + 1 }}
                         </th>
-                        <td class="text-end bg-secondary">
+                        <td class="text-end bg-secondary dark:bg-palia-blue-secondary">
                             {{ crafter.cropsInsertedCount.toLocaleString() }}
                         </td>
                         <td class="text-end">
                             {{ crafter.processesDone.toLocaleString(undefined, { maximumFractionDigits: 1 }) }}
                         </td>
-                        <td class="text-end bg-secondary">
+                        <td class="text-end bg-secondary dark:bg-palia-blue-secondary">
                             {{ formatMinutesToHoursMinutes(crafter.processTimeMinutes) }}
                         </td>
                         <td class="text-end">

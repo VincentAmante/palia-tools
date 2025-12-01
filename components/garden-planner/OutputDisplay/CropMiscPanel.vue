@@ -3,6 +3,10 @@ import { Bonus, Crop, crops, CropType, getCropFromType } from '~/assets/scripts/
 import { ItemType, parseCropId, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers';
 import SettingsMinutesDisplay from '../SettingsMinutesDisplay.vue';
 import CropSize from '~/assets/scripts/garden-planner/enums/crop-size';
+import { formatToOneDecimal } from '~/utils/formatters'
+
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
 
 const props = defineProps({
     cropType: {
@@ -146,11 +150,11 @@ const totalGoldGenerated = computed(() => {
     <section
         class="bg-accent  border-misc-dark rounded-sm border overflow-y-auto max-h-102 dark:bg-palia-blue dark:text-accent dark:border-palia-blue-dark">
         <table
-            class="table table-sm table-pin-rows [&_tr]:not-last:border-b [&_tr]:even:bg-secondary/80 [&_tr]:border-b-misc dark:[&_tr]:even:bg-palia-blue-light/70 dark:[&_tr]:border-b-palia-blue-dark">
-
+            class="table table-sm table-pin-rows [&_tr]:even:bg-secondary/50 [&_tr]:border-b-transparent dark:[&_tr]:even:bg-palia-blue-light/60 ">
             <thead>
                 <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
-                    <th>Crop Data
+                    <th>
+                        <FontAwesomeIcon :icon="['fas', 'seedling']" class="text-accent pr-1" />Crop Data
                         <span class="text-xs italic" v-if="hasGrowthBoostDivide">- Includes {{
                             cropIdParsed.hasGrowthBoost ? 'Non-Growth-Boosted Crops' : 'Growth-Boosted Crops' }}</span>
                     </th>
@@ -197,22 +201,11 @@ const totalGoldGenerated = computed(() => {
                             (plotStat.cropTypeCount[cropType])) * 100) }}%)</td>
                 </tr>
             </tbody>
-            <!-- 
-            <thead>
-                <tr class="bg-misc text-accent">
-                    <th>Fertiliser Data
-                        <span class="text-xs italic" v-if="hasGrowthBoostDivide">- Includes {{
-                            cropIdParsed.hasGrowthBoost ? 'Non-Growth-Boosted Crops' : 'Growth-Boosted Crops' }}</span>
-                    </th>
-                    <th></th>
-                </tr>
-            </thead> -->
-
-
             <template v-if="cycleData">
                 <thead>
                     <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
-                        <th>Harvest Data
+                        <th>
+                            <FontAwesomeIcon :icon="['fas', 'wheat-awn']" class="text-accent pr-1" />Harvest Data
                             <span class="text-xs italic" v-if="hasGrowthBoostDivide">- {{
                                 cropIdParsed.hasGrowthBoost ? 'Non-Growth-Boosted Crops' : 'Growth-Boosted Crops' }}
                                 excluded from here</span>
@@ -234,21 +227,23 @@ const totalGoldGenerated = computed(() => {
                                 {{ incompleteHarvests }}
                             </td>
                         </tr>
+                    </template>
 
+                    <tr>
+                        <th colspan="2">Growth Tick: In-game days elapsed on player's plot</th>
+                    </tr>
+                    <template v-if="cycleData.phases.length > 1">
                         <tr>
-                            <th colspan="2">Growth Tick: In-game days elapsed on player's plot</th>
-                        </tr>
-                        <tr>
-                            <th class="indent-3">Growth Ticks / Harvest <span>(First)</span></th>
+                            <th class="">Growth Ticks / Harvest <span>(First)</span></th>
                             <td>{{ cycleData.phases.at(0)?.phaseLength }}</td>
                         </tr>
                         <tr>
-                            <th class="indent-3">Growth Ticks / Harvest (2, 3, 4)</th>
+                            <th class="">Growth Ticks / Harvest (2, 3, 4)</th>
                             <td>{{ cycleData.phases.at(1)?.phaseLength }}</td>
                         </tr>
                     </template>
                     <tr>
-                        <th class="indent-3">Growth Ticks / Cycle</th>
+                        <th class="">Growth Ticks / Cycle</th>
                         <td>
                             {{ cycleData.phases.at(-1)?.dayOfHarvest }}
                         </td>
@@ -262,7 +257,7 @@ const totalGoldGenerated = computed(() => {
                     </tr>
 
                     <tr>
-                        <th>Last Growth Tick of Harvest</th>
+                        <th>Last Harvest Growth Tick</th>
                         <td>{{ lastDayCropWasHarvested }}</td>
                     </tr>
                     <tr>
@@ -275,7 +270,9 @@ const totalGoldGenerated = computed(() => {
             <template v-if="outputInfo">
                 <thead>
                     <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
-                        <th colspan="2" class="capitalize">Output Stats</th>
+                        <th colspan="2" class="capitalize">
+                            <FontAwesomeIcon :icon="['fas', 'star']" class="text-accent pr-1" />Output Stats
+                        </th>
                     </tr>
                 </thead>
 
@@ -283,36 +280,37 @@ const totalGoldGenerated = computed(() => {
                     <tr>
                         <th>Produce Sold</th>
                         <td>{{ (outputInfo.count).toLocaleString() }}
-                            <span class="capitalize">{{ outputInfo.itemType + (outputInfo.count > 1 ? 's' : '') }}</span>
+                            <span class="capitalize">{{ outputInfo.itemType + (outputInfo.count > 1 ? 's' : '')
+                                }}</span>
                         </td>
                     </tr>
                     <tr>
-                        <th>Overall Gold Generated</th>
+                        <th>Total Gold Generated</th>
                         <td class="flex items-center gap-0.5"><img width="16" height="16"
                                 src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-                                alt="Gold" format="webp">{{ (totalGoldGenerated).toLocaleString()
+                                alt="Gold" format="webp">{{ formatToOneDecimal(totalGoldGenerated).toLocaleString()
                                 }} Gold</td>
                     </tr>
                     <tr>
-                        <th>Overall Gold / Tile</th>
+                        <th class="indent-3">Total Gold / Tile</th>
                         <td class="flex items-center gap-0.5"><img width="16" height="16"
                                 src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-                                alt="Gold" format="webp">{{ (totalGoldGenerated /
+                                alt="Gold" format="webp">{{ formatToOneDecimal(totalGoldGenerated /
                                     tileCount).toLocaleString() }} Gold / Tile</td>
                     </tr>
                     <tr>
-                        <th>Overall Gold / Tick</th>
+                        <th class="indent-3">Total Gold / Tick</th>
                         <td class="flex items-center gap-0.5"><img width="16" height="16"
                                 src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-                                alt="Gold" format="webp">{{ (Math.round(totalGoldGenerated /
+                                alt="Gold" format="webp">{{ (formatToOneDecimal(totalGoldGenerated /
                                     lastGrowthTick)).toLocaleString() }} Gold / Growth Tick
                         </td>
                     </tr>
                     <tr>
-                        <th>Overall Gold / Tile / Tick</th>
+                        <th class="indent-3">Total Gold / Tile / Tick</th>
                         <td class="flex items-center gap-0.5"><img width="16" height="16"
                                 src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-                                alt="Gold" format="webp">{{ (Math.round((totalGoldGenerated /
+                                alt="Gold" format="webp">{{ (formatToOneDecimal((totalGoldGenerated /
                                     tileCount) / lastGrowthTick)).toLocaleString() }} Gold</td>
                     </tr>
                 </tbody>
@@ -321,7 +319,9 @@ const totalGoldGenerated = computed(() => {
                 v-if="processor.settings.cropSettings.get(cropId)?.processAs !== ItemType.Crop && outputInfoWithProcessing && detailedProcessingInfo">
                 <thead>
                     <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
-                        <th colspan="2" class="capitalize">Process Stats</th>
+                        <th colspan="2" class="capitalize">
+                            <FontAwesomeIcon :icon="['fas', 'stopwatch']" class="text-accent pr-1" />Process Stats
+                        </th>
                     </tr>
                 </thead>
 
@@ -349,22 +349,29 @@ const totalGoldGenerated = computed(() => {
                         <th colspan="2">Crafter Stats</th>
                     </tr>
                     <tr>
-                        <th class="indent-3">Crafters</th>
-                        <td>{{ cropSettings.crafters }} {{ cropSettings.crafters !== 1 ? 'Crafters' : 'Crafter' }}</td>
+                        <th class="indent-3">Assigned Crafters</th>
+                        <td>{{ cropSettings.crafters }} <template v-if="cropSettings.processAs === ItemType.Seed">
+                                {{ cropSettings.crafters !== 1 ? 'Seed Collectors' : 'Seed Collector' }}
+                            </template><template v-else-if="cropSettings.processAs === ItemType.Preserve">
+                                {{ cropSettings.crafters !== 1 ? 'Preserve Jars' : 'Preserve Jar' }}
+                            </template><template v-else>
+                                {{ cropSettings.crafters !== 1 ? 'Crafters' : 'Crafter' }}
+                            </template></td>
                     </tr>
                     <tr>
-                        <th colspan="2">Effective Time: Time with crafter division</th>
+                        <th colspan="2">Distributed Time: Time with crafter division (includes idle time and waiting for
+                            harvests)</th>
                     </tr>
 
                     <tr>
-                        <th class="indent-3">Overall Effective Processing Time</th>
+                        <th class="indent-3">Total Distributed Processing Time</th>
                         <td>
                             <SettingsMinutesDisplay :minutes="outputInfoWithProcessing.minutesProcessedEffective" />
                         </td>
                     </tr>
 
                     <tr>
-                        <th class="indent-3">Effective Time / <span>{{
+                        <th class="indent-3">Distributed Time / <span>{{
                             detailedProcessingInfo.cycleData.at(0)!.cycleCrafterData.length >
                                 1 ? 'Cycle' :
                                 'Harvest' }}</span></th>
@@ -379,14 +386,14 @@ const totalGoldGenerated = computed(() => {
                     <template v-if="detailedProcessingInfo.cycleData.at(0)!.cycleCrafterData.length > 1">
 
                         <tr>
-                            <th class="indent-3">Effective Process Time (1st harvest)</th>
+                            <th class="indent-3">Distributed Process Time (1st harvest)</th>
                             <td>
                                 <SettingsMinutesDisplay
                                     :minutes="detailedProcessingInfo.cycleData.at(0)?.cycleCrafterData.at(0)?.longestProcessMinutes" />
                             </td>
                         </tr>
                         <tr>
-                            <th class="indent-3">Effective Process Time (Final harvest)</th>
+                            <th class="indent-3">Distributed Process Time (Final harvest)</th>
 
                             <td>
                                 <SettingsMinutesDisplay
@@ -394,7 +401,7 @@ const totalGoldGenerated = computed(() => {
                             </td>
                         </tr>
                         <tr>
-                            <th class="indent-3">Effective Time / Growth Ticks: 1st Harvest </th>
+                            <th class="indent-3">Distributed Time / Growth Tick: 1st Harvest </th>
                             <td>
                                 <SettingsMinutesDisplay
                                     :minutes="(detailedProcessingInfo.cycleData.at(averageCycleIndex)!.cycleCrafterData.at(0)!.longestProcessMinutes || 0) / (cycleData?.phases.at(0)?.phaseLength || 1)" />
@@ -402,7 +409,7 @@ const totalGoldGenerated = computed(() => {
                             </td>
                         </tr>
                         <tr>
-                            <th class="indent-3">Effective Time / Growth Ticks: 3rd-4th Harvest</th>
+                            <th class="indent-3">Distributed Time / Growth Tick: 3rd-4th Harvest</th>
                             <td>
                                 <SettingsMinutesDisplay
                                     :minutes="(detailedProcessingInfo.cycleData.at(averageCycleIndex)!.cycleCrafterData.at(-1)!.longestProcessMinutes || 0) / (cycleData?.phases.at(-1)?.phaseLength || 1)" />
@@ -420,26 +427,27 @@ const totalGoldGenerated = computed(() => {
                         <th colspan="2" class="">Gold Stats</th>
                     </tr>
                     <tr>
-                        <th class="indent-3">Overall Gold Produced</th>
+                        <th class="indent-3">Total Gold Produced</th>
                         <td class="flex items-center gap-0.5"><img width="16" height="16"
                                 src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
                                 alt="Gold" format="webp">{{
-                                    detailedProcessingInfo.totalGoldGenerated.toLocaleString() }} Gold</td>
+                                    formatToOneDecimal(detailedProcessingInfo.totalGoldGenerated).toLocaleString() }} Gold</td>
                     </tr>
                     <tr>
-                        <th class="indent-3">Overall Gold / Cycle</th>
+                        <th class="indent-3">Total Gold / Cycle</th>
                         <td class="flex items-center gap-0.5"><img width="16" height="16"
                                 src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
                                 alt="Gold" format="webp">{{
-                                    (detailedProcessingInfo.totalGoldGenerated / Math.floor(totalCycles)).toLocaleString() }}
+                                    formatToOneDecimal(detailedProcessingInfo.totalGoldGenerated /
+                                        Math.floor(totalCycles)).toLocaleString() }}
                             Gold / Cycle</td>
                     </tr>
                     <tr>
-                        <th class="indent-3">Overall Gold / Effective Hour</th>
+                        <th class="indent-3">Total Gold / Hour (Distributed Time)</th>
                         <td class="flex items-center gap-0.5"><img width="16" height="16"
                                 src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
                                 alt="Gold" format="webp">{{
-                                    (detailedProcessingInfo.totalGoldGenerated /
+                                    formatToOneDecimal(detailedProcessingInfo.totalGoldGenerated /
                                         (detailedProcessingInfo.effectiveProcessMinutes /
                                             60)).toLocaleString() }} Gold / Hour</td>
                     </tr>

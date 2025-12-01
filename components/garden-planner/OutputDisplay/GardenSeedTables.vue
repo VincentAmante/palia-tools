@@ -3,6 +3,7 @@ import useHarvester from '~/stores/useHarvester'
 import useGarden from '~/stores/useGarden'
 import { parseCropId } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { CropType, getCropFromType } from '~/assets/scripts/garden-planner/imports'
+import { formatToOneDecimal } from '~/utils/formatters'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 const harvester = useHarvester()
@@ -12,11 +13,6 @@ const plotStat = computed(() => garden.plotStat)
 const cycleData = computed(() => harvester.harvester.totalHarvest.cycleData)
 
 const lastGrowthTick = computed(() => harvester.harvester.totalHarvest.lastHarvestDay)
-
-function formatToOneDecimal(num: number) {
-    return (parseFloat(num.toFixed(1)));
-}
-
 
 const totalSeedCounts = computed(() => {
     const seedCountsTracker: Map<CropType, number> = new Map()
@@ -205,6 +201,11 @@ const seedData = computed(() => {
                         Badruu)</span>
                 </th>
             </tr>
+            <tr class="">
+                <th colspan="2">Note: <span class="font-normal">aside from getting your first seed of each type from
+                        here, it's better to get them through other means like seed collectors.</span>
+                </th>
+            </tr>
             <template v-for="[type, count] of seedData.replantCostsGuild">
                 <tr class="border-t-2 dark:border-t-palia-blue-dark">
                     <th class="capitalize indent-3" colspan="">{{ type }}</th>
@@ -236,6 +237,12 @@ const seedData = computed(() => {
             <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
                 <th colspan="2" class="">Seeds available via Infected Essence<span class="font-normal">(e.g.
                         Tamala)</span>
+                </th>
+            </tr>
+
+            <tr class="">
+                <th colspan="2">Note: <span class="font-normal">aside from getting your first seed of each type from
+                        here, it's better to get them through other means like seed collectors.</span>
                 </th>
             </tr>
             <template v-for="[type, count] of seedData.replantCostsPotion">

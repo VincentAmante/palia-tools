@@ -42,7 +42,7 @@ const plotStat = computed(() => garden.plotStat)
         <section
             class="bg-accent dark:bg-palia-blue dark:text-accent border-misc-dark dark:border-palia-blue-dark rounded-sm border overflow-y-auto max-h-102">
             <table
-                class="table table-sm table-pin-rows [&_tr]:not-last:border-b [&_tr]:even:bg-secondary/90  [&_] [&_th]:whitespace-break-spaces [&_tr]:border-b-misc dark:[&_tr]:even:bg-palia-blue-light/60 dark:[&_tr]:border-b-palia-blue-dark">
+                class="table table-sm table-pin-rows [&_tr]:even:bg-secondary/50  [&_] [&_th]:whitespace-break-spaces dark:[&_tr]:even:bg-palia-blue-light/60">
 
                 <GardenFertiliserTables />
                 <GardenSeedTables />
