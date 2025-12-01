@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import NewSettings from './NewSettings.vue'
+import SettingsPanel from './SettingsPanel.vue'
 import LazyHCInfo from './HarvestCalculator/HCInfo.vue'
 import CropDetailsDisplay from './OutputDisplay/CropDetailsDisplay.vue'
 import OverallDisplay from './OutputDisplay/OverallDisplay.vue'
@@ -20,19 +20,12 @@ defineProps({
     default: false
   }
 })
-
-// const selectedTab = ref<'garden+display' | 'display+display'>('garden+display')
-// const emit = defineEmits(['tabChanged'])
-// watchEffect(() => {
-//   emit('tabChanged', selectedTab.value)
-// })
-
 </script>
 
 <template>
-  <section class="p-2 ">
+  <section class="p-2  min-h-115">
     <section v-if="!isTakingScreenshot.get"
-      class="flex flex-row-reverse justify-between border-b border-b-palia-blue-light pb-1 px-1">
+      class="flex flex-row-reverse justify-between border-b border-b-palia-blue-light pb-1">
       <section class="flex justify-end gap-1">
         <button id="approximator-display-tab" aria-label="Display Tab"
           class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip" data-tip="Output Display"
@@ -73,7 +66,7 @@ defineProps({
       <p class="sr-only">
         Settings
       </p>
-      <NewSettings />
+      <SettingsPanel />
     </section>
     <CropDetailsDisplay v-show="activeTab === 'crop-details'" />
     <section v-show="activeTab === 'info'" id="info-tab" class="pt-2">

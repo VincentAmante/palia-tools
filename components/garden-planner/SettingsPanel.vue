@@ -102,7 +102,7 @@ const highestTime = computed(() => {
       <div v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
         class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-90 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary dark:to-palia-blue-secondary" />
       <ul
-        class="grid max-h-[488px] gap-1 overflow-y-auto pr-2 rounded-md max-w-full scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
+        class="grid max-h-[480px] overflow-y-auto pr-2 rounded-md max-w-full scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
         <OptionCard label="days" name="Days">
           <template #input>
             <div class="join">
@@ -302,7 +302,7 @@ const highestTime = computed(() => {
       <section
         class="overflow-y-auto max-h-[436px] rounded-b-md scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
         <div v-if="activeProcessorSettings.cropSettings.size === 0"
-          class="flex items-center justify-center p-2 py-4 font-bold rounded-md text-misc bg-accent dark:bg-palia-blue-secondary dark:text-accent">
+          class="flex items-center justify-center p-2 py-4 font-bold rounded-md text-misc bg-accent dark:bg-palia-blue-dark dark:text-accent/50">
           <p>
             No crops in garden, add some to begin processing.
           </p>
@@ -401,7 +401,7 @@ const highestTime = computed(() => {
                 </button>
               </div>
               <p class="absolute bottom-0 w-full translate-y-2.5 whitespace-nowrap">
-                <SettingsMinutesDisplay class="whitespace-nowrap dark:text-accent"
+                <SettingsMinutesDisplay class=""
                   :minutes="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective" />
                 <span
                   v-if="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective === highestTime"

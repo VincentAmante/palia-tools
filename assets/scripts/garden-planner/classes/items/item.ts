@@ -1,7 +1,7 @@
 import type CropType from '../../enums/crops'
 import { getCropFromType } from '../../imports'
 import { ItemType, parseCropId } from '../../utils/garden-helpers'
-import type { ICropYield, ICropInfo, ICropName, ICropNameWithGrowthDiff } from '../../utils/garden-helpers'
+import type { ICropYield, ICropInfo, IInventoryItem, ICropName, ICropNameWithGrowthDiff } from '../../utils/garden-helpers'
 
 export interface Item {
   readonly name: string
@@ -12,6 +12,7 @@ export interface Item {
   readonly maxStack: number
   count: number
   readonly itemId: string // Unique identifier (e.g., Tomato-Crop-Star)
+  readonly totalGoldValue: number
 
   equals(item: Item): boolean
   add(count: number): void
@@ -64,6 +65,10 @@ export class CropItem implements Item {
 
   get count(): number {
     return this._count
+  }
+
+  get totalGoldValue() {
+    return this._count * this.price
   }
 
   set count(count: number) {
@@ -162,5 +167,28 @@ export class CropItem implements Item {
     const count = cropYieldInfo.totalWithDeductions
 
     return new CropItem(cropName, ItemType.Crop, image, price, isStar, maxStack, count, parsedCropId.type)
+  }
+
+  static fromInventoryItem(inventoryItem: IInventoryItem): CropItem {
+    // const parsedCropId = parseCropId(inventoryItem.cropType)
+    const cropName = inventoryItem.cropType
+    const crop = getCropFromType(inventoryItem.cropType)
+    if (!crop)
+      throw new Error(`No crop found: ${inventoryItem.cropType}`)
+
+    if (inventoryItem.itemType !== ItemType.Crop 
+      && inventoryItem.itemType !== ItemType.Seed 
+      && inventoryItem.itemType !== ItemType.Preserve) {
+      throw new Error(`Invalid item type for CropItem: ${inventoryItem.itemType}`)
+    }
+
+    const image = inventoryItem.img.src
+    const isStar = inventoryItem.isStar
+    const price = inventoryItem.baseGoldValue
+    const maxStack = 30
+    const count = inventoryItem.count
+
+
+    return new CropItem(cropName, inventoryItem.itemType, image, price, isStar, maxStack, count, crop.type)
   }
 }

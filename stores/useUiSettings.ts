@@ -8,7 +8,17 @@ interface UISettings {
     showBonusIcons: boolean;
     showBonusBackground: boolean;
   };
-  colorScheme: 'light' | 'dark' | 'system'
+  colorScheme: 'light' | 'dark' | 'system';
+  showAsProcessedItems: boolean;
+  showAsProcessedGold: boolean;
+  showAsProcessedTime: boolean
+}
+
+type UISettingsKey = keyof UISettings
+
+
+function updateKey<K extends UISettingsKey>(key: K, settingsA: UISettings, settingsB: UISettings){
+  settingsA[key] = settingsB[key]
 }
 
 export const useUiSettings = defineStore('uiSettings', () => {
@@ -19,13 +29,18 @@ export const useUiSettings = defineStore('uiSettings', () => {
       showBonusIcons: true,
       showBonusBackground: true,
     },
-    colorScheme: 'system'
+    colorScheme: 'system',
+    showAsProcessedItems: false,
+    showAsProcessedGold: true,
+    showAsProcessedTime: true
   });
 
   const loadInitialised = ref(false);
 
   function saveSettings(newSettings: UISettings) {
     settings.value = newSettings;
+
+    // console.log('saving settings: ', newSettings)
     localStorage.setItem('ui-settings', JSON.stringify(newSettings));
   }
 
@@ -34,16 +49,29 @@ export const useUiSettings = defineStore('uiSettings', () => {
     if (savedSettings) {
       // Ensure the settings have all the properties of UISettings
       let newSettings = JSON.parse(savedSettings) as UISettings;
-      // If any properties are missing, add them with default values
-      if (!newSettings.floatComponentLocation) newSettings.floatComponentLocation = 'bottom-right';
-      if (!newSettings.toastsLocation) newSettings.toastsLocation = 'top-center';
-      if (!newSettings.cropTile) newSettings.cropTile = {
-        showBonusIcons: true,
-        showBonusBackground: true,
-      };
-      if (!newSettings.colorScheme) newSettings.colorScheme = 'system'
 
-      saveSettings(JSON.parse(savedSettings));
+      const defaultSettingsKeys = Object.keys(settings.value) as UISettingsKey[]
+      let newSettingsKeys = Object.keys(newSettings) as UISettingsKey[]
+
+      // Check for removed keys
+      if (!newSettingsKeys.every((key) => defaultSettingsKeys.includes(key))) {
+        console.warn('UI Settings: removed key found, updating')
+        const updatedNewSettings = {} as UISettings
+        defaultSettingsKeys.forEach((key) => {
+          updateKey(key, updatedNewSettings, newSettings)
+        })
+
+        newSettings = updatedNewSettings
+        newSettingsKeys = Object.keys(updatedNewSettings) as UISettingsKey[]
+
+      }
+
+      settings.value = { ...settings.value, ...newSettings }
+
+      if (!(defaultSettingsKeys.every((key) => newSettingsKeys.includes(key)))) {
+        console.log('UI Settings: new settings found, setting it to default')
+        saveSettings({ ...settings.value, ...newSettings });
+      }
     }
   }
 
@@ -66,7 +94,6 @@ export const useUiSettings = defineStore('uiSettings', () => {
     loadInitialised.value = true;
     loadSettings();
   });
-
 
   return { settings };
 });

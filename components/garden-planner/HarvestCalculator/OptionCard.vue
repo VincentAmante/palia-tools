@@ -7,7 +7,7 @@ defineProps({
 </script>
 
 <template>
-  <li class="group">
+  <li class="group not-last:border-b not-last:border-b-misc-saturated/20 dark:not-last:border-b-water-retain">
     <label
       :for="label"
       class="flex flex-col justify-start p-2 px-3 group-first:rounded-t-md  bg-accent text-misc dark:bg-palia-blue dark:text-accent"

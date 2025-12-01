@@ -53,7 +53,7 @@ defineProps({
       </p>
       <p
         class="absolute top-0 right-0 px-[2px] text-xs font-semibold  text-center align-middle rounded-lg text-palia-blue-dark dark:text-accent"
-        :class="(count < 0) ? 'italic' : ' '"
+        :class="(count < 0) ? 'italic bold text-weed-prevention-dark dark:text-growth-boost' : ' '"
       >
         {{ (Math.round(count*100)/100).toLocaleString() }}
       </p>

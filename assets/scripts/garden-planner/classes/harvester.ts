@@ -13,7 +13,6 @@ export interface IHarvesterOptions {
 
 /**
  * The Harvester class is responsible for simulating the yield of crops over a given number of days.
- *
  */
 export default class Harvester {
   private _dayHarvests: DayHarvests = new Map()
@@ -24,6 +23,18 @@ export default class Harvester {
     cycleData: new Map(),
   }
 
+  private _harvestDayGaps: {
+    gaps: number[]
+    highest: number
+    lowest: number
+    average: number
+  } = {
+      gaps: [],
+      highest: 0,
+      lowest: 0,
+      average: 0,
+    }
+
   get dayHarvests(): DayHarvests {
     return this._dayHarvests
   }
@@ -32,14 +43,12 @@ export default class Harvester {
     return this._totalHarvest
   }
 
+  get harvestDayGaps(): { gaps: number[]; highest: number; lowest: number, average: number } {
+    return this._harvestDayGaps
+  }
+
   constructor() {
-    this._dayHarvests = new Map()
-    this._totalHarvest = {
-      lastHarvestDay: 0,
-      crops: new Map(),
-      seedsRemainder: new Map(),
-      cycleData: new Map(),
-    }
+    this.reset()
   }
 
   private reset(): void {
@@ -50,6 +59,12 @@ export default class Harvester {
       seedsRemainder: new Map(),
       cycleData: new Map(),
     } as ITotalHarvest
+    this._harvestDayGaps = {
+      gaps: [],
+      highest: 0,
+      lowest: 0,
+      average: 0,
+    }
   }
 
   simulateYield(tiles: TUniqueTiles, options: IHarvesterOptions): void {
@@ -163,7 +178,6 @@ export default class Harvester {
        *  Days left after harvest time ends but a crop still has an unfinished cycle
        */
       const cycleRemainder = dayOfLastHarvest % lastDayOfCycle
-      // console.log(`Cycles: ${cycles}, Cycle Remainder: ${cycleRemainder}, Last Day of Cycle: ${lastDayOfCycle}, Day of Last Harvest: ${dayOfLastHarvest}`);
 
       let remainingHarvests = 0
       if (cycleRemainder > 0) {
@@ -178,6 +192,7 @@ export default class Harvester {
         cropType: tile.crop.type,
         totalHarvestsCount: (cycles * harvestableDays.length) + remainingHarvests,
         phases: [] as IHarvestCyclePhase[],
+        cropCount: group.count
       } satisfies ICropHarvestCycle
 
       for (let phase = 0; phase < harvestableDays.length; phase++) {
@@ -214,6 +229,7 @@ export default class Harvester {
         ? `${crop.type}-${options.useStarSeeds ? 'Star' : 'Base'}-Growth`
         : seedsRequiredId) satisfies ICropNameWithGrowthDiff
 
+
       const baseId = (differentiateByGrowthBoost ? `${crop.type}-Base-Growth` : `${crop.type}-Base`) satisfies ICropNameWithGrowthDiff
       const starId = (differentiateByGrowthBoost ? `${crop.type}-Star-Growth` : `${crop.type}-Star`) satisfies ICropNameWithGrowthDiff
 
@@ -224,9 +240,13 @@ export default class Harvester {
           for (let i = 0; i < totalHarvestCycleData!.phases.length; i++) {
             totalHarvestCycleData!.phases[i].yield.base = { ...addCropYields(totalHarvestCycleData!.phases[i].yield.base, cropHarvestCycle.phases[i].yield.base), isAveraged: false }
             totalHarvestCycleData!.phases[i].yield.star = { ...addCropYields(totalHarvestCycleData!.phases[i].yield.star, cropHarvestCycle.phases[i].yield.star), isAveraged: false }
+
           }
 
+          totalHarvestCycleData.cropCount += cropHarvestCycle.cropCount
+
           this._totalHarvest.cycleData.set(seedsRequiredIdWithGrowth, totalHarvestCycleData)
+
         }
       }
       else {
@@ -242,10 +262,11 @@ export default class Harvester {
             day: dayInCycle,
             crops: new Map(),
             seedsRequired: new Map(),
+            cropsHarvested: new Set(),
           }
 
-          const baseCropYield = harvestDay.crops.get(`${crop.type}-Base`) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } satisfies ICropYield
-          const starCropYield = harvestDay.crops.get(`${crop.type}-Star`) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } satisfies ICropYield
+          const baseCropYield = harvestDay.crops.get(baseId) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } satisfies ICropYield
+          const starCropYield = harvestDay.crops.get(starId) ?? { base: 0, extra: 0, totalRaw: 0, totalWithDeductions: 0 } satisfies ICropYield
 
           harvestDay.crops.set(baseId, {
             ...addCropYields(baseCropYield, baseCrop),
@@ -272,6 +293,8 @@ export default class Harvester {
               })
             }
           }
+          harvestDay.cropsHarvested.add(crop.type)
+
           dayHarvests.set(dayInCycle, harvestDay)
         })
       }
@@ -289,6 +312,7 @@ export default class Harvester {
             day: dayInCycle,
             crops: new Map(),
             seedsRequired: new Map(),
+            cropsHarvested: new Set(),
           }
 
           harvestDay.crops.set(`${crop.type}-Base${differentiateByGrowthBoost ? '-Growth' : ''}`, {
@@ -315,16 +339,18 @@ export default class Harvester {
               })
             }
           }
+          harvestDay.cropsHarvested.add(crop.type)
 
           dayHarvests.set(dayInCycle, harvestDay)
         }
       }
+
     }
+
 
     // Sort the harvests by day for chronological calculations
     dayHarvests = new Map([...dayHarvests.entries()].sort(([a], [b]) => a - b))
 
-    // console.log('dayHarvests', dayHarvests)
     /**
      * Contains the remainder of seeds after replanting for the next replant cycle
      */
@@ -340,11 +366,25 @@ export default class Harvester {
       days: number
     }>
 
-    let cropsRequiredTracker = {
-      totalCropsConsumed: 0,
-      deductionsDone: 0
-    }
-    for (const [, harvest] of dayHarvests) {
+    let cropsRequiredTracker = new Map() as Map<ICropNameWithGrowthDiff, {
+      totalCropsConsumed: number,
+      deductionsDone: number
+    }>
+
+    let harvestDayGaps: number[] = []
+    let harvestDayGapsSum = 0
+    let latestHarvestDayForGap = 0
+    let harvestDayGapLowest = Number.POSITIVE_INFINITY
+    let harvestDayGapHighest = Number.NEGATIVE_INFINITY
+
+    for (const [day, harvest] of dayHarvests) {
+      const harvestDayGap = day - (latestHarvestDayForGap + 1)
+      harvestDayGaps.push(harvestDayGap)
+      harvestDayGapsSum += harvestDayGap
+      latestHarvestDayForGap = day
+      harvestDayGapLowest = Math.min(harvestDayGapLowest, harvestDayGap)
+      harvestDayGapHighest = Math.max(harvestDayGapHighest, harvestDayGap)
+
       // Deduct seeds required for replanting
       if (options.includeReplantCost) {
         for (const [id, seedsRequiredInfo] of harvest.seedsRequired) {
@@ -356,18 +396,21 @@ export default class Harvester {
           }
           const { cropsPerSeed, seedsPerConversion } = crop.conversionInfo
 
+          const cropsTracker = cropsRequiredTracker.get(id) || {
+            totalCropsConsumed: 0,
+            deductionsDone: 0
+          }
+
           // Calculate how many seeds need to be produced to replant, factoring in remainder from previous harvests
           const remainingSeeds = seedsRemainder.get(id) ?? 0
-
           const remainderSeedsToBeUsed = Math.min(remainingSeeds, seedsRequiredInfo.count)
-
           const seedsRequiredCount = seedsRequiredInfo.count - remainderSeedsToBeUsed
-
           const conversionsNeeded = Math.ceil(seedsRequiredCount / seedsPerConversion)
-
           const cropsRequired = conversionsNeeded * cropsPerSeed
-          cropsRequiredTracker.totalCropsConsumed += cropsRequired
-          cropsRequiredTracker.deductionsDone += 1
+
+
+          cropsTracker.totalCropsConsumed += cropsRequired
+          cropsTracker.deductionsDone += 1
 
           const cropData = harvest.crops.get(id) || {
             base: 0,
@@ -409,6 +452,7 @@ export default class Harvester {
           const newRemainingSeeds = (remainingSeeds - remainderSeedsToBeUsed) + (seedsGenerated - seedsRequiredCount)
           // Add the harvest to the total harvest
           seedsRemainder.set(id, newRemainingSeeds)
+          cropsRequiredTracker.set(id, cropsTracker)
         }
       }
 
@@ -425,22 +469,33 @@ export default class Harvester {
           totalWithDeductions: 0,
         } satisfies ICropYield
 
+        const newYield = addCropYields(total, cropYield)
+
         this._totalHarvest.crops.set(cropId, {
-          ...addCropYields(total, cropYield),
+          ...newYield,
           cropType: crop,
           isStar,
         })
       }
     }
 
+    const harvestDayAverage = harvestDayGapsSum / harvestDayGaps.length
+    const harvestDayGapStats = {
+      gaps: harvestDayGaps,
+      highest: harvestDayGapHighest,
+      lowest: harvestDayGapLowest,
+      average: harvestDayAverage
+    }
+
     // Get the average yield on days where crops are harvested
     if (options.includeReplantCost) {
       if (cropTotalsForAveraging.size > 0) {
         for (const [cropId, cropTotal] of cropTotalsForAveraging) {
+          const cropsTracker = cropsRequiredTracker.get(cropId)!
 
-          const averageCropsConsumed = cropsRequiredTracker.totalCropsConsumed / cropsRequiredTracker.deductionsDone
-
-          const isStar = cropId.includes('-Star')
+          // console.log(`totalCropsConsumed: ${cropsRequiredTracker.totalCropsConsumed} | deductionsDone ${cropsRequiredTracker.deductionsDone}`)
+          const averageCropsConsumed = cropsTracker.totalCropsConsumed / cropsTracker.deductionsDone
+          const isStarModifier = cropId.includes('-Star') ? 'star' : 'base'
 
           const cropCycleData = this._totalHarvest.cycleData.get(cropId)
 
@@ -449,15 +504,10 @@ export default class Harvester {
             return
           }
 
-          // Change the appropriate yield
-          if (isStar) {
-            cropCycleData.phases.at(-1)!.yield.star.totalWithDeductions -= Math.round(averageCropsConsumed)
-            cropCycleData.phases.at(-1)!.yield.star.isAveraged = true
-          }
-          else {
-            cropCycleData.phases.at(-1)!.yield.base.totalWithDeductions -= Math.round(averageCropsConsumed)
-            cropCycleData.phases.at(-1)!.yield.base.isAveraged = true
-          }
+          cropCycleData.phases.at(-1)!.yield[isStarModifier].totalWithDeductions -= Math.round(averageCropsConsumed)
+          cropCycleData.phases.at(-1)!.yield[isStarModifier].isAveraged = true
+
+          // console.log(cropId, averageCropsConsumed)
         }
       }
     }
@@ -480,53 +530,8 @@ export default class Harvester {
 
     this._dayHarvests = dayHarvests
     this._totalHarvest.lastHarvestDay = dayOfLastHarvest
-
-
-    this._dayHarvests
-    this._totalHarvest.crops
-    this._totalHarvest.seedsRemainder
-  }
-
-  /**
-   * Temporary until the processor is implemented
-   */
-  // get asInventory(): IInventory {
-  //   const inventory: IInventory = {}
-
-  //   inventory.crop = {}
-  //   for (const [cropId, cropYield] of this.totalHarvest.crops) {
-  //     const crop = cropYield.cropType
-  //     const isStar = (cropId.includes('Star'))
-  //     const cropInfo = getCropFromType(crop)
-  //     if (!cropInfo) {
-  //       console.error('Crop not found')
-  //       continue
-  //     }
-
-  //     if (cropYield.totalWithDeductions <= 0)
-  //       continue
-
-  //     const item: IInventoryItem = {
-  //       count: cropYield.totalWithDeductions,
-  //       img: {
-  //         src: cropInfo.image,
-  //         alt: cropInfo.type,
-  //       },
-  //       isStar,
-  //       baseGoldValue: isStar ? cropInfo.goldValues.cropStar : cropInfo.goldValues.crop,
-  //     }
-
-  //     inventory.crop[cropId] = item
-  //   }
-
-  //   return inventory
-  // }
-}
-
-function hasYield(cropYield: ICropYield) {
-  for (const val of Object.values(cropYield)) {
-    if (val > 0)
-      return true
+    this._harvestDayGaps = harvestDayGapStats
+    // console.log('cycleData', this._totalHarvest.cycleData)
   }
 }
 
@@ -564,7 +569,6 @@ function getHighestGrowthTime(cropTiles: TUniqueTiles, factorInGrowthBoost: bool
  */
 function getGrowthTimeLCM(crops: TUniqueTiles, factorInGrowthBoost: boolean = false): number {
   if (crops.size === 0) {
-    // console.warn('No crops found')
     return 0
   }
 
@@ -577,10 +581,7 @@ function getGrowthTimeLCM(crops: TUniqueTiles, factorInGrowthBoost: boolean = fa
     growthTimes.add(tile.crop.getTotalGrowTime(group.tile.bonuses.includes(Bonus.SpeedIncrease) && factorInGrowthBoost))
   }
 
-  if (growthTimes.size === 0) {
-    // console.warn('No growth times found')
-    return 0
-  }
+  if (growthTimes.size === 0) return 0
 
   return Array.from(growthTimes).reduce((acc, cur) => (acc * cur) / getGCD(acc, cur))
 }

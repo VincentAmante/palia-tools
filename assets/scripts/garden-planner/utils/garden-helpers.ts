@@ -4,7 +4,7 @@
  */
 
 import type Tile from '../classes/tile'
-import { CropType, getCropFromCode, getCropFromType } from '../imports'
+import { Bonus, CropType, FertiliserType, getCropFromCode, getCropFromType, getFertiliserFromType } from '../imports'
 import { CropCode } from '../imports'
 
 export interface ICalculateYieldOptions {
@@ -139,8 +139,8 @@ export interface ICropInfo {
 }
 
 export interface ISeedTracker {
-  count: number
   type: CropType
+  count: number
 }
 
 // replacers for IDayResult, ICalculateValueResult, ISimulateYieldResult
@@ -148,6 +148,7 @@ export interface IDayHarvest {
   day: number
   crops: Map<ICropNameWithGrowthDiff, ICropYield & ICropInfo>
   seedsRequired: Map<ICropNameWithGrowthDiff, ISeedTracker>
+  cropsHarvested: Set<CropType>
 }
 
 export type DayHarvests = Map<number, IDayHarvest>
@@ -165,6 +166,8 @@ export interface ITotalHarvest {
 
 export interface IHarvestCyclePhase {
   dayOfHarvest: number
+
+  // phase length = number of growth ticks
   phaseLength: number
   yield: {
     base: ICropYield & {
@@ -178,6 +181,7 @@ export interface IHarvestCyclePhase {
 
 export interface ICropHarvestCycle {
   cropType: CropType
+  cropCount: number
   totalHarvestsCount: number
   phases: IHarvestCyclePhase[]
 }
@@ -267,3 +271,99 @@ export enum ItemType {
 }
 
 export type CropItem = ItemType.Crop | ItemType.Seed | ItemType.Preserve
+
+
+
+export function getBonusDataByFertiliser(fertiliser: FertiliserType) {
+  const bonus = getFertiliserFromType(fertiliser)?.effect || Bonus.None
+
+  switch (bonus) {
+    case Bonus.WaterRetain:
+      return {
+        icon: 'droplet',
+        colour: 'text-water-retain',
+        type: 'Water Retain',
+        extraDetail: 'Helps keeps other nearby crop types hydrated',
+      }
+    case Bonus.QualityIncrease:
+      return {
+        icon: 'star',
+        colour: 'text-quality-increase',
+        type: 'Quality Increase',
+        extraDetail: 'Boosts quality of other nearby crop types',
+      }
+    case Bonus.HarvestIncrease:
+      return {
+        icon: 'wheat-awn',
+        colour: 'text-harvest-boost',
+        type: 'Harvest Increase',
+        extraDetail: 'Boosts amount harvested from other nearby crop types',
+      }
+    case Bonus.WeedPrevention:
+      return {
+        icon: 'shield',
+        colour: 'text-weed-prevention',
+        type: 'Weed Prevention',
+        extraDetail: 'Prevents weeds from growing on other nearby crop types',
+      }
+    case Bonus.SpeedIncrease:
+      return {
+        icon: 'forward-fast',
+        colour: 'text-growth-boost',
+        type: 'Growth Boost',
+        extraDetail: 'Boosts growth speed of other nearby crop types',
+      }
+    default:
+      return {
+        icon: '',
+        colour: 'text-misc',
+        type: '',
+      }
+  }
+}
+
+export function getBonusData(bonus: Bonus) {
+  switch (bonus) {
+    case Bonus.WaterRetain:
+      return {
+        icon: 'droplet',
+        colour: 'text-water-retain',
+        type: 'Water Retain',
+        extraDetail: 'Helps keeps other nearby crop types hydrated',
+      }
+    case Bonus.QualityIncrease:
+      return {
+        icon: 'star',
+        colour: 'text-quality-increase',
+        type: 'Quality Increase',
+        extraDetail: 'Boosts quality of other nearby crop types',
+      }
+    case Bonus.HarvestIncrease:
+      return {
+        icon: 'wheat-awn',
+        colour: 'text-harvest-boost',
+        type: 'Harvest Increase',
+        extraDetail: 'Boosts amount harvested from other nearby crop types',
+      }
+    case Bonus.WeedPrevention:
+      return {
+        icon: 'shield',
+        colour: 'text-weed-prevention',
+        type: 'Weed Prevention',
+        extraDetail: 'Prevents weeds from growing on other nearby crop types',
+      }
+    case Bonus.SpeedIncrease:
+      return {
+        icon: 'forward-fast',
+        colour: 'text-growth-boost',
+        type: 'Growth Boost',
+        extraDetail: 'Boosts growth speed of other nearby crop types',
+      }
+    default:
+      return {
+        icon: '',
+        colour: 'text-misc',
+        type: '',
+      }
+  }
+}

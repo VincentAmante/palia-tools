@@ -37,7 +37,7 @@ defineProps({
       :data-tip="tooltip || `${count * baseGoldValue}g`"
       class="z-50 hidden w-full h-full sm:absolute sm:tooltip"
     /> -->
-    <div class="relative w-full h-full p-2 isolate overflow-clip">
+    <div class="relative w-full h-full p-1.75 isolate overflow-clip">
       <div class="absolute top-0 left-0 w-full h-full select-none opacity-40 -z-10 bg-linear-to-b from-misc to-primary dark:from-palia-blue dark:to-water-retain/80 " />
       <img
         v-if="imgSrc"
@@ -53,7 +53,7 @@ defineProps({
       <p
         v-if="count !== 0"
         class="absolute top-0 right-0 px-[2px] text-xs text-center align-middle rounded-lg"
-        :class="[(count < 0) ? 'font-bold italic dark:text-growth-boost' : ' text-palia-blue-dark dark:text-accent',
+        :class="[(count < 0) ? 'font-black italic text-weed-prevention-dark dark:text-growth-boost' : ' text-palia-blue-dark dark:text-accent',
           (count.toLocaleString().length > 5 ? 'text-xxs' : 'text-xs')
         ]"
       >

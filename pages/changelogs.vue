@@ -32,6 +32,173 @@ useHead({
       </div>
 
       <div class="grid gap-2">
+        <ChangelogItem checked>
+          <template #title>
+            <span class="font-bold">
+              December 1, 2025 — Data Update & Key Bug Fixes</span>
+          </template>
+          <template #summary>
+            <li>
+              <span class="font-bold">Bug Fixes related to harvest settings</span>
+            </li>
+
+            <li class="indent-6">
+              <span class="italic">Fix: Replant Cost (Enabled by default) —</span> Gold output is slightly off when using replant cost & crafters at the same time.
+              (Estimated Impact: Minor deviation)
+            </li>
+
+            <li class="indent-6">
+              <span class="italic">Fix: Growth Boost (Disabled by default) —</span> A croptype with both tiles
+              affected & unaffected by growth boost would have overestimated harvests. (Estimated Impact: Medium to Major
+              deviation)
+            </li>
+            <li class="pt-2">
+              <span class="italic">New Info Displays —</span> New panels have been added to the output display,
+              providing additional information on the output provided.
+            </li>
+            <li class="">
+              <span class="italic">Quick list of new panels</span>
+            </li>
+
+            <li class="indent-6">
+              Two different misc panels have been added (one for the garden in general and one for each specific crop
+              group), showing miscellaneous info that have yet to find a better place to be displayed in.
+            </li>
+            <li class="indent-6">
+              Tending Panel to see how garden maintenance (No processing related info atm).
+            </li>
+            <li class="indent-6">
+              Returned ability to see potential gold value and output in the Harvest Days list.
+            </li>
+            <li class="indent-6">
+              Quick overview of processing stats for a given day when viewing the Harvest Days list.
+            </li>
+          </template>
+
+          <template #default>
+            <p>
+              Greetings, it's been a while since our last update! For this update,
+              I focused on adding more various informative panels,
+              these panels should provide an assortment of details for all sorts of players to better plan their
+              gardens.
+            </p>
+            <p>
+              Before going into that, I'll first dive into some bug fixes that were made.
+            </p>
+            <div class="divider"></div>
+            <h4 class="font-bold text-xl">Bug Fixes</h4>
+            <div class="p-1 pl-3">
+
+              <h5 class="font-bold text-lg">1. Replant Cost</h5>
+              <p class="indent-3">
+                The bug that's more likely encountered would be the one related to the replant-cost setting.
+                This issue was affecting a tracker on the average deductions a harvest yielded when the crop was
+                replanted. The tracker was not resetting correctly on each crop type, causing discrepancy on the assumed
+                average
+                yield on replant days.
+              </p>
+              <p class="indent-3">
+                When a crop isn't processed, the output itself wouldn't be affected. When processed, however, the processor was
+                using
+                the average yield to estimate the produce, which would then result in an inaccurate output.
+                The impact in gold output varied based on crop type but are believed to be minor, usually ranging
+                around 1-5% deviation in gold output
+                when testing the layouts I find online.
+              </p>
+
+              <h5 class="font-bold text-lg">2. Growth Boost</h5>
+              <p class="indent-6">
+                The second bug fix was related to the growth boost setting, but is also a replant-cost related bug.
+                The issue was caused by an error in properly handling the ID for crops affected affected by growth
+                boost.
+                This caused yield to be higher than it really is, as crop deductions were not being factored in
+                correctly.
+              </p>
+            </div>
+            <p class="indent-6">
+              I only discovered these bugs recently while working on the update. Noting how these bugs were caused, they
+              were most likely present since around the crafter update. I sincerely apologise for the inconvenience
+              caused due to not finding these sooner.
+              The accuracy of the planner should now be higher than before, but please do report
+              any behaviour you find odd.
+            </p>
+            <div class="divider"></div>
+            <h4 class="font-bold text-xl">New Info Displays</h4>
+            <p class="indent-6">
+              Moving on, a few information panels have been added or improved to provide all sorts of details.
+              These panels range in importance and usefulness depending on the player's needs, and should serve
+              various types of players. I'll go over them briefly here.
+            </p>
+            <div class="p-1 pl-3">
+              <h5 class="font-bold">1. Tending Panel</h5>
+              <p class="indent-6">
+                Features a chart of harvest days and gaps between those days.
+                Focused on providing players with an idea of how often they'll be visiting their gardens for harvest.
+                Also includes watering/knapweed checking if a plot has crops not covered with the associated buffs.
+              </p>
+
+              <h5 class="font-bold pt-2">2. Harvest Days Improvement</h5>
+              <p class="indent-6">
+                The harvest days list now once again has the ability to show the potential gold value and output of the
+                harvest.
+                This was removed during the crafter update due to concerns it would mislead players, but feedback
+                shows importance in having back, so I re-included it with clearer wording.
+              </p>
+              <p class="indent-6">
+                On top of the re-added feature, you can also view the day itself to see process stats for each specific
+                day.
+                The current processing time in the overview display is considered unrealistic due to its 24/7
+                estimation.
+                To help with this, this new panel should help players see how processing would look like on a per-day
+                basis.
+              </p>
+              <h5 class="font-bold pt-2">3. Miscellaneous Panels</h5>
+
+              <p class="indent-6">
+                Some of the data I can easily share lack a proper area I can insert them, or I'm still unsure how to
+                fully
+                integrate them into the planner just yet. To prevent delaying their addition, I've simply placed them
+                here for now. These details can range from requested information to minor tidbits for curiosity.
+                They're available in the
+                <font-awesome-icon :icon="['fas', 'search']" class="" /> Crop Details tab, one for the garden in general
+                (found in all harvests),
+                and then each crop group has a tab of its own.
+              </p>
+              <p class="indent-6">
+                Some of these details involve fertiliser usage & cost calculations, seed usage & costs from various
+                sources (inherent value, Zeki, Guild Store, Potion Shop).
+                Each crop contains information regarding its harvest details, growth cycles, output stats, process
+                stats, stats relative to growth tick, etc.
+                A lot of the information here can be complicated due to the terminology, so I added explanations as to
+                what certain terms can mean (also can be found in the Glossary).
+              </p>
+            </div>
+            <p class="indent-6">
+              These new panels are still open to additions, but they're all information I could think of and easily add
+              without large modifications to the current calculations (just found out it had some instability, after all).
+              The recent bug fixes were already causing instability for some time, so I'd like to add these as safely as
+              possible first.
+              Regardless, if you can think of anything you wish to see in these panels, please let me know so I can look
+              into it!
+            </p>
+            <div class="divider"></div>
+            <h4 class="font-bold text-xl">Next Update & Conclusion</h4>
+            <p class="indent-6">
+              The upcoming update is still undecided, but it's a toss-up between adding worm farms, expanding crafter
+              configurability, and
+              reworking the plot system.
+              All three would require yet another major change to the planner's systems,
+              so expect each one to take awhile given my dwindled availability.
+              Once at least two of these features have been added, I can safely consider the Planner to be near or
+              almost at its
+              full release.
+            </p>
+            <p>
+              As always, thank you guys again for your patience and continued support & usage of the Garden Planner.
+              Happy planning and see you next update!
+            </p>
+          </template>
+        </ChangelogItem>
         <ChangelogItem>
           <template #title>
             <span class="font-bold">

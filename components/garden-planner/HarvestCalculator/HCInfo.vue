@@ -1,9 +1,10 @@
 <template>
-  <div v-once class="flex flex-col gap-2 px-2 py-4 text-accent bg-palia-blue-dark rounded-lg overflow-auto scrollbar-thumb-accent max-h-132">
+  <div v-once
+    class="flex flex-col gap-2 px-2 py-4 text-accent bg-palia-blue-dark rounded-lg overflow-auto scrollbar-thumb-accent max-h-132">
     <p class="px-2 text-xl font-black">Info</p>
     <div class="grid gap-2 px-2">
-      <div class="p-3 rounded-md bg-palia-blue">
-        <h3 class="text-lg font-bold uppercase">
+      <section class="p-3 rounded-md bg-palia-blue">
+        <h3 class="text-lg font-bold">
           Note
         </h3>
         <div class="flex flex-col gap-1 py-2">
@@ -31,7 +32,8 @@
             Final values are estimations and may not reflect actual in-game experience.
           </p>
         </div>
-      </div>
+      </section>
+
       <div class="p-3 rounded-md bg-palia-blue ">
         <h3 class="text-lg font-bold ">
           How it works - Summary <span class="tabular-nums text-xs pl-1 opacity-50">(13/05/2025)</span>
@@ -54,7 +56,7 @@
       </div>
     </div>
     <div class="px-2">
-      <div class="grid gap-2 p-3 rounded-md bg-palia-blue">
+      <section class="grid gap-2 p-3 rounded-md bg-palia-blue">
         <h3 class="text-lg font-bold">
           Harvest Assumptions <span class="tabular-nums text-xs pl-1 opacity-50">(14/05/2025)</span>
         </h3>
@@ -124,16 +126,18 @@
                   This may sometimes result in a harvest having negative values
                 </li>
                 <li class="pl-5">
-                  These harvests with a negative value merely imply that a crop was taken from somewhere else, whether your storage
-                  or from a different harvest. Aside from required seed calculations, each harvest day does not factor in outcomes from other days
+                  These harvests with a negative value merely imply that a crop was taken from somewhere else, whether
+                  your storage
+                  or from a different harvest. Aside from required seed calculations, each harvest day does not factor
+                  in outcomes from other days
                 </li>
               </ul>
             </div>
           </li>
         </ul>
-      </div>
+      </section>
     </div>
-    <div class="px-2 pb-3">
+    <div class="px-2">
       <div class="grid gap-2 p-3 rounded-md bg-palia-blue">
         <h3 class="text-lg font-bold">
           Processing Mechanics <span class="tabular-nums text-xs pl-1 opacity-50">(14/05/2025)</span>
@@ -268,6 +272,81 @@
           </li>
         </ul>
       </div>
+    </div>
+    <div class="px-2 pb-3">
+      <section class="p-3 rounded-md bg-palia-blue ">
+        <h3 class="text-lg font-bold ">
+          Glossary
+        </h3>
+        <p class="text-sm pt-2">List of terms used in the planner. Some of these terms are used primarily within the
+          planner for differentiating similar values.</p>
+        <ol class="list">
+          <li class="list-row">
+            <p>
+              <span class="font-bold">Growth Tick</span> — In-game (Palian) day that has passed for the user.
+              Growth ticks elapse during 6:00 AM and either advances only while the player is logged on or advances a
+              maximum of one time after the player logs off. May also be referred to as a 'Palian Day'
+            </p>
+          </li>
+          <li class="list-row">
+            <p>
+              <span class="font-bold">Earth Time</span> — Time in the real world / outside the game. Earth time means
+              that the associated time is capable of passing even if the player is logged off.
+            </p>
+          </li>
+
+          <li class="list-row">
+            <p>
+              <span class="font-bold">Harvest / Harvest Day</span> — A day where a crop is ready for harvest, typically
+              also replanted within the day if required.
+            </p>
+          </li>
+
+          <li class="list-row">
+            <p>
+              <span class="font-bold">Cycle</span> — Some crops take multiple harvests before needing a re-plant (Such
+              as Blueberries).
+              A cycle factors in the harvests in-between and refers to the growth ticks between each replant of a crop.
+            </p>
+          </li>
+          <li class="list-row">
+            <p>
+              <span class="font-bold">Total</span> — The entire length of growth ticks / palian days that the planner
+              accounts for.
+              This is the amount of growth ticks seen in the overview display as well as the number of days within the
+              setting.
+            </p>
+          </li>
+
+          <li class="list-row">
+            <p>
+              <span class="font-bold">Idle Time</span> — Time a crafter has spent idling and waiting for the next
+              harvest, as there is - at present - nothing to process.
+            </p>
+          </li>
+
+          <li class="list-row">
+            <p>
+              <span class="font-bold">Excess Time</span> — A crafter is still processing crops by the time the next
+              batch of the same crops arrive.
+            </p>
+          </li>
+
+          <li class="list-row">
+            <p>
+              <span class="font-bold">Absolute Time</span> — Undivided time. Absolute time, when used in procesing,
+              refers to how many crafter hours are needed to process the provided harvest.
+            </p>
+          </li>
+
+          <li class="list-row">
+            <p>
+              <span class="font-bold">Distributed Time</span> — Time factoring in crafter division, used for final time estimations. Typically,
+              Distributed Time also factors in idle & excess time.
+            </p>
+          </li>
+        </ol>
+      </section>
     </div>
   </div>
 </template>

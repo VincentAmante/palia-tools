@@ -1,48 +1,22 @@
 <script setup lang="ts">
-import type { PlotStat } from 'assets/scripts/garden-planner/imports'
-import { Bonus } from 'assets/scripts/garden-planner/imports'
+import useGarden from '~/stores/useGarden'
+import { Bonus } from '~/assets/scripts/garden-planner/imports'
 
-defineProps<{
-  gardenTilesAreWide: boolean
-  plotStatTotal: PlotStat
-  hoveredBonus: Bonus
-}>()
-
-const emit = defineEmits(['update:hoveredBonus'])
-
-const statsDisplay = ref<HTMLDivElement | null>(null)
-function getStatsDisplay() {
-  return statsDisplay.value
-}
-
-function modifyStatsDisplayClassList(callback: (classList: DOMTokenList) => void) {
-  const statsDisplay = getStatsDisplay()
-  if (statsDisplay)
-    callback(statsDisplay.classList)
-}
-
-function updateHoveredBonus(bonus: Bonus) {
-  emit('update:hoveredBonus', bonus)
-}
-
-defineExpose({
-  getStatsDisplay,
-  modifyStatsDisplayClassList,
-})
+const gardenHandler = useGarden()
+const plotStat = computed(() => gardenHandler.plotStat)
 </script>
 
 <template>
-  <div class="">
+  <section id="statsDisplay" class="">
     <h2 class="sr-only">
       Crop Bonus Statistics
     </h2>
-    <div
-      ref="statsDisplay" class="flex gap-[0.35rem] lg:gap-3 xl:gap-4 w-full cursor-help justify-center"
-    >
+    <div class="flex gap-[0.35rem] lg:gap-3 xl:gap-4 w-full cursor-help justify-center p-1 xs:bg-primary xs:dark:bg-palia-blue-secondary  rounded-lg xs:p-2">
       <CoverageStat
-        :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Speed Increase']" class="text-growth-boost"
-        @mouseover="updateHoveredBonus(Bonus.SpeedIncrease)" @mouseleave="updateHoveredBonus(Bonus.None)"
+        :total-crops="plotStat.cropCount"
+        :covered="plotStat.cropBonusCoverage['Speed Increase']" class="text-growth-boost"
+        @mouseover="gardenHandler.setHoveredBonus(Bonus.SpeedIncrease)"
+        @mouseleave="gardenHandler.setHoveredBonus(Bonus.None)"
       >
         <template #icon>
           <font-awesome-icon :icon="['fas', 'forward-fast']" />
@@ -53,9 +27,10 @@ defineExpose({
       </CoverageStat>
 
       <CoverageStat
-        :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Harvest Increase']" class="text-harvest-boost"
-        @mouseover="updateHoveredBonus(Bonus.HarvestIncrease)" @mouseleave="updateHoveredBonus(Bonus.None)"
+        :total-crops="plotStat.cropCount"
+        :covered="plotStat.cropBonusCoverage['Harvest Increase']" class="text-harvest-boost"
+        @mouseover="gardenHandler.setHoveredBonus(Bonus.HarvestIncrease)"
+        @mouseleave="gardenHandler.setHoveredBonus(Bonus.None)"
       >
         <template #icon>
           <font-awesome-icon :icon="['fas', 'wheat-awn']" />
@@ -66,9 +41,10 @@ defineExpose({
       </CoverageStat>
 
       <CoverageStat
-        :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Quality Increase']" class="text-quality-increase"
-        @mouseover="updateHoveredBonus(Bonus.QualityIncrease)" @mouseleave="updateHoveredBonus(Bonus.None)"
+        :total-crops="plotStat.cropCount"
+        :covered="plotStat.cropBonusCoverage['Quality Increase']" class="text-quality-increase"
+        @mouseover="gardenHandler.setHoveredBonus(Bonus.QualityIncrease)"
+        @mouseleave="gardenHandler.setHoveredBonus(Bonus.None)"
       >
         <template #icon>
           <font-awesome-icon :icon="['fas', 'star']" />
@@ -79,9 +55,10 @@ defineExpose({
       </CoverageStat>
 
       <CoverageStat
-        :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Water Retain']" class="text-water-retain"
-        @mouseover="updateHoveredBonus(Bonus.WaterRetain)" @mouseleave="updateHoveredBonus(Bonus.None)"
+        :total-crops="plotStat.cropCount"
+        :covered="plotStat.cropBonusCoverage['Water Retain']" class="text-water-retain"
+        @mouseover="gardenHandler.setHoveredBonus(Bonus.WaterRetain)"
+        @mouseleave="gardenHandler.setHoveredBonus(Bonus.None)"
       >
         <template #icon>
           <font-awesome-icon :icon="['fas', 'droplet']" />
@@ -91,9 +68,10 @@ defineExpose({
         </template>
       </CoverageStat>
       <CoverageStat
-        :total-crops="plotStatTotal.cropCount"
-        :covered="plotStatTotal.cropBonusCoverage['Weed Prevention']" class="text-weed-prevention"
-        @mouseover="updateHoveredBonus(Bonus.WeedPrevention)" @mouseleave="updateHoveredBonus(Bonus.None)"
+        :total-crops="plotStat.cropCount"
+        :covered="plotStat.cropBonusCoverage['Weed Prevention']" class="text-weed-prevention"
+        @mouseover="gardenHandler.setHoveredBonus(Bonus.WeedPrevention)"
+        @mouseleave="gardenHandler.setHoveredBonus(Bonus.None)"
       >
         <template #icon>
           <font-awesome-icon :icon="['fas', 'shield']" />
@@ -103,5 +81,5 @@ defineExpose({
         </template>
       </CoverageStat>
     </div>
-  </div>
+  </section>
 </template>

@@ -24,7 +24,7 @@ export default defineNuxtConfig({
     },
     '/_nuxt/builds/**': {
       headers: {
-        'Cache-Control': 'public, max-age=60, stale-while-revalidate=3600'
+        'Cache-Control': 'public, max-age=120, stale-while-revalidate=3600'
       }
     }
   },

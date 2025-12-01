@@ -111,3 +111,7 @@ export function formatMinutesToDaysHoursMinutesObject(totalMinutes: number): {
     minutes,
   };
 }
+
+export function formatToOneDecimal(num: number) {
+    return (parseFloat(num.toFixed(1)));
+}

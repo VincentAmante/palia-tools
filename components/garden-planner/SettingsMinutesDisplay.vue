@@ -15,7 +15,7 @@ const timeFormatted = computed(() => {
 </script>
 
 <template>
-  <span class="text-xs text-palia-blue-dark">
+  <span class="text-xs text-palia-blue-dark whitespace-nowrap dark:text-accent">
     <font-awesome-icon :icon="['fas', 'stopwatch']" />
     <span class="pl-1">
       <template v-if="timeFormatted.days > 0">{{ timeFormatted.days.toLocaleString() }}Days

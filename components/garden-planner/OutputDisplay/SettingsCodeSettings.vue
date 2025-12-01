@@ -56,7 +56,7 @@ function resetToDefaultSettings() {
 
 </script>
 <template>
-  <section class="relative h-full isolate flex flex-col gap-1 py-2 ">
+  <section class="relative h-full isolate flex flex-col gap-1">
     <div class="flex flex-col gap-1 bg-accent p-2 rounded-md dark:bg-palia-blue">
       <div class=" text-misc flex flex-col gap-1 dark:text-accent">
         <p class="font-bold text-palia-blue dark:text-accent">Default Setting Preset</p>
