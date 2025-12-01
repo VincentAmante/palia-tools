@@ -92,7 +92,7 @@ const totalGold = computed(() => {
       <span class="flex items-center align-middle gap-0.5"
         v-if="uiSettings.settings.showAsProcessedItems && uiSettings.settings.showAsProcessedGold && totalGold > 0">&mdash;
         <img width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-          alt="Gold" format="webp">{{ totalGold }}
+          alt="Gold" format="webp">{{ Math.round(totalGold).toLocaleString() }}
       </span>
       <span class="flex items-center align-middle gap-0.5"
         v-if="uiSettings.settings.showAsProcessedItems && uiSettings.settings.showAsProcessedTime && itemsFromHarvest.distributedTimeMinutes > 0">&mdash;

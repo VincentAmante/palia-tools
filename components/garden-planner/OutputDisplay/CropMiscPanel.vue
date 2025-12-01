@@ -371,9 +371,9 @@ const totalGoldGenerated = computed(() => {
                     </tr>
 
                     <tr>
-                        <th class="indent-3">Distributed Time / <span>{{
+                        <th class="indent-3">Average Distributed Time / <span>{{
                             detailedProcessingInfo.cycleData.at(0)!.cycleCrafterData.length >
-                                1 ? 'Cycle' :
+                                1 ? 'Complete Cycles' :
                                 'Harvest' }}</span></th>
                         <td>
                             <SettingsMinutesDisplay
@@ -384,7 +384,6 @@ const totalGoldGenerated = computed(() => {
                     </tr>
 
                     <template v-if="detailedProcessingInfo.cycleData.at(0)!.cycleCrafterData.length > 1">
-
                         <tr>
                             <th class="indent-3">Distributed Process Time (1st harvest)</th>
                             <td>
@@ -420,9 +419,17 @@ const totalGoldGenerated = computed(() => {
 
 
 
-                    <!-- <tr>
-                        <th colspan="2" class="italic">Process Time / Growth Ticks</th>
-                    </tr> -->
+                    <tr>
+                        <th class="indent-3">Distributed Time / Growth Ticks ({{
+                            detailedProcessingInfo.cycleData.at(0)!.cycleCrafterData.length > 1 ? 'Cycle' : 'Harvest'
+                        }})
+                        </th>
+                        <td>
+                            <SettingsMinutesDisplay :minutes="(detailedProcessingInfo.cycleData.at(averageCycleIndex)!.longestProcessMinutes) / (cycleData?.phases.at(-1)?.dayOfHarvest || 1)" />
+                            / {{
+                                detailedProcessingInfo.cycleData.at(0)!.cycleCrafterData.length > 1 ? 'Cycle' : 'Harvest' }}
+                        </td>
+                    </tr>
                     <tr>
                         <th colspan="2" class="">Gold Stats</th>
                     </tr>
