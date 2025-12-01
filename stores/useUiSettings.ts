@@ -9,6 +9,9 @@ interface UISettings {
     showBonusBackground: boolean;
   };
   colorScheme: 'light' | 'dark' | 'system';
+  showAsProcessedItems: boolean;
+  showAsProcessedGold: boolean;
+  showAsProcessedTime: boolean
 }
 
 type UISettingsKey = keyof UISettings
@@ -27,7 +30,9 @@ export const useUiSettings = defineStore('uiSettings', () => {
       showBonusBackground: true,
     },
     colorScheme: 'system',
-
+    showAsProcessedItems: false,
+    showAsProcessedGold: true,
+    showAsProcessedTime: true
   });
 
   const loadInitialised = ref(false);
@@ -35,7 +40,7 @@ export const useUiSettings = defineStore('uiSettings', () => {
   function saveSettings(newSettings: UISettings) {
     settings.value = newSettings;
 
-    console.log('saving settings: ', newSettings)
+    // console.log('saving settings: ', newSettings)
     localStorage.setItem('ui-settings', JSON.stringify(newSettings));
   }
 
