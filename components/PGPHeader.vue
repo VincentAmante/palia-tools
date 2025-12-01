@@ -101,12 +101,12 @@ import AppDivider from './AppDivider.vue'
       <div class="overflow-x-hidden drawer-side">
         <label for="menu" class="drawer-overlay" aria-label="close menu" />
         <ul class="relative h-full gap-2 p-4 menu w-80 bg-base-200">
-          <li class="flex items-end w-full lg:hidden">
+          <!-- <li class="flex items-end w-full lg:hidden">
             <label for="menu-side">
               <font-awesome-icon :icon="['fas', 'x']" class="text-xl" />
               <input id="menu-side" type="checkbox" class="drawer-toggle" aria-label="close menu">
             </label>
-          </li>
+          </li> -->
           <li class="text-lg font-bold normal-case">
             <NuxtLink to="/roadmap" :prefetch="false">
               Roadmap
