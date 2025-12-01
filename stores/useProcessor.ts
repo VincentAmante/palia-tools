@@ -57,26 +57,6 @@ const useProcessor = defineStore('processor', () => {
   })
 
   const preserveJarsCount = computed(() => {
-    // const preserveJarsList = new Map<ICropNameWithGrowthDiff, {
-    //   cropType: CropType
-    //   crafters: number
-    //   isStar: boolean
-    // }>()
-
-    // let newPreserveJarsCount = 0
-    // for (const [cropName, setting] of settingsRef.value.cropSettings) {
-    //   if (setting.processAs === ItemType.Preserve && setting.isActive) {
-    //     newPreserveJarsCount += setting.crafters
-    //     preserveJarsList.set(cropName, {
-    //       cropType: setting.cropType,
-    //       crafters: setting.crafters,
-    //       isStar: setting.isStar,
-    //     })
-    //   }
-    // }
-
-    // return newPreserveJarsCount
-
     return processor.value.preserveJarsCount
   })
 
