@@ -98,17 +98,17 @@ useHead({
                 yield on replant days.
               </p>
               <p class="indent-3">
-                When a crop isn't processed, the output would be affected. When processed, however, the processor was
+                When a crop isn't processed, the output itself wouldn't be affected. When processed, however, the processor was
                 using
                 the average yield to estimate the produce, which would then result in an inaccurate output.
-                The impact in gold output varied based on crop type but are at least noted to be minor, usually ranging
+                The impact in gold output varied based on crop type but are believed to be minor, usually ranging
                 around 1-5% deviation in gold output
                 when testing the layouts I find online.
               </p>
 
               <h5 class="font-bold text-lg">2. Growth Boost</h5>
               <p class="indent-6">
-                The second bug fix was related to the growth boost setting, but is also a replant related bug.
+                The second bug fix was related to the growth boost setting, but is also a replant-cost related bug.
                 The issue was caused by an error in properly handling the ID for crops affected affected by growth
                 boost.
                 This caused yield to be higher than it really is, as crop deductions were not being factored in
@@ -117,8 +117,8 @@ useHead({
             </div>
             <p class="indent-6">
               I only discovered these bugs recently while working on the update. Noting how these bugs were caused, they
-              were most likely present since around the crafter update. So I sincerely apologise for the inconvenience
-              caused.
+              were most likely present since around the crafter update. I sincerely apologise for the inconvenience
+              caused due to not finding these sooner.
               The accuracy of the planner should now be higher than before, but please do report
               any behaviour you find odd.
             </p>
@@ -175,7 +175,7 @@ useHead({
             </div>
             <p class="indent-6">
               These new panels are still open to additions, but they're all information I could think of and easily add
-              without having to heavily add or even modify the current calculations.
+              without large modifications to the current calculations (just found out it had some instability, after all).
               The recent bug fixes were already causing instability for some time, so I'd like to add these as safely as
               possible first.
               Regardless, if you can think of anything you wish to see in these panels, please let me know so I can look
