@@ -1,7 +1,7 @@
 import type CropType from '../../enums/crops'
 import { getCropFromType } from '../../imports'
 import { ItemType, parseCropId } from '../../utils/garden-helpers'
-import type { ICropYield, ICropInfo, ICropName, ICropNameWithGrowthDiff } from '../../utils/garden-helpers'
+import type { ICropYield, ICropInfo, IInventoryItem, ICropName, ICropNameWithGrowthDiff } from '../../utils/garden-helpers'
 
 export interface Item {
   readonly name: string
@@ -167,5 +167,28 @@ export class CropItem implements Item {
     const count = cropYieldInfo.totalWithDeductions
 
     return new CropItem(cropName, ItemType.Crop, image, price, isStar, maxStack, count, parsedCropId.type)
+  }
+
+  static fromInventoryItem(inventoryItem: IInventoryItem): CropItem {
+    // const parsedCropId = parseCropId(inventoryItem.cropType)
+    const cropName = inventoryItem.cropType
+    const crop = getCropFromType(inventoryItem.cropType)
+    if (!crop)
+      throw new Error(`No crop found: ${inventoryItem.cropType}`)
+
+    if (inventoryItem.itemType !== ItemType.Crop 
+      && inventoryItem.itemType !== ItemType.Seed 
+      && inventoryItem.itemType !== ItemType.Preserve) {
+      throw new Error(`Invalid item type for CropItem: ${inventoryItem.itemType}`)
+    }
+
+    const image = inventoryItem.img.src
+    const isStar = inventoryItem.isStar
+    const price = inventoryItem.baseGoldValue
+    const maxStack = 30
+    const count = inventoryItem.count
+
+
+    return new CropItem(cropName, inventoryItem.itemType, image, price, isStar, maxStack, count, crop.type)
   }
 }
