@@ -6,6 +6,12 @@ import type { PropType } from 'vue'
 import { CropItem, type Item } from '~/assets/scripts/garden-planner/classes/items/item'
 import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue'
 import { usePlannerDisplayConfig } from '~/stores/usePlannerDisplayConfig'
+import { Crop } from '~/assets/scripts/garden-planner/imports'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+const harvester = useHarvester()
+const processor = useProcessor()
+const uiSettings = useUiSettings()
 
 const props = defineProps({
   dayHarvest: {
@@ -19,27 +25,63 @@ const props = defineProps({
 
 
 const itemsFromHarvest = computed(() => {
-  const items = [] as Item[]
+  const itemsAsCrops = [] as Item[]
+  const itemsAsProduce = [] as Item[]
+  let totalGold = 0
+  let distributedTimeMinutes = 0
+
   if (!props.dayHarvest)
-    return []
+    return {
+      items: [],
+      totalGold: 0,
+      distributedTimeMinutes: 0
+    }
 
-  for (const [cropId, crop] of props.dayHarvest?.crops) {
-    items.push(CropItem.fromCropYieldAndInfo(cropId, crop))
+  // * time is included so we can improve performance if there was no processing done to begin with
+  const willProcessItems = (uiSettings.settings.showAsProcessedItems && processor.processor.highestCraftingTime > 0)
+
+  if (willProcessItems) {
+    const itemsProcessed = processor.processor.processSingleDay(props.dayHarvest!, processor.settings, harvester.harvester.totalHarvest.cycleData)
+
+    for (const [id, item] of itemsProcessed.inventory) {
+      const inventoryRowItem = CropItem.fromInventoryItem(item)
+      itemsAsProduce.push(inventoryRowItem)
+    }
+
+    totalGold = itemsProcessed.stats.goldGenerated
+    distributedTimeMinutes = itemsProcessed.stats.longestProcessMinutes
+  } else {
+    for (const [cropId, crop] of props.dayHarvest?.crops) {
+      itemsAsCrops.push(CropItem.fromCropYieldAndInfo(cropId, crop))
+    }
   }
 
+  // Prioritise filtered crop
+  const itemsList = (willProcessItems ? itemsAsProduce : itemsAsCrops)
   if (props.cropToFilterFor) {
-    items.sort((a, b) => Number((b.name === props.cropToFilterFor)) - Number((a.name === props.cropToFilterFor)))
+    itemsList.sort((a, b) => Number((b.name === props.cropToFilterFor)) - Number((a.name === props.cropToFilterFor)))
   }
 
-  return items
+  return {
+    items: itemsList,
+    totalGold,
+    distributedTimeMinutes
+  }
 })
 
 const plannerDisplayConfig = usePlannerDisplayConfig()
-// const totalGoldValue = computed(() => {
+const totalGold = computed(() => {
+  if (itemsFromHarvest.value.totalGold > 0) {
+    return itemsFromHarvest.value.totalGold
+  } else {
+    return itemsFromHarvest.value.items.reduce((acc, item) => {
+      return acc + item.totalGoldValue
+    }, 0)
+  }
+})
 
-//   return itemsFromHarvest.value.reduce((acc, item) => {
-//     return acc + item.totalGoldValue
-//   }, 0)
+// const estimatedTime = computed(() => {
+//   return
 // })
 </script>
 
@@ -47,18 +89,31 @@ const plannerDisplayConfig = usePlannerDisplayConfig()
   <section class="pb-1">
     <p class="text-xs text-palia-blue-dark dark:text-primary font-semibold flex gap-2 items-center align-end">Day
       {{ dayHarvest?.day }}
-      <!-- <span class="flex items-center align-middle gap-0.5">
+      <span class="flex items-center align-middle gap-0.5"
+        v-if="uiSettings.settings.showAsProcessedItems && uiSettings.settings.showAsProcessedGold && totalGold > 0">&mdash;
         <img width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
-          alt="Gold" format="webp">{{ totalGoldValue.toLocaleString() }}
-      </span> -->
+          alt="Gold" format="webp">{{ totalGold }}
+      </span>
+      <span class="flex items-center align-middle gap-0.5"
+        v-if="uiSettings.settings.showAsProcessedItems && uiSettings.settings.showAsProcessedTime && itemsFromHarvest.distributedTimeMinutes > 0">&mdash;
+        <font-awesome-icon :icon="['fas', 'stopwatch']" />
+        {{ formatMinutesToDaysHoursMinutes(itemsFromHarvest.distributedTimeMinutes) }}
+      </span>
     </p>
-    <ul
-      class="flex w-full overflow-x-auto max-w-117 gap-1 p-1 scrollbar-h-2 bg-opacity-50 rounded-md bg-misc-dark/20  dark:bg-palia-blue-dark"
-      :class="[plannerDisplayConfig.get === 'display+display' ? 'xl:max-w-138 ' : 'lg:max-w-130 xl:max-w-167 2xl:max-w-170']">
-      <template v-for="item of itemsFromHarvest" :key="item.name">
-        <ItemDisplayAlt class="border-misc border" v-if="item.count !== 0" :img-src="item.image" :img-alt="item.name" :star="item.isStar"
-          :count="item.count" :base-gold-value="item.price" />
-      </template>
-    </ul>
+    <div class="flex join">
+
+      <ul
+        class="flex w-full overflow-x-auto max-w-117 md:max-w-160 lg:max-w-180 gap-1 p-1 scrollbar-h-2 scrollbar-track-accent dark:scrollbar-track-palia-blue-secondary bg-opacity-50 rounded-md rounded-r-none bg-misc-dark/20  dark:bg-palia-blue-dark join-item"
+        :class="[plannerDisplayConfig.get === 'display+display' ? 'xl:max-w-128 ' : 'xl:max-w-160']">
+        <template v-for="item of itemsFromHarvest.items" :key="item.name">
+          <ItemDisplayAlt class="border-misc border" v-if="item.count !== 0" :img-src="item.image" :img-alt="item.name"
+            :star="item.isStar" :count="item.count" :base-gold-value="item.price" />
+        </template>
+      </ul>
+      <button @click="$emit('dayClicked', dayHarvest?.day)"
+        class="btn btn-lg right-0 btn-square bg-misc hover:bg-misc-dark border-misc dark:border-palia-blue dark:hover:bg-palia-blue dark:bg-palia-blue-light rounded-r-md">
+        <FontAwesomeIcon class="text-sm" :icon="['fas', 'search']" />
+      </button>
+    </div>
   </section>
 </template>
