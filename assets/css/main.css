@@ -117,6 +117,7 @@ html:not(.no-transition) * {
 
   /* Weed prevention */
   --color-weed-prevention: oklch(63.35% 0.157 33.73); /* #d86046 */
+  --color-weed-prevention-dark: oklch(0.532 0.1811 33.73); /* #be3312 */
   --color-error: var(--color-weed-prevention);          /* #D86046 */
 
   /* Harvest boost */
