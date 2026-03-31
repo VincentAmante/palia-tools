@@ -1,9 +1,3 @@
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - canvas
-  - esbuild
-  - sharp
-
 overrides:
   happy-dom@<20.0.0: '>=20.0.0'
   happy-dom@<20.8.9: '>=20.8.9'
