@@ -37,7 +37,8 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@pinia/nuxt',
     '@nuxt/devtools',
-    '@nuxt/test-utils/module'
+    '@nuxt/test-utils/module',
+    '@nuxt/eslint',
   ],
 
   build: {

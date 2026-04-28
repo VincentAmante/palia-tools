@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PGPModal from '@/components/PGPModal.vue'
-import domtoimage from 'dom-to-image-more'
+// import domtoimage from 'dom-to-image-more'
 import download from 'downloadjs'
 import uniqid from 'uniqid'
 
@@ -37,22 +37,22 @@ async function saveToImage() {
   await nextTick();
 
 
-  domtoimage.toPng(
-    node, {
-    copyDefaultStyles: false,
-    filter: filter,
-    width: node.clientWidth,
-    height: node.clientHeight
-  },
-  ).then(
-    (dataUrl: string) => {
-      if (download(dataUrl, id)) {
-        useTakingScreenshot().set(false)
-      }
-    },
-  ).finally((err: any) => {
-    isTakingScreenshot.set(false)
-  })
+  // domtoimage.toPng(
+  //   node, {
+  //   copyDefaultStyles: false,
+  //   filter: filter,
+  //   width: node.clientWidth,
+  //   height: node.clientHeight
+  // },
+  // ).then(
+  //   (dataUrl: string) => {
+  //     if (download(dataUrl, id)) {
+  //       useTakingScreenshot().set(false)
+  //     }
+  //   },
+  // ).finally((err: any) => {
+  //   isTakingScreenshot.set(false)
+  // })
 
 }
 
