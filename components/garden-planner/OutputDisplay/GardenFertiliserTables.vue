@@ -253,15 +253,17 @@ const fertilisersIneligibleForPurchase = computed(() => {
         </tr>
         <tr>
             <th class="indent-3">Daily Cost</th>
-            <td class="flex items-center gap-0.5"><img width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp"
-                    class="max-h-[1rem]" :srcset="undefined" alt="Gold" format="webp"> {{
+            <td class="flex items-center gap-0.5"><img
+width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp"
+                    class="max-h-4" :srcset="undefined" alt="Gold" format="webp"> {{
                         formatToOneDecimal(fertiliserSellCostTracker.total.rawCost).toLocaleString() }} </td>
         </tr>
 
         <tr>
             <th class="indent-3">Total Cost ({{ lastGrowthTick }} Growth Ticks)</th>
-            <td class="flex items-center gap-0.5"><img width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp"
-                    class="max-h-[1rem]" :srcset="undefined" alt="Gold" format="webp"> {{
+            <td class="flex items-center gap-0.5"><img
+width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp"
+                    class="max-h-4" :srcset="undefined" alt="Gold" format="webp"> {{
                         formatToOneDecimal(fertiliserSellCostTracker.total.rawCost *
                             lastGrowthTick).toLocaleString() }}</td>
         </tr>
@@ -289,7 +291,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
                         Zeki)</span>
                 </th>
             </tr>
-            <tr v-for="fertiliser in fertilisersEligibleForStorePurchase">
+            <tr v-for="fertiliser in fertilisersEligibleForStorePurchase" :key="`${fertiliser.type}`">
                 <th class="capitalize indent-3">
                     {{ fertiliser.type }}
                 </th>
@@ -297,24 +299,27 @@ const fertilisersIneligibleForPurchase = computed(() => {
             </tr>
             <tr class="border-t dark:border-t-palia-blue-dark">
                 <th class="indent-3">Daily Store Price</th>
-                <td class="flex items-center gap-0.5"><img width="16" height="16"
-                        src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+                <td class="flex items-center gap-0.5"><img 
+                    width="16" height="16"
+                        src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined" alt="Gold"
                         format="webp"> {{
                             formatToOneDecimal(fertiliserShopCostTracker.total.rawCost).toLocaleString() }}</td>
             </tr>
 
             <tr>
                 <th class="indent-3">Total Store Price (Unit)</th>
-                <td class="flex items-center gap-0.5"><img width="16" height="16"
-                        src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+                <td class="flex items-center gap-0.5"><img 
+                    width="16" height="16"
+                        src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined" alt="Gold"
                         format="webp"> {{
                             formatToOneDecimal(fertiliserShopCostTracker.total.rawCost *
                                 lastGrowthTick).toLocaleString() }}</td>
             </tr>
             <tr>
                 <th class="indent-3">Total Store Price (Batch)</th>
-                <td class="flex items-center gap-0.5"><img width="16" height="16"
-                        src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
+                <td class="flex items-center gap-0.5"><img 
+                    width="16" height="16"
+                        src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined" alt="Gold"
                         format="webp"> {{
                             formatToOneDecimal(fertiliserShopCostTracker.total.batchCost).toLocaleString() }}</td>
             </tr>
@@ -329,7 +334,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
                 <th colspan="2">Note: <span class="font-normal"> Usually better to get elsewhere if possible</span>
                 </th>
             </tr>
-            <tr class="border-t-2 " v-for="fertiliser in fertilisersEligibleForGuildPurchase">
+            <tr v-for="fertiliser in fertilisersEligibleForGuildPurchase" :key="`${fertiliser.type}`" class="border-t-2">
                 <th class="capitalize indent-3">
                     {{ fertiliser.type }}
                 </th>
@@ -337,24 +342,27 @@ const fertilisersIneligibleForPurchase = computed(() => {
             </tr>
             <tr class="border-t">
                 <th class="indent-3">Daily Guild Price</th>
-                <td class="flex items-center gap-0.5"><img width="16" height="16"
-                        src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-[1rem]" :srcset="undefined"
+                <td class="flex items-center gap-0.5"><img 
+                    width="16" height="16"
+                        src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-4" :srcset="undefined"
                         alt="Gold" format="webp"> {{
                             formatToOneDecimal(fertiliserGuildCostTracker.total.rawCost).toLocaleString() }}</td>
             </tr>
 
             <tr>
                 <th class="indent-3">Total Guild Price (Unit)</th>
-                <td class="flex items-center gap-0.5"><img width="16" height="16"
-                        src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-[1rem]" :srcset="undefined"
+                <td class="flex items-center gap-0.5"><img 
+                    width="16" height="16"
+                        src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-4" :srcset="undefined"
                         alt="Gold" format="webp">{{
                             formatToOneDecimal(fertiliserGuildCostTracker.total.rawCost *
                                 lastGrowthTick).toLocaleString() }}</td>
             </tr>
             <tr>
                 <th class="indent-3">Total Guild Price (Batch)</th>
-                <td class="flex items-center gap-0.5"><img width="16" height="16"
-                        src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-[1rem]" :srcset="undefined"
+                <td class="flex items-center gap-0.5"><img 
+                    width="16" height="16"
+                        src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-4" :srcset="undefined"
                         alt="Gold" format="webp">{{
                             formatToOneDecimal(fertiliserGuildCostTracker.total.batchCost).toLocaleString() }}</td>
             </tr>
@@ -365,7 +373,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
                 <th colspan="2" class="">Fertilisers ineligible for any purchase
                 </th>
             </tr>
-            <tr v-for="fertiliser in fertilisersIneligibleForPurchase">
+            <tr v-for="fertiliser in fertilisersIneligibleForPurchase" :key="`${fertiliser.type}`">
                 <th class="capitalize indent-3">
                     {{ fertiliser.type }}
                 </th>
@@ -387,13 +395,14 @@ const fertilisersIneligibleForPurchase = computed(() => {
                         fertiliser }} <font-awesome-icon
                             :icon="['fas', getBonusDataByFertiliser(fertiliser as FertiliserType).icon]"
                             :class="getBonusDataByFertiliser(fertiliser as FertiliserType).colour" /> </th>
-                    <td></td>
+                    <td/>
                 </tr>
 
                 <tr>
                     <th class="capitalize indent-3">Daily Cost: By Value</th>
-                    <td class="flex items-center gap-0.5"><img width="16" height="16"
-                            src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                    <td class="flex items-center gap-0.5"><img
+                        width="16" height="16"
+                            src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                             alt="Gold" format="webp"> {{
                                 formatToOneDecimal(fertiliserSellCostTracker.fertilisers[fertiliser as
                                     FertiliserType].rawCost).toLocaleString()
@@ -402,8 +411,9 @@ const fertilisersIneligibleForPurchase = computed(() => {
 
                 <tr>
                     <th class="capitalize indent-3">Total Cost: By Value</th>
-                    <td class="flex items-center gap-0.5"><img width="16" height="16"
-                            src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                    <td class="flex items-center gap-0.5"><img
+                        width="16" height="16"
+                            src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                             alt="Gold" format="webp"> {{
                                 formatToOneDecimal(fertiliserSellCostTracker.fertilisers[fertiliser as
                                     FertiliserType].rawCost * lastGrowthTick).toLocaleString()
@@ -412,16 +422,18 @@ const fertilisersIneligibleForPurchase = computed(() => {
                 <template v-if="fertiliserShopCostTracker.fertilisers[fertiliser as FertiliserType].rawCost !== 0">
                     <tr>
                         <th class="capitalize indent-3">Daily Cost: By Unit (Store)</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                        <td class="flex items-center gap-0.5"><img
+width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                                 alt="Gold" format="webp"> {{
                                     formatToOneDecimal(fertiliserShopCostTracker.fertilisers[fertiliser as
                                         FertiliserType].rawCost).toLocaleString() }}</td>
                     </tr>
                     <tr>
                         <th class="capitalize indent-3">Total Cost: By Unit (Store)</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                        <td class="flex items-center gap-0.5"><img
+width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                                 alt="Gold" format="webp"> {{
                                     formatToOneDecimal(fertiliserShopCostTracker.fertilisers[fertiliser as
                                         FertiliserType].rawCost * lastGrowthTick).toLocaleString() }}</td>
@@ -433,8 +445,9 @@ const fertilisersIneligibleForPurchase = computed(() => {
                     </tr>
                     <tr>
                         <th class="capitalize indent-3">Total Batches Cost (Store)</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                        <td class="flex items-center gap-0.5"><img
+                            width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                                 alt="Gold" format="webp"> {{
                                     formatToOneDecimal(fertiliserShopCostTracker.fertilisers[fertiliser as
                                         FertiliserType].batchCost).toLocaleString() }}</td>
@@ -443,8 +456,9 @@ const fertilisersIneligibleForPurchase = computed(() => {
                 <template v-if="fertiliserGuildCostTracker.fertilisers[fertiliser as FertiliserType].rawCost !== 0">
                     <tr>
                         <th class="capitalize indent-3">Daily Cost: By Unit (Guild)</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-[1rem]"
+                        <td class="flex items-center gap-0.5"><img
+                            width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-4"
                                 :srcset="undefined" alt="Gold" format="webp">{{
                                     formatToOneDecimal(fertiliserGuildCostTracker.fertilisers[fertiliser as
                                         FertiliserType].rawCost).toLocaleString()
@@ -452,8 +466,9 @@ const fertilisersIneligibleForPurchase = computed(() => {
                     </tr>
                     <tr>
                         <th class="capitalize indent-3">Total Cost: By Unit (Guild)</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-[1rem]"
+                        <td class="flex items-center gap-0.5"><img
+                            width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-4"
                                 :srcset="undefined" alt="Gold" format="webp">{{
                                     formatToOneDecimal(fertiliserGuildCostTracker.fertilisers[fertiliser as
                                         FertiliserType].rawCost * lastGrowthTick).toLocaleString()
@@ -467,8 +482,9 @@ const fertilisersIneligibleForPurchase = computed(() => {
                     </tr>
                     <tr>
                         <th class="capitalize indent-3">Total Batches Cost (Guild)</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-[1rem]"
+                        <td class="flex items-center gap-0.5"><img
+                            width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-4"
                                 :srcset="undefined" alt="Gold" format="webp">{{
                                     formatToOneDecimal(fertiliserGuildCostTracker.fertilisers[fertiliser as
                                         FertiliserType].batchCost

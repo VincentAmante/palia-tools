@@ -4,10 +4,10 @@ import type { PropType } from 'vue'
 import { Bonus, Crop, Fertiliser, Tile, getCodeFromCrop } from '@/assets/scripts/garden-planner/imports'
 import { useUiSettings } from '@/stores/useUiSettings'
 
+import { SelectedItemType, useSelectedItem, } from '@/stores/useSelectedItem'
+
 
 const uiSettings = useUiSettings()
-
-import { SelectedItemType, useSelectedItem, type SelectedItem } from '@/stores/useSelectedItem'
 
 const props = defineProps({
   tile: Tile,
@@ -141,45 +141,55 @@ const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcon
     ]" :aria-label="tile?.crop ? `Tile with ${tile.crop.cropTooltip}` : 'Empty Tile'">
     <div v-show="showBonusBackground" class="absolute w-full h-full -z-10" :class="bgColour" />
     <div class="font-bold uppercase select-none lg:text-3xl">
-      <img v-if="(selectedItem.val instanceof Crop && tile?.isHovered)" format="webp" draggable="false"
+      <img
+v-if="(selectedItem.val instanceof Crop && tile?.isHovered)" format="webp" draggable="false"
         class="select-none p-1 max-w-[38px] md:max-w-[36px] 2xl:max-w-[38px] opacity-50 dark:opacity-60" :src="selectedItem.val.image"
         :srcset="undefined" :alt="selectedItem.val.type">
-      <img v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px" format="webp"
+      <img
+v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px" format="webp"
         draggable="false" class="select-none p-1 max-w-[36px] md:max-w-[36px] 2xl:max-w-[38px]" :src="tile?.crop?.image"
         :srcset="undefined" :alt="tile?.crop?.type">
       <div v-else>{{ code as string || 'Empty Tile' }}</div>
     </div>
-    <ul v-show="showBonusIcons"
+    <ul
+v-show="showBonusIcons"
       class="absolute top-0 left-0 m-0 text-[9px] md:text-[0.5rem] xl:py-[1px] flex w-full gap-[0.6px] xl:gap-[1.3px] justify-center ">
       <li class="sr-only">
         Crop Buffs
       </li>
-      <li v-show="bonuses?.includes(Bonus.SpeedIncrease)" :aria-hidden="bonuses?.includes(Bonus.SpeedIncrease)"
+      <li
+v-show="bonuses?.includes(Bonus.SpeedIncrease)" :aria-hidden="bonuses?.includes(Bonus.SpeedIncrease)"
         aria-label="Speed Increase">
         <font-awesome-icon class="text-growth-boost" :icon="['fas', 'forward-fast']" aria-hidden="true" />
       </li>
-      <li v-show="bonuses?.includes(Bonus.HarvestIncrease)" :aria-hidden="bonuses?.includes(Bonus.HarvestIncrease)"
+      <li
+v-show="bonuses?.includes(Bonus.HarvestIncrease)" :aria-hidden="bonuses?.includes(Bonus.HarvestIncrease)"
         aria-label="Harvest Increase">
         <font-awesome-icon class="text-harvest-boost-dark dark:text-harvest-boost" :icon="['fas', 'wheat-awn']" aria-hidden="true" />
       </li>
-      <li v-show="bonuses?.includes(Bonus.QualityIncrease)" :aria-hidden="bonuses?.includes(Bonus.QualityIncrease)"
+      <li
+v-show="bonuses?.includes(Bonus.QualityIncrease)" :aria-hidden="bonuses?.includes(Bonus.QualityIncrease)"
         aria-label="Quality Increase">
         <font-awesome-icon class="text-quality-increase-dark dark:text-quality-increase" :icon="['fas', 'star']" aria-hidden="true" />
       </li>
-      <li v-show="bonuses?.includes(Bonus.WaterRetain)" :aria-hidden="bonuses?.includes(Bonus.WaterRetain)"
+      <li
+v-show="bonuses?.includes(Bonus.WaterRetain)" :aria-hidden="bonuses?.includes(Bonus.WaterRetain)"
         aria-label="Water Retain">
         <font-awesome-icon class="text-water-retain" :icon="['fas', 'droplet']" aria-hidden="true" />
       </li>
-      <li v-show="bonuses?.includes(Bonus.WeedPrevention)" :aria-hidden="bonuses?.includes(Bonus.WeedPrevention)"
+      <li
+v-show="bonuses?.includes(Bonus.WeedPrevention)" :aria-hidden="bonuses?.includes(Bonus.WeedPrevention)"
         aria-label="Weed Prevention">
         <font-awesome-icon class="text-weed-prevention" :icon="['fas', 'shield']" aria-hidden="true" />
       </li>
     </ul>
     <div class="absolute bottom-0 right-0 p-[2px]">
-      <img v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)" :src="selectedItem.val.image"
+      <img
+v-if="(selectedItem.val instanceof Fertiliser && tile?.isHovered)" :src="selectedItem.val.image"
         draggable="false" class="select-none max-w-[16px] opacity-50 dark:opacity-80" :srcset="undefined"
         :alt="selectedItem.val.effect">
-      <img v-else-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0" format="webp" draggable="false"
+      <img
+v-else-if="tile?.fertiliser?.image && tile.fertiliser.image.length > 0" format="webp" draggable="false"
         class="select-none max-w-[16px]" :src="tile?.fertiliser?.image" :srcset="undefined"
         :alt="tile?.fertiliser?.effect">
     </div>

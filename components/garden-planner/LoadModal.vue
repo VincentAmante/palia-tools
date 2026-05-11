@@ -63,15 +63,17 @@ async function paste() {
 </script>
 
 <template>
-  <PGPModal ref="modal" useFullHeight>
+  <PGPModal ref="modal" use-full-height>
     <template #header>
       Load Layout
     </template>
     <template #body>
       <div role="tablist" class="tabs tabs-box w-fit">
-        <a role="tab" class="px-2 tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
+        <a
+role="tab" class="px-2 tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
           @click="activeTab = 'clipboard-tab'">From Clipboard</a>
-        <a role="tab" class="px-2 tab" :class="{ 'tab-active': activeTab === 'browser-tab' }"
+        <a
+role="tab" class="px-2 tab" :class="{ 'tab-active': activeTab === 'browser-tab' }"
           @click="activeTab = 'browser-tab'">From Browser</a>
       </div>
       <div v-if="activeTab === 'clipboard-tab'" id="clipboard-tab" class="flex flex-col gap-2">
@@ -99,7 +101,8 @@ async function paste() {
               Saved Layouts
             </p>
             <ul class="flex flex-col w-full gap-2 p-2 overflow-y-auto rounded-xs bg-base-100 max-h-90 md:max-h-[496px]">
-              <li v-for="(code, index) in filteredSavedGardenCodes" :key="index"
+              <li
+v-for="(code, index) in filteredSavedGardenCodes" :key="index"
                 class="flex items-start justify-between w-full pb-2 border-b last:border-b-0 border-b-accent/20">
                 <div class="max-w-2/3 md:max-w-3/4">
                   <p>{{ code.title }}</p>
@@ -111,7 +114,8 @@ async function paste() {
                   <button class="btn btn-xs btn-circle btn-ghost" @click="loadSavedCode(code.code)">
                     <font-awesome-icon class="text-sm" icon="download" />
                   </button>
-                  <button class="btn btn-xs btn-circle btn-ghost" :class="{ 'btn-disabled': code.code === text }"
+                  <button
+class="btn btn-xs btn-circle btn-ghost" :class="{ 'btn-disabled': code.code === text }"
                     @click="copy(code.code)">
                     <font-awesome-icon class="text-sm" icon="copy" />
                   </button>

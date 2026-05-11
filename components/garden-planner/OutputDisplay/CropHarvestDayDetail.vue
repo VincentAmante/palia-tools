@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ICropNameWithGrowthDiff, ItemType, parseCropId, type IDayHarvest    } from '~/assets/scripts/garden-planner/utils/garden-helpers';
+import { type ICropNameWithGrowthDiff, ItemType, parseCropId, type IDayHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers';
 
 import { CropItem, type Item } from '~/assets/scripts/garden-planner/classes/items/item'
 import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue'
@@ -38,11 +38,11 @@ const items = computed(() => {
     const itemsList = [] as Item[]
 
     if (uiSettings.settings.showAsProcessedItems) {
-        for (const [id, item] of itemsProcessed.value.inventory) {
+        for (const [, item] of itemsProcessed.value.inventory) {
             itemsList.push(CropItem.fromInventoryItem(item))
         }
     } else {
-        for (const [cropId, crop] of props.dayHarvest?.crops) {
+        for (const [cropId, crop] of props.dayHarvest.crops) {
             itemsList.push(CropItem.fromCropYieldAndInfo(cropId, crop))
         }
     }
@@ -139,7 +139,7 @@ class="btn btn-xs btn-circle btn-ghost" aria-label="Previous Day" :disabled="!pr
 class="btn btn-xs btn-circle btn-ghost" :disabled="!nextAvailable" aria-label="Previous Day"
                     @click="$emit('next')"><font-awesome-icon :icon="['fas', 'chevron-right']" class="" /></button>
             </div>
-            <div class="bg-primary invisible"/>
+            <div class="bg-primary invisible" />
         </nav>
         <div v-if="activeTab === 'default'" class="bg-secondary dark:bg-palia-blue-dark p-2 rounded-md">
             <section>
@@ -162,7 +162,8 @@ v-if="item.count !== 0" class="border-misc border" :img-src="item.image"
 
                     <button
 aria-label="See More" class="btn btn-xs w-fit"
-                        @click="activeTab = 'cropProcessTimes'"><font-awesome-icon :icon="['fas', 'eye']" />View by crop</button>
+                        @click="activeTab = 'cropProcessTimes'"><font-awesome-icon :icon="['fas', 'eye']" />View by
+                        crop</button>
                 </div>
                 <!-- <p v-if="!itemsProcessed.stats.canFinishBeforeNextHarvest"
                 class="text-neutral font-semibold text-xs dark:text-warning">
@@ -175,7 +176,7 @@ aria-label="See More" class="btn btn-xs w-fit"
                             "Potential Gold Value" : 'Gold Value') }}</p>
                         <p class="font-bold text-base gap-0.5"> <img
 width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem] inline"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4 inline"
                                 :srcset="undefined" alt="Gold" format="webp"> {{
                                     Math.round(totalGold).toLocaleString()
                                 }}</p>
@@ -192,7 +193,7 @@ width="16" height="16"
                         <p class=" font-semibold text-xs">Gold Generated / Hour Processing</p>
                         <p class="font-bold text-base gap-0.5"> <img
 width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem] inline"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4 inline"
                                 :srcset="undefined" alt="Gold" format="webp"> {{
                                     Math.round((itemsProcessed.stats.goldGenerated /
                                         (itemsProcessed.stats.longestProcessMinutes / 60)) || 0).toLocaleString() }}</p>
@@ -263,15 +264,16 @@ v-if="item.count !== 0" class="border-misc border" :img-src="item.image"
                             <th class="whitespace-break-spaces">Gold / Hour Processing</th>
                         </tr>
                         <tr class="dark:bg-palia-blue-dark text-xxs h-fit">
-                            <th class="py-0"/>
-                            <th class="py-0 whitespace-break-spaces"/>
+                            <th class="py-0" />
+                            <th class="py-0 whitespace-break-spaces" />
                             <th class="py-0 pb-0.5 whitespace-break-spaces">No Idle Time</th>
-                            <th class="py-0 whitespace-break-spaces"/>
+                            <th class="py-0 whitespace-break-spaces" />
                         </tr>
                     </thead>
                     <tbody>
                         <tr
-v-for="[cropId, processingInfo] in itemsProcessed.output.detailedProcessingInfo"
+                        v-for="[cropId, processingInfo] in itemsProcessed.output.detailedProcessingInfo"
+                        :key="cropId"
                             class=" not-last:border-b border-misc dark:border-water-retain [&>td]:nth-[2n]:bg-secondary [&>td]:nth-[2n]:dark:bg-palia-blue">
 
                             <td class="capitalize">
@@ -291,7 +293,7 @@ v-if="parseCropId(cropId).hasGrowthBoost"
                                 <p>
                                     <img
 width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp"
-                                        class="max-h-[1rem] inline" :srcset="undefined" alt="Gold" format="webp">
+                                        class="max-h-4 inline" :srcset="undefined" alt="Gold" format="webp">
                                     {{ formatToOneDecimal(processingInfo.totalGoldGenerated).toLocaleString() }}
                                 </p>
                             </td>
@@ -310,7 +312,7 @@ width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp"
 
                                     <img
 width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp"
-                                        class="max-h-[1rem] inline" :srcset="undefined" alt="Gold" format="webp">
+                                        class="max-h-4 inline" :srcset="undefined" alt="Gold" format="webp">
                                     {{ formatToOneDecimal((processingInfo.totalGoldGenerated /
                                         (processingInfo.totalProcessMinutes /
                                             60))).toLocaleString() }}

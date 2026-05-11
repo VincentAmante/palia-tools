@@ -83,6 +83,7 @@ function openUISettingsModal() {
 
 const exportModal = ref<InstanceType<typeof ExportModal> | null>(null)
 function openExportModal() {
+  saveCode.set(garden.saveLayout(settingsCode.code))
   exportModal.value?.openModal()
 }
 
@@ -154,7 +155,9 @@ onMounted(() => {
       <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
       <UISettingsModal ref="uiSettingsModal" />
       <LayoutCreator ref="createLayoutDialog" @create-new-layout="(code: string) => loadLayoutFromCode(code, true)" />
-      <ExportModal ref="exportModal" />
+      <ClientOnly>
+        <ExportModal ref="exportModal" />
+      </ClientOnly>
     </Teleport>
   </section>
 </template>

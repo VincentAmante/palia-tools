@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import PGPModal from '@/components/PGPModal.vue'
-// import domtoimage from 'dom-to-image-more'
+import domtoimage from 'dom-to-image-more'
 import download from 'downloadjs'
 import uniqid from 'uniqid'
+
 
 
 const isTakingScreenshot = useTakingScreenshot()
@@ -37,22 +38,22 @@ async function saveToImage() {
   await nextTick();
 
 
-  // domtoimage.toPng(
-  //   node, {
-  //   copyDefaultStyles: false,
-  //   filter: filter,
-  //   width: node.clientWidth,
-  //   height: node.clientHeight
-  // },
-  // ).then(
-  //   (dataUrl: string) => {
-  //     if (download(dataUrl, id)) {
-  //       useTakingScreenshot().set(false)
-  //     }
-  //   },
-  // ).finally((err: any) => {
-  //   isTakingScreenshot.set(false)
-  // })
+  domtoimage.toPng(
+    node, {
+    copyDefaultStyles: false,
+    filter: filter,
+    width: node.clientWidth,
+    height: node.clientHeight
+  },
+  ).then(
+    (dataUrl: string) => {
+      if (download(dataUrl, id)) {
+        useTakingScreenshot().set(false)
+      }
+    },
+  ).finally((err: unknown) => {
+    isTakingScreenshot.set(false)
+  })
 
 }
 
@@ -111,7 +112,7 @@ watch(useTakingScreenshot(), () => {
           </p>
           <div class="card-actions">
             <button class="btn normal-case btn-outline" @click="async () => await saveToImage()">
-              <span v-if="isTakingScreenshot.get" class="loading loading-spinner loading-sm"></span>
+              <span v-if="isTakingScreenshot.get" class="loading loading-spinner loading-sm" />
               Export as Image
             </button>
           </div>

@@ -43,13 +43,15 @@ useHead({
             </li>
 
             <li class="indent-6">
-              <span class="italic">Fix: Replant Cost (Enabled by default) —</span> Gold output is slightly off when using replant cost & crafters at the same time.
+              <span class="italic">Fix: Replant Cost (Enabled by default) —</span> Gold output is slightly off when
+              using replant cost & crafters at the same time.
               (Estimated Impact: Minor deviation)
             </li>
 
             <li class="indent-6">
               <span class="italic">Fix: Growth Boost (Disabled by default) —</span> A croptype with both tiles
-              affected & unaffected by growth boost would have overestimated harvests. (Estimated Impact: Medium to Major
+              affected & unaffected by growth boost would have overestimated harvests. (Estimated Impact: Medium to
+              Major
               deviation)
             </li>
             <li class="pt-2">
@@ -85,7 +87,7 @@ useHead({
             <p>
               Before going into that, I'll first dive into some bug fixes that were made.
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">Bug Fixes</h4>
             <div class="p-1 pl-3">
 
@@ -98,7 +100,8 @@ useHead({
                 yield on replant days.
               </p>
               <p class="indent-3">
-                When a crop isn't processed, the output itself wouldn't be affected. When processed, however, the processor was
+                When a crop isn't processed, the output itself wouldn't be affected. When processed, however, the
+                processor was
                 using
                 the average yield to estimate the produce, which would then result in an inaccurate output.
                 The impact in gold output varied based on crop type but are believed to be minor, usually ranging
@@ -122,7 +125,7 @@ useHead({
               The accuracy of the planner should now be higher than before, but please do report
               any behaviour you find odd.
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">New Info Displays</h4>
             <p class="indent-6">
               Moving on, a few information panels have been added or improved to provide all sorts of details.
@@ -175,13 +178,14 @@ useHead({
             </div>
             <p class="indent-6">
               These new panels are still open to additions, but they're all information I could think of and easily add
-              without large modifications to the current calculations (just found out it had some instability, after all).
+              without large modifications to the current calculations (just found out it had some instability, after
+              all).
               The recent bug fixes were already causing instability for some time, so I'd like to add these as safely as
               possible first.
               Regardless, if you can think of anything you wish to see in these panels, please let me know so I can look
               into it!
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">Next Update & Conclusion</h4>
             <p class="indent-6">
               The upcoming update is still undecided, but it's a toss-up between adding worm farms, expanding crafter
@@ -275,7 +279,7 @@ useHead({
               costs. Also, you can now create a new layout in a new tab for convenience.
             </p>
 
-            <div class="divider"></div>
+            <div class="divider" />
             <p class="indent-6">
               As per usual, I may have missed some things with these changes and bugs could appear. Please
               report them or any other feedback on the Github or on my Discord.
@@ -337,10 +341,10 @@ useHead({
           <template #default>
             <h4 class="font-bold text-xl">Harvest Fix</h4>
             <p class="indent-6">
-              Highly embarassing bug.. A '<' to compare the timings of a process time and the process time was reversed.
-                The UI's check was also inversed, meaning it would correctly display that a harvest won't be processed
-                in time because the warning would be displayed if the processor would process in time. Another thanks to
-                Ren for pointing this out! </p>
+              Highly embarassing bug.. A comparison of the timings of a process time was reversed.
+              The UI's check was also inversed, meaning it would correctly display that a harvest won't be processed
+              in time because the warning would be displayed if the processor would process in time. Another thanks to
+              Ren for pointing this out! </p>
           </template>
         </ChangelogItem>
         <ChangelogItem>
@@ -381,7 +385,7 @@ useHead({
               alert to any more inaccuracies, but
               do keep in mind that the planner's output calcs may not reflect the player experience 1:1.
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">Other Changes</h4>
             <p class="indent-6">
               The harvest-by-day has been re-implemented, though lacking produce conversions. This helps at least with
@@ -502,7 +506,7 @@ useHead({
               I shan't yap too much about where I've been, so I'll just move on to the changes at hand. Apologies for
               the wait
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">New Crafter Timing Support & Saves</h4>
             <p class="indent-6">
               I've now added Crafter Time Support, and with it comes the ability to save and share setting
@@ -526,7 +530,7 @@ useHead({
               share.
               I've also added browser-saving! So now you can quickly fetch and share them from within the website
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">Harvester Improvements</h4>
             <p class="indent-6">
               While the processor was obviously going to be re-made, the harvester also got a massive change!
@@ -543,7 +547,7 @@ useHead({
               replant costs.
               I'll be working on this after bug fixes, re-implementations, and new crops.
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">QoL Changes</h4>
             <p class="indent-6">
               Outside of that, there should now be some new features to make things easier for your garden planning.
@@ -566,7 +570,7 @@ useHead({
               option to clone it!
               Feel free to leave the garden for a while while you mess with the configurations
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">Closing Words</h4>
             <p class="indent-6">
               What a long post! Anyway, I'll be testing these changes as they come and will be polishing things up.

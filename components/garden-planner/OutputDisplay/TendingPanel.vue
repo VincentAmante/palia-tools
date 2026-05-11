@@ -80,11 +80,13 @@ const harvestChart = computed(() => {
         <h2 class="font-bold">Tending Activity<span class="font-normal text-xs"> &mdash; How often you have to check on
                 your
                 crops</span></h2>
-        <section class="bg-accent p-1 rounded-sm  border border-misc dark:bg-palia-blue-dark dark:border-water-retain"
-            v-if="(cropsToWaterDaily > 0) || (cropsToCheckForWeedDaily > 0)">
+        <section
+            v-if="(cropsToWaterDaily > 0) || (cropsToCheckForWeedDaily > 0)"
+            class="bg-accent p-1 rounded-sm  border border-misc dark:bg-palia-blue-dark dark:border-water-retain">
             <p class="text-sm font-bold pb-1">Daily Maintenance</p>
             <ul class="flex gap-1">
-                <li v-if="cropsToWaterDaily > 0"
+                <li
+v-if="cropsToWaterDaily > 0"
                     class="p-2 bg-accent/40 border-water-retain border px-3 rounded-sm w-fit dark:bg-palia-blue-light/40">
                     <p class="">
                         <FontAwesomeIcon :icon="['fas', 'droplet']" class="text-water-retain w-4 pr-1" />
@@ -93,7 +95,8 @@ const harvestChart = computed(() => {
                     </p>
                 </li>
 
-                <li v-if="cropsToCheckForWeedDaily > 0"
+                <li
+v-if="cropsToCheckForWeedDaily > 0"
                     class="p-2 bg-accent/40 border-weed-prevention border px-3 rounded-sm w-fit dark:bg-palia-blue-light/40">
                     <p class="">
                         <FontAwesomeIcon :icon="['fas', 'eye']" class="text-weed-prevention w-4 pr-1" /><span
@@ -105,7 +108,8 @@ const harvestChart = computed(() => {
                 </li>
             </ul>
         </section>
-        <section v-if="harvestChart.length > 0"
+        <section
+            v-if="harvestChart.length > 0"
             class="bg-accent p-2 gap-0.5 flex flex-col rounded-sm border border-misc dark:bg-palia-blue-dark dark:border-water-retain">
             <h3 class="font-semibold">Harvest Chart <span class="font-normal text-xs"> &mdash; Palian days spent
                     harvesting</span></h3>
@@ -121,11 +125,12 @@ const harvestChart = computed(() => {
             </p>
             <div
                 class="flex flex-wrap max-h-50 overflow-y-auto border border-collapse border-misc rounded-sm p-1 pb-2 bg-misc/20 dark:bg-palia-blue-dark/60 dark:border-water-retain/60">
-                <template v-for="day in harvestChart">
+                <template v-for="day in harvestChart" :key="day.day">
                     <div
                         :class="`first:rounded-tl-sm last:rounded-br-sm w-6 h-6 border border-collapse -mr-px -mb-px relative border-harvest-boost-dark flex items-center justify-center ${day.bgStyle}`">
                         <template v-if="day.isHarvestDay">
-                            <FontAwesomeIcon :icon="['fas', 'wheat-awn']" :class="`${day.textStyle} w-4`"
+                            <FontAwesomeIcon
+:icon="['fas', 'wheat-awn']" :class="`${day.textStyle} w-4`"
                                 :title="`Day ${day.day} - Harvest Day`" />
                         </template>
                     </div>
@@ -154,7 +159,8 @@ const harvestChart = computed(() => {
                 </li>
             </ul>
         </section>
-        <section v-if="((cropsToWaterDaily <= 0) && (cropsToCheckForWeedDaily <= 0) && !(harvestChart.length > 0))"
+        <section
+        v-if="((cropsToWaterDaily <= 0) && (cropsToCheckForWeedDaily <= 0) && !(harvestChart.length > 0))"
             class="bg-accent p-4 rounded-sm  dark:bg-palia-blue-dark ">
             <p class="text-misc font-semibold dark:text-accent/50">Nothing to report</p>
         </section>

@@ -66,22 +66,27 @@ const dragHandler = useDragAndDrop()
 </script>
 
 <template>
-  <button v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)" draggable="true"
+  <button
+v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)" draggable="true"
     class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue dark:border-palia-blue-dark"
     :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''" :name="`select ${crop.type}`"
-    @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)" @dragend="(e: DragEvent) => dragHandler.stopDrag()"
-    :aria-label="`Crop ${crop.type} ${count > 0 ? `, ${count}` : ''}`">
-    <font-awesome-icon v-if="parseCropId(cropId).hasGrowthBoost"
+    :aria-label="`Crop ${crop.type} ${count > 0 ? `, ${count}` : ''}`" @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)"
+    @dragend="(e: DragEvent) => dragHandler.stopDrag()">
+    <font-awesome-icon
+v-if="parseCropId(cropId).hasGrowthBoost"
       class="absolute bottom-0 right-0 p-1 text-xs leading-0 stroke-black text-growth-boost"
       :icon="['fas', 'forward-fast']" />
-    <font-awesome-icon v-if="parseCropId(cropId).isStar"
+    <font-awesome-icon
+v-if="parseCropId(cropId).isStar"
       class="absolute bottom-0 left-0 p-1 text-xs leading-0 stroke-black  text-quality-increase-dark"
       :icon="['fas', 'star']" />
-    <p v-if="count > 0"
+    <p
+v-if="count > 0"
       class="absolute top-0 right-0 pt-0.25 pr-0.5 text-xs leading-none font-bold text-palia-blue dark:text-accent">
       {{ count }}
     </p>
-    <img v-if="(crop && crop.image != null && crop.image !== '')" class="absolute -z-10 max-w-[26px] " draggable="false"
+    <img
+v-if="(crop && crop.image != null && crop.image !== '')" class="absolute -z-10 max-w-[26px] " draggable="false"
       :src="crop.cropImage" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'" :alt="crop.type">
     <font-awesome-icon v-else class="absolute -z-10 max-w-[45px] text-warning text-3xl " :icon="['fas', 'eraser']" />
   </button>

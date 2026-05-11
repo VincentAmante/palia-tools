@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
-import { type IDetailedProcessingInfo } from '~/assets/scripts/garden-planner/classes/processor';
+import type { IDetailedProcessingInfo } from '~/assets/scripts/garden-planner/classes/processor';
 
 const props = defineProps({
     selectedCropProcessingData: {
@@ -17,7 +17,7 @@ const cropDetailCycleIndex = ref(0);
 const cropDetailCyclePhaseIndex = ref(0);
 
 watchEffect(() => {
-    if (props.selectedCropProcessingData!.cycleData[cropDetailCycleIndex.value].cycleCrafterData.length <= cropDetailCyclePhaseIndex.value) {
+    if (props.selectedCropProcessingData!.cycleData[cropDetailCycleIndex.value]?.cycleCrafterData.length <= cropDetailCyclePhaseIndex.value) {
         cropDetailCycleIndex.value = 0;
         cropDetailCyclePhaseIndex.value = 0;
     }
@@ -50,10 +50,10 @@ watchEffect(() => {
                 <h3 class="text-sm font-bold">Harvest</h3>
                 <div class="join">
                     <button
-                        v-for="phaseIndex in selectedCropProcessingData!.cycleData[cropDetailCycleIndex].cycleCrafterData.length"
-                        @click="cropDetailCyclePhaseIndex = (phaseIndex - 1)" class="join-item btn btn-soft btn-xs px-4"
+                        v-for="phaseIndex in selectedCropProcessingData!.cycleData[cropDetailCycleIndex]?.cycleCrafterData.length"
+                        :key="phaseIndex" class="join-item btn btn-soft btn-xs px-4"
                         :class="{ 'btn-active': (phaseIndex - 1) === cropDetailCyclePhaseIndex }"
-                        :aria-label="`Phase ${phaseIndex}`">
+                        :aria-label="`Phase ${phaseIndex}`" @click="cropDetailCyclePhaseIndex = (phaseIndex - 1)">
                         {{ phaseIndex }}</button>
                 </div>
             </section>
@@ -80,9 +80,10 @@ watchEffect(() => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(crafter, crafterIndex) in selectedCropProcessingData.cycleData[cropDetailCycleIndex].cycleCrafterData[cropDetailCyclePhaseIndex].crafterData"
-                        class="bg-accent border-misc dark:border-water-retain dark:bg-palia-blue border last:rounded-b-lg"
-                        :key="`${cropDetailCycleIndex}-${selectedCropDetail}-${crafterIndex}`">
+                    <tr
+v-for="(crafter, crafterIndex) in selectedCropProcessingData.cycleData[cropDetailCycleIndex]?.cycleCrafterData[cropDetailCyclePhaseIndex]?.crafterData"
+                        :key="`${cropDetailCycleIndex}-${selectedCropDetail}-${crafterIndex}`"
+                        class="bg-accent border-misc dark:border-water-retain dark:bg-palia-blue border last:rounded-b-lg">
                         <th class="text-sm">
                             {{ crafterIndex + 1 }}
                         </th>
@@ -100,7 +101,7 @@ watchEffect(() => {
                                 <span class="italic">
                                     &gt;{{ formatMinutesToHoursMinutes(crafter.excessTimeMinutes) }}</span>
                             </template>
-                            <template v-else="crafter.idleTimeMinutes > 0">
+                            <template v-else-if="crafter.idleTimeMinutes > 0">
                                 +{{ formatMinutesToHoursMinutes(crafter.idleTimeMinutes) }}
                             </template>
                         </td>

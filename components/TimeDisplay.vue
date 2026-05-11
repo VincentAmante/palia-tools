@@ -63,10 +63,12 @@ onMounted(() => {
 <template>
   <div class="gap-2 px-4">
     <div class="flex flex-col items-center justify-center w-full px-3 py-2 rounded-md text-accent md:py-0">
-      <p class="text-3xl"
+      <p
+class="text-3xl"
         :class="{ 'text-harvest-boost': (hourFormatted === 6 && minuteFormatted === '00' && meridiem === 'AM') }">
         <span class="countdown">
-          <span class="translate-x-1" :style="`--value:${hourFormatted};`" aria-live="polite"
+          <span
+class="translate-x-1" :style="`--value:${hourFormatted};`" aria-live="polite"
             :aria-label="`${hourFormatted}`">{{
               hourFormatted }}</span>
           :

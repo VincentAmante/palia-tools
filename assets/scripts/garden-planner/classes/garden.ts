@@ -1,5 +1,5 @@
 import Direction from '../enums/direction'
-import Bonus from '../enums/bonus'
+import type Bonus from '../enums/bonus'
 import CropType from '../enums/crops'
 import CropCode from '../enums/cropCode'
 import CropSize from '../enums/crop-size'
@@ -9,11 +9,10 @@ import { parseSave, encodeSettings, decodeSettings } from '../save-handler'
 import FertiliserType from '../enums/fertiliser'
 import FertiliserCode from '../enums/fertilisercode'
 import { getCodeFromFertiliser, getFertiliserFromCode } from '../fertiliserList'
-import type { CalculateValueOptions, ICalculateValueResult, ICalculateYieldOptions, ICropValue, IDayResult, IHarvestInfo, ISimulateYieldResult, TUniqueTiles } from '../utils/garden-helpers'
+import type { CalculateValueOptions, ICalculateValueResult, ICropValue, IDayResult, ISimulateYieldResult, TUniqueTiles } from '../utils/garden-helpers'
 import { getCropMap, getCropValueMap } from '../utils/garden-helpers'
 import CropTiles from './cropTiles'
-import type Harvester from './harvester'
-import { type IHarvesterOptions } from './harvester'
+import type { IHarvesterOptions } from './harvester'
 import type { ProcessorSettings } from './processor'
 import { LATEST_VERSION } from '../types/version'
 
@@ -38,7 +37,7 @@ class Garden {
     for (let i = 0; i < defaultRows; i++) {
       this._layout[i] = []
       for (let j = 0; j < defaultColumns; j++)
-        this._layout[i][j] = new Plot(true)
+        this._layout[i]![j] = new Plot(true)
     }
 
     this.loadLayout(
@@ -78,31 +77,41 @@ class Garden {
 
     this._layout = []
 
+
     const dimensions = dimensionInfo.split('-').splice(1)
+
     const rows = dimensions.length
-    const columns = dimensions[0].length
+    const columns = dimensions[0]!.length
 
     for (let i = 0; i < rows; i++) {
       this._layout[i] = []
       for (let j = 0; j < columns; j++)
-        this._layout[i][j] = new Plot()
+        this._layout[i]![j] = new Plot()
     }
 
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
-        this._layout[i][j].isActive = dimensions[i][j] === '1'
+        const currentPlot = this._layout[i]?.[j];
+        const currentPlotDimensions = dimensions[i]?.[j];
+
+        if (!currentPlot || !currentPlotDimensions){
+          console.error('PLOT/DIMENSIONS ERROR FOUND')
+          continue
+        }
+
+        currentPlot.isActive = currentPlotDimensions === '1'
         // set adjacent plots
         if (i > 0)
-          this._layout[i][j].setPlotAdjacent(Direction.North, this._layout[i - 1][j])
+          currentPlot.setPlotAdjacent(Direction.North, this._layout[i - 1]?.[j])
 
         if (i < rows - 1)
-          this._layout[i][j].setPlotAdjacent(Direction.South, this._layout[i + 1][j])
+          currentPlot.setPlotAdjacent(Direction.South, this._layout[i + 1]?.[j])
 
         if (j > 0)
-          this._layout[i][j].setPlotAdjacent(Direction.West, this._layout[i][j - 1])
+          currentPlot.setPlotAdjacent(Direction.West, this._layout[i]?.[j - 1])
 
         if (j < columns - 1)
-          this._layout[i][j].setPlotAdjacent(Direction.East, this._layout[i][j + 1])
+          currentPlot.setPlotAdjacent(Direction.East, this._layout[i]?.[j + 1])
       }
     }
 
@@ -112,12 +121,13 @@ class Garden {
     for (const plot of this._layout.flat()) {
       if (plot.isActive) {
         const regex = /[A-Z](?:\.[A-Z]|[^A-Z])*/g
-        const cropCodes = crops[cropIndex].match(regex)
+        const cropCodes = crops[cropIndex]?.match(regex)
         if (cropCodes == null)
           throw new Error('Invalid crop code')
 
         for (let i = 0; i < plot.tiles.length; i++) {
-          for (let j = 0; j < plot.tiles[i].length; j++) {
+          for (let j = 0; j < plot.tiles[i]!.length; j++) {
+            // eslint-disable-next-line prefer-const
             let [cropCode, fertiliserCode] = cropCodes.shift()?.split('.') as [CropCode, FertiliserCode]
             fertiliserCode = fertiliserCode ?? null
 
@@ -234,11 +244,11 @@ class Garden {
         switch (tile.crop?.size) {
           case CropSize.Tree:
             (treeTiles[tile.id] = treeTiles[tile.id] || []).push(tile)
-            if (treeTiles[tile.id].length === 9) {
-              const bonusesReceived = treeTiles[tile.id].flatMap(tile => tile.bonusesReceived)
+            if (treeTiles[tile.id]?.length === 9) {
+              const bonusesReceived = treeTiles[tile.id]!.flatMap(tile => tile.bonusesReceived)
               const bonusCounts = bonusesReceived.reduce((acc, bonus) => {
                 if (bonus in acc)
-                  acc[bonus]++
+                  acc[bonus]!++
                 else
                   acc[bonus] = 1
 
@@ -246,8 +256,8 @@ class Garden {
               }, {} as Record<string, number>)
 
               for (const bonus in bonusCounts) {
-                if (bonusCounts[bonus] >= 3) {
-                  for (const appleTile of treeTiles[tile.id])
+                if (bonusCounts[bonus]! >= 3) {
+                  for (const appleTile of treeTiles[tile.id]!)
                     appleTile.bonuses.push(bonus as Bonus)
                 }
               }
@@ -255,15 +265,15 @@ class Garden {
             break
           case CropSize.Bush:
             if (tile.id in bushTiles)
-              bushTiles[tile.id].push(tile)
+              bushTiles[tile.id]?.push(tile)
             else
               bushTiles[tile.id] = [tile]
 
-            if (bushTiles[tile.id].length === 4) {
-              const bonusesReceived = bushTiles[tile.id].flatMap(tile => tile.bonusesReceived)
-              const bonusCounts = bonusesReceived.reduce((acc, bonus) => {
+            if (bushTiles[tile.id]?.length === 4) {
+              const bonusesReceived = bushTiles[tile.id]?.flatMap(tile => tile.bonusesReceived)
+              const bonusCounts = bonusesReceived!.reduce((acc, bonus) => {
                 if (bonus in acc)
-                  acc[bonus]++
+                  acc[bonus]!++
                 else
                   acc[bonus] = 1
 
@@ -271,8 +281,8 @@ class Garden {
               }, {} as Record<string, number>)
 
               for (const bonus in bonusCounts) {
-                if (bonusCounts[bonus] >= 2) {
-                  for (const blueberryTile of bushTiles[tile.id])
+                if (bonusCounts[bonus]! >= 2) {
+                  for (const blueberryTile of bushTiles[tile.id]!)
                     blueberryTile.bonuses.push(bonus as Bonus)
                 }
               }
@@ -460,7 +470,7 @@ class Garden {
     return this._cropTiles.uniqueTiles satisfies TUniqueTiles
   }
 
-  get cropGroupBonusStats(){
+  get cropGroupBonusStats() {
     return this._cropTiles.cropGroupBonusStats
   }
 }

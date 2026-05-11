@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { type ICropNameWithGrowthDiff, type IDayHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import type { PropType } from 'vue'
 import InventoryRow from './InventoryRow.vue'
 import CropHarvestDayDetail from './CropHarvestDayDetail.vue'
 
 const harvester = useHarvester()
-const processor = useProcessor()
+// const processor = useProcessor()
 const uiSettings = useUiSettings()
 
 const props = defineProps({
     cropToFilter: {
         type: String as PropType<ICropNameWithGrowthDiff>,
         required: false,
+        default: null
     },
     shouldBeMaxSize: {
         type: Boolean,
@@ -49,14 +50,14 @@ const size = computed(() => {
 
 const selectedTab = ref<'harvests' | 'details'>('harvests')
 
-const asProcessedItems = ref(false)
+// const asProcessedItems = ref(false)
 const selectedDay = ref<number | null>(null)
 
 watchEffect(() => {
     const firstAvailableDay = harvester.harvester.dayHarvests.size > 0 ? harvester.harvester.dayHarvests.keys().next().value! : null
 
     if (listArr.value.length !== 0 &&
-        (selectedDay === null || !harvester.harvester.dayHarvests.has(selectedDay.value!))) {
+        (selectedDay.value === null || !harvester.harvester.dayHarvests.has(selectedDay.value!))) {
         selectedDay.value = firstAvailableDay
     }
 
@@ -74,7 +75,7 @@ function nextDay() {
     const currentDayIndex = keys.indexOf(selectedDay.value)
     const nextDayIndex = (currentDayIndex !== (keys.length - 1) ? (currentDayIndex + 1) : 0)
 
-    selectedDay.value = keys[nextDayIndex]
+    selectedDay.value = keys[nextDayIndex] || null
 }
 function previousDay() {
     if (harvester.harvester.dayHarvests.size <= 0 || selectedDay.value === null) return
@@ -83,10 +84,10 @@ function previousDay() {
     const currentDayIndex = keys.indexOf(selectedDay.value)
     const nextDayIndex = (currentDayIndex !== 0 ? (currentDayIndex - 1) : (keys.length - 1))
 
-    selectedDay.value = keys[nextDayIndex]
+    selectedDay.value = keys[nextDayIndex] || null
 }
 
-const dropdownRef = ref<HTMLElement>()
+// const dropdownRef = ref<HTMLElement>()
 </script>
 
 <template>
@@ -94,17 +95,19 @@ const dropdownRef = ref<HTMLElement>()
         <div class="flex justify-between items-center mb-0.5">
             <p class="dark:text-accent font-bold text-sm">Harvest Days</p>
             <div class="dropdown dropdown-end p-0">
-                <div tabindex="0" role="button" class="btn btn-xs">Options<font-awesome-icon class="text-lg"
+                <div tabindex="0" role="button" class="btn btn-xs">Options<font-awesome-icon
+class="text-lg"
                         icon="cog" /></div>
-                <div tabindex="-1"
+                <div
+tabindex="-1"
                     class="dropdown-content bg-palia-blue text-accent flex flex-col rounded-box z-1 p-2 shadow-sm min-w-xs w-fit mt-1 gap-2 max-w-xs sm:max-w-xl">
 
                     <fieldset class="fieldset bg-base-200 p-2 rounded-sm">
                         <legend class="legend text-accent">Preview as processed</legend>
 
                         <label class="label">
-                            <input type="checkbox" v-model="uiSettings.settings.showAsProcessedItems" class="toggle" />
-                            <span class="label-text"></span>
+                            <input v-model="uiSettings.settings.showAsProcessedItems" type="checkbox" class="toggle" >
+                            <span class="label-text"/>
                         </label>
                         <p class="label font-light whitespace-break-spaces">Show the eventual output of the crops
                             harvested on that day.</p>
@@ -121,15 +124,17 @@ const dropdownRef = ref<HTMLElement>()
 
                         <p class="label font-light whitespace-break-spaces">Show potential gold value.</p>
                         <label class="label">
-                            <input type="checkbox" :disabled="!uiSettings.settings.showAsProcessedItems"
-                                v-model="uiSettings.settings.showAsProcessedGold" class="toggle" />
-                            <span class="label-text"></span>
+                            <input
+v-model="uiSettings.settings.showAsProcessedGold" type="checkbox"
+                                :disabled="!uiSettings.settings.showAsProcessedItems" class="toggle" >
+                            <span class="label-text"/>
                         </label>
                         <p class="label font-light whitespace-break-spaces pt-2">Show estimated processing time</p>
                         <label class="label">
-                            <input type="checkbox" :disabled="!uiSettings.settings.showAsProcessedItems"
-                                v-model="uiSettings.settings.showAsProcessedTime" class="toggle" />
-                            <span class="label-text"></span>
+                            <input
+v-model="uiSettings.settings.showAsProcessedTime" type="checkbox"
+                                :disabled="!uiSettings.settings.showAsProcessedItems" class="toggle" >
+                            <span class="label-text"/>
                         </label>
                     </fieldset>
 
@@ -153,7 +158,8 @@ const dropdownRef = ref<HTMLElement>()
             class="bg-accent border border-misc dark:bg-palia-blue-secondary dark:border-water-retain/60 p-1 rounded-sm">
             <div v-if="selectedTab === 'harvests'" class="" v-bind="containerProps" :style="{ height: `${size}px` }">
                 <div v-bind="wrapperProps" class="">
-                    <InventoryRow v-for="item in list" :key="item.data.day" :day-harvest="item.data"
+                    <InventoryRow
+v-for="item in list" :key="item.data.day" :day-harvest="item.data"
                         :crop-to-filter-for="cropToFilter" @day-clicked="(day: number) => {
                             selectedDay = day
                             selectedTab = 'details'
@@ -161,7 +167,8 @@ const dropdownRef = ref<HTMLElement>()
                 </div>
             </div>
             <div v-else-if="selectedTab === 'details' && selectedDay !== null" class="">
-                <CropHarvestDayDetail :day="selectedDay"
+                <CropHarvestDayDetail
+:day="selectedDay"
                     :day-harvest="harvester.harvester.dayHarvests.get(selectedDay)!"
                     :prev-available="harvester.harvester.dayHarvests.size > 0"
                     :next-available="harvester.harvester.dayHarvests.size > 0"

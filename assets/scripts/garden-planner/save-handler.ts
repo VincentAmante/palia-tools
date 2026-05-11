@@ -10,7 +10,6 @@ import { getCropFromCode } from './imports'
 import FertiliserCode from './enums/fertilisercode'
 import { LATEST_VERSION } from './types/version'
 
-
 /**
  * Gets the latest set of cropCodes, to be overriden by past iterations
  * - This allows us to not have to update the whole thing everytime there's a new crop
@@ -259,10 +258,13 @@ export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
 export function parseSave(save: string) {
   // * This format makes it permanent that the first part of the save is the version number
   const [version, ...rest] = save.split('_')
-  let dimensionInfo = rest[0] || ''
+  const dimensionInfo = rest[0] || ''
   let cropInfo = rest[1] || ''
   let settingsInfo = rest[2] || ''
-  let strippedVersion = version.replace('v', '');
+  let strippedVersion = version?.replace('v', '');
+
+  if (typeof strippedVersion !== 'string')
+    throw error(`Provided save code does not appear to be in the right format`)
 
   // Update the save version iteratively based on the version number
   do {
@@ -289,7 +291,9 @@ export function parseSave(save: string) {
         break
       case '0.4':
         validatePlotMatrix(dimensionInfo)
+        // eslint-disable-next-line no-self-assign
         cropInfo = cropInfo
+        // eslint-disable-next-line no-self-assign
         settingsInfo = settingsInfo
         break
       default:

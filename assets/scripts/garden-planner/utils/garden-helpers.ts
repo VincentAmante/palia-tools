@@ -4,8 +4,9 @@
  */
 
 import type Tile from '../classes/tile'
-import { Bonus, CropType, FertiliserType, getCropFromCode, getCropFromType, getFertiliserFromType } from '../imports'
-import { CropCode } from '../imports'
+import type { FertiliserType} from '../imports';
+import { Bonus, CropType, getCropFromCode, getCropFromType, getFertiliserFromType, CropCode  } from '../imports'
+
 
 export interface ICalculateYieldOptions {
   days?: number

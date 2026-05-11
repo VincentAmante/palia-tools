@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import uniqid from 'uniqid'
-export interface Toast {
+export interface AppToast {
   message: string
   type: string
   duration: number
@@ -9,9 +9,9 @@ export interface Toast {
 }
 
 export const useToasts = defineStore('toasts', () => {
-  const toasts = ref<Toast[]>([])
+  const toasts = ref<AppToast[]>([])
 
-  function addToast(toast: Toast) {
+  function addToast(toast: AppToast) {
     toasts.value.push({
       ...toast,
       id: uniqid()

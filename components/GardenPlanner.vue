@@ -114,7 +114,7 @@ watch(updateIsRequested, () => {
 </script>
 
 <template>
-  <section ref="display" id="garden-planner" class="@container">
+  <section id="garden-planner" ref="display" class="@container">
     <div class="sm:py-1 rounded-t-md sm:px-2 bg-accent dark:bg-palia-blue-dark">
       <!-- <p class="bg-warning rounded-sm p-2 mt-1 text-palia-blue-dark text-sm font-semibold">
         <font-awesome-icon class="text-sm" :icon="['fas', 'triangle-exclamation']" />
@@ -122,14 +122,17 @@ watch(updateIsRequested, () => {
       </p> -->
       <ItemSelector />
       <AppDivider class="order-3 mx-4 my-1 @:col-span-7 " :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
-      <section class="flex @sm:py-2 gap-y-2 justify-between"
+      <section
+class="flex @sm:py-2 gap-y-2 justify-between"
         :class="{ '@5xl:flex-row': !garden.isGardenWide && (!isTakingScreenshot.get), 'flex-col': !isTakingScreenshot.get || (!isTakingScreenshot.get && garden.isGardenWide) }">
-        <section class="h-full" :class="[garden.isGardenWide ? 'flex flex-col items-center pb-2' : '',
+        <section
+class="h-full" :class="[garden.isGardenWide ? 'flex flex-col items-center pb-2' : '',
         (plannerDisplayConfig.get === 'display+display') ? 'w-full' : ''
         ]">
           <template v-if="(plannerDisplayConfig.get === 'garden+display')">
             <GardenDisplay />
-            <StatsDisplay class="pt-2 @sm:mx-auto @xs:px-2 w-fit "
+            <StatsDisplay
+class="pt-2 @sm:mx-auto @xs:px-2 w-fit "
               :class="[garden.isGardenWide ? 'w-fit' : '@lg:w-full']" />
           </template>
           <template v-if="(plannerDisplayConfig.get === 'display+display')">
@@ -147,10 +150,12 @@ watch(updateIsRequested, () => {
         </section>
       </section>
     </div>
-    <div v-if="isTakingScreenshot.get" id="watermark" aria-label="hidden"
+    <div
+v-show="isTakingScreenshot.get" id="watermark" aria-label="hidden"
       class="grid grid-cols-2 justify-between order-8 w-full px-4 lg:col-span-4 bg-palia-blue" :class="[]">
       <div class="flex items-center w-full gap-2 p-2 text-right rounded-md leading-1">
-        <img format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48px" class="max-w-[4rem]"
+        <img
+format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48px" class="max-w-16"
           alt="Palia Garden Planner Logo">
         <div class="flex flex-col items-start justify-start w-full text-left text-primary flex-nowrap ws-nowrap">
           <p class="w-full text-2xl font-bold">

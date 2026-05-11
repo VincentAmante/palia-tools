@@ -144,21 +144,24 @@ function onDragEnter(row: number, col: number, plot: Plot) {
 </script>
 
 <template>
-  <section class="flex flex-col items-center h-full" 
-  id="garden-display"
+  <section
+id="garden-display" 
+  class="flex flex-col items-center h-full"
   :class="[
     ((isTakingScreenshot.get && gardenHandler.isGardenWide) || isTakingScreenshot.get) ? 'max-w-[1680px]' : 'max-w-full',
     (gardenHandler.isGardenWide) ? 'overflow-x-scroll max-w-full scrollbar scrollbar-h-2 pb-1 scrollbar-thumb-rounded-xl dark:scrollbar-thumb-accent scrollbar-thumb-palia-blue ' : '',
   ]"
   aria-label="Garden Display">
-    <div class="px-3 my-4 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
+    <div
+class="px-3 my-4 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
       :class="(isTakingScreenshot.get) ? 'w-fit px-1 mt-0' : 'w-full sm:w-fit'" @contextmenu.prevent.self="">
-      <div role="grid" ref="plotsDisplay" class="grid w-full gap-2 pr-12 overflow-auto sm:pr-0">
-        <div role="row" v-for="(plotRow, plotRowIndex) in garden.plots" :key="plotRowIndex" class="flex gap-2 plotRow">
-          <div role="gridcell" v-for="(plot, plotIndex) in plotRow" :key="plotIndex" class="relative flex flex-col gap-0 plot">
-            <div role="grid" v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" class="flex gap-0 plotTileRow cols-3">
-              <div role="row" v-for="(tile, index) in row" :key="index" class="plotTile">
-                <CropTile role="gridcell" :tile="tile as Tile" :is-disabled="!plot.isActive"
+      <div ref="plotsDisplay" role="grid" class="grid w-full gap-2 pr-12 overflow-auto sm:pr-0">
+        <div v-for="(plotRow, plotRowIndex) in garden.plots" :key="plotRowIndex" role="row" class="flex gap-2 plotRow">
+          <div v-for="(plot, plotIndex) in plotRow" :key="plotIndex" role="gridcell" class="relative flex flex-col gap-0 plot">
+            <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" role="grid" class="flex gap-0 plotTileRow cols-3">
+              <div v-for="(tile, index) in row" :key="index" role="row" class="plotTile">
+                <CropTile
+role="gridcell" :tile="tile as Tile" :is-disabled="!plot.isActive"
                   :bonus-hovered="useGarden().getHoveredBonus" :index="(1 + rowIndex) + (index + (rowIndex * 2))"
                   @mousedown.middle.prevent.stop
                   @click.left="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"

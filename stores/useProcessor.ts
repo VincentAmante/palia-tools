@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import Processor, { type ProcessorSetting, type ProcessorSettings } from '~/assets/scripts/garden-planner/classes/processor'
-import { type ICropName, type ITotalHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { ICropName, ITotalHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 
 const useProcessor = defineStore('processor', () => {
   const processorRef = ref(new Processor())

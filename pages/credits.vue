@@ -120,7 +120,8 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
-              <NuxtLink to="https://palia.wiki.gg" class="flex items-center gap-1 underline underline-offset-4"
+              <NuxtLink
+to="https://palia.wiki.gg" class="flex items-center gap-1 underline underline-offset-4"
                 rel="noopener" target="_blank" :prefetch="false">
                 Palia Wiki
               </NuxtLink>
@@ -131,10 +132,12 @@ useHead({
           </CreditName>
           <CreditName>
             <template #name>
-              <NuxtLink to="https://paliapedia.com/" class="flex items-center gap-1 underline underline-offset-4"
+              <NuxtLink
+to="https://paliapedia.com/" class="flex items-center gap-1 underline underline-offset-4"
                 rel="noopener" target="_blank" :prefetch="false">
-                <img src="https://pgp-cdn.b-cdn.net/paliapedia.svg" width="18px" height="18px"
-                  class="max-w-[1.5rem] inline-block text-lg" alt="Paliapedia Logo">
+                <img
+src="https://pgp-cdn.b-cdn.net/paliapedia.svg" width="18px" height="18px"
+                  class="max-w-6 inline-block text-lg" alt="Paliapedia Logo">
                 Paliapedia
               </NuxtLink>
             </template>

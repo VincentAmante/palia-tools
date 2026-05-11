@@ -90,7 +90,7 @@ function resetToDefaultSettings() {
       </button>
     </div>
     <Teleport to="body">
-      <SettingsModal @load="(loadCode) => loadSettings(loadCode)" ref="settingsModal"></SettingsModal>
+      <SettingsModal ref="settingsModal" @load="(loadCode) => loadSettings(loadCode)"/>
     </Teleport>
   </section>
 </template>

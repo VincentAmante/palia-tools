@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Bonus, Crop, crops, CropType, getCropFromType } from '~/assets/scripts/garden-planner/imports';
+import type { CropType} from '~/assets/scripts/garden-planner/imports';
+import { Bonus, getCropFromType } from '~/assets/scripts/garden-planner/imports';
 import { ItemType, parseCropId, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers';
 import SettingsMinutesDisplay from '../SettingsMinutesDisplay.vue';
 import CropSize from '~/assets/scripts/garden-planner/enums/crop-size';
@@ -114,7 +115,7 @@ const outputInfoWithProcessing = computed(() => {
     if (processType !== ItemType.Preserve && processType !== ItemType.Seed)
         return undefined
 
-    let type: 'seeds' | 'preserves' = (processType === ItemType.Seed) ? 'seeds' : 'preserves';
+    const type: 'seeds' | 'preserves' = (processType === ItemType.Seed) ? 'seeds' : 'preserves';
 
     return processor.processor.output[type].get(props.cropId)
 })
@@ -155,10 +156,10 @@ const totalGoldGenerated = computed(() => {
                 <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
                     <th>
                         <FontAwesomeIcon :icon="['fas', 'seedling']" class="text-accent pr-1" />Crop Data
-                        <span class="text-xs italic" v-if="hasGrowthBoostDivide">- Includes {{
+                        <span v-if="hasGrowthBoostDivide" class="text-xs italic">- Includes {{
                             cropIdParsed.hasGrowthBoost ? 'Non-Growth-Boosted Crops' : 'Growth-Boosted Crops' }}</span>
                     </th>
-                    <th></th>
+                    <th/>
                 </tr>
             </thead>
 
@@ -206,11 +207,11 @@ const totalGoldGenerated = computed(() => {
                     <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
                         <th>
                             <FontAwesomeIcon :icon="['fas', 'wheat-awn']" class="text-accent pr-1" />Harvest Data
-                            <span class="text-xs italic" v-if="hasGrowthBoostDivide">- {{
+                            <span v-if="hasGrowthBoostDivide" class="text-xs italic">- {{
                                 cropIdParsed.hasGrowthBoost ? 'Non-Growth-Boosted Crops' : 'Growth-Boosted Crops' }}
                                 excluded from here</span>
                         </th>
-                        <th></th>
+                        <th/>
                     </tr>
                 </thead>
                 <tbody class="">
@@ -286,30 +287,34 @@ const totalGoldGenerated = computed(() => {
                     </tr>
                     <tr>
                         <th>Total Gold Generated</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                        <td class="flex items-center gap-0.5"><img
+                        width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                                 alt="Gold" format="webp">{{ formatToOneDecimal(totalGoldGenerated).toLocaleString()
                                 }} Gold</td>
                     </tr>
                     <tr>
                         <th class="indent-3">Total Gold / Tile</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                        <td class="flex items-center gap-0.5"><img
+                                width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                                 alt="Gold" format="webp">{{ formatToOneDecimal(totalGoldGenerated /
                                     tileCount).toLocaleString() }} Gold / Tile</td>
                     </tr>
                     <tr>
                         <th class="indent-3">Total Gold / Tick</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                        <td class="flex items-center gap-0.5"><img
+                            width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                                 alt="Gold" format="webp">{{ (formatToOneDecimal(totalGoldGenerated /
                                     lastGrowthTick)).toLocaleString() }} Gold / Growth Tick
                         </td>
                     </tr>
                     <tr>
                         <th class="indent-3">Total Gold / Tile / Tick</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                        <td class="flex items-center gap-0.5"><img
+                                width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                                 alt="Gold" format="webp">{{ (formatToOneDecimal((totalGoldGenerated /
                                     tileCount) / lastGrowthTick)).toLocaleString() }} Gold</td>
                     </tr>
@@ -435,15 +440,17 @@ const totalGoldGenerated = computed(() => {
                     </tr>
                     <tr>
                         <th class="indent-3">Total Gold Produced</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                        <td class="flex items-center gap-0.5"><img
+                            width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                                 alt="Gold" format="webp">{{
                                     formatToOneDecimal(detailedProcessingInfo.totalGoldGenerated).toLocaleString() }} Gold</td>
                     </tr>
                     <tr>
                         <th class="indent-3">Total Gold / Cycle</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                        <td class="flex items-center gap-0.5"><img
+                            width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                                 alt="Gold" format="webp">{{
                                     formatToOneDecimal(detailedProcessingInfo.totalGoldGenerated /
                                         Math.floor(totalCycles)).toLocaleString() }}
@@ -451,8 +458,9 @@ const totalGoldGenerated = computed(() => {
                     </tr>
                     <tr>
                         <th class="indent-3">Total Gold / Hour (Distributed Time)</th>
-                        <td class="flex items-center gap-0.5"><img width="16" height="16"
-                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                        <td class="flex items-center gap-0.5"><img
+                            width="16" height="16"
+                                src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                                 alt="Gold" format="webp">{{
                                     formatToOneDecimal(detailedProcessingInfo.totalGoldGenerated /
                                         (detailedProcessingInfo.effectiveProcessMinutes /

@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import useHarvester from '~/stores/useHarvester'
-import useGarden from '~/stores/useGarden'
+// import useGarden from '~/stores/useGarden'
 import CropDetailsHarvestDisplay from './CropHarvestDaysPanel.vue'
 import GardenFertiliserTables from './GardenFertiliserTables.vue'
 import GardenSeedTables from './GardenSeedTables.vue'
 import TendingPanel from './TendingPanel.vue'
 const harvester = useHarvester()
-const garden = useGarden()
+// const garden = useGarden()
 
 const tab = ref<'Harvest' | 'Tending' | 'Misc'>('Harvest')
 
-const plotStat = computed(() => garden.plotStat)
+// const plotStat = computed(() => garden.plotStat)
 
 </script>
 
@@ -22,21 +22,25 @@ const plotStat = computed(() => garden.plotStat)
         </h3>
 
         <nav role="tablist" class="tabs tabs-xs tabs-border bg-palia-blue-dark rounded-sm gap-1 w-fit">
-            <button role="tab" class="tab join-item" :class="(tab === 'Harvest') ? 'tab-active text-accent' : ''"
-                @click="tab = 'Harvest'" :aria-selected="tab === 'Harvest'">
+            <button 
+            role="tab" class="tab join-item" :class="(tab === 'Harvest') ? 'tab-active text-accent' : ''"
+                :aria-selected="tab === 'Harvest'" @click="tab = 'Harvest'">
                 <p>Harvest</p>
             </button>
-            <button role="tab" class="tab join-item" :class="(tab === 'Tending') ? 'tab-active text-accent' : ''"
-                @click="tab = 'Tending'" :aria-selected="tab === 'Tending'">
+            <button
+            role="tab" class="tab join-item" :class="(tab === 'Tending') ? 'tab-active text-accent' : ''"
+                :aria-selected="tab === 'Tending'" @click="tab = 'Tending'">
                 <p>Tending</p>
             </button>
-            <button role="tab" class="tab join-item" :class="(tab === 'Misc') ? 'tab-active text-accent' : ''"
-                @click="tab = 'Misc'" :aria-selected="tab === 'Misc'">
+            <button
+            role="tab" class="tab join-item" :class="(tab === 'Misc') ? 'tab-active text-accent' : ''"
+                :aria-selected="tab === 'Misc'" @click="tab = 'Misc'">
                 <p>Misc</p>
             </button>
         </nav>
     </div>
-    <CropDetailsHarvestDisplay v-if="tab === 'Harvest'" should-be-max-size
+    <CropDetailsHarvestDisplay
+v-if="tab === 'Harvest'" should-be-max-size
         :day-harvests="harvester.harvester.dayHarvests" />
     <div v-if="tab === 'Misc'">
         <section

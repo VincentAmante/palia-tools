@@ -1,5 +1,6 @@
 <template>
-  <div v-once
+  <div
+v-once
     class="flex flex-col gap-2 px-2 py-4 text-accent bg-palia-blue-dark rounded-lg overflow-auto scrollbar-thumb-accent max-h-132">
     <p class="px-2 text-xl font-black">Info</p>
     <div class="grid gap-2 px-2">
@@ -12,14 +13,16 @@
             This tool uses information on crops gathered
             from
             resources such as Arenvanya's
-            <NuxtLink href="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
+            <NuxtLink
+href="https://docs.google.com/document/d/1bjqQGwzhW7wsIpSDoO3xCMwqbX7ZbsdsuuXmPEXCrjE/"
               target="_blank" :prefetch="false"
               class="items-center inline-block gap-1 font-bold text-harvest-boost-dark hover:underline underline-offset-2">
               <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xs" />
               Gardening Guide
             </NuxtLink>
             and their
-            <NuxtLink to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
+            <NuxtLink
+to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRdr28lHNY/"
               target="_blank" :prefetch="false"
               class="inline-block gap-1 font-bold text-harvest-boost-dark hover:underline underline-offset-2">
               <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xs" />

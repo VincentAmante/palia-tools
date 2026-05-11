@@ -1,10 +1,10 @@
 import { getCropFromType } from '../cropList'
-import type { Crop } from '../imports'
-import { CropType } from '../imports'
-import { ItemType } from '../utils/garden-helpers'
+import type { Crop, CropType  } from '../imports'
+
+import { ItemType, parseCropId  } from '../utils/garden-helpers'
 import type { CropItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IDayHarvest, IHarvestCyclePhase, IInventoryItem, ISeedTracker, ITotalHarvest } from '../utils/garden-helpers'
 import type { ICropConversions } from './crop'
-import { parseCropId } from '../utils/garden-helpers'
+
 
 
 
@@ -455,7 +455,7 @@ export default class Processor {
 
     let overallLongestProcessMinutes = 0;
     let totalGoldGenerated = 0;
-    let craftersUsed = {
+    const craftersUsed = {
       seedCollectors: new Map<ICropNameWithGrowthDiff, number>(),
       seedCollectorsCount: 0,
       preserveJars: new Map<ICropNameWithGrowthDiff, number>(),
@@ -537,7 +537,6 @@ export default class Processor {
           totalProcessMinutes,
           longestProcessMinutesNoIdle,
           goldGenerated,
-          averageExcessTimeMinutes,
           minutesBeforeNextHarvest,
         } = processHarvest({
           qualityId: isStar ? 'star' : 'base',
@@ -797,14 +796,14 @@ interface IProcessHarvestArgs {
 
 function getHoursToNextPhase(cycleData: ICropHarvestCycle, currentPhaseIndex: number) {
   if (cycleData.phases.length <= 1) {
-    return cycleData.phases[0].phaseLength;
+    return cycleData.phases[0]?.phaseLength || 0;
   }
 
   const nextPhaseIndex = currentPhaseIndex === cycleData.phases.length - 1
     ? 0
     : currentPhaseIndex + 1;
 
-  return cycleData.phases[nextPhaseIndex].phaseLength;
+  return cycleData.phases[nextPhaseIndex]!.phaseLength;
 }
 
 function aggregateHarvestResults(params: {
@@ -890,7 +889,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
 
   // Get data about the current phase
   const phaseData = cycleData.phases[currentPhaseIndex]
-  const cropCount = phaseData.yield[qualityId].totalWithDeductions
+  const cropCount = phaseData?.yield[qualityId].totalWithDeductions || 0
 
   if (cropCount === 0) {
     console.warn('Empty cropCount found, bug?')
@@ -934,6 +933,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
 }
 
 // Interface for cycle processing arguments
+ 
 interface IProcessCycleArgs {
   goldValues: Crop['goldValues']
   cycleData: ICropHarvestCycle
@@ -1027,7 +1027,7 @@ function distributeCropsToCrafters(params: {
   minutesToNextHarvest: number;
 }): IProcessHarvestData['crafterData'] {
   const {
-    wholeConversions, conversionsRemainder, remainderCrops,
+    wholeConversions, conversionsRemainder,
     crafterCount, minutesPerConversion, cropsPerConversion, minutesToNextHarvest
   } = params;
 
@@ -1076,7 +1076,7 @@ function processCycle(processCycleArgs: IProcessCycleArgsV2, phasesOverride = 0)
   // Calculated here to save processing time
   const { minutesPerConversion, isStar, crop, cropsPerConversion, producePerConversion, produceGoldValue } = calculateCycleConversionData(processInto, cropId)
 
-  const firstHarvestDelayMinutes = (cycleData.phases[0].phaseLength * 60)
+  const firstHarvestDelayMinutes = ((cycleData.phases[0]?.phaseLength || 0) * 60)
 
   // Determine how many phases to process
   const phasesToCalculate = (phasesOverride > 0)
