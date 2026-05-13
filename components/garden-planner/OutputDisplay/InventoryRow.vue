@@ -16,10 +16,11 @@ const uiSettings = useUiSettings()
 const props = defineProps({
   dayHarvest: {
     type: Object as PropType<IDayHarvest>,
-    required: false
+    required: true
   },
   cropToFilterFor: {
-    type: String
+    type: String,
+    default: ''
   }
 })
 
@@ -58,7 +59,7 @@ const itemsFromHarvest = computed(() => {
 
   // Prioritise filtered crop
   const itemsList = (willProcessItems ? itemsAsProduce : itemsAsCrops)
-  if (props.cropToFilterFor) {
+  if (props.cropToFilterFor && props.cropToFilterFor !== '') {
     itemsList.sort((a, b) => Number((b.name === props.cropToFilterFor)) - Number((a.name === props.cropToFilterFor)))
   }
 
@@ -90,14 +91,14 @@ const totalGold = computed(() => {
     <p class="text-xs text-palia-blue-dark dark:text-primary font-semibold flex gap-2 items-center align-end">Day
       {{ dayHarvest?.day }}
       <span
-      v-if="uiSettings.settings.showAsProcessedItems && uiSettings.settings.showAsProcessedGold && totalGold > 0"
+v-if="uiSettings.settings.showAsProcessedItems && uiSettings.settings.showAsProcessedGold && totalGold > 0"
         class="flex items-center align-middle gap-0.5">&mdash;
         <img
-width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
           alt="Gold" format="webp">{{ Math.round(totalGold).toLocaleString() }}
       </span>
       <span
-      v-if="uiSettings.settings.showAsProcessedItems && uiSettings.settings.showAsProcessedTime && itemsFromHarvest.distributedTimeMinutes > 0"
+        v-if="uiSettings.settings.showAsProcessedItems && uiSettings.settings.showAsProcessedTime && itemsFromHarvest.distributedTimeMinutes > 0"
         class="flex items-center align-middle gap-0.5">&mdash;
         <font-awesome-icon :icon="['fas', 'stopwatch']" />
         {{ formatMinutesToDaysHoursMinutes(itemsFromHarvest.distributedTimeMinutes) }}
@@ -115,7 +116,7 @@ v-if="item.count !== 0" class="border-misc border" :img-src="item.image" :img-al
         </template>
       </ul>
       <button
-class="btn btn-lg right-0 btn-square bg-misc hover:bg-misc-dark border-misc dark:border-palia-blue dark:hover:bg-palia-blue dark:bg-palia-blue-light rounded-r-md"
+        class="btn btn-lg right-0 btn-square bg-misc hover:bg-misc-dark border-misc dark:border-palia-blue dark:hover:bg-palia-blue dark:bg-palia-blue-light rounded-r-md"
         @click="$emit('dayClicked', dayHarvest?.day)">
         <FontAwesomeIcon class="text-sm" :icon="['fas', 'search']" />
       </button>

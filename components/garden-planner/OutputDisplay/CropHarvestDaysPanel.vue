@@ -106,8 +106,8 @@ tabindex="-1"
                         <legend class="legend text-accent">Preview as processed</legend>
 
                         <label class="label">
-                            <input v-model="uiSettings.settings.showAsProcessedItems" type="checkbox" class="toggle" >
-                            <span class="label-text"/>
+                            <input v-model="uiSettings.settings.showAsProcessedItems" type="checkbox" class="toggle">
+                            <span class="label-text" />
                         </label>
                         <p class="label font-light whitespace-break-spaces">Show the eventual output of the crops
                             harvested on that day.</p>
@@ -126,15 +126,15 @@ tabindex="-1"
                         <label class="label">
                             <input
 v-model="uiSettings.settings.showAsProcessedGold" type="checkbox"
-                                :disabled="!uiSettings.settings.showAsProcessedItems" class="toggle" >
-                            <span class="label-text"/>
+                                :disabled="!uiSettings.settings.showAsProcessedItems" class="toggle">
+                            <span class="label-text" />
                         </label>
                         <p class="label font-light whitespace-break-spaces pt-2">Show estimated processing time</p>
                         <label class="label">
                             <input
 v-model="uiSettings.settings.showAsProcessedTime" type="checkbox"
-                                :disabled="!uiSettings.settings.showAsProcessedItems" class="toggle" >
-                            <span class="label-text"/>
+                                :disabled="!uiSettings.settings.showAsProcessedItems" class="toggle">
+                            <span class="label-text" />
                         </label>
                     </fieldset>
 
@@ -159,7 +159,7 @@ v-model="uiSettings.settings.showAsProcessedTime" type="checkbox"
             <div v-if="selectedTab === 'harvests'" class="" v-bind="containerProps" :style="{ height: `${size}px` }">
                 <div v-bind="wrapperProps" class="">
                     <InventoryRow
-v-for="item in list" :key="item.data.day" :day-harvest="item.data"
+                    v-for="item in list" :key="item.data.day" :day-harvest="item.data"
                         :crop-to-filter-for="cropToFilter" @day-clicked="(day: number) => {
                             selectedDay = day
                             selectedTab = 'details'

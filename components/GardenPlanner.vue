@@ -26,17 +26,14 @@ const settingsCode = useSettingsCode()
 const saveCode = useSaveCode()
 
 watchEffect(() => {
-  // console.log('garden updated')
   garden.update()
 })
 
 watchEffect(() => {
-  // console.log('harvester updated', new Date().getTime())
   harvester.harvester.simulateYield(garden.garden.uniqueTiles as TUniqueTiles, harvester.settings)
 })
 
 watchEffect(() => {
-  // console.log('processor changed', new Date().getTime())
   processor.simulateProcessing(harvester.totalHarvest)
 })
 
