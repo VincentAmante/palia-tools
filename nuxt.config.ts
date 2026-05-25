@@ -11,6 +11,10 @@ export default defineNuxtConfig({
     payloadExtraction: false
   },
 
+  devTools: {
+    enabled: true
+  },
+
   routeRules: {
     '/**': {
       headers: {
@@ -36,7 +40,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/image',
     '@pinia/nuxt',
-    '@nuxt/devtools',
+    // '@nuxt/devtools',
     '@nuxt/test-utils/module',
     '@nuxt/eslint',
   ],

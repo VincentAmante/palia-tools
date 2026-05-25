@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
 import { parseCropId, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
-import type { CropType, getCropFromType  } from '~/assets/scripts/garden-planner/imports'
+import { type CropType, getCropFromType  } from '~/assets/scripts/garden-planner/imports'
 
 
 import CropCrafterDataDisplay from './CropCrafterPanel.vue'

@@ -1,14 +1,16 @@
 /**
  * File contains methods for converting saves to the latest version
  */
-
+import uniqid from 'uniqid'
 import CropCode from './enums/cropCode'
 import type { IHarvesterOptions } from './classes/harvester'
 import type { ProcessorSetting, ProcessorSettings } from './classes/processor'
 import { parseCropId, encodeCropId, ItemType } from './utils/garden-helpers'
-import { getCropFromCode } from './imports'
+import { Crop, getCropFromCode, getCropFromType, getFertiliserFromCode } from './imports'
 import FertiliserCode from './enums/fertilisercode'
 import { LATEST_VERSION } from './types/version'
+import CropSize from './enums/crop-size'
+import { GardenGridBasic, expandPlotCode, PLOT_DIMENSION_REGEX as V05_PLOT_DIMENSION_REGEX} from './saveHandlerGardenBasic'
 
 /**
  * Gets the latest set of cropCodes, to be overriden by past iterations
@@ -251,6 +253,19 @@ export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
 }
 
 
+
+
+
+// TODO: Implement a rudimentary version of the GardenGrid
+function convertV_0_4CodeToV_0_5Code(dimensionInfo: string, cropInfo: string) {
+  const convertedSave = new GardenGridBasic(dimensionInfo, cropInfo)
+
+  return {
+    dimensionInfo: convertedSave.dimensionInfoCode,
+    cropInfo: convertedSave.cropInfoCode
+  }
+}
+
 /**
  * Converts a save string to an object containing the save version, dimension info, and crop info of the latest version
   * @param save a save code for the garden planner
@@ -263,8 +278,13 @@ export function parseSave(save: string) {
   let settingsInfo = rest[2] || ''
   let strippedVersion = version?.replace('v', '');
 
+  const convertedV_0_5Save = {
+    cropInfo: '',
+    dimensionInfo: ''
+  }
+
   if (typeof strippedVersion !== 'string')
-    throw error(`Provided save code does not appear to be in the right format`)
+    throw new Error(`Provided save code does not appear to be in the right format`)
 
   // Update the save version iteratively based on the version number
   do {
@@ -296,10 +316,87 @@ export function parseSave(save: string) {
         // eslint-disable-next-line no-self-assign
         settingsInfo = settingsInfo
         break
+      // case '0.4':
+      //   convertedV_0_5Save = convertV_0_4CodeToV_0_5Code(dimensionInfo, cropInfo)
+      //   cropInfo = convertedV_0_5Save.cropInfo
+      //   dimensionInfo = convertedV_0_5Save.dimensionInfo
+      //   validateNewPlotFormat(dimensionInfo, cropInfo)
+      //   // eslint-disable-next-line no-self-assign
+      //   settingsInfo = settingsInfo
+      //   break
       default:
         throw new Error('Invalid save version')
     }
   } while (strippedVersion !== LATEST_VERSION)
+
+  return { version: strippedVersion, dimensionInfo, cropInfo, settingsInfo }
+}
+
+/**
+ * ! Just a test version of the parseSave function for the new plot system
+ * @param save 
+ * @returns 
+ */
+export function parseSaveTEST(save: string) {
+  // * This format makes it permanent that the first part of the save is the version number
+  const [version, ...rest] = save.split('_')
+  let dimensionInfo = rest[0] || ''
+  let cropInfo = rest[1] || ''
+  let settingsInfo = rest[2] || ''
+  let strippedVersion = version?.replace('v', '');
+
+  let convertedV_0_5Save = {
+    cropInfo: '',
+    dimensionInfo: ''
+  }
+
+  if (typeof strippedVersion !== 'string')
+    throw new Error(`Provided save code does not appear to be in the right format`)
+
+  // Update the save version iteratively based on the version number
+  do {
+    if (strippedVersion === '') {
+      break
+    }
+
+    switch (strippedVersion) {
+      case '0.1':
+        validatePlotMatrix(dimensionInfo)
+        cropInfo = convertV0_1CodestoV0_2(cropInfo)
+        strippedVersion = '0.2'
+        break
+      case '0.2':
+        validatePlotMatrix(dimensionInfo)
+        cropInfo = convertV_0_2Codesto_V_0_3(cropInfo)
+        strippedVersion = '0.3'
+        break
+      case '0.3':
+        validatePlotMatrix(dimensionInfo)
+        cropInfo = convertV_0_3Codesto_V_0_4(cropInfo)
+        settingsInfo = convertV_0_3SettingsToV_0_4Settings(settingsInfo)
+        strippedVersion = '0.4'
+        break
+      // case '0.4':
+      //   validatePlotMatrix(dimensionInfo)
+      //   // eslint-disable-next-line no-self-assign
+      //   cropInfo = cropInfo
+      //   // eslint-disable-next-line no-self-assign
+      //   settingsInfo = settingsInfo
+      //   break
+      case '0.4':
+        convertedV_0_5Save = convertV_0_4CodeToV_0_5Code(dimensionInfo, cropInfo)
+        cropInfo = convertedV_0_5Save.cropInfo
+        dimensionInfo = convertedV_0_5Save.dimensionInfo
+        console.log('convertedSave', convertedV_0_5Save)
+        validateNewPlotFormat(dimensionInfo, cropInfo)
+        // eslint-disable-next-line no-self-assign
+        settingsInfo = settingsInfo
+        strippedVersion = '0.5'
+        break
+      default:
+        throw new Error('Invalid save version')
+    }
+  } while (strippedVersion !== '0.5')
 
   return { version: strippedVersion, dimensionInfo, cropInfo, settingsInfo }
 }
@@ -490,6 +587,49 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
   }
 
   return { harvesterOptions, processorSettings }
+}
+
+/**
+ * Ensures the dimensions provided can support the plots of the new system
+ * @param dimensionInfo 
+ * @throws Error if any dimension info is invalid, does nothing otherwise
+ */
+export function validateNewPlotFormat(dimensionInfo: string, cropInfo: string) {
+  const dimensionExtractMatch = dimensionInfo.replace('D-', '').match(V05_PLOT_DIMENSION_REGEX)
+
+  if (!dimensionExtractMatch) throw new Error('Savecode does not match expected format')
+
+  const [_, totalWidthInTiles, totalHeightInTiles] = dimensionExtractMatch
+
+  // console.log('dimensionExtract', dimensionExtractMatch)
+  if (!totalWidthInTiles || !totalHeightInTiles) throw new Error('Dimension Info does not match expected format')
+
+  const plots = cropInfo.split('-')
+  if (plots[0]?.includes('CR')) plots.shift()
+
+  plots.forEach((plotCode) => {
+
+    const plotExtractMatch = plotCode.match(V05_PLOT_DIMENSION_REGEX)
+
+    if (!plotExtractMatch) {
+      console.error(plotCode)
+      throw new Error('Plot code does not match expected format')
+    }
+
+    const [_, plotStartX, plotStartY, cropInfo] = plotExtractMatch
+
+    /**
+     * Check if any plot goes beyond the stated bounds of the plot
+     */
+    
+    if (!plotStartX || !plotStartY) throw new Error('Plot dimension info somehow missing')
+    if ((parseInt(plotStartX) + 3) > parseInt(totalWidthInTiles)) throw new Error(`Plot Width goes beyond bounds ${plotStartX}, ${totalWidthInTiles}`)
+    if ((parseInt(plotStartY) + 3) > parseInt(totalHeightInTiles)) throw new Error(`Plot Height goes beyond bounds ${plotStartY}, ${totalHeightInTiles}`)
+
+    // All plots should have exactly 9 tiles
+    const cropInfoExtracted = expandPlotCode(cropInfo || '')
+    if (cropInfoExtracted.length !== 9) throw new Error('A plot does not have exactly 9 tiles')
+  })
 }
 
 export { convertV0_1CodestoV0_2 as convertV_0_1_to_V_0_2, encodeSettings, decodeSettings }

@@ -61,24 +61,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="gap-2 px-4">
-    <div class="flex flex-col items-center justify-center w-full px-3 py-2 rounded-md text-accent md:py-0">
-      <p
+  <ClientOnly>
+
+    <div class="gap-2 px-4">
+      <div class="flex flex-col items-center justify-center w-full px-3 py-2 rounded-md text-accent md:py-0">
+        <p
 class="text-3xl"
-        :class="{ 'text-harvest-boost': (hourFormatted === 6 && minuteFormatted === '00' && meridiem === 'AM') }">
-        <span class="countdown">
-          <span
+          :class="{ 'text-harvest-boost': (hourFormatted === 6 && minuteFormatted === '00' && meridiem === 'AM') }">
+          <span class="countdown">
+            <span
 class="translate-x-1" :style="`--value:${hourFormatted};`" aria-live="polite"
-            :aria-label="`${hourFormatted}`">{{
-              hourFormatted }}</span>
-          :
-          <span :style="`--value:${minuteFormatted};`" aria-live="polite" :aria-label="`${minuteFormatted}`">{{
-            minuteFormatted }}</span>
-        </span>{{ meridiem }}
-      </p>
-      <p class="">
-        Palian Time
-      </p>
+              :aria-label="`${hourFormatted}`">{{
+                hourFormatted }}</span>
+            :
+            <span :style="`--value:${minuteFormatted};`" aria-live="polite" :aria-label="`${minuteFormatted}`">{{
+              minuteFormatted }}</span>
+          </span>{{ meridiem }}
+        </p>
+        <p class="">
+          Palian Time
+        </p>
+      </div>
     </div>
-  </div>
+  </ClientOnly>
 </template>

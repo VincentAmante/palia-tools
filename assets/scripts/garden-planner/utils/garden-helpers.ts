@@ -3,9 +3,9 @@
  * @description Contains types and interfaces used in the garden planner.
  */
 
-import type Tile from '../classes/tile'
-import type { FertiliserType} from '../imports';
-import { Bonus, CropType, getCropFromCode, getCropFromType, getFertiliserFromType, CropCode  } from '../imports'
+import type { ITile } from '../classes/tile';
+import type { FertiliserType } from '../imports';
+import { Bonus, CropType, getCropFromCode, getCropFromType, getFertiliserFromType, CropCode } from '../imports'
 
 
 export interface ICalculateYieldOptions {
@@ -249,10 +249,10 @@ export function encodeCropIdWithCode(options: { code: CropCode; isStar: boolean;
 }
 
 
-export type TCropTiles = Map<string, Tile>
+export type TCropTiles = Map<string, ITile>
 
 export type TUniqueTiles = Map<string, {
-  tile: Tile
+  tile: ITile
   count: number
 }>
 

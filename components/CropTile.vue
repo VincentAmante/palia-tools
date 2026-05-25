@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { PropType } from 'vue'
-import { Bonus, Crop, Fertiliser, Tile, getCodeFromCrop } from '@/assets/scripts/garden-planner/imports'
+import { Bonus, Crop, Fertiliser, type ITile, getCodeFromCrop } from '@/assets/scripts/garden-planner/imports'
 import { useUiSettings } from '@/stores/useUiSettings'
 
 import { SelectedItemType, useSelectedItem, } from '@/stores/useSelectedItem'
@@ -10,7 +10,10 @@ import { SelectedItemType, useSelectedItem, } from '@/stores/useSelectedItem'
 const uiSettings = useUiSettings()
 
 const props = defineProps({
-  tile: Tile,
+  tile: {
+    type: Object as PropType<ITile>,
+    required: true
+  },
   isDisabled: {
     type: Boolean,
     default: false,
@@ -143,8 +146,8 @@ const showBonusIcons = computed(() => uiSettings.settings.cropTile.showBonusIcon
     <div class="font-bold uppercase select-none lg:text-3xl">
       <img
 v-if="(selectedItem.val instanceof Crop && tile?.isHovered)" format="webp" draggable="false"
-        class="select-none p-1 max-w-[38px] md:max-w-[36px] 2xl:max-w-[38px] opacity-50 dark:opacity-60" :src="selectedItem.val.image"
-        :srcset="undefined" :alt="selectedItem.val.type">
+        class="select-none p-1 max-w-[38px] md:max-w-[36px] 2xl:max-w-[38px] opacity-50 dark:opacity-60"
+        :src="selectedItem.val.image" :srcset="undefined" :alt="selectedItem.val.type">
       <img
 v-else-if="(tile?.crop?.image && tile?.crop?.image.length > 0)" width="48px" height="48px" format="webp"
         draggable="false" class="select-none p-1 max-w-[36px] md:max-w-[36px] 2xl:max-w-[38px]" :src="tile?.crop?.image"
@@ -165,12 +168,16 @@ v-show="bonuses?.includes(Bonus.SpeedIncrease)" :aria-hidden="bonuses?.includes(
       <li
 v-show="bonuses?.includes(Bonus.HarvestIncrease)" :aria-hidden="bonuses?.includes(Bonus.HarvestIncrease)"
         aria-label="Harvest Increase">
-        <font-awesome-icon class="text-harvest-boost-dark dark:text-harvest-boost" :icon="['fas', 'wheat-awn']" aria-hidden="true" />
+        <font-awesome-icon
+class="text-harvest-boost-dark dark:text-harvest-boost" :icon="['fas', 'wheat-awn']"
+          aria-hidden="true" />
       </li>
       <li
 v-show="bonuses?.includes(Bonus.QualityIncrease)" :aria-hidden="bonuses?.includes(Bonus.QualityIncrease)"
         aria-label="Quality Increase">
-        <font-awesome-icon class="text-quality-increase-dark dark:text-quality-increase" :icon="['fas', 'star']" aria-hidden="true" />
+        <font-awesome-icon
+class="text-quality-increase-dark dark:text-quality-increase" :icon="['fas', 'star']"
+          aria-hidden="true" />
       </li>
       <li
 v-show="bonuses?.includes(Bonus.WaterRetain)" :aria-hidden="bonuses?.includes(Bonus.WaterRetain)"

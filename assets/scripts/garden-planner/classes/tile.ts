@@ -3,7 +3,33 @@ import Bonus from '../enums/bonus'
 import type Crop from './crop'
 import type Fertiliser from './fertiliser'
 
-class Tile {
+export interface ITile {
+  /** Unique identifier for the tile. */
+  id: string;
+
+  /** Whether the tile is currently hovered (used for effects/animations). */
+  isHovered: boolean;
+
+  /** The crop currently planted on this tile, or null if empty. */
+  crop: Crop | null;
+
+  /** Fertiliser applied to the tile, or null if none. */
+  fertiliser: Fertiliser | null;
+
+  /**
+   * Unique bonuses applied to the crop on this tile.
+   * Setting this property automatically deduplicates the provided array.
+   */
+  bonuses: Bonus[];
+
+  /** Bonuses received by the tile, including duplicates (used for multi-tile crop logic). */
+  bonusesReceived: Bonus[];
+
+  /** Checks whether a specific bonus is applied to the tile's crop. */
+  hasBonus(bonus: Bonus): boolean;
+}
+
+class Tile implements ITile {
   /**
    * {crop} - the crop currently planted on this tile. If no crop is planted, it will be null.
    */

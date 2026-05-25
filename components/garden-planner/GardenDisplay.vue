@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import useGarden from '~/stores/useGarden'
-import type { Crop, Fertiliser, Plot, Tile } from '~/assets/scripts/garden-planner/imports'
+import type { Crop, Fertiliser, Plot, ITile } from '~/assets/scripts/garden-planner/imports'
 import { SelectedItemType, useSelectedItem } from '~/stores/useSelectedItem'
 import { useDragAndDrop } from '~/stores/useDragAndDrop'
+
 
 
 const isTakingScreenshot = useTakingScreenshot()
@@ -161,7 +162,7 @@ class="px-3 my-4 rounded-xl md:my-0 lg:ml-0 lg:mr-auto lg:px-2"
             <div v-for="(row, rowIndex) in plot.tiles" :key="rowIndex" role="grid" class="flex gap-0 plotTileRow cols-3">
               <div v-for="(tile, index) in row" :key="index" role="row" class="plotTile">
                 <CropTile
-role="gridcell" :tile="tile as Tile" :is-disabled="!plot.isActive"
+role="gridcell" :tile="tile as ITile" :is-disabled="!plot.isActive"
                   :bonus-hovered="useGarden().getHoveredBonus" :index="(1 + rowIndex) + (index + (rowIndex * 2))"
                   @mousedown.middle.prevent.stop
                   @click.left="(event: MouseEvent) => selectTile(event, rowIndex, index, plot as Plot)"
