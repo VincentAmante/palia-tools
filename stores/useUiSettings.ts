@@ -40,7 +40,6 @@ export const useUiSettings = defineStore('uiSettings', () => {
   function saveSettings(newSettings: UISettings) {
     settings.value = newSettings;
 
-    // console.log('saving settings: ', newSettings)
     localStorage.setItem('ui-settings', JSON.stringify(newSettings));
   }
 
@@ -87,6 +86,7 @@ export const useUiSettings = defineStore('uiSettings', () => {
       } else {
         document.documentElement.classList.remove('dark')
       }
+
     }
   }, { deep: true })
 

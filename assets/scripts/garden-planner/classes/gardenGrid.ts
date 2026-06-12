@@ -1,96 +1,14 @@
 import CropSize from "../enums/crop-size"
 import type { ITile } from "./tile"
-import type { TUniqueTiles as UniqueCropTiles } from "../utils/garden-helpers"
-import type { Bonus } from "../imports";
+import type { TUniqueTiles as UniqueCropTiles, CoordinateObject, Coordinates } from "../utils/garden-helpers"
 import { Crop, CropCode, CropType, Fertiliser, getCodeFromCrop, getCodeFromFertiliser, getCropFromCode, getFertiliserFromCode } from '@/assets/scripts/garden-planner/imports'
-import uniqid from 'uniqid'
-import { parseSave, parseSaveTEST } from "../save-handler";
+import { parseSaveTEST } from "../save-handler";
 import { PLOT_DIMENSION_REGEX, CROP_FERTILISER_REGEX, expandPlotCode } from "../saveHandlerGardenBasic";
 import FertiliserCode from "../enums/fertilisercode";
-
-export type CoordinateObject = {
-    x: number,
-    y: number
-}
-
-export type Coordinates = string;
-
-export const fromCoordinateObject = (coordinates: CoordinateObject): Coordinates => `${coordinates.x},${coordinates.y}`;
-export const toCoordinateObject = (key: Coordinates): CoordinateObject => {
-    const [x, y] = key.split(',').map(Number);
-    if (typeof x !== 'number' || typeof y !== 'number') {
-        throw new Error('Attempted to parse a non-Coordinate string')
-    }
-    return { x, y };
-};
-
-interface IGridPlot {
-    startCoordinates: Coordinates // which tile this plot starts in
-    tiles: Map<Coordinates, GridTile> // Which tiles are assigned to this grid
-    getStartingCrops: () => Set<IGridCrop> // get crops but only if its starting tile is within the plot
-}
-
-export class GridPlot implements IGridPlot {
-    private _startCoordinates: Coordinates;
-    private _tiles: Map<Coordinates, GridTile> = new Map()
-    private _id = uniqid()
-
-    constructor(startCoords: Coordinates) {
-        this._startCoordinates = startCoords
-    }
-
-    get startCoordinates() {
-        return this._startCoordinates
-    }
-
-    get tiles() {
-        return this._tiles
-    }
-
-    get id() {
-        return this._id
-    }
-
-    set tiles(tiles: Map<Coordinates, GridTile>) {
-        this._tiles = tiles
-    }
-
-    /**
-     * 
-     * @returns Any crop where it's starting tile is within the bounds of this plot
-     */
-    getStartingCrops() {
-        const crops: Set<IGridCrop> = new Set()
-
-        for (const tile of this._tiles.values()) {
-            if (!tile.attachedCrop) continue
-            if (crops.has(tile.attachedCrop)) continue
-
-            for (const cropTile of tile.attachedCrop.tiles) {
-                // ? Could prob add a logic check to see if the crop's starting tile is within the plot's bounds
-                if (cropTile.attachedCrop && cropTile.attachedCrop.location.start === this._startCoordinates)
-                    crops.add(cropTile.attachedCrop)
-            }
-        }
-
-        return crops
-    }
-}
-
-// Unique crop data for this version
-interface IGridCrop {
-    location: {
-        start: Coordinates,
-        end: Coordinates // if 1x1, same as start
-    }
-    tiles: Set<GridTile>
-    id: string
-    crop: Crop
-    bonuses: Set<Bonus> // unique set of bonuses
-    updateCropBonuses: () => void
-    getCropRelativeCoords: (coordinates: Coordinates) => Coordinates
-}
-
+import { fromCoordinateObject, toCoordinateObject, translateCoordinates, getDimensions } from "../utils/garden-helpers";
+import { GridPlot } from "./gridPlot";
+import { GridTile } from "./gridTile";
+import { GridCrop } from "./gridCrop";
 function compressPlotString(tiles: string[]) {
     // const tiles = uncompressedCodeString.match(/[A-Z][a-z]*(?:\.[A-Z][a-z]*)
 
@@ -115,214 +33,7 @@ function compressPlotString(tiles: string[]) {
     return compressed.join('');
 }
 
-export class GridCrop implements IGridCrop {
-    private _id = uniqid()
-    private _location: {
-        start: Coordinates; end: Coordinates; // if 1x1, same as start
-    }
-
-    private _tiles: Set<GridTile> = new Set();
-    private _crop: Crop;
-    private _bonuses: Set<Bonus> = new Set();
-
-    constructor(startCoords: Coordinates, crop: Crop) {
-        const dimensions = getDimensions(crop.size)
-
-        const parsedCoords = toCoordinateObject(startCoords)
-        this._location = {
-            start: startCoords,
-            end: fromCoordinateObject({
-                x: parsedCoords.x + (dimensions.width - 1),
-                y: parsedCoords.y + (dimensions.height - 1)
-            })
-        }
-
-        this._crop = crop
-    }
-
-    get location() {
-        return this._location
-    }
-
-    get tiles(): Set<GridTile> {
-        return this._tiles
-    }
-    get bonuses(): Set<Bonus> {
-        return this._bonuses
-    }
-
-    get id() {
-        return this._id
-    }
-
-    get crop() {
-        return this._crop
-    }
-
-    set tiles(tiles: Set<GridTile>) {
-        this._tiles = tiles
-    }
-
-    getCropRelativeCoords(coordinates: Coordinates) {
-        const coordsToCompareObj = toCoordinateObject(coordinates)
-        const cropStartingCoordsObj = toCoordinateObject(this._location.start)
-        const result = {
-            x: coordsToCompareObj.x - cropStartingCoordsObj.x,
-            y: coordsToCompareObj.y - cropStartingCoordsObj.y
-        }
-
-        if (result.x < 0 || result.y < 0) {
-            throw new Error('tile is out of bounds!')
-        }
-
-        return fromCoordinateObject(result)
-    }
-
-    updateCropBonuses() {
-        const requiredSize: number = (() => {
-            switch (this._crop.size) {
-                case CropSize.Tree:
-                    return 3
-                case CropSize.Bush:
-                    return 2
-                default:
-                case CropSize.Single:
-                    return 1
-            }
-        })()
-
-        const bonusCounts: Map<Bonus, number> = new Map()
-
-        for (const tile of this._tiles) {
-            for (const bonus of tile.bonusesReceived) {
-                bonusCounts.set(bonus, (bonusCounts.get(bonus) || 0) + 1)
-            }
-        }
-
-        const validBonuses: Set<Bonus> = new Set()
-        for (const [bonus, count] of bonusCounts) {
-            if (count >= requiredSize) validBonuses.add(bonus)
-        }
-
-        this._bonuses = validBonuses
-    }
-}
-
-interface GridTileConstructorParams {
-    coordinates: Coordinates,
-    plotLocalCoordinates: Coordinates,
-    plotId: string
-}
-
-export class GridTile implements ITile {
-    private _attachedCrop: IGridCrop | null = null
-    private _id = uniqid()
-    private _fertiliser: Fertiliser | null = null
-    private _bonusesReceived: Map<string, Bonus> = new Map()
-    private _bonuses = new Set<Bonus>()
-    private _coordinates: Coordinates
-    private _plotLocalCoordinates: Coordinates
-    private _plotId: string
-    // private _hoverCrop: Crop | null = null
-    // private _hoverFertiliser: Fertiliser | null = null
-    private _isHovered: boolean = false
-    private _hoverState: 'NONE' | 'DEFAULT' | 'DELETE' | 'INVALID' = 'NONE'
-    private _isMarkedForDeletion: boolean = false
-
-    constructor(args: GridTileConstructorParams) {
-        this._coordinates = args.coordinates
-        this._plotLocalCoordinates = args.plotLocalCoordinates
-        this._plotId = args.plotId
-    }
-
-    set attachedCrop(crop: IGridCrop | null) {
-        this._attachedCrop = crop
-    }
-
-    set fertiliser(fertiliser: Fertiliser | null) {
-        this._fertiliser = fertiliser
-    }
-
-    resetBonusesReceived() {
-        this._bonusesReceived = new Map()
-        this.updateBonuses()
-    }
-
-    addBonusReceived(sourceId: string, bonus: Bonus) {
-        this._bonusesReceived.set(sourceId, bonus)
-        this.updateBonuses()
-    }
-
-    updateBonuses() {
-        this._bonuses = new Set(Array.from(this._bonusesReceived.values()).sort())
-        if (this._attachedCrop) this._attachedCrop.updateCropBonuses()
-    }
-
-    get id(): string {
-        return this._id
-    }
-
-    get plotId(): string {
-        return this._plotId
-    }
-
-    get isHovered(): boolean {
-        return this._isHovered
-    }
-
-    get crop(): Crop | null {
-        return this._attachedCrop?.crop || null
-    }
-
-    get cropTile(): IGridCrop | null {
-        return this._attachedCrop
-    }
-
-    get fertiliser(): Fertiliser | null {
-        return this._fertiliser
-    }
-
-    get bonuses(): Bonus[] {
-        return Array.from(this._bonuses)
-    }
-
-    get bonusesReceived(): Bonus[] {
-        return Array.from(this._bonusesReceived.values())
-    }
-
-    get coordinates() {
-        return this._coordinates
-    }
-
-    get plotLocalCoordinates() {
-        return this._plotLocalCoordinates
-    }
-
-    get attachedCrop() {
-        return this._attachedCrop
-    }
-
-    get hoverState() {
-        return this._hoverState
-    }
-
-    set isHovered(isHovered: boolean) {
-        this._isHovered = isHovered
-        if (!isHovered) this._hoverState = 'NONE'
-        else this._hoverState = 'DEFAULT'
-    }
-
-    set hoverState(hoverState: 'NONE' | 'DEFAULT' | 'DELETE' | 'INVALID') {
-        this._hoverState = hoverState
-    }
-
-    hasBonus(bonus: Bonus): boolean {
-        return this._bonuses.has(bonus)
-    }
-}
-
-
-function coordsByDirection(coordinatesKey: Coordinates, direction: 'North' | 'East' | 'South' | 'West') {
+export function coordsByDirection(coordinatesKey: Coordinates, direction: 'North' | 'East' | 'South' | 'West') {
     const coordinates = toCoordinateObject(coordinatesKey)
 
     return fromCoordinateObject((() => {
@@ -350,29 +61,6 @@ function coordsByDirection(coordinatesKey: Coordinates, direction: 'North' | 'Ea
         }
     })())
 }
-
-function getDimensions(size: CropSize) {
-    switch (size) {
-        case CropSize.Bush:
-            return {
-                width: 2,
-                height: 2
-            }
-
-        case CropSize.Tree:
-            return {
-                width: 3,
-                height: 3
-            }
-
-        case CropSize.Single:
-        default:
-            return {
-                width: 1,
-                height: 1
-            }
-    }
-};
 
 
 interface GardenGridConstructorParams {
@@ -413,10 +101,33 @@ export class GardenGrid {
     private _heightInTiles: number;
     private _widthInTiles: number;
     private _plots: Map<Coordinates, GridPlot> = new Map()
+
+    /**
+     * UI aid
+     */
     private _hoveredTiles: Set<Coordinates> = new Set()
+
+    /**
+     * UI aid - Informs which tiles' contents will be removed if a crop is placed on a hovered tile
+     */
     private _hoveredTilesMarkedForDeletion: Set<Coordinates> = new Set()
 
+    /**
+     * UI aid - Tiles preview for plot placing, used only to aid UI
+     */
+    private _hoveredTilesForPlotPlacing: Map<Coordinates, Coordinates> = new Map()
+
+    /**
+     * UI aid - Flag to inform user if a plot can reasonably be placed there while hovering
+     */
+    private _plotCanBePlacedInCheckedTile = false
+
     private _settingsCode = ''
+    
+    /**
+     * Flag for a one-time load of settings attached to a garden
+     * TODO: Remember why we have this lol
+     */
     private _hasSettingsToLoad = true
 
     constructor(args: GardenGridConstructorParams) {
@@ -447,6 +158,7 @@ export class GardenGrid {
     }
 
     /**
+     * Re-calculate a tile's bonuses
      * 
      * @param coordinates coordinates of the tile to update
      */
@@ -488,19 +200,6 @@ export class GardenGrid {
 
         this._tiles.set(tileToUpdate.coordinates, tileToUpdate)
         return modifiedTiles
-    }
-
-    getUniqueCropTiles(): UniqueCropTiles {
-        const uniqueCropTiles = new Map<string, {
-            tile: ITile,
-            count: number
-        }>()
-
-        /**
-         * TODO: Check every GridTile
-         */
-
-        return uniqueCropTiles
     }
 
     getTile(coordinates: Coordinates): GridTile | null { return this._tiles.get(coordinates) || null }
@@ -561,36 +260,42 @@ export class GardenGrid {
                         attachedTile.isHovered = true
                         attachedTile.hoverState = 'DELETE'
                         modifiedTiles.add(attachedTile.coordinates)
-                        this._tiles.set(attachedTile.coordinates, attachedTile)
+                        this._tiles.set(attachedTile.coordinates, attachedTile as GridTile)
                     })
                 }
             })
 
         } else if (selectedItem instanceof Fertiliser) {
-            let tilesForPlacing: Set<GridTile> = new Set()
+            let tilesForPlacingCoordinates: Set<Coordinates> = new Set()
 
             if (baseTile.attachedCrop) {
-                tilesForPlacing = tilesForPlacing.union(baseTile.attachedCrop.tiles)
+                tilesForPlacingCoordinates = tilesForPlacingCoordinates.union(new Set(baseTile.attachedCrop.tiles.keys()))
             } else {
-                tilesForPlacing.add(baseTile)
+                tilesForPlacingCoordinates.add(baseTile.coordinates)
             }
 
-            tilesForPlacing.forEach((tileToUpdate) => {
+            tilesForPlacingCoordinates.forEach((tileToUpdateCoords) => {
+                const tileToUpdate = this.getTile(tileToUpdateCoords)
+                if (!tileToUpdate) throw new Error('invalid tile somehow')
+
                 tileToUpdate.isHovered = true
                 this._hoveredTiles.add(tileToUpdate.coordinates)
                 modifiedTiles.add(tileToUpdate.coordinates)
                 this._tiles.set(tileToUpdate.coordinates, tileToUpdate)
             })
         } else if (!selectedItem) {
-            let tilesForDeletion: Set<GridTile> = new Set()
+            let tilesForDeletion: Set<Coordinates> = new Set()
 
             if (baseTile.attachedCrop) {
                 tilesForDeletion = tilesForDeletion.union(baseTile.attachedCrop.tiles)
             } else {
-                tilesForDeletion.add(baseTile)
+                tilesForDeletion.add(baseTile.coordinates)
             }
 
-            tilesForDeletion.forEach((tileToUpdate) => {
+            tilesForDeletion.forEach((tileToUpdateCoords) => {
+                const tileToUpdate = this.getTile(tileToUpdateCoords)
+                if (!tileToUpdate) throw new Error('invalid tile somehow')
+
                 tileToUpdate.isHovered = true
                 tileToUpdate.hoverState = 'DELETE'
                 this._hoveredTiles.add(tileToUpdate.coordinates)
@@ -613,7 +318,6 @@ export class GardenGrid {
         coordinates: Set<Coordinates>,
         hasInvalidTiles: boolean
     } {
-        // const fetchedTiles = new Set<GridTile>()
         const fetchedTiles: Map<Coordinates, GridTile> = new Map()
         const fetchedTilesCoordinates = new Set<Coordinates>()
 
@@ -646,6 +350,14 @@ export class GardenGrid {
             coordinates: fetchedTilesCoordinates,
             hasInvalidTiles
         }
+    }
+
+    get hoveredTilesForPlotPlacing(){
+        return this._hoveredTilesForPlotPlacing
+    }
+
+    get plotCanBePlacedInCheckedTile(){
+        return this._plotCanBePlacedInCheckedTile
     }
 
     fetchWhichNeighboursAreOfTheSameTypeBoolean(coordinates: Coordinates, ignorePlotId: boolean = true): {
@@ -701,7 +413,11 @@ export class GardenGrid {
         }
     }
 
-    getAdjacentTilesCoords(coordinates: Coordinates): Coordinates[] {
+    /**
+     * @param coordinates to check
+     * @returns coordinates of the tile's orthogonal neighbours
+     */
+    getAdjacentTilesCoords(coordinates: Coordinates, ignoreBaseTile = false): Coordinates[] {
         const baseTile = this.getTile(coordinates)
         if (!baseTile) return [] satisfies Array<Coordinates>
 
@@ -716,8 +432,10 @@ export class GardenGrid {
     }
 
     /**
-     * Gets only tiles that do not share a crop
+     * 
      * @param coordinates 
+     * @param ignoreBaseTileCrop - 
+     * @returns 
      */
     getAdjacentTilesWithDifferentCropCoords(coordinates: Coordinates, ignoreBaseTileCrop = false) {
         const baseTile = this.getTile(coordinates)
@@ -736,6 +454,9 @@ export class GardenGrid {
             const adjacentTile = this.getTile(adjacentTileCoords)
 
             if (!adjacentTile) continue
+
+            // TODO: Remember why we included the <!ignoreBaseTileCrop> check
+            // TODO: Also wonder why the check is here and not outside the loop
             if ((!baseTile.attachedCrop && !ignoreBaseTileCrop) || !adjacentTile.attachedCrop) continue
             if (baseTile.attachedCrop?.id === adjacentTile.attachedCrop.id) continue
 
@@ -807,35 +528,213 @@ export class GardenGrid {
      * @param coordinates - coordinates of any tile within that plot
      */
     deletePlot(coordinates: Coordinates) {
+        const tile = this.getTile(coordinates)
+        let modifiedTiles = new Set<Coordinates>()
 
+        if (!tile) return modifiedTiles
+
+        const associatedPlot = this._plots.values().find((plot) => plot.id === tile.plotId)
+
+        if (!associatedPlot) throw new Error(`Plot is somehow not found, [Tile Coords: ${coordinates}, Tile Id: ${tile.plotId}]`)
+
+        modifiedTiles = modifiedTiles.union(new Set(Array.from(associatedPlot.tiles.keys())))
+
+        associatedPlot.tiles.forEach((tile) => {
+            modifiedTiles = modifiedTiles.union(this.removeCrop(tile.coordinates))
+            modifiedTiles = modifiedTiles.union(this.removeFertiliser(tile.coordinates))
+            this._tiles.delete(tile.coordinates)
+        })
+
+        this._plots.delete(associatedPlot.startCoordinates)
+
+        return modifiedTiles
     }
 
-    trimPlots() {
+    /**
+     * Checks whether a tile can be a valid starting point for a plot
+     * 
+     * @param coordinates - tile that'll become the plot's potential starting point
+     * @returns tiles effected by the hovering, for UI updating
+     */
+    hoverTileForPlotPlacing(coordinates: Coordinates) {
+        const modifiedTiles: Set<Coordinates> = new Set()
+
+        const baseTile = this.getTile(coordinates)
+        if (baseTile) return modifiedTiles
+
+        let hasInvalidTiles = false
+
+        // coordinates 1: Actual coords, coordinates 2: Local 'Plot' Coordinates
+        const fetchedTilesCoordinatesForPlotPlacement = new Map<Coordinates, Coordinates>()
+
+        for (let x = 0; x < 3; x++) {
+            for (let y = 0; y < 3; y++) {
+                const coordinatesParsed = toCoordinateObject(coordinates)
+
+                const newTileCoordinatesObj = {
+                    x: coordinatesParsed.x + x,
+                    y: coordinatesParsed.y + y
+                }
+                const newTileCoordinates = fromCoordinateObject(newTileCoordinatesObj)
+
+                if ((newTileCoordinatesObj.x + 1) > this.width || (newTileCoordinatesObj.y + 1) > this.height)
+                    hasInvalidTiles = true
+
+                const checkedTile = this._tiles.get(newTileCoordinates)
+
+                if (!checkedTile) {
+                    fetchedTilesCoordinatesForPlotPlacement.set(newTileCoordinates, `${x},${y}`)
+                    modifiedTiles.add(newTileCoordinates)
+                }
+                else hasInvalidTiles = true
+            }
+        }
+
+        this._hoveredTilesForPlotPlacing = fetchedTilesCoordinatesForPlotPlacement
+        this._plotCanBePlacedInCheckedTile = !hasInvalidTiles
+
+        return modifiedTiles
+    }
+
+    unhoverTilesForPlotPlacing(){
+        const unhoveredTiles = new Set(this._hoveredTilesForPlotPlacing.keys())
+        this._hoveredTilesForPlotPlacing = new Map()
+        this._plotCanBePlacedInCheckedTile = false
+
+        return unhoveredTiles
+    }
+
+    /**
+     * Checks garden for any rows or columns on the edges that are empty.
+     * Trims those empty rows/columns and re-assigns every coordinate.
+     * Does not affect empty rows/columns between plots
+     * @returns modified tiles coordinates
+     */
+    trimGarden() {
         const rowHasTileMap: Map<number, boolean> = new Map()
         const colHasTileMap: Map<number, boolean> = new Map()
         const rows = [...Array(this._heightInTiles).keys()]
         const cols = [...Array(this._widthInTiles).keys()]
 
-        for (const row of rows) {
-            for (const col of cols) {
-                const tile = this.getTile(`${col},${row}`)
-                if (!tile) {
-                    rowHasTileMap.set(row, rowHasTileMap.get(row) || false)
-                    colHasTileMap.set(col, colHasTileMap.get(col) || false)
-                } else {
-                    rowHasTileMap.set(row, true)
-                    colHasTileMap.set(col, true)
+        let changedTiles = new Set<Coordinates>()
+
+        const checkTiles = () => {
+            for (const row of rows) {
+                for (const col of cols) {
+                    const tile = this.getTile(`${col},${row}`)
+                    if (!tile) {
+                        rowHasTileMap.set(row, rowHasTileMap.get(row) || false)
+                        colHasTileMap.set(col, colHasTileMap.get(col) || false)
+                    } else {
+                        rowHasTileMap.set(row, true)
+                        colHasTileMap.set(col, true)
+                    }
                 }
             }
         }
 
-        console.log('rowHasTileMap', rowHasTileMap)
-        console.log('colHasTileMap', colHasTileMap)
+        checkTiles()
+
+        let gardenHasChanged = false
+
+
+        let translateBackwardsByX = 0
+        let translateBackwardsByY = 0
+
+        for (const [index, hasTile] of rowHasTileMap) {
+            if (!hasTile)
+                translateBackwardsByY = index + 1
+            else break
+        }
+        for (const [index, hasTile] of colHasTileMap) {
+            if (!hasTile)
+                translateBackwardsByX = index + 1
+            else break
+        }
+
+
+        if (translateBackwardsByX || translateBackwardsByY) {
+            changedTiles = changedTiles.union(this.translateGardenTiles({ x: -translateBackwardsByX, y: -translateBackwardsByY }))
+            gardenHasChanged = true
+        }
+
+        // If the garden has already changed, run a new check
+        if (gardenHasChanged) {
+            rowHasTileMap.clear()
+            colHasTileMap.clear()
+
+            checkTiles()
+        }
+        // Trim down excess rows/columns, needs no tile displacement
+        let rowsToCutDown = 0
+        let columnsToCutDown = 0
+        for (const [index, hasTile] of Array.from(rowHasTileMap).toReversed()) {
+            console.log(index, hasTile)
+            if (!hasTile) {
+                rowsToCutDown++
+                gardenHasChanged = true
+            }
+            else break
+        }
+
+        for (const [index, hasTile] of Array.from(colHasTileMap).toReversed()) {
+            if (!hasTile) {
+                columnsToCutDown++
+                gardenHasChanged = true
+            }
+            else break
+        }
+
+        if (rowsToCutDown || columnsToCutDown) {
+            if (rowsToCutDown)
+                this._heightInTiles -= rowsToCutDown
+
+            if (columnsToCutDown)
+                this._widthInTiles -= columnsToCutDown
+
+            gardenHasChanged = true
+        }
+
+        if (gardenHasChanged) changedTiles = changedTiles.union(this.trimGarden())
+
+        return changedTiles
     }
 
-    displaceGarden(rowToDisplace: number, colToDisplace: number) {
+    /**
+     * Re-assigns every coordinate within the garden
+     * @param translateBy how much to move by (x,y), positve values means to the right (x) and down (y)
+     * @returns modified tiles
+     */
+    translateGardenTiles(translateBy: CoordinateObject) {
         const newTiles: Map<Coordinates, GridTile> = new Map()
+        const modifiedTiles = new Set<Coordinates>
         const newPlots: Map<Coordinates, GridPlot> = new Map()
+
+        for (const [oldCoords, tile] of this._tiles) {
+            tile.translateTileCoordinates(translateBy)
+            const newCoords = translateCoordinates(oldCoords, translateBy)
+            newTiles.set(newCoords, tile)
+            modifiedTiles.add(newCoords)
+            // Also update old tile just in case
+            modifiedTiles.add(oldCoords)
+        }
+
+        this._tiles = newTiles
+
+        for (const [oldCoords, plot] of this._plots) {
+            plot.translatePlotCoordinates(translateBy)
+            const newCoords = translateCoordinates(oldCoords, translateBy)
+            newPlots.set(newCoords, plot)
+        }
+
+        // run a second check to make sure every tile's crop is properly updated
+        for (const [newCoords, tile] of this._tiles) {
+            if (!tile.attachedCrop) continue
+
+            tile.attachedCrop.verifyCropTiles()
+        }
+
+        return modifiedTiles
     }
 
 
@@ -891,6 +790,7 @@ export class GardenGrid {
 
 
         const attachedCrop = new GridCrop(coordinates, crop)
+        const newTilesMap: Map<Coordinates, GridTile> = new Map()
         modifiedTiles = modifiedTiles.union(tilesForPlacing.coordinates)
         for (const tile of tilesForPlacing.tiles.values()) {
             if (tile.attachedCrop) {
@@ -899,11 +799,12 @@ export class GardenGrid {
                 modifiedTiles = modifiedTiles.union(this.removeCrop(tile.coordinates))
             }
             tile.attachedCrop = attachedCrop
+            newTilesMap.set(tile.coordinates, tile)
         }
 
-        attachedCrop.tiles = new Set(tilesForPlacing.tiles.values())
+        attachedCrop.tiles = newTilesMap
 
-        // Update every tile only after the affected tiles have had the crop placed
+        // Update every tile ONLY after the affected tiles have had the crop placed
         for (const tile of tilesForPlacing.tiles.values()) {
 
             modifiedTiles = modifiedTiles.union(new Set(this.getAdjacentTilesCoords(tile.coordinates)))
@@ -915,6 +816,7 @@ export class GardenGrid {
             modifiedTiles = modifiedTiles.union(this.updateTileBonuses(tile.coordinates))
             this._tiles.set(tile.coordinates, tile)
         }
+
 
         return modifiedTiles
     }
@@ -933,7 +835,7 @@ export class GardenGrid {
             // console.log('updating: ', attachedTile.coordinates)
             attachedTile.attachedCrop = null
             modifiedTiles.add(attachedTile.coordinates)
-            this._tiles.set(attachedTile.coordinates, attachedTile)
+            this._tiles.set(attachedTile.coordinates, attachedTile as GridTile)
 
             // Add all neighbours to modified tiles first
             modifiedTiles = modifiedTiles.union(new Set(this.getAdjacentTilesCoords(attachedTile.coordinates)))
@@ -968,7 +870,7 @@ export class GardenGrid {
                 tileToUpdate.fertiliser = fertiliser
                 this.updateTileBonuses(tileToUpdate.coordinates)
                 modifiedTiles.add(tileToUpdate.coordinates)
-                this._tiles.set(tileToUpdate.coordinates, tileToUpdate)
+                this._tiles.set(tileToUpdate.coordinates, tileToUpdate as GridTile)
             })
         } else {
             baseTile.fertiliser = fertiliser
@@ -995,7 +897,7 @@ export class GardenGrid {
                 tileToUpdate.fertiliser = null
                 this.updateTileBonuses(tileToUpdate.coordinates)
                 modifiedTiles.add(tileToUpdate.coordinates)
-                this._tiles.set(tileToUpdate.coordinates, tileToUpdate)
+                this._tiles.set(tileToUpdate.coordinates, tileToUpdate as GridTile)
             })
         } else {
             baseTile.fertiliser = null
@@ -1012,7 +914,7 @@ export class GardenGrid {
         const dimensionInfo = `${this._widthInTiles}x${this._heightInTiles}`
 
         const dimensionString: string = [base, dimensionInfo].join('-')
-        const cropCodeStrings: string[] = []
+        const cropCodeStrings: string[] = ['CR']
 
         for (const [startCoords, plot] of this._plots) {
             const coordsString = `${toCoordinateObject(startCoords).x}x${toCoordinateObject(startCoords).y}`
@@ -1070,6 +972,31 @@ export class GardenGrid {
         }
 
         return [dimensionString, cropCodeStrings.join('-')].join('_')
+    }
+
+    saveGarden(settingsCode?: string) {
+        const saveString = []
+
+        // TODO: Replace with `LATEST_VERSION`
+        const versionCode = `v0.5`
+        const layoutCode = this.fetchGardenCode()
+        saveString.push(versionCode)
+        saveString.push(layoutCode)
+        if (settingsCode) saveString.push(settingsCode)
+
+        return saveString.join('_')
+    }
+
+    clearTiles() {
+        let modifiedTiles: Set<Coordinates> = new Set()
+
+        for (const [coords, tile] of this._tiles) {
+            if (tile.fertiliser) modifiedTiles = modifiedTiles.union(this.removeFertiliser(coords))
+            if (tile.attachedCrop) modifiedTiles = modifiedTiles.union(this.removeCrop(coords))
+        }
+
+        this._hoveredTiles = new Set()
+        return modifiedTiles
     }
 
     static loadGardenByCode(layoutCode: string): GardenGrid {
@@ -1165,4 +1092,3 @@ export class GardenGrid {
         return ''
     }
 }
-

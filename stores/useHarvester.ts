@@ -5,7 +5,6 @@ import type { TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-
 
 const useHarvester = defineStore('harvester', () => {
   const harvesterRef = ref(new Harvester())
-
   
   const harvestSettingsRef = ref<IHarvesterOptions>({
     days: -1,

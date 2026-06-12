@@ -2,8 +2,7 @@
 import useGarden from '~/stores/useGarden'
 import { Bonus } from '~/assets/scripts/garden-planner/imports'
 
-const gardenHandler = useGarden()
-const plotStat = computed(() => gardenHandler.plotStat)
+const garden = useGardenGrid()
 </script>
 
 <template>
@@ -11,13 +10,12 @@ const plotStat = computed(() => gardenHandler.plotStat)
     <h2 class="sr-only">
       Crop Bonus Statistics
     </h2>
-    <div class="flex gap-[0.35rem] lg:gap-3 xl:gap-4 w-full cursor-help justify-center p-1 xs:bg-primary xs:dark:bg-palia-blue-secondary  rounded-lg xs:p-2">
+    <div
+      class="flex gap-[0.35rem] lg:gap-3 xl:gap-4 w-full cursor-help justify-center p-1 xs:bg-primary xs:dark:bg-palia-blue-secondary  rounded-lg xs:p-2">
       <CoverageStat
-        :total-crops="plotStat.cropCount"
-        :covered="plotStat.cropBonusCoverage['Speed Increase']" class="text-growth-boost"
-        @mouseover="gardenHandler.setHoveredBonus(Bonus.SpeedIncrease)"
-        @mouseleave="gardenHandler.setHoveredBonus(Bonus.None)"
-      >
+        :total-crops="garden.analyser.cropCount"
+        :covered="garden.analyser.bonusCountsByType['Speed Increase']" class="text-growth-boost"
+        @mouseover="garden.setHoveredBonus(Bonus.SpeedIncrease)" @mouseleave="garden.setHoveredBonus(Bonus.None)">
         <template #icon>
           <font-awesome-icon :icon="['fas', 'forward-fast']" />
         </template>
@@ -27,11 +25,9 @@ const plotStat = computed(() => gardenHandler.plotStat)
       </CoverageStat>
 
       <CoverageStat
-        :total-crops="plotStat.cropCount"
-        :covered="plotStat.cropBonusCoverage['Harvest Increase']" class="text-harvest-boost"
-        @mouseover="gardenHandler.setHoveredBonus(Bonus.HarvestIncrease)"
-        @mouseleave="gardenHandler.setHoveredBonus(Bonus.None)"
-      >
+        :total-crops="garden.analyser.cropCount"
+        :covered="garden.analyser.bonusCountsByType['Harvest Increase']" class="text-harvest-boost"
+        @mouseover="garden.setHoveredBonus(Bonus.HarvestIncrease)" @mouseleave="garden.setHoveredBonus(Bonus.None)">
         <template #icon>
           <font-awesome-icon :icon="['fas', 'wheat-awn']" />
         </template>
@@ -41,11 +37,9 @@ const plotStat = computed(() => gardenHandler.plotStat)
       </CoverageStat>
 
       <CoverageStat
-        :total-crops="plotStat.cropCount"
-        :covered="plotStat.cropBonusCoverage['Quality Increase']" class="text-quality-increase"
-        @mouseover="gardenHandler.setHoveredBonus(Bonus.QualityIncrease)"
-        @mouseleave="gardenHandler.setHoveredBonus(Bonus.None)"
-      >
+        :total-crops="garden.analyser.cropCount"
+        :covered="garden.analyser.bonusCountsByType['Quality Increase']" class="text-quality-increase"
+        @mouseover="garden.setHoveredBonus(Bonus.QualityIncrease)" @mouseleave="garden.setHoveredBonus(Bonus.None)">
         <template #icon>
           <font-awesome-icon :icon="['fas', 'star']" />
         </template>
@@ -55,11 +49,9 @@ const plotStat = computed(() => gardenHandler.plotStat)
       </CoverageStat>
 
       <CoverageStat
-        :total-crops="plotStat.cropCount"
-        :covered="plotStat.cropBonusCoverage['Water Retain']" class="text-water-retain"
-        @mouseover="gardenHandler.setHoveredBonus(Bonus.WaterRetain)"
-        @mouseleave="gardenHandler.setHoveredBonus(Bonus.None)"
-      >
+        :total-crops="garden.analyser.cropCount"
+        :covered="garden.analyser.bonusCountsByType['Water Retain']" class="text-water-retain"
+        @mouseover="garden.setHoveredBonus(Bonus.WaterRetain)" @mouseleave="garden.setHoveredBonus(Bonus.None)">
         <template #icon>
           <font-awesome-icon :icon="['fas', 'droplet']" />
         </template>
@@ -68,11 +60,9 @@ const plotStat = computed(() => gardenHandler.plotStat)
         </template>
       </CoverageStat>
       <CoverageStat
-        :total-crops="plotStat.cropCount"
-        :covered="plotStat.cropBonusCoverage['Weed Prevention']" class="text-weed-prevention"
-        @mouseover="gardenHandler.setHoveredBonus(Bonus.WeedPrevention)"
-        @mouseleave="gardenHandler.setHoveredBonus(Bonus.None)"
-      >
+        :total-crops="garden.analyser.cropCount"
+        :covered="garden.analyser.bonusCountsByType['Weed Prevention']" class="text-weed-prevention"
+        @mouseover="garden.setHoveredBonus(Bonus.WeedPrevention)" @mouseleave="garden.setHoveredBonus(Bonus.None)">
         <template #icon>
           <font-awesome-icon :icon="['fas', 'shield']" />
         </template>

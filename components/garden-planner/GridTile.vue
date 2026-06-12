@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { SelectedItemType, useSelectedItem } from '@/stores/useSelectedItem';
 import useGardenGrid from '@/stores/useGardenGrid';
-import { toCoordinateObject, type Coordinates } from '~/assets/scripts/garden-planner/classes/gardenGrid';
+import { toCoordinateObject, type Coordinates } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import type { PropType } from 'vue';
 import type { Fertiliser, Crop } from '~/assets/scripts/garden-planner/imports';
 import { Bonus } from '~/assets/scripts/garden-planner/imports';
@@ -40,7 +40,6 @@ const tileData = computed(() => {
     }
 })
 
-
 const tileRadiusByPlot = computed(() => {
     const plotLocalCoordinates = tileData.value.tile?.plotLocalCoordinates
     const style = ['rounded-none']
@@ -74,10 +73,10 @@ const tileBorderWeightByPlot = computed(() => {
 
     const coordsObj = toCoordinateObject(plotLocalCoordinates)
 
-    if (coordsObj.y === 0) style.push('border-t')
-    if (coordsObj.y === 2) style.push('border-b')
-    if (coordsObj.x === 0) style.push('border-l')
-    if (coordsObj.x === 2) style.push('border-r')
+    if (coordsObj.y === 0) style.push('border-t-2')
+    if (coordsObj.y === 2) style.push('border-b-2')
+    if (coordsObj.x === 0) style.push('border-l-2')
+    if (coordsObj.x === 2) style.push('border-r-2')
 
     return style.join(' ')
 })
@@ -167,17 +166,36 @@ const cropPadding = computed(() => {
 
 
 const backgroundColourByHover = computed(() => {
-    switch (tileData.value.tile?.hoverState) {
+    const tile = tileData.value.tile
+
+    if (!tile) return
+
+    const style: string[] = []
+    switch (tile.hoverState) {
         case 'DEFAULT':
-            return 'bg-misc-saturated/60 dark:bg-water-retain/80'
+            style.push('bg-misc-saturated/60','dark:bg-water-retain/80')
+            break;
         case 'NONE':
         default:
-            return 'bg-secondary dark:bg-palia-blue'
+            style.push('bg-secondary', 'dark:bg-palia-blue')
     }
+
+    return style.join(' ')
 })
 
 
 const bgColour = computed(() => {
+    const tile = tileData.value.tile
+    if (!tile) return
+    
+    if (selectedItem.hoverType === SelectedItemType.Crop && tile.crop){
+        if ((selectedItem.hoverVal as Crop).type === tile.crop.type)
+            return 'bg-accent'
+    } else if (selectedItem.hoverType === SelectedItemType.Fertiliser && tile.fertiliser){
+        if ((selectedItem.hoverVal as Fertiliser).type === tile.fertiliser.type)
+            return 'bg-accent'
+    }
+
     if (tileData.value.tile?.hoverState === 'DELETE' || tileData.value.tile?.hoverState === 'INVALID')
         return 'bg-weed-prevention/60'
 
@@ -282,10 +300,17 @@ function handleUnhover() {
     handleDrag()
 }
 
-function handleMiddleClick(event: MouseEvent) {
-}
+function handleMiddleClick() {
+    const tile = tileData.value.tile
 
-const TILE_SIZE = '48px'
+    if (!tile) return
+
+    if (tile.crop)
+        selectedItem.select(tile.crop)
+    else if (tile.fertiliser)
+        selectedItem.select(tile.fertiliser)
+    else return
+}
 
 const displayImageByCropSize = computed(() => {
     const style: string[] = []
@@ -388,12 +413,13 @@ v-if="tileData.tile"
             class="flex items-center justify-center border-0 w-full h-full relative isolate rounded-none"
             :class="[backgroundColourByHover, tileRadiusByPlot, (tileData.tile.hoverState === 'INVALID' ? 'cursor-not-allowed' : 'cursor-pointer')]"
             @mousedown.middle.prevent.stop @click.left="handleLeftClick" @click.right="handleRightClick"
+            @click.middle="handleMiddleClick"
             @contextmenu.stop.prevent @mouseenter="handleHover" @mouseleave="handleUnhover">
-            <!-- <p class="absolute bot-0 right-0 text-xs">{{ tileData.tile.plotLocalCoordinates }}</p> -->
-            <!-- <p class="absolute top-0 left-0 text-xs">{{ tileData.version }}</p> -->
+            <!-- <p class="absolute top-0 right-1 text-xs font-bold text-misc">{{ tileData.tile.plotLocalCoordinates }}</p> -->
+            <!-- <p class="absolute top-0 right-1 text-xs font-bold text-misc">v{{ tileData.version || 0 }}</p>
+            <p class="absolute top-0 left-1 text-xs font-bold text-misc">{{ tileData.tile.coordinates }}</p> -->
             <!-- <p>{{ tileData.type }}</p> -->
             <!-- <p>{{ tileData.tile.hoverState }}</p> -->
-            <!-- <p>{{ cropRelativeCoords }}</p> -->
             <img
 v-if="(selectedItem.val && selectedItem.type === SelectedItemType.Crop && (tileData.tile?.hoverState === 'DEFAULT' || tileData.tile?.hoverState === 'INVALID'))"
                 format="webp" draggable="false"

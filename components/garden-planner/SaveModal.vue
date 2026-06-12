@@ -6,7 +6,7 @@ import { useSaveCode } from '~/stores/useSaveCode'
 
 const saveCode = useSaveCode()
 
-const gardenHandler = useGarden()
+const gardenHandler = useGardenGrid()
 const { includeSettingsCode } = storeToRefs(useSettingsCode())
 const title = ref('New Save')
 const version = ref(1)
@@ -71,7 +71,7 @@ function deleteCode(index: number) {
 }
 
 watch(includeSettingsCode, () => {
-  saveCode.set(gardenHandler.garden.saveLayout(useSettingsCode().code))
+  saveCode.set(gardenHandler.saveGarden(useSettingsCode().code))
 })
 
 </script>

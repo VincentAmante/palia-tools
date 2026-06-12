@@ -6,6 +6,59 @@
 import type { ITile } from '../classes/tile';
 import type { FertiliserType } from '../imports';
 import { Bonus, CropType, getCropFromCode, getCropFromType, getFertiliserFromType, CropCode } from '../imports'
+import CropSize from '../enums/crop-size';
+
+export function translateCoordinates(coordinates: Coordinates, translateBy: { x: number, y: number }): Coordinates {
+    const oldCoordsObj = toCoordinateObject(coordinates)
+
+    const newCoordsObj = {
+        x: oldCoordsObj.x + translateBy.x,
+        y: oldCoordsObj.y + translateBy.y
+    }
+
+    return fromCoordinateObject(newCoordsObj)
+}
+
+export type CoordinateObject = {
+    x: number,
+    y: number
+}
+
+export type Coordinates = string;
+
+
+export const fromCoordinateObject = (coordinates: CoordinateObject): Coordinates => `${coordinates.x},${coordinates.y}`;
+export const toCoordinateObject = (key: Coordinates): CoordinateObject => {
+    const [x, y] = key.split(',').map(Number);
+    if (typeof x !== 'number' || typeof y !== 'number') {
+        throw new Error('Attempted to parse a non-Coordinate string')
+    }
+    return { x, y };
+};
+
+
+export function getDimensions(size: CropSize) {
+    switch (size) {
+        case CropSize.Bush:
+            return {
+                width: 2,
+                height: 2
+            }
+
+        case CropSize.Tree:
+            return {
+                width: 3,
+                height: 3
+            }
+
+        case CropSize.Single:
+        default:
+            return {
+                width: 1,
+                height: 1
+            }
+    }
+};
 
 
 export interface ICalculateYieldOptions {

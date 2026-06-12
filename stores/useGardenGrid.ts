@@ -1,7 +1,9 @@
 import { defineStore, skipHydrate } from 'pinia'
-import type { Coordinates, GardenGridPlaceCropOptions } from '~/assets/scripts/garden-planner/classes/gardenGrid';
+import type { GardenGridPlaceCropOptions } from '~/assets/scripts/garden-planner/classes/gardenGrid';
 import { GardenGrid, } from '~/assets/scripts/garden-planner/classes/gardenGrid'
-import type { Crop, Fertiliser } from '~/assets/scripts/garden-planner/imports';
+import type { Crop, Fertiliser, Bonus } from '~/assets/scripts/garden-planner/imports';
+import type { Coordinates } from '~/assets/scripts/garden-planner/utils/garden-helpers';
+import { GridTilesAnalyser } from '~/assets/scripts/garden-planner/classes/gridTileAnalyzer';
 
 
 
@@ -51,10 +53,28 @@ const DEV_PLOT_GRID_C = () => {
             .add(`0,8`).add(`3,7`).add(`6,6`)
     }
 }
+
+const DEV_PLOT_GRID_D = () => {
+    return {
+        widthInTiles: 13,
+        heightInTiles: 11,
+        startCoords: {
+            x: 0,
+            y: 0,
+        },
+        plotCoordinates: new Set<Coordinates>()
+            .add(`1,1`).add(`4,1`).add(`7,1`)
+            .add(`1,4`).add(`4,4`).add(`7,4`)
+            .add(`1,7`).add(`4,7`).add(`7,7`)
+    }
+}
+
 // ----
 
 const useGardenGrid = defineStore('gardenGrid', () => {
-    const grid = shallowRef(new GardenGrid(DEV_PLOT_GRID_A()))
+    const grid = shallowRef(new GardenGrid(DEV_PLOT_GRID_C()))
+    const analyser = shallowRef(new GridTilesAnalyser())
+    const hoveredBonus = ref<Bonus | null>(null)
 
     // Handles individual tile updates
     const tileVersions = ref(new Map<Coordinates, number>())
@@ -90,10 +110,38 @@ const useGardenGrid = defineStore('gardenGrid', () => {
         handleModifiedTiles(modifiedTiles)
     }
 
-    function loadGardenByCode(code: string){
+    function loadGardenByCode(code: string) {
         const newGarden = GardenGrid.loadGardenByCode(code)
         tileVersions.value = new Map<Coordinates, number>()
         grid.value = newGarden
+
+        return true
+    }
+
+    function trimGarden() {
+        const modifiedTiles = grid.value.trimGarden()
+        handleModifiedTiles(modifiedTiles)
+        triggerRef(grid)
+    }
+
+    function updateStats() {
+        analyser.value.update(grid.value.tiles)
+        triggerRef(analyser)
+    }
+
+    function setHoveredBonus(bonus: Bonus | null){
+        hoveredBonus.value = bonus
+    }
+
+    function clearTiles(){
+        handleModifiedTiles(grid.value.clearTiles())
+        updateStats()
+    }
+
+    function saveGarden(settingsCode?: string){
+        const saveString = grid.value.saveGarden(settingsCode)
+
+        return saveString
     }
 
     return {
@@ -104,7 +152,13 @@ const useGardenGrid = defineStore('gardenGrid', () => {
         hoverTile,
         unhoverTile,
         placeFertiliser,
-        loadGardenByCode
+        loadGardenByCode,
+        trimGarden,
+        analyser: skipHydrate(analyser),
+        updateStats,
+        setHoveredBonus,
+        clearTiles,
+        saveGarden
     }
 })
 

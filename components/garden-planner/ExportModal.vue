@@ -29,7 +29,8 @@ async function saveToImage() {
   const node = document.getElementById('garden-planner') as HTMLElement
 
   if (!node) {
-    console.error('No node')
+    console.error('No node found')
+    return
   }
 
   isTakingScreenshot.set(true)

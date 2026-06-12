@@ -4,7 +4,6 @@
  -->
 
 <script setup lang="ts">
-import useGarden from '~/stores/useGarden'
 import { useSaveCode } from '~/stores/useSaveCode'
 import { useSettingsCode } from '~/stores/useSettingsCode'
 import { loadDefaultSettingsCode } from '~/components/garden-planner/SaveLoadUtils'
@@ -14,16 +13,17 @@ import LayoutCreator from '@/components/LayoutCreator.vue'
 import ExportModal from '~/components/garden-planner/ExportModal.vue'
 import { useToasts } from '~/stores/useToasts'
 import UISettingsModal from './UISettingsModal.vue'
+import { loadSettings } from '~/assets/scripts/garden-planner/save-handler.js'
 
 const toasts = useToasts()
-const gardenHandler = useGarden()
+const gardenHandler = useGardenGrid()
 const harvester = useHarvester()
 const processor = useProcessor()
-const { garden } = gardenHandler
+const { grid } = gardenHandler
 
 function clearGarden() {
-  garden.clearAllPlots()
-  gardenHandler.update()
+  gardenHandler.clearTiles()
+  gardenHandler.updateStats()
 }
 
 
@@ -32,11 +32,11 @@ const settingsCode = useSettingsCode()
 
 function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
 
-  const hasLoadedSuccessfully = garden.loadLayout(code)
-  settingsCode.set(garden.loadSettingsCode)
+  const hasLoadedSuccessfully = gardenHandler.loadGardenByCode(code)
+  settingsCode.set(grid.loadSettingsCode)
   settingsCode.requestUpdate()
-  gardenHandler.update()
-  gardenHandler.requestFullUpdate()
+  gardenHandler.updateStats()
+  // gardenHandler.requestFullUpdate()
 
   if (hasLoadedSuccessfully) {
     toasts.addToast({
@@ -53,7 +53,7 @@ function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
     if (defaultCode) {
 
       settingsCode.set(defaultCode)
-      const { harvesterOptions, processorSettings } = gardenHandler.garden.loadSettings(defaultCode)
+      const { harvesterOptions, processorSettings } = loadSettings(defaultCode)
       processor.updateSettings(processorSettings)
       harvester.updateSettings(harvesterOptions)
     }
@@ -61,7 +61,7 @@ function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
 }
 
 function saveLayout() {
-  saveCode.set(garden.saveLayout(settingsCode.code))
+  saveCode.set(grid.saveGarden(settingsCode.code))
 }
 
 const saveModal = ref<InstanceType<typeof SaveModal> | null>(null)
@@ -83,7 +83,7 @@ function openUISettingsModal() {
 
 const exportModal = ref<InstanceType<typeof ExportModal> | null>(null)
 function openExportModal() {
-  saveCode.set(garden.saveLayout(settingsCode.code))
+  saveCode.set(grid.saveGarden(settingsCode.code))
   exportModal.value?.openModal()
 }
 
@@ -102,10 +102,10 @@ onMounted(() => {
     const defaultSettings = loadDefaultSettingsCode()
 
     if (defaultSettings) {
-      const { harvesterOptions, processorSettings: loadedProcessorSettings } = gardenHandler.garden.loadSettings(defaultSettings.code)
-      harvester.updateSettings(Object.assign({}, harvesterOptions))
-      processor.updateSettings(Object.assign({}, loadedProcessorSettings))
-      settingsCode.set(defaultSettings.code)
+      // const { harvesterOptions, processorSettings: loadedProcessorSettings } = gardenHandler.garden.loadSettings(defaultSettings.code)
+      // harvester.updateSettings(Object.assign({}, harvesterOptions))
+      // processor.updateSettings(Object.assign({}, loadedProcessorSettings))
+      // settingsCode.set(defaultSettings.code)
     }
   }
 })

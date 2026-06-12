@@ -1,3 +1,4 @@
+/* eslint-disable no-self-assign */
 /**
  * File contains methods for converting saves to the latest version
  */
@@ -10,7 +11,7 @@ import { Crop, getCropFromCode, getCropFromType, getFertiliserFromCode } from '.
 import FertiliserCode from './enums/fertilisercode'
 import { LATEST_VERSION } from './types/version'
 import CropSize from './enums/crop-size'
-import { GardenGridBasic, expandPlotCode, PLOT_DIMENSION_REGEX as V05_PLOT_DIMENSION_REGEX} from './saveHandlerGardenBasic'
+import { GardenGridBasic, expandPlotCode, PLOT_DIMENSION_REGEX as V05_PLOT_DIMENSION_REGEX } from './saveHandlerGardenBasic'
 
 /**
  * Gets the latest set of cropCodes, to be overriden by past iterations
@@ -311,9 +312,9 @@ export function parseSave(save: string) {
         break
       case '0.4':
         validatePlotMatrix(dimensionInfo)
-        // eslint-disable-next-line no-self-assign
+
         cropInfo = cropInfo
-        // eslint-disable-next-line no-self-assign
+
         settingsInfo = settingsInfo
         break
       // case '0.4':
@@ -389,12 +390,17 @@ export function parseSaveTEST(save: string) {
         dimensionInfo = convertedV_0_5Save.dimensionInfo
         console.log('convertedSave', convertedV_0_5Save)
         validateNewPlotFormat(dimensionInfo, cropInfo)
-        // eslint-disable-next-line no-self-assign
         settingsInfo = settingsInfo
         strippedVersion = '0.5'
         break
+      case '0.5':
+        cropInfo = cropInfo
+        dimensionInfo = dimensionInfo
+        settingsInfo = settingsInfo
+        validateNewPlotFormat(dimensionInfo, cropInfo)
+        break
       default:
-        throw new Error('Invalid save version')
+        throw new Error(`Invalid save version ${strippedVersion}`)
     }
   } while (strippedVersion !== '0.5')
 
@@ -429,6 +435,16 @@ function validatePlotMatrix(dimensionInfo: string) {
   // if (activePlots > maxPlots)
   //   throw new Error(`Too many active plots: ${activePlots} > ${maxPlots}`)
 }
+
+
+export function saveSettings(harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings): string {
+  return encodeSettings(harvesterOptions, processorSettings)
+}
+
+export function loadSettings(settingsInfo: string): { harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings } {
+  return decodeSettings(settingsInfo)
+}
+
 
 function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings): string {
   let settings = ''
@@ -621,7 +637,7 @@ export function validateNewPlotFormat(dimensionInfo: string, cropInfo: string) {
     /**
      * Check if any plot goes beyond the stated bounds of the plot
      */
-    
+
     if (!plotStartX || !plotStartY) throw new Error('Plot dimension info somehow missing')
     if ((parseInt(plotStartX) + 3) > parseInt(totalWidthInTiles)) throw new Error(`Plot Width goes beyond bounds ${plotStartX}, ${totalWidthInTiles}`)
     if ((parseInt(plotStartY) + 3) > parseInt(totalHeightInTiles)) throw new Error(`Plot Height goes beyond bounds ${plotStartY}, ${totalHeightInTiles}`)
