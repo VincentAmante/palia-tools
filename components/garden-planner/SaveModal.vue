@@ -11,7 +11,7 @@ const { includeSettingsCode } = storeToRefs(useSettingsCode())
 const title = ref('New Save')
 const version = ref(1)
 
-
+const code = computed(() => saveCode.code)
 const toasts = useToasts()
 
 onMounted(() => {
@@ -112,15 +112,15 @@ class="tab" :class="{ 'tab-active': activeTab === 'browser-tab' }"
             </p>
             <p
 class="w-full p-2 font-mono text-xs font-thin rounded-md cursor-pointer select-text text-secondary hover:text-white hover:bg-misc-secondary"
-              @click="copy(saveCode.code)">
+              @click="copy(code)">
               {{ saveCode.code }}
             </p>
             <div class="card-actions">
               <button
 class="normal-case btn btn-sm btn-ghost"
-                :class="(text === saveCode.code) ? 'btn-disabled font-lights' : ''" @click="copy(saveCode.code)">
+                :class="(text === code) ? 'btn-disabled font-lights' : ''" @click="copy(saveCode.code)">
                 <font-awesome-icon :icon="['fas', 'copy']" />
-                {{ (text === saveCode.code) ? 'Copied!' : 'Copy' }}
+                {{ (text === code) ? 'Copied!' : 'Copy' }}
               </button>
             </div>
           </div>
@@ -169,7 +169,7 @@ class="normal-case btn btn-sm btn-ghost"
 v-model="title" max="64" type="text" placeholder="Enter title"
                 class="w-full max-w-xs input input-bordered input-sm">
               <p class="pt-1 font-mono text-justify opacity-50 text-xxs wrap-anywhere">
-                {{ saveCode.code }}
+                {{ code }}
               </p>
             </div>
             <div class="flex gap-2">

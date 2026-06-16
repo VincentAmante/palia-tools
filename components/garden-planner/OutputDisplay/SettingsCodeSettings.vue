@@ -4,12 +4,13 @@ import { saveDefaultSettingsCode, loadDefaultSettingsCode } from '~/components/g
 import useProcessor from '~/stores/useProcessor'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import SettingsModal from '../SettingsModal.vue'
+import { loadSettings as saveHandlerLoadSettings } from '~/assets/scripts/garden-planner/save-handler.js'
 
 const harvester = useHarvester()
 const processor = useProcessor()
 const settingsCode = useSettingsCode()
 const defaultSettingsCode = ref<string>('')
-const garden = useGarden()
+const garden = useGardenGrid()
 
 const saveCode = useSaveCode()
 const settingsModal = ref<InstanceType<typeof SettingsModal> | null>(null)
@@ -37,7 +38,7 @@ function saveDefaultSettings() {
 
 function loadSettings(code: string) {
   settingsCode.set(code)
-  const { harvesterOptions, processorSettings } = garden.garden.loadSettings(code)
+  const { harvesterOptions, processorSettings } = saveHandlerLoadSettings(code)
   processor.updateSettings(processorSettings)
   harvester.updateSettings(harvesterOptions)
   updateSettings()

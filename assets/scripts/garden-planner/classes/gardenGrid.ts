@@ -2,13 +2,14 @@ import CropSize from "../enums/crop-size"
 import type { ITile } from "./tile"
 import type { TUniqueTiles as UniqueCropTiles, CoordinateObject, Coordinates } from "../utils/garden-helpers"
 import { Crop, CropCode, CropType, Fertiliser, getCodeFromCrop, getCodeFromFertiliser, getCropFromCode, getFertiliserFromCode } from '@/assets/scripts/garden-planner/imports'
-import { parseSaveTEST } from "../save-handler";
+import { parseSave } from "../save-handler";
 import { PLOT_DIMENSION_REGEX, CROP_FERTILISER_REGEX, expandPlotCode } from "../saveHandlerGardenBasic";
 import FertiliserCode from "../enums/fertilisercode";
 import { fromCoordinateObject, toCoordinateObject, translateCoordinates, getDimensions } from "../utils/garden-helpers";
 import { GridPlot } from "./gridPlot";
 import { GridTile } from "./gridTile";
 import { GridCrop } from "./gridCrop";
+import { LATEST_VERSION } from "../types/version";
 function compressPlotString(tiles: string[]) {
     // const tiles = uncompressedCodeString.match(/[A-Z][a-z]*(?:\.[A-Z][a-z]*)
 
@@ -794,8 +795,6 @@ export class GardenGrid {
         modifiedTiles = modifiedTiles.union(tilesForPlacing.coordinates)
         for (const tile of tilesForPlacing.tiles.values()) {
             if (tile.attachedCrop) {
-                console.log('attached crop found, removing')
-                // remove any crop on it first
                 modifiedTiles = modifiedTiles.union(this.removeCrop(tile.coordinates))
             }
             tile.attachedCrop = attachedCrop
@@ -977,8 +976,7 @@ export class GardenGrid {
     saveGarden(settingsCode?: string) {
         const saveString = []
 
-        // TODO: Replace with `LATEST_VERSION`
-        const versionCode = `v0.5`
+        const versionCode = LATEST_VERSION
         const layoutCode = this.fetchGardenCode()
         saveString.push(versionCode)
         saveString.push(layoutCode)
@@ -1001,10 +999,9 @@ export class GardenGrid {
 
     static loadGardenByCode(layoutCode: string): GardenGrid {
         // TODO: Swap to actual save parser
-        const { version, dimensionInfo, cropInfo, settingsInfo } = parseSaveTEST(layoutCode)
+        const { version, dimensionInfo, cropInfo, settingsInfo } = parseSave(layoutCode)
 
-        // TODO: Swap to LATEST_VERSION constant
-        if (version !== '0.5') {
+        if (version !== LATEST_VERSION) {
             throw new Error('NOT LATEST VERSION')
         }
 

@@ -71,7 +71,7 @@ function setScreenshotLayout() {
   }
 
   displayWidth.value = (gardenDisplay.clientWidth)
-  if (useGarden().isGardenWide)
+  if (useGardenGrid().isGardenWide)
     displayWidth.value += gardenDisplay.clientWidth || 0
 
   displayWidth.value = Math.max(displayWidth.value, 1368)

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import useHarvester from '~/stores/useHarvester'
-import useGarden from '~/stores/useGarden'
 import { parseCropId } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import type { CropType } from '~/assets/scripts/garden-planner/imports';
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
@@ -8,9 +7,6 @@ import { formatToOneDecimal } from '~/utils/formatters'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 const harvester = useHarvester()
-const garden = useGarden()
-
-const plotStat = computed(() => garden.plotStat)
 const cycleData = computed(() => harvester.harvester.totalHarvest.cycleData)
 
 const lastGrowthTick = computed(() => harvester.harvester.totalHarvest.lastHarvestDay)

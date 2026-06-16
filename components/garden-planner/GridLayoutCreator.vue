@@ -46,6 +46,7 @@ defineExpose({
 
 
 function handleConfirmEdit() {
+    gardenCopy.trimGarden()
     const newGardenCode = gardenCopy.saveGarden(settingsCode.code)
     gardenGrid.loadGardenByCode(newGardenCode)
     modal.value?.hideModal()
@@ -77,7 +78,6 @@ const presetCodes = [
 const selectedCode = ref<string | null>(null)
 
 function handlePresetCodesSelection() {
-    console.log(selectedCode.value)
     if (!selectedCode.value) return
 
     const dimCode = `D-${selectedCode.value}`

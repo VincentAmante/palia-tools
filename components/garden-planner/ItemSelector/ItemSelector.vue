@@ -12,13 +12,13 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const selectedItem = useSelectedItem()
 const isTakingScreenshot = useTakingScreenshot()
-const gardenHandler = useGarden()
+const gardenHandler = useGardenGrid()
 
-const plotStat = computed(() => gardenHandler.plotStat)
+// const plotStat = computed(() => gardenHandler.analyser)
 const totalFertilisers = computed(() => {
   let count = 0
-  for (const fertiliser in plotStat.value.fertiliserCount)
-    count += plotStat.value.fertiliserCount[fertiliser as FertiliserType]
+  for (const fertiliser in gardenHandler.analyser.fertiliserCountByType)
+    count += gardenHandler.analyser.fertiliserCountByType[fertiliser as FertiliserType]
   return count
 })
 
@@ -29,9 +29,13 @@ const totalFertilisers = computed(() => {
 const bonusToSortBy = ref<Bonus | null>(null)
 
 const cropsList = computed(() => {
+  const cropCountByType = gardenHandler.analyser.cropCountByType
+
   const list: { crop: Crop; count: number }[] = []
-  for (const crop of Object.values(crops))
-    list.push({ crop, count: plotStat.value.cropTypeCount[crop.type] })
+  for (const crop of Object.values(crops)){
+    
+    list.push({ crop, count: cropCountByType[crop.type] })
+  }
 
   let sortedList = list
   if (bonusToSortBy.value && !isTakingScreenshot.get)
@@ -158,7 +162,7 @@ watchEffect(() => {
     <div class="relative grid px-2 xl:grid-cols-7 ">
 
       <section
-v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
+v-if="!(isTakingScreenshot.get && gardenHandler.analyser.cropCount <= 0)"
         class="flex flex-col order-1 w-full xl:col-span-4" :class="[isTakingScreenshot.get ? 'col-span-4' : '']">
         <div class="flex gap-2">
           <h3 class="font-semibold text-palia-blue dark:text-accent">
@@ -280,7 +284,7 @@ id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
               @mouseover="selectedItem.hover(SelectedItemType.FertiliserErase)" @mouseleave="selectedItem.hover(null)">
               <font-awesome-icon class="absolute -z-10 max-w-10.5 text-warning text-2xl " :icon="['fas', 'eraser']" />
             </button>
-            <template v-for="(count, index) in plotStat.fertiliserCount" :key="index">
+            <template v-for="(count, index) in gardenHandler.analyser.fertiliserCountByType" :key="index">
               <FertiliserButton
 v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
                 :is-selected="(selectedItem.type === SelectedItemType.Fertiliser)

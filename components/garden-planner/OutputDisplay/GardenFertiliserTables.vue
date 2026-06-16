@@ -9,14 +9,13 @@ import { formatToOneDecimal } from '~/utils/formatters'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 const harvester = useHarvester()
-const garden = useGarden()
-
-const plotStat = computed(() => garden.plotStat)
+const garden = useGardenGrid()
+const fertiliserCountByType = computed(() => garden.analyser.fertiliserCountByType)
 
 const lastGrowthTick = computed(() => harvester.harvester.totalHarvest.lastHarvestDay)
 
 const fertilisersPerDay = computed(() => {
-    return Object.values(plotStat.value.fertiliserCount).reduce((acc, value) => (acc + value))
+    return Object.values(fertiliserCountByType.value).reduce((acc, value) => (acc + value))
 })
 
 const totalFertilisers = computed(() => (fertilisersPerDay.value * lastGrowthTick.value).toLocaleString())
@@ -43,7 +42,7 @@ const fertiliserShopCostTracker = computed(() => {
 
     const fertiliserCostTracker: Record<FertiliserType, IFertiliserBatchCost> = createInitialCounts(FertiliserType)
 
-    Object.entries(plotStat.value.fertiliserCount).forEach(([id, count]) => {
+    Object.entries(fertiliserCountByType.value).forEach(([id, count]) => {
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
         const { zekiBatchPrice, zekiBatchCount } = fertiliser.costs
@@ -78,7 +77,7 @@ const fertiliserGuildCostTracker = computed(() => {
 
     const fertiliserCostTracker: Record<FertiliserType, IFertiliserBatchCost> = createInitialCounts(FertiliserType)
 
-    Object.entries(plotStat.value.fertiliserCount).forEach(([id, count]) => {
+    Object.entries(fertiliserCountByType.value).forEach(([id, count]) => {
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
         const { guildBatchPrice, guildBatchCount } = fertiliser.costs
@@ -90,8 +89,6 @@ const fertiliserGuildCostTracker = computed(() => {
         const overallBatchesNeeded = Math.ceil((count * lastGrowthTick.value) / guildBatchCount);
         const overallBatchCost = (overallBatchesNeeded * guildBatchPrice)
 
-        console.log('overallBatchCost', overallBatchCost)
-
         totalDailyRawCost += rawCost
         totalOverallBatchCost += overallBatchCost
 
@@ -99,8 +96,6 @@ const fertiliserGuildCostTracker = computed(() => {
         fertiliserCostTracker[id as FertiliserType].batches = overallBatchesNeeded
         fertiliserCostTracker[id as FertiliserType].batchCost = overallBatchCost
     })
-
-    console.log(fertiliserCostTracker)
 
     return {
         fertilisers: fertiliserCostTracker,
@@ -116,7 +111,7 @@ const fertiliserSellCostTracker = computed(() => {
 
     const fertiliserCostTracker: Record<FertiliserType, IFertiliserBatchCost> = createInitialCounts(FertiliserType)
 
-    Object.entries(plotStat.value.fertiliserCount).forEach(([id, count]) => {
+    Object.entries(fertiliserCountByType.value).forEach(([id, count]) => {
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
         const { goldSellValue } = fertiliser.costs
@@ -146,7 +141,7 @@ const fertilisersEligibleForStorePurchase = computed(() => {
         count: number
     }[] = []
 
-    Object.entries(plotStat.value.fertiliserCount).forEach(([id, count]) => {
+    Object.entries(fertiliserCountByType.value).forEach(([id, count]) => {
         if (count === 0) return
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
@@ -168,7 +163,7 @@ const fertilisersEligibleForGuildPurchase = computed(() => {
         count: number
     }[] = []
 
-    Object.entries(plotStat.value.fertiliserCount).forEach(([id, count]) => {
+    Object.entries(fertiliserCountByType.value).forEach(([id, count]) => {
         if (count === 0) return
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
@@ -190,7 +185,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
         count: number
     }[] = []
 
-    Object.entries(plotStat.value.fertiliserCount).forEach(([id, count]) => {
+    Object.entries(fertiliserCountByType.value).forEach(([id, count]) => {
         if (count === 0) return
         const fertiliser = getFertiliserFromType(id as FertiliserType)
         if (!fertiliser) return
@@ -226,7 +221,7 @@ const fertilisersIneligibleForPurchase = computed(() => {
             <td>{{ totalFertilisers }}</td>
         </tr>
 
-        <template v-for="[fertiliser, fertiliserCount] of Object.entries(plotStat.fertiliserCount)" :key="fertiliser">
+        <template v-for="[fertiliser, fertiliserCount] of Object.entries(fertiliserCountByType)" :key="fertiliser">
             <template v-if="fertiliser !== FertiliserType.None && fertiliserCount !== 0">
                 <tr>
                     <th class="capitalize indent-3">{{ fertiliser }} Used</th>
@@ -388,7 +383,7 @@ width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp"
                 <td></td>
             </tr>
         </template> -->
-        <template v-for="[fertiliser, fertiliserCount] of Object.entries(plotStat.fertiliserCount)" :key="fertiliser">
+        <template v-for="[fertiliser, fertiliserCount] of Object.entries(fertiliserCountByType)" :key="fertiliser">
             <template v-if="fertiliser !== FertiliserType.None && fertiliserCount > 0">
                 <tr class="not-first:border-t-4 not-first:dark:border-t-palia-blue-dark">
                     <th class="capitalize">{{

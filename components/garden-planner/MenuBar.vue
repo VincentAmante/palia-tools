@@ -9,7 +9,7 @@ import { useSettingsCode } from '~/stores/useSettingsCode'
 import { loadDefaultSettingsCode } from '~/components/garden-planner/SaveLoadUtils'
 import SaveModal from '~/components/garden-planner/SaveModal.vue'
 import LoadModal from '~/components/garden-planner/LoadModal.vue'
-import LayoutCreator from '@/components/LayoutCreator.vue'
+import GridLayoutCreator from '~/components/garden-planner/GridLayoutCreator.vue';
 import ExportModal from '~/components/garden-planner/ExportModal.vue'
 import { useToasts } from '~/stores/useToasts'
 import UISettingsModal from './UISettingsModal.vue'
@@ -19,7 +19,6 @@ const toasts = useToasts()
 const gardenHandler = useGardenGrid()
 const harvester = useHarvester()
 const processor = useProcessor()
-const { grid } = gardenHandler
 
 function clearGarden() {
   gardenHandler.clearTiles()
@@ -33,7 +32,7 @@ const settingsCode = useSettingsCode()
 function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
 
   const hasLoadedSuccessfully = gardenHandler.loadGardenByCode(code)
-  settingsCode.set(grid.loadSettingsCode)
+  settingsCode.set(gardenHandler.grid.loadSettingsCode)
   settingsCode.requestUpdate()
   gardenHandler.updateStats()
   // gardenHandler.requestFullUpdate()
@@ -61,7 +60,7 @@ function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
 }
 
 function saveLayout() {
-  saveCode.set(grid.saveGarden(settingsCode.code))
+  saveCode.set(gardenHandler.saveGarden(settingsCode.code))
 }
 
 const saveModal = ref<InstanceType<typeof SaveModal> | null>(null)
@@ -83,11 +82,11 @@ function openUISettingsModal() {
 
 const exportModal = ref<InstanceType<typeof ExportModal> | null>(null)
 function openExportModal() {
-  saveCode.set(grid.saveGarden(settingsCode.code))
+  saveCode.set(gardenHandler.saveGarden(settingsCode.code))
   exportModal.value?.openModal()
 }
 
-const createLayoutDialog = ref<InstanceType<typeof LayoutCreator> | null>()
+const createLayoutDialog = ref<InstanceType<typeof GridLayoutCreator> | null>()
 function openNewLayoutModal() {
   createLayoutDialog.value?.openModal()
 }
@@ -154,7 +153,8 @@ onMounted(() => {
       <SaveModal ref="saveModal" @save-layout="saveLayout()" />
       <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
       <UISettingsModal ref="uiSettingsModal" />
-      <LayoutCreator ref="createLayoutDialog" @create-new-layout="(code: string) => loadLayoutFromCode(code, true)" />
+      <!-- <LayoutCreator ref="createLayoutDialog" @create-new-layout="(code: string) => loadLayoutFromCode(code, true)" /> -->
+        <GridLayoutCreator ref="createLayoutDialog"/>
       <ClientOnly>
         <ExportModal ref="exportModal" />
       </ClientOnly>

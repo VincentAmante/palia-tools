@@ -3,15 +3,15 @@ import type { GardenGridPlaceCropOptions } from '~/assets/scripts/garden-planner
 import { GardenGrid, } from '~/assets/scripts/garden-planner/classes/gardenGrid'
 import type { Crop, Fertiliser, Bonus } from '~/assets/scripts/garden-planner/imports';
 import type { Coordinates } from '~/assets/scripts/garden-planner/utils/garden-helpers';
-import { GridTilesAnalyser } from '~/assets/scripts/garden-planner/classes/gridTileAnalyzer';
+import { GridTilesAnalyser } from '~/assets/scripts/garden-planner/classes/gridTileAnalyser';
 
 
 
-// TODO: Remove this after
-const DEV_PLOT_GRID_A = () => {
+// Standard 9x9 Garden
+const BASE_PLOT = () => {
     return {
         widthInTiles: 9,
-        heightInTiles: 11,
+        heightInTiles:9,
         startCoords: {
             x: 0,
             y: 0,
@@ -22,57 +22,8 @@ const DEV_PLOT_GRID_A = () => {
             .add(`0,6`).add(`3,6`).add(`6,6`)
     }
 }
-
-// offset grid
-const DEV_PLOT_GRID_B = () => {
-    return {
-        widthInTiles: 9,
-        heightInTiles: 11,
-        startCoords: {
-            x: 0,
-            y: 0,
-        },
-        plotCoordinates: new Set<Coordinates>()
-            .add(`0,2`).add(`3,1`).add(`6,0`)
-            .add(`0,5`).add(`3,4`).add(`6,3`)
-            .add(`0,8`).add(`3,7`).add(`6,6`)
-    }
-}
-
-const DEV_PLOT_GRID_C = () => {
-    return {
-        widthInTiles: 10,
-        heightInTiles: 11,
-        startCoords: {
-            x: 0,
-            y: 0,
-        },
-        plotCoordinates: new Set<Coordinates>()
-            .add(`0,2`).add(`3,1`).add(`6,0`)
-            .add(`0,5`).add(`3,4`).add(`7,3`)
-            .add(`0,8`).add(`3,7`).add(`6,6`)
-    }
-}
-
-const DEV_PLOT_GRID_D = () => {
-    return {
-        widthInTiles: 13,
-        heightInTiles: 11,
-        startCoords: {
-            x: 0,
-            y: 0,
-        },
-        plotCoordinates: new Set<Coordinates>()
-            .add(`1,1`).add(`4,1`).add(`7,1`)
-            .add(`1,4`).add(`4,4`).add(`7,4`)
-            .add(`1,7`).add(`4,7`).add(`7,7`)
-    }
-}
-
-// ----
-
 const useGardenGrid = defineStore('gardenGrid', () => {
-    const grid = shallowRef(new GardenGrid(DEV_PLOT_GRID_C()))
+    const grid = shallowRef(new GardenGrid(BASE_PLOT()))
     const analyser = shallowRef(new GridTilesAnalyser())
     const hoveredBonus = ref<Bonus | null>(null)
 
@@ -84,6 +35,8 @@ const useGardenGrid = defineStore('gardenGrid', () => {
             tileVersions.value.set(coordKey, currentVersion + 1)
         })
     }
+
+    const isGardenWide = computed(() => grid.value.width > 9)
 
     function getTile(coordinates: Coordinates) {
         return grid.value.getTile(coordinates)
@@ -158,7 +111,8 @@ const useGardenGrid = defineStore('gardenGrid', () => {
         updateStats,
         setHoveredBonus,
         clearTiles,
-        saveGarden
+        saveGarden,
+        isGardenWide
     }
 })
 

@@ -12,6 +12,8 @@ import { useSettingsCode } from '~/stores/useSettingsCode'
 import { ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
 import AppDivider from './AppDivider.vue'
+import GridGardenDisplay from './garden-planner/GridGardenDisplay.vue'
+import { loadSettings, saveSettings } from '~/assets/scripts/garden-planner/save-handler.js'
 
 import { usePlannerDisplayConfig } from '~/stores/usePlannerDisplayConfig'
 
@@ -21,16 +23,17 @@ const harvester = useHarvester()
 const processor = useProcessor()
 const plannerDisplayConfig = usePlannerDisplayConfig()
 
-const garden = useGarden()
+const garden = useGardenGrid()
 const settingsCode = useSettingsCode()
 const saveCode = useSaveCode()
 
 watchEffect(() => {
-  garden.update()
+  saveCode.set(garden.saveGarden(settingsCode.code))
+  garden.updateStats()
 })
 
 watchEffect(() => {
-  harvester.harvester.simulateYield(garden.garden.uniqueTiles as TUniqueTiles, harvester.settings)
+  harvester.harvester.simulateYield(garden.analyser.uniqueTiles as TUniqueTiles, harvester.settings)
 })
 
 watchEffect(() => {
@@ -59,13 +62,12 @@ watchEffect(() => {
 
 
 function saveGarden() {
-  const saveString = garden.garden.saveSettings(harvester.settings, processor.settings)
+  const saveString = saveSettings(harvester.settings, processor.settings)
   settingsCode.set(saveString)
 }
 
 function loadGarden(saveString: string) {
-  const { harvesterOptions, processorSettings: loadedProcessorSettings } = garden.garden.loadSettings(saveString)
-
+  const { harvesterOptions, processorSettings: loadedProcessorSettings } = loadSettings(saveString)
   harvester.updateSettings(Object.assign({}, harvesterOptions))
   processor.updateSettings(Object.assign({}, loadedProcessorSettings))
   processor.simulateProcessing(harvester.totalHarvest)
@@ -127,7 +129,7 @@ class="h-full" :class="[garden.isGardenWide ? 'flex flex-col items-center pb-2' 
         (plannerDisplayConfig.get === 'display+display') ? 'w-full' : ''
         ]">
           <template v-if="(plannerDisplayConfig.get === 'garden+display')">
-            <GardenDisplay />
+            <GridGardenDisplay />
             <StatsDisplay
 class="pt-2 @sm:mx-auto @xs:px-2 w-fit "
               :class="[garden.isGardenWide ? 'w-fit' : '@lg:w-full']" />
@@ -149,7 +151,7 @@ class="pt-2 @sm:mx-auto @xs:px-2 w-fit "
     </div>
     <div
 v-show="isTakingScreenshot.get" id="watermark" aria-label="hidden"
-      class="grid grid-cols-2 justify-between order-8 w-full px-4 lg:col-span-4 bg-palia-blue" :class="[]">
+      class="grid grid-cols-2 justify-between order-8 w-full px-4 lg:col-span-4 bg-palia-blue rounded-b-md" :class="[]">
       <div class="flex items-center w-full gap-2 p-2 text-right rounded-md leading-1">
         <img
 format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48px" class="max-w-16"
@@ -163,8 +165,8 @@ format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48p
           </p>
         </div>
       </div>
-      <div class="flex items-end p-2 text-accent">
-        <p class="text-xs text-right opacity-40">{{ saveCode.code }}</p>
+      <div class="flex items-end p-2 text-accent justify-end">
+        <p class="text-xs text-right opacity-70 max-w-160 font-mono">{{ saveCode.code }}</p>
       </div>
     </div>
   </section>

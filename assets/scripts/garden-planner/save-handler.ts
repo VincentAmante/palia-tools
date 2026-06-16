@@ -253,11 +253,6 @@ export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
   return `${convertedSettings}${convertedCropSettings}`
 }
 
-
-
-
-
-// TODO: Implement a rudimentary version of the GardenGrid
 function convertV_0_4CodeToV_0_5Code(dimensionInfo: string, cropInfo: string) {
   const convertedSave = new GardenGridBasic(dimensionInfo, cropInfo)
 
@@ -274,12 +269,12 @@ function convertV_0_4CodeToV_0_5Code(dimensionInfo: string, cropInfo: string) {
 export function parseSave(save: string) {
   // * This format makes it permanent that the first part of the save is the version number
   const [version, ...rest] = save.split('_')
-  const dimensionInfo = rest[0] || ''
+  let dimensionInfo = rest[0] || ''
   let cropInfo = rest[1] || ''
   let settingsInfo = rest[2] || ''
   let strippedVersion = version?.replace('v', '');
 
-  const convertedV_0_5Save = {
+  let convertedV_0_5Save = {
     cropInfo: '',
     dimensionInfo: ''
   }
@@ -311,24 +306,23 @@ export function parseSave(save: string) {
         strippedVersion = '0.4'
         break
       case '0.4':
-        validatePlotMatrix(dimensionInfo)
-
-        cropInfo = cropInfo
-
+        convertedV_0_5Save = convertV_0_4CodeToV_0_5Code(dimensionInfo, cropInfo)
+        cropInfo = convertedV_0_5Save.cropInfo
+        dimensionInfo = convertedV_0_5Save.dimensionInfo
+        validateNewPlotFormat(dimensionInfo, cropInfo)
         settingsInfo = settingsInfo
+        strippedVersion = '0.5'
         break
-      // case '0.4':
-      //   convertedV_0_5Save = convertV_0_4CodeToV_0_5Code(dimensionInfo, cropInfo)
-      //   cropInfo = convertedV_0_5Save.cropInfo
-      //   dimensionInfo = convertedV_0_5Save.dimensionInfo
-      //   validateNewPlotFormat(dimensionInfo, cropInfo)
-      //   // eslint-disable-next-line no-self-assign
-      //   settingsInfo = settingsInfo
-      //   break
+      case '0.5':
+        cropInfo = cropInfo
+        dimensionInfo = dimensionInfo
+        settingsInfo = settingsInfo
+        validateNewPlotFormat(dimensionInfo, cropInfo)
+        break
       default:
-        throw new Error('Invalid save version')
+        throw new Error(`Invalid save version ${strippedVersion}`)
     }
-  } while (strippedVersion !== LATEST_VERSION)
+  } while (strippedVersion !== '0.5')
 
   return { version: strippedVersion, dimensionInfo, cropInfo, settingsInfo }
 }
@@ -377,18 +371,10 @@ export function parseSaveTEST(save: string) {
         settingsInfo = convertV_0_3SettingsToV_0_4Settings(settingsInfo)
         strippedVersion = '0.4'
         break
-      // case '0.4':
-      //   validatePlotMatrix(dimensionInfo)
-      //   // eslint-disable-next-line no-self-assign
-      //   cropInfo = cropInfo
-      //   // eslint-disable-next-line no-self-assign
-      //   settingsInfo = settingsInfo
-      //   break
       case '0.4':
         convertedV_0_5Save = convertV_0_4CodeToV_0_5Code(dimensionInfo, cropInfo)
         cropInfo = convertedV_0_5Save.cropInfo
         dimensionInfo = convertedV_0_5Save.dimensionInfo
-        console.log('convertedSave', convertedV_0_5Save)
         validateNewPlotFormat(dimensionInfo, cropInfo)
         settingsInfo = settingsInfo
         strippedVersion = '0.5'
@@ -477,8 +463,6 @@ function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: 
       continue
 
     const cropIdData = parseCropId(cropId)
-
-    // TODO: Convert to cropCode from IGrowthBoost
     cropSettings += cropIdData.code
 
     // `.` indicates that the crop is not a star seed.
@@ -489,7 +473,7 @@ function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: 
       cropSettings += '~'
 
     // P for preserve, S for seed
-    cropSettings += `${setting.processAs[0].toUpperCase()}`
+    cropSettings += `${setting.processAs[0]?.toUpperCase()}`
 
     // Number of crafters (default is 1)
     if (setting.crafters !== 1)

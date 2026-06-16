@@ -16,13 +16,13 @@ const props = defineProps<{
 
 const isTakingScreenshot = useTakingScreenshot()
 const selectedItem = useSelectedItem()
-const gardenHandler = useGarden()
+const gardenHandler = useGardenGrid()
 
-const plotStat = computed(() => gardenHandler.plotStat)
+const gardenAnalyser = computed(() => gardenHandler.analyser)
 const totalFertilisers = computed(() => {
   let count = 0
-  for (const fertiliser in plotStat.value.fertiliserCount)
-    count += plotStat.value.fertiliserCount[fertiliser as FertiliserType]
+  for (const fertiliser in gardenAnalyser.value.fertiliserCountByType)
+    count += gardenAnalyser.value.fertiliserCountByType[fertiliser as FertiliserType]
   return count
 })
 
@@ -33,7 +33,7 @@ const bonusToSortBy = ref<Bonus | null>(null)
 const cropsList = computed(() => {
   const list: { crop: Crop; count: number }[] = []
   for (const crop of Object.values(crops))
-    list.push({ crop, count: plotStat.value.cropTypeCount[crop.type] })
+    list.push({ crop, count: gardenAnalyser.value.cropCountByType[crop.type] })
 
   let sortedList = list
   if (bonusToSortBy.value && !isTakingScreenshot.get)
@@ -126,7 +126,7 @@ id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
               }">
               <font-awesome-icon class="absolute -z-10 max-w-[42px] text-warning text-2xl " :icon="['fas', 'eraser']" />
             </button>
-            <template v-for="(count, index) in plotStat.fertiliserCount" :key="index">
+            <template v-for="(count, index) in gardenAnalyser.fertiliserCountByType" :key="index">
               <FertiliserButton
 v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
                 :is-selected="(selectedItem.type === SelectedItemType.Fertiliser)

@@ -18,7 +18,7 @@ const DEV_PLOT_GRID_A = () => {
     }
 }
 
-const useGardenGrid = defineStore('layoutCreatorGrid', () => {
+const useLayoutCreatorGrid = defineStore('layoutCreatorGrid', () => {
     const grid = shallowRef(new GardenGrid(DEV_PLOT_GRID_A()))
     const hoveredBonus = ref<Bonus | null>(null)
 
@@ -97,4 +97,4 @@ const useGardenGrid = defineStore('layoutCreatorGrid', () => {
     }
 })
 
-export default useGardenGrid
+export default useLayoutCreatorGrid

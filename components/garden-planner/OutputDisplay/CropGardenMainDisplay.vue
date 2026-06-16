@@ -6,11 +6,8 @@ import GardenFertiliserTables from './GardenFertiliserTables.vue'
 import GardenSeedTables from './GardenSeedTables.vue'
 import TendingPanel from './TendingPanel.vue'
 const harvester = useHarvester()
-// const garden = useGarden()
 
 const tab = ref<'Harvest' | 'Tending' | 'Misc'>('Harvest')
-
-// const plotStat = computed(() => garden.plotStat)
 
 </script>
 

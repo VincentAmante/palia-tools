@@ -1,20 +1,18 @@
 <script setup lang="ts">
 
 import useHarvester from '~/stores/useHarvester'
-import useGarden from '~/stores/useGarden'
+import useGardenGrid from '~/stores/useGardenGrid'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 const harvester = useHarvester()
-const garden = useGarden()
-
-const plotStat = computed(() => garden.plotStat)
+const garden = useGardenGrid()
 
 const cropsToWaterDaily = computed(() => {
-    return plotStat.value.cropCount - plotStat.value.cropBonusCoverage['Water Retain']
+    return garden.analyser.cropCount - garden.analyser.bonusCountsByType['Water Retain']
 });
 
 const cropsToCheckForWeedDaily = computed(() => {
-    return plotStat.value.cropCount - plotStat.value.cropBonusCoverage['Weed Prevention']
+    return garden.analyser.cropCount - garden.analyser.bonusCountsByType['Weed Prevention']
 })
 
 function getBgStyle(cropsHarvested: number) {

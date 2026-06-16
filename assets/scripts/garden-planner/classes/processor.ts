@@ -520,7 +520,6 @@ export default class Processor {
           if (dayInPhase !== 0) {
             for (const [index, phase] of cycleDataForCrop.phases.entries()) {
               if (dayInPhase === phase.phaseLength) {
-                console.log('found phase index', index)
                 phaseIndex = index
                 break
               }

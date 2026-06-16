@@ -242,8 +242,6 @@ export class GardenGridBasic {
 
     this._dimensionCode = dimensionInfoCode
     this._cropInfoCode = cropInfoCode.join('-')
-
-    console.log('finished conversion')
   }
 
   private placeCrop(coordinates: { x: number, y: number }, cropCode: CropCode) {
