@@ -19,18 +19,21 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
         Overview
       </p>
       <div class="grid grid-cols-3 gap-1 @lg:grid-cols-5">
-        <div class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
+        <div
+          class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
           <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
             Total
           </p>
-          <p class="flex items-center justify-end gap-1 text-lg font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
+          <p
+            class="flex items-center justify-end gap-1 text-lg font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
             <img
-width="12" height="12" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
-              format="webp">
+width="12" height="12" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
+              alt="Gold" format="webp">
             {{ parseInt((processor.finalGoldValue || 0).toFixed(0)).toLocaleString() }}
           </p>
         </div>
-        <div class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
+        <div
+          class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
           <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
             <span
 v-if="craftingTime.actualValue <= 0" class="text-xs font-normal tooltip"
@@ -42,8 +45,8 @@ v-if="craftingTime.actualValue <= 0" class="text-xs font-normal tooltip"
           <p
             class="flex items-center justify-end w-full gap-1 text-lg font-semibold text-right @2xl:text-xl text-palia-blue dark:text-accent">
             <img
-width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined" alt="Gold"
-              format="webp">
+width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
+              alt="Gold" format="webp">
             <span v-if="processor.highestCraftingTime > 0 && processor.settings.goldAverageSetting === 'crafterTime'">
               &#8776;{{ (processor.averageGoldValue || 0).toLocaleString() }}
             </span>
@@ -57,21 +60,27 @@ width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1
 class="@sm:inline-block"
               :class="{ 'hidden': processor.settings.goldAverageSetting === 'growthTick' }">per</span>
             <span v-if="processor.settings.goldAverageSetting === 'growthTick'" class="@sm:hidden inline-block">/</span>
-
             <span
 v-if="processor.highestCraftingTime > 0 && processor.settings.goldAverageSetting === 'crafterTime'"
-              class="font-bold text-growth-boost-dark dark:text-growth-boost">Hour <FontAwesomeIcon :icon="['fas', 'stopwatch']" /></span>
-            <span v-else class="font-bold flex flex-nowrap whitespace-nowrap gap-1 text-harvest-boost-dark dark:text-harvest-boost">Growth Tick
+              class="font-bold text-growth-boost-dark dark:text-growth-boost">Hour
+              <FontAwesomeIcon :icon="['fas', 'stopwatch']" />
+            </span>
+            <span
+v-else
+              class="font-bold flex flex-nowrap whitespace-nowrap gap-1 text-harvest-boost-dark dark:text-harvest-boost">Growth
+              Tick
               <FontAwesomeIcon class="" :icon="['fas', 'seedling']" />
             </span>
 
           </p>
         </div>
-        <div class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
+        <div
+          class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
           <p class="w-full text-xs text-right text-misc-dark dark:text-primary">
             Process Time
           </p>
-          <p class="flex items-end justify-end text-lg font-semibold text-right text-palia-blue dark:text-accent @2xl:text-xl">
+          <p
+            class="flex items-end justify-end text-lg font-semibold text-right text-palia-blue dark:text-accent @2xl:text-xl">
             <template v-if="((craftingTime.actualValue) > 0)">
               &#8776;<template v-if="craftingTime.days > 0">
                 {{ parseInt(craftingTime.days.toFixed(0)).toLocaleString() }}
@@ -95,19 +104,23 @@ v-if="(craftingTime.actualValue > 0)"
             Earth Time
           </p>
         </div>
-        <div class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
+        <div
+          class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
           <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
             Level
           </p>
-          <p class="flex items-center justify-end gap-1 text-lg font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
+          <p
+            class="flex items-center justify-end gap-1 text-lg font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
             {{ harvester.settings.level }}
           </p>
         </div>
-        <div class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
+        <div
+          class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
           <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
             Growth Ticks
           </p>
-          <p class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
+          <p
+            class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
             {{ harvester.totalHarvest.lastHarvestDay }}
           </p>
         </div>

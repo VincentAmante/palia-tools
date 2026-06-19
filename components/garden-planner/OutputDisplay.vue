@@ -61,7 +61,7 @@ class="btn join-item btn-sm gap-1 tooltip" aria-label="Show Garden + Output Disp
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
         </button>
         <button
-class="btn join-item btn-sm gap-1 tooltip" aria-label="Show double Output Displays" data-tip=" Double Displays"
+class="btn join-item btn-sm gap-1 tooltip" aria-label="Show double Output Displays" data-tip="Double Displays"
           @click="plannerDisplayConfig.set('display+display')">
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
