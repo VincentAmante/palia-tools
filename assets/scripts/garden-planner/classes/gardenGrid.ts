@@ -178,6 +178,19 @@ export class GardenGrid {
             this.getTile(coordsByDirection(coordinates, 'South'))
         ]
 
+        // for (let n = 0; n < 4; n++){
+        //     const neighbouringTile = tileNeighbours[n]
+
+        //     // ensures there is a tile and crop to get bonuses from
+        //     if (!neighbouringTile || !neighbouringTile.attachedCrop) continue
+        //     // must not come from the same crop
+        //     if (neighbouringTile.attachedCrop.id === tileToUpdate.attachedCrop?.id) continue
+        //     // if the tile to update has a crop, it musn't be of the same kind as its neighbour to receive a bonus
+        //     if (tileToUpdate?.attachedCrop?.crop.type === neighbouringTile.attachedCrop.crop.type) continue
+
+        //     tileToUpdate.addBonusReceived(neighbouringTile.id, neighbouringTile.attachedCrop.crop.cropBonus)
+        // }
+
         for (const neighbouringTile of tileNeighbours) {
             // ensures there is a tile and crop to get bonuses from
             if (!neighbouringTile || !neighbouringTile.attachedCrop) continue
@@ -193,8 +206,9 @@ export class GardenGrid {
             tileToUpdate.addBonusReceived(tileToUpdate.id, tileToUpdate.fertiliser.effect)
         }
 
-        // if this tile is attached to a larger crop, ensure to add every tile to the modified list
+        // if this tile is attached to a larger crop, ensure every tile updates
         tileToUpdate.attachedCrop?.tiles.forEach((tile) => {
+            tile.updateBonuses()
             modifiedTiles.add(tile.coordinates)
         })
 
@@ -669,8 +683,7 @@ export class GardenGrid {
         // Trim down excess rows/columns, needs no tile displacement
         let rowsToCutDown = 0
         let columnsToCutDown = 0
-        for (const [index, hasTile] of Array.from(rowHasTileMap).toReversed()) {
-            console.log(index, hasTile)
+        for (const [_, hasTile] of Array.from(rowHasTileMap).toReversed()) {
             if (!hasTile) {
                 rowsToCutDown++
                 gardenHasChanged = true
@@ -678,7 +691,7 @@ export class GardenGrid {
             else break
         }
 
-        for (const [index, hasTile] of Array.from(colHasTileMap).toReversed()) {
+        for (const [_, hasTile] of Array.from(colHasTileMap).toReversed()) {
             if (!hasTile) {
                 columnsToCutDown++
                 gardenHasChanged = true
@@ -831,7 +844,6 @@ export class GardenGrid {
         const attachedCropTiles = attachedCrop.tiles
 
         attachedCropTiles.forEach((attachedTile) => {
-            // console.log('updating: ', attachedTile.coordinates)
             attachedTile.attachedCrop = null
             modifiedTiles.add(attachedTile.coordinates)
             this._tiles.set(attachedTile.coordinates, attachedTile as GridTile)
@@ -841,12 +853,10 @@ export class GardenGrid {
 
             // Update the neighbour of each tile
             for (const neighbouringTileCoords of this.getAdjacentTilesWithDifferentCropCoords(attachedTile.coordinates, true)) {
-                // console.log('neighbor:', neighbouringTileCoords)
                 modifiedTiles = modifiedTiles.union(this.updateTileBonuses(neighbouringTileCoords))
             }
         })
 
-        // console.log('removeCropModifiedTiles: ', modifiedTiles)
         return modifiedTiles
     }
 

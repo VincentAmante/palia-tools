@@ -110,6 +110,7 @@ watch(updateIsRequested, () => {
   }
 })
 
+// const TEMP_ObjViewer_Toggle = ref(false)
 </script>
 
 <template>
@@ -169,5 +170,18 @@ format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48p
         <p class="text-xs text-right opacity-70 max-w-160 font-mono">{{ saveCode.code }}</p>
       </div>
     </div>
+    <DevOnly>
+      <!-- <div class="mt-4 bg-palia-blue-dark p-2 flex flex-col gap-2">
+        <fieldset class="fieldset bg-base-100 border-base-300 rounded-box w-64 border p-4">
+          <legend class="fieldset-legend">Object Viewer</legend>
+          <label class="label">
+
+            <input v-model="TEMP_ObjViewer_Toggle" type="checkbox" class="toggle">
+            Obj Viewer
+          </label>
+        </fieldset>
+        <ObjectViewer v-if="TEMP_ObjViewer_Toggle" :value="garden.analyser.uniqueTiles" />
+      </div> -->
+    </DevOnly>
   </section>
 </template>

@@ -2,7 +2,6 @@ import type { TUniqueTiles, Coordinates } from "../utils/garden-helpers"
 import { Bonus, FertiliserType } from "../imports";
 import { CropType } from '@/assets/scripts/garden-planner/imports'
 import type { IGridTile } from "../utils/gardenGridTypes";
-
 export interface GridPlotStat {
     cropCount: Readonly<number>;
     cropCountByType: Readonly<Record<CropType, number>>
@@ -69,6 +68,7 @@ export class GridTilesAnalyser implements GridPlotStat {
             if (tile.attachedCrop) {
                 // Only consider if this is where the crop begins
                 if (tile.attachedCrop.location.start !== tile.coordinates) return
+
 
                 cropCountByType[tile.attachedCrop.crop.type]++
                 cropCount++

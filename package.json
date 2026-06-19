@@ -46,7 +46,7 @@
     "@vueuse/nuxt": "^14.3.0",
     "autoprefixer": "^10.5.0",
     "canvas": "^3.2.3",
-    "daisyui": "^5.5.20",
+    "daisyui": "^5.5.23",
     "eslint": "^10.4.0",
     "globals": "^17.6.0",
     "happy-dom": "^20.9.0",

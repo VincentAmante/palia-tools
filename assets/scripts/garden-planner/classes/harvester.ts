@@ -492,8 +492,6 @@ export default class Harvester {
       if (cropTotalsForAveraging.size > 0) {
         for (const [cropId, _] of cropTotalsForAveraging) {
           const cropsTracker = cropsRequiredTracker.get(cropId)!
-
-          // console.log(`totalCropsConsumed: ${cropsRequiredTracker.totalCropsConsumed} | deductionsDone ${cropsRequiredTracker.deductionsDone}`)
           const averageCropsConsumed = cropsTracker.totalCropsConsumed / cropsTracker.deductionsDone
           const isStarModifier = cropId.includes('-Star') ? 'star' : 'base'
 
@@ -506,8 +504,6 @@ export default class Harvester {
 
           cropCycleData.phases.at(-1)!.yield[isStarModifier].totalWithDeductions -= Math.round(averageCropsConsumed)
           cropCycleData.phases.at(-1)!.yield[isStarModifier].isAveraged = true
-
-          // console.log(cropId, averageCropsConsumed)
         }
       }
     }
@@ -531,7 +527,6 @@ export default class Harvester {
     this._dayHarvests = dayHarvests
     this._totalHarvest.lastHarvestDay = dayOfLastHarvest
     this._harvestDayGaps = harvestDayGapStats
-    // console.log('cycleData', this._totalHarvest.cycleData)
   }
 }
 

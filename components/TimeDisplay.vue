@@ -14,7 +14,7 @@ const hour = ref(Math.floor(totalSeconds.value / SECONDS_PER_HOUR))
 const minute = ref(Math.floor((totalSeconds.value % SECONDS_PER_HOUR) / SECONDS_PER_HOUR * 60))
 
 const hourFormatted = ref(hour.value > 12 ? hour.value - 12 : (hour.value === 0 ? 12 : hour.value))
-const minuteFormatted = ref(minute.value < 10 ? `0${minute.value}` : minute.value)
+const minuteFormatted = ref(minute.value)
 const meridiem = ref(hour.value >= 12 ? 'PM' : 'AM')
 const timeFormatted = ref(`${hourFormatted.value}:${minuteFormatted.value} ${meridiem.value}`)
 
@@ -27,7 +27,7 @@ onMounted(() => {
     minute.value = Math.floor(((totalSeconds.value % SECONDS_PER_HOUR) / SECONDS_PER_HOUR) * 60)
 
     hourFormatted.value = hour.value > 12 ? hour.value - 12 : (hour.value === 0 ? 12 : hour.value)
-    minuteFormatted.value = minute.value < 10 ? `0${minute.value}` : minute.value
+    minuteFormatted.value = minute.value
     meridiem.value = hour.value >= 12 ? 'PM' : 'AM'
 
     timeFormatted.value = `${hourFormatted.value}:${minuteFormatted.value} ${meridiem.value}`
@@ -68,13 +68,12 @@ onMounted(() => {
         <p
 class="text-3xl"
           :class="{ 'text-harvest-boost': (hourFormatted === 6 && minuteFormatted === '00' && meridiem === 'AM') }">
-          <span class="countdown">
+          <span class="countdown tracking-widest">
             <span
-class="translate-x-1" :style="`--value:${hourFormatted};`" aria-live="polite"
+class="" :style="`--value:${hourFormatted}; --digits:2`" aria-live="polite"
               :aria-label="`${hourFormatted}`">{{
-                hourFormatted }}</span>
-            :
-            <span :style="`--value:${minuteFormatted};`" aria-live="polite" :aria-label="`${minuteFormatted}`">{{
+                hourFormatted }}</span>:
+            <span :style="`--value:${minuteFormatted}; --digits:2`" aria-live="polite" :aria-label="`${minuteFormatted}`">{{
               minuteFormatted }}</span>
           </span>{{ meridiem }}
         </p>

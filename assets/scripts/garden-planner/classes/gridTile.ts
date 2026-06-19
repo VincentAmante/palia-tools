@@ -5,7 +5,6 @@ import uniqid from 'uniqid'
 import { translateCoordinates } from "../utils/garden-helpers";
 import type { IGridCrop, IGridTile } from "../utils/gardenGridTypes";
 
-
 interface GridTileConstructorParams {
     coordinates: Coordinates,
     plotLocalCoordinates: Coordinates,
@@ -51,8 +50,9 @@ export class GridTile implements IGridTile {
     }
 
     updateBonuses() {
-        this._bonuses = new Set(Array.from(this._bonusesReceived.values()).sort())
+        // this._bonuses = new Set(Array.from(this._bonusesReceived.values()).sort())
         if (this._attachedCrop) this._attachedCrop.updateCropBonuses()
+        this._bonuses = new Set(this._attachedCrop?.bonuses)
     }
 
     get id(): string {

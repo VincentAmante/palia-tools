@@ -326,8 +326,6 @@ export enum ItemType {
 
 export type CropItem = ItemType.Crop | ItemType.Seed | ItemType.Preserve
 
-
-
 export function getBonusDataByFertiliser(fertiliser: FertiliserType) {
   const bonus = getFertiliserFromType(fertiliser)?.effect || Bonus.None
 

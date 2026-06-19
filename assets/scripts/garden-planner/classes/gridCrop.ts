@@ -84,7 +84,7 @@ export class GridCrop implements IGridCrop {
 
         const bonusCounts: Map<Bonus, number> = new Map()
 
-        for (const [coordinates, tile] of this._tiles) {
+        for (const [_, tile] of this._tiles) {
             for (const bonus of tile.bonusesReceived) {
                 bonusCounts.set(bonus, (bonusCounts.get(bonus) || 0) + 1)
             }
@@ -94,6 +94,7 @@ export class GridCrop implements IGridCrop {
         for (const [bonus, count] of bonusCounts) {
             if (count >= requiredSize) validBonuses.add(bonus)
         }
+
 
         this._bonuses = validBonuses
     }
@@ -119,7 +120,6 @@ export class GridCrop implements IGridCrop {
 
         for (const [coords, tile] of this._tiles) {
             if (coords === this._location.start) {
-                console.log('found start tile', this._id)
                 foundStartTile = true
                 break
             }
