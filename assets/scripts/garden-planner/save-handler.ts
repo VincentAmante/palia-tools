@@ -12,6 +12,7 @@ import FertiliserCode from './enums/fertilisercode'
 import { LATEST_VERSION } from './types/version'
 import CropSize from './enums/crop-size'
 import { GardenGridBasic, expandPlotCode, PLOT_DIMENSION_REGEX as V05_PLOT_DIMENSION_REGEX } from './saveHandlerGardenBasic'
+import { FertiliserCostSource } from './classes/processor'
 
 /**
  * Gets the latest set of cropCodes, to be overriden by past iterations
@@ -496,7 +497,44 @@ function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: 
 
   return settings
 }
-function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings } {
+
+interface ParsedSettings {
+  general: string;
+  cropProcess: string;
+  fertiliserSource: string;
+}
+
+/**
+ * Parses the settings string into its segments
+ */
+function parseSettings(input: string): ParsedSettings {
+  const cropIndex = input.indexOf('Cr0.');
+  const fertIndex = input.indexOf('Fr0.');
+
+  let general = '';
+  let cropProcess = '';
+  let fertiliserSource = '';
+
+  if (cropIndex !== -1) {
+    general = input.substring(0, cropIndex);
+
+    if (fertIndex !== -1 && fertIndex > cropIndex) {
+      cropProcess = input.substring(cropIndex, fertIndex);
+      fertiliserSource = input.substring(fertIndex);
+    } else {
+      cropProcess = input.substring(cropIndex);
+    }
+  } else if (fertIndex !== -1) {
+    general = input.substring(0, fertIndex);
+    fertiliserSource = input.substring(fertIndex);
+  } else {
+    general = input;
+  }
+
+  return { general, cropProcess, fertiliserSource };
+}
+
+function decodeSettings_OLD(settingsInfo: string): { harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings } {
   const harvesterOptions: IHarvesterOptions = {
     days: -1,
     includeReplant: true,
@@ -512,6 +550,7 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
     goldAverageSetting: 'crafterTime'
   }
 
+
   const settings = settingsInfo.split('Cr0')
 
   for (let setting of settings) {
@@ -520,11 +559,9 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
 
       const cropSettings = setting.split('-')
       for (const cropSetting of cropSettings) {
-
         if (cropSetting.length === 0) continue
 
         const codeMatch = cropSetting.match(/^([A-Z][a-z]?)(\.?)(~?)([PS]?)(\d*)/);
-
 
         if (!codeMatch) {
           throw new Error(`Invalid crop setting format: ${cropSetting}`)
@@ -554,12 +591,14 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
       }
     } else {
       const harvesterSettings = (setting.match(/[A-Z][a-z0-9]*/g) as string[]) || []
+
       const exactHandlers: Record<string, () => void> = {
         'Nr': () => { harvesterOptions.includeReplant = false; },
         'Nrc': () => { harvesterOptions.includeReplantCost = false; },
         'Nss': () => { harvesterOptions.useStarSeeds = false; },
         'Gb': () => { harvesterOptions.useGrowthBoost = true; },
-        'Gt': () => { processorSettings.goldAverageSetting = 'growthTick' }
+
+        'Gt': () => { processorSettings.goldAverageSetting = 'growthTick' },
       };
 
       for (const harvesterSetting of harvesterSettings) {
@@ -570,8 +609,11 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
 
         const match = harvesterSetting.match(/^([A-Z])(\d+)$/);
         if (match) {
-          const [, prefix, value] = match;
-          const number = parseInt(value);
+          const [, prefix, value] = match
+
+          if (!value) console.warn(`Setting ${prefix} lacks value, using '0' instead`)
+
+          const number = parseInt(value || '0');
 
           switch (prefix) {
             case 'D':
@@ -589,6 +631,146 @@ function decodeSettings(settingsInfo: string): { harvesterOptions: IHarvesterOpt
   return { harvesterOptions, processorSettings }
 }
 
+function decodeSettings(settingsInfo: string, version = LATEST_VERSION): { harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings } {
+  const harvesterOptions: IHarvesterOptions = {
+    days: -1,
+    includeReplant: true,
+    includeReplantCost: true,
+    level: 0,
+    useGrowthBoost: false,
+    useStarSeeds: true,
+  };
+
+  const processorSettings: ProcessorSettings = {
+    cropSettings: new Map(),
+    crafterSetting: 0,
+    goldAverageSetting: 'crafterTime',
+    fertiliseCostSetting: new Map()
+  };
+
+  const { general: generalSettings, cropProcess: cropSettings, fertiliserSource: fertiliserSettings } = parseSettings(settingsInfo);
+
+  if (generalSettings) {
+    const harvesterSettings = (generalSettings.match(/[A-Z][a-z0-9]*/g) as string[]) || [];
+    const exactHandlers: Record<string, () => void> = {
+      Nr: () => { harvesterOptions.includeReplant = false; },
+      Nrc: () => { harvesterOptions.includeReplantCost = false; },
+      Nss: () => { harvesterOptions.useStarSeeds = false; },
+      Gb: () => { harvesterOptions.useGrowthBoost = true; },
+      Gt: () => { processorSettings.goldAverageSetting = 'growthTick'; },
+
+      // For if we change the default settings back to growthTick
+      'Cft': () => { processorSettings.goldAverageSetting = 'crafterTime' }
+    };
+
+    for (const setting of harvesterSettings) {
+      if (exactHandlers[setting]) {
+        exactHandlers[setting]();
+        continue;
+      }
+
+      const match = setting.match(/^([A-Z])(\d+)$/);
+      if (match) {
+        const [, prefix, value] = match;
+        if (!value) console.warn(`Setting ${prefix} lacks value, using '0' instead`)
+        const number = parseInt(value || '0', 10);
+
+        switch (prefix) {
+          case 'D':
+            harvesterOptions.days = number;
+            break;
+          case 'L':
+            harvesterOptions.level = number;
+            break;
+        }
+      }
+    }
+  }
+
+  if (cropSettings) {
+    const cropProcessSettingsContent = cropSettings.replace(/^Cr0\./, '');
+    const cropProcessSettings = cropProcessSettingsContent.split('-');
+    for (const cropSetting of cropProcessSettings) {
+      if (cropSetting.length === 0) continue;
+
+      const codeMatch = cropSetting.match(/^([A-Z][a-z]?)(\.?)(~?)([PS]?)(\d*)/);
+      if (!codeMatch) {
+        throw new Error(`Invalid crop setting format: ${cropSetting}`);
+      }
+
+      const code = codeMatch[1] as CropCode;
+      const isStar = codeMatch[2] !== '.';
+      const hasGrowthBoost = codeMatch[3] === '~';
+      const processAs =
+        codeMatch[4] === 'P' ? ItemType.Preserve :
+          codeMatch[4] === 'S' ? ItemType.Seed :
+            ItemType.Crop;
+      const crafters = codeMatch[5] ? parseInt(codeMatch[5], 10) : 1;
+      const type = getCropFromCode(code)!.type;
+
+      const cropId = encodeCropId({ type, isStar, hasGrowthBoost });
+
+      const setting: ProcessorSetting = {
+        count: 0,
+        cropType: type,
+        isStar,
+        processAs,
+        crafters,
+        targetTime: 0,
+        isActive: true,
+        hasPreserve: processAs === 'preserve',
+      };
+
+      processorSettings.cropSettings.set(cropId, setting);
+    }
+  }
+
+  if (fertiliserSettings) {
+    const fertiliserCostSourceContent = fertiliserSettings.replace(/^Fr0\./, '');
+    const fertiliserMatches = fertiliserCostSourceContent.match(/[A-Z][a-z]/g)
+
+    if (!fertiliserMatches) throw new Error(`No fertiliser cost source found, invalid format? ${fertiliserMatches}`)
+
+    for (const fertiliserCostSource of fertiliserMatches) {
+      const fertCode = fertiliserCostSource[0] as FertiliserCode
+      const costSource = fertiliserCostSource[1] as FertiliserCostSource
+
+      if (!fertCode || !costSource) throw new Error(`expected setting not found ${fertiliserCostSource}`)
+      if (!Object.values(FertiliserCode).includes(fertCode)) throw new Error(`FertCode not valid: ${fertCode}`)
+      if (!Object.values(FertiliserCostSource).includes(costSource)) throw new Error(`Cost Source not valid: ${costSource}`)
+
+      const fertiliser = getFertiliserFromCode(fertCode)
+      if (!fertiliser) throw new Error(`fertiliser not found somehow: ${fertCode}`)
+
+      switch (costSource) {
+        case FertiliserCostSource.ZEKI_STORE:
+          console.log(`${fertiliser.type}: Zeki`)
+          if (fertiliser.costs.zekiBatchPrice <= 0) {
+            console.warn(`COST SOURCE NOT FOUND: Planner lacks support for Zeki Store Prices for ${fertiliser.type}, skipping`)
+            continue
+          }
+          break
+        case FertiliserCostSource.GUILD_STORE:
+          console.log(`${fertiliser.type}: Guild Store`)
+          if (fertiliser.costs.guildBatchPrice <= 0) {
+            console.warn(`COST SOURCE NOT FOUND: Planner lacks support for Guild Store prices for ${fertiliser.type}, skipping`)
+            continue
+          }
+          break
+        default:
+          console.log(`${fertiliser.type}: Sell Value`)
+          if (fertiliser.costs.goldSellValue <= 0) {
+            console.warn(`COST SOURCE NOT FOUND: Planner lacks support for sell value prices for ${fertiliser.type}, skipping`)
+          }
+      }
+
+      processorSettings.fertiliseCostSetting?.set(fertiliser.type, costSource)
+    }
+  }
+
+  return { harvesterOptions, processorSettings };
+}
+
 /**
  * Ensures the dimensions provided can support the plots of the new system
  * @param dimensionInfo 
@@ -601,7 +783,6 @@ export function validateNewPlotFormat(dimensionInfo: string, cropInfo: string) {
 
   const [_, totalWidthInTiles, totalHeightInTiles] = dimensionExtractMatch
 
-  // console.log('dimensionExtract', dimensionExtractMatch)
   if (!totalWidthInTiles || !totalHeightInTiles) throw new Error('Dimension Info does not match expected format')
 
   const plots = cropInfo.split('-')

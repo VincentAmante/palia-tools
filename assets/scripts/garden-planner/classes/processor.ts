@@ -1,12 +1,10 @@
 import { getCropFromType } from '../cropList'
-import type { Crop, CropType  } from '../imports'
+import type FertiliserCode from '../enums/fertilisercode'
+import type { Crop, CropType, FertiliserType  } from '../imports'
 
 import { ItemType, parseCropId  } from '../utils/garden-helpers'
 import type { CropItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IDayHarvest, IHarvestCyclePhase, IInventoryItem, ISeedTracker, ITotalHarvest } from '../utils/garden-helpers'
 import type { ICropConversions } from './crop'
-
-
-
 
 /**
  * Unified time trackers for my sanity, cause what did I write LMAO
@@ -97,10 +95,17 @@ export interface ProcessorSetting {
   count: number // Quantity to process
 }
 
+export enum FertiliserCostSource {
+  SELL_VALUE = 's', // Cost of selling
+  ZEKI_STORE = 'z', // Cost from buying it from Zeki's store
+  GUILD_STORE = 'g' // Cost from buying it from the garden guild (medals)
+}
+
 // Interface for all processor settings
 export interface ProcessorSettings {
   cropSettings: Map<ICropNameWithGrowthDiff, ProcessorSetting>
   goldAverageSetting: 'crafterTime' | 'growthTick'
+  fertiliseCostSetting?: Map<FertiliserType, FertiliserCostSource>
   crafterSetting: number // Currently not used
 }
 
