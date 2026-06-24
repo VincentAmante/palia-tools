@@ -11,13 +11,14 @@ interface UISettings {
   colorScheme: 'light' | 'dark' | 'system';
   showAsProcessedItems: boolean;
   showAsProcessedGold: boolean;
-  showAsProcessedTime: boolean
+  showAsProcessedTime: boolean;
+    showGridAxesLabels: boolean
 }
 
 type UISettingsKey = keyof UISettings
 
 
-function updateKey<K extends UISettingsKey>(key: K, settingsA: UISettings, settingsB: UISettings){
+function updateKey<K extends UISettingsKey>(key: K, settingsA: UISettings, settingsB: UISettings) {
   settingsA[key] = settingsB[key]
 }
 
@@ -32,7 +33,9 @@ export const useUiSettings = defineStore('uiSettings', () => {
     colorScheme: 'system',
     showAsProcessedItems: false,
     showAsProcessedGold: true,
-    showAsProcessedTime: true
+    showAsProcessedTime: true,
+    
+      showGridAxesLabels: true
   });
 
   const loadInitialised = ref(false);

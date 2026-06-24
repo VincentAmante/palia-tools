@@ -119,6 +119,7 @@ const borderColour = computed(() => {
 const isAdjacentTileTheSame = computed(() => {
     const tile = tileData.value.tile
 
+
     const tileAdjacencies = {
         north: false,
         east: false,
@@ -235,6 +236,10 @@ const bgColour = computed(() => {
 
 function handleLeftClick() {
     if (!layoutCreatorGrid.grid.plotCanBePlacedInCheckedTile) return
+
+    //// commented out, we'll instead provide a warning for going above the limit
+    // if (layoutCreatorGrid.activePlots >= 9 && !layoutCreatorGrid.isPlotLimitsRaised) return
+    if (layoutCreatorGrid.activePlots >= 27) return // hard limit
     layoutCreatorGrid.placePlot(props.coordinates)
 
     emit('update')
@@ -402,8 +407,8 @@ v-if="(tileData.tile.crop?.image && tileData.tile.crop?.image.length > 0)" width
             </div>
 
             <span
-v-if="tileData.tile.plotLocalCoordinates === '2,0'" aria-label="Delete" class="tooltip"
-                data-tip="Delete Plot">
+v-if="tileData.tile.plotLocalCoordinates === '2,0'" aria-label="Delete" class="tooltip tooltip-left"
+                data-tip="Delete">
                 <button
 class="btn btn-ghost btn-square btn-xs btn-warning"
                     @click="layoutCreatorGrid.deletePlot(coordinates)">

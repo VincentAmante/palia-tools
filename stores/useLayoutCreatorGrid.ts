@@ -20,7 +20,19 @@ const DEV_PLOT_GRID_A = () => {
 
 const useLayoutCreatorGrid = defineStore('layoutCreatorGrid', () => {
     const grid = shallowRef(new GardenGrid(DEV_PLOT_GRID_A()))
-    const hoveredBonus = ref<Bonus | null>(null)
+
+    const isPlotLimitsRaisedVal = ref(false)
+
+    const isPlotLimitsRaised = computed(() => isPlotLimitsRaisedVal.value)
+    function togglePlotLimits(toggleTo?: boolean) {
+        if (typeof toggleTo === 'boolean')
+            isPlotLimitsRaisedVal.value = toggleTo
+        else
+            isPlotLimitsRaisedVal.value = !isPlotLimitsRaisedVal.value
+    }
+
+
+    const activePlots = computed(() => grid.value.plotCount)
 
     // Handles individual tile updates
     const tileVersions = ref(new Map<Coordinates, number>())
@@ -31,7 +43,7 @@ const useLayoutCreatorGrid = defineStore('layoutCreatorGrid', () => {
         })
     }
 
-    function setGarden(code: string){
+    function setGarden(code: string) {
         grid.value = GardenGrid.loadGardenByCode(code)
         triggerRef(grid)
     }
@@ -45,9 +57,10 @@ const useLayoutCreatorGrid = defineStore('layoutCreatorGrid', () => {
         handleModifiedTiles(modifiedTiles)
     }
 
-    function placePlot(coordinates: Coordinates){
+    function placePlot(coordinates: Coordinates) {
         const modifiedTiles = grid.value.placePlot(coordinates)
         handleModifiedTiles(modifiedTiles)
+        triggerRef(grid)
     }
 
 
@@ -65,23 +78,34 @@ const useLayoutCreatorGrid = defineStore('layoutCreatorGrid', () => {
         triggerRef(grid)
     }
 
-    function deletePlot(coordinates: Coordinates){
+    function deletePlot(coordinates: Coordinates) {
         const modifiedTiles = grid.value.deletePlot(coordinates)
         handleModifiedTiles(modifiedTiles)
         triggerRef(grid)
     }
 
-    function clearTiles(){
+    function clearTiles() {
         handleModifiedTiles(grid.value.clearTiles())
     }
 
-    function saveGarden(settingsCode?: string){
+    function saveGarden(settingsCode?: string) {
         const saveString = grid.value.saveGarden(settingsCode)
 
         return saveString
     }
 
+    function changeWidth(newWidth: number) {
+        handleModifiedTiles(grid.value.changeWidth(newWidth))
+        triggerRef(grid)
+    }
+
+    function changeHeight(newHeight: number) {
+        handleModifiedTiles(grid.value.changeHeight(newHeight))
+        triggerRef(grid)
+    }
+
     return {
+        activePlots,
         grid: skipHydrate(grid),
         tileVersions: skipHydrate(tileVersions),
         handleModifiedTiles,
@@ -93,7 +117,11 @@ const useLayoutCreatorGrid = defineStore('layoutCreatorGrid', () => {
         saveGarden,
         setGarden,
         deletePlot,
-        placePlot
+        placePlot,
+        changeWidth,
+        changeHeight,
+        isPlotLimitsRaised,
+        togglePlotLimits
     }
 })
 

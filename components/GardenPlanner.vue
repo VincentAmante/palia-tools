@@ -132,7 +132,7 @@ class="h-full" :class="[garden.isGardenWide ? 'flex flex-col items-center pb-2' 
           <template v-if="(plannerDisplayConfig.get === 'garden+display')">
             <GridGardenDisplay />
             <StatsDisplay
-class="pt-2 @sm:mx-auto @xs:px-2 w-fit "
+class="pt-2 @sm:mx-auto w-fit "
               :class="[garden.isGardenWide ? 'w-fit' : '@lg:w-full']" />
           </template>
           <template v-if="(plannerDisplayConfig.get === 'display+display')">

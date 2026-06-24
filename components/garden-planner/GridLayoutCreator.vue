@@ -11,17 +11,60 @@ const gardenGrid = useGardenGrid()
 const gardenCopy = useLayoutCreatorGrid()
 const settingsCode = useSettingsCode()
 
+const MIN_ROWS = 3
+const MAX_ROWS = 81
 
-const widthInTiles = ref(9)
-const heightInTiles = ref(9)
+const MIN_COLS = 3
+const MAX_COLS = 81
 
-watchEffect(() => {
-    
+
+const widthInTiles = computed({
+    get: () => gardenCopy.grid.width,
+    set: (newWidth) => {
+        let widthToSet = newWidth
+
+        if (widthToSet < MIN_ROWS) widthToSet = MIN_ROWS
+        if (widthToSet > MAX_ROWS) widthToSet = MAX_ROWS
+
+        gardenCopy.changeWidth(widthToSet)
+    }
+})
+const rawWidth = ref(widthInTiles.value)
+const debouncedSetWidth = useDebounceFn((newWidth) => {
+    widthInTiles.value = newWidth
+}, 500)
+watch(widthInTiles, (newWidth) => {
+    rawWidth.value = newWidth
+})
+watch(rawWidth, (newWidth) => {
+    debouncedSetWidth(newWidth)
 })
 
-watchEffect(() => {
-    widthInTiles.value = gardenCopy.grid.width
-    heightInTiles.value = gardenCopy.grid.height
+const heightInTiles = computed({
+    get: () => gardenCopy.grid.height,
+    set: (newHeight) => {
+        let heightToSet = newHeight
+
+        if (heightToSet < MIN_ROWS) heightToSet = MIN_ROWS
+        if (heightToSet > MAX_ROWS) heightToSet = MAX_ROWS
+
+        gardenCopy.changeHeight(heightToSet)
+    }
+})
+const rawHeight = ref(heightInTiles.value)
+const debouncedSetHeight = useDebounceFn((newHeight) => {
+    heightInTiles.value = newHeight
+}, 500)
+watch(heightInTiles, (newHeight) => {
+    rawHeight.value = newHeight
+})
+watch(rawHeight, (newHeight) => {
+    debouncedSetHeight(newHeight)
+})
+
+const isPlotLimitsRaised = computed({
+    get: () => gardenCopy.isPlotLimitsRaised,
+    set: (toggleTo) => gardenCopy.togglePlotLimits(toggleTo)
 })
 
 function onModalClose() {
@@ -51,6 +94,10 @@ function handleConfirmEdit() {
     gardenGrid.loadGardenByCode(newGardenCode)
     modal.value?.hideModal()
 }
+
+const gardenLink = computed(() => {
+    return gardenCopy.saveGarden(settingsCode.code)
+})
 
 const presetCodes = [
     {
@@ -86,54 +133,125 @@ function handlePresetCodesSelection() {
 
     gardenCopy.setGarden(string)
 }
+
+const plotCount = computed(() => gardenCopy.grid.plotCount)
 </script>
 
 <template>
-    <PGPModal ref="modal">
-        <template #header> 
+    <PGPModal ref="modal" use-full-height>
+        <template #header>
             Edit Layout
         </template>
         <template #body>
-            <div class="bg-palia-blue-dark mt-2 p-2">
-                <h3>
-                    Dimensions
-                </h3>
+            <div class="flex flex-col gap-1 rounded-md">
+                <div class="flex flex-col gap-1 bg-palia-blue-dark rounded-md p-2">
+                    <h3>
+                        Dimensions
+                    </h3>
 
-                <table>
-                    <tbody>
-                        <tr v-for="row in heightInTiles" :key="`row-${row}`">
-                            <td v-for="cell in widthInTiles" :key="`cell-${cell - 1},${row - 1}`" class="">
-                                <!-- <button class="btn bg-palia-blue aspect-square w-full max-w-8 h-8">
-                                    <span v-if="gardenCopy.getTile(`${cell - 1},${row - 1}`)?.attachedCrop">
-                                        {{ getCodeFromCrop(gardenCopy.getTile(`${cell - 1},${row -
-                                            1}`)!.attachedCrop!.crop)
-                                        }}
-                                    </span>
-                                </button> -->
-                                <GridLayoutCreatorTile :coordinates="`${cell - 1},${row - 1}`" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <fieldset class="fieldset w-full">
+                        <legend class="fieldset-legend">Presets</legend>
+                        <select v-model="selectedCode" class="select" @change="handlePresetCodesSelection">
+                            <option v-for="code in presetCodes" :key="code.title" :value="code.code" :disabled="!code">
+                                {{ code.title }}
+                            </option>
+                        </select>
+                        <p class="label flex flex-col whitespace-break-spaces items-start">
+                            <span>
+                                Pick a pre-determined size here, or make a custom one.
+                            </span>
+                            <span class="text-warning">
+                                <font-awesome-icon class="" :icon="['fas', 'triangle-exclamation']" />
+                                Will delete all crops if preset/custom is selected. Please save beforehand
+                            </span>
+                        </p>
+                    </fieldset>
 
-                <div>
-                    <p>Row</p>
-                    <input v-model="widthInTiles" class="input" type="number">
-                    <p>Column</p>
-                    <input v-model="heightInTiles" class="input" type="number">
+                    <div class="flex gap-2">
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Rows</legend>
+                            <div class="join">
+                                <button
+:disabled="(heightInTiles <= MIN_ROWS)"
+                                    class="join-item btn btn-sm btn-square border-palia-blue-light bg-palia-blue-light hover:bg-palia-blue-dark text-xl font-bold"
+                                    @click="() => {
+                                        if (heightInTiles > MIN_ROWS) heightInTiles--
+                                    }">-</button>
+                                <input
+v-model.number="rawHeight" :min="MIN_ROWS" :max="MAX_ROWS"
+                                    class="input input-sm join-item max-w-16" type="number">
+
+                                <button
+:disabled="(heightInTiles >= MAX_ROWS)"
+                                    class="join-item btn btn-sm btn-square border-palia-blue-light bg-palia-blue-light hover:bg-palia-blue-dark text-xl font-bold"
+                                    @click="() => {
+                                        if (heightInTiles < MAX_ROWS) heightInTiles++
+                                    }">+</button>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Columns</legend>
+                            <div class="join">
+                                <button
+:disabled="(widthInTiles <= MIN_COLS)"
+                                    class="join-item btn btn-sm btn-square border-palia-blue-light bg-palia-blue-light hover:bg-palia-blue-dark text-xl font-bold"
+                                    @click="() => {
+                                        if (widthInTiles > MIN_COLS) widthInTiles--
+                                    }">-</button>
+
+                                <input
+v-model.number="rawWidth" :min="MIN_COLS" :max="MAX_COLS"
+                                    class="input join-item input-sm max-w-16" type="number">
+
+                                <button
+:disabled="(widthInTiles >= MAX_COLS)"
+                                    class="join-item btn btn-sm btn-square border-palia-blue-light bg-palia-blue-light hover:bg-palia-blue-dark text-xl font-bold"
+                                    @click="() => {
+                                        if (widthInTiles < MAX_COLS) widthInTiles++
+                                    }">+</button>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div>
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend" :class="plotCount > 9 ? 'text-warning' : ''">
+
+                                Plots <span>({{
+                                    plotCount }} / <span>{{
+                                        gardenCopy.isPlotLimitsRaised ? '27' : '9' }}</span>)</span>
+                                <font-awesome-icon
+v-if="plotCount > 9" class="text-warning"
+                                    :icon="['fas', 'triangle-exclamation']" />
+                            </legend>
+                            <span v-if="plotCount > 9" class="text-warning text-xxs"> The game only supports 9 plots as
+                                of writing, for experimental purposes you may go up to 27</span>
+                        </fieldset>
+                    </div>
                 </div>
-
-                <div class="flex flex-col gap-2 pt-4">
-                    <select v-model="selectedCode" class="select" @change="handlePresetCodesSelection">
-                        <option v-for="code in presetCodes" :key="code.title" :value="code.code" :disabled="!code">
-                            {{ code.title }}
-                        </option>
-                    </select>
+                <div class="gap-1 bg-palia-blue-dark rounded-md p-2 pr-4 pb-4 max-h-90 overflow-y-auto overflow-x-auto">
+                    <table>
+                        <tbody>
+                            <tr v-for="row in heightInTiles" :key="`row-${row}`">
+                                <td v-for="cell in widthInTiles" :key="`cell-${cell - 1},${row - 1}`" class="">
+                                    <GridLayoutCreatorTile :coordinates="`${cell - 1},${row - 1}`" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-
-                <button class="btn btn-success" @click="handleConfirmEdit">
-                    Confirm Edit
-                </button>
+                <div class="text-xs">
+                    <p>Empty rows/columns on the edges will be trimmed</p>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-1  rounded-md">
+                    <button class="btn" @click="handleConfirmEdit">
+                        Confirm Layout
+                    </button>
+                    <a class="btn" :href="`?layout=${gardenLink}`" target="_blank">
+                        <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="" />
+                        Confirm Layout in New Tab
+                    </a>
+                </div>
             </div>
         </template>
     </PGPModal>

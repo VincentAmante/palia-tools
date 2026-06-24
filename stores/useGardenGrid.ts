@@ -65,6 +65,7 @@ const useGardenGrid = defineStore('gardenGrid', () => {
 
     function loadGardenByCode(code: string) {
         const newGarden = GardenGrid.loadGardenByCode(code)
+        newGarden.trimGarden()
         tileVersions.value = new Map<Coordinates, number>()
         grid.value = newGarden
 

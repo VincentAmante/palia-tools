@@ -197,7 +197,7 @@ function   openInNewTab() {
       New Layout
     </template>
     <template #body>
-      <div class="flex flex-col gap-1 bg-palia-blue-dark rounded-md p-2 ">
+      <div class="flex flex-col gap-1 bg-palia-blue-dark rounded-md p-2">
         <h3 class="font-bold">
           Dimensions
         </h3>

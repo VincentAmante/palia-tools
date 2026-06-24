@@ -124,7 +124,7 @@ export class GardenGrid {
     private _plotCanBePlacedInCheckedTile = false
 
     private _settingsCode = ''
-    
+
     /**
      * Flag for a one-time load of settings attached to a garden
      * TODO: Remember why we have this lol
@@ -156,6 +156,10 @@ export class GardenGrid {
 
     get tiles() {
         return this._tiles
+    }
+
+    get plotCount() {
+        return this._plots.size
     }
 
     /**
@@ -367,11 +371,11 @@ export class GardenGrid {
         }
     }
 
-    get hoveredTilesForPlotPlacing(){
+    get hoveredTilesForPlotPlacing() {
         return this._hoveredTilesForPlotPlacing
     }
 
-    get plotCanBePlacedInCheckedTile(){
+    get plotCanBePlacedInCheckedTile() {
         return this._plotCanBePlacedInCheckedTile
     }
 
@@ -611,7 +615,7 @@ export class GardenGrid {
         return modifiedTiles
     }
 
-    unhoverTilesForPlotPlacing(){
+    unhoverTilesForPlotPlacing() {
         const unhoveredTiles = new Set(this._hoveredTilesForPlotPlacing.keys())
         this._hoveredTilesForPlotPlacing = new Map()
         this._plotCanBePlacedInCheckedTile = false
@@ -1097,5 +1101,45 @@ export class GardenGrid {
             return this._settingsCode ?? ''
         }
         return ''
+    }
+
+    changeWidth(newWidth: number) {
+        let modifiedTiles = new Set<Coordinates>()
+
+        if (newWidth > this._widthInTiles) {
+            this._widthInTiles = newWidth
+            return modifiedTiles
+        }
+        else if (newWidth < this._widthInTiles) {
+            for (let col = (this._widthInTiles - 1); col > (newWidth - 1); col--) {
+                for (let row = 0; row < this._heightInTiles; row++) {
+                    modifiedTiles = modifiedTiles.union(this.deletePlot(`${col},${row}`))
+                }
+            }
+
+            this._widthInTiles = newWidth
+        }
+
+        return modifiedTiles
+    }
+
+    changeHeight(newHeight: number) {
+        let modifiedTiles = new Set<Coordinates>()
+
+        if (newHeight > this._heightInTiles) {
+            this._heightInTiles = newHeight
+            return modifiedTiles
+        }
+        else if (newHeight < this._heightInTiles) {
+            for (let row = (this._heightInTiles - 1); row > (newHeight - 1); row--) {
+                for (let col = 0; col < this._widthInTiles; col++) {
+                    modifiedTiles = modifiedTiles.union(this.deletePlot(`${col},${row}`))
+                }
+            }
+
+            this._heightInTiles = newHeight
+        }
+
+        return modifiedTiles
     }
 }
