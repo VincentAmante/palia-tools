@@ -48,7 +48,7 @@ const tileRadiusByPlot = computed(() => {
     if (!tileData.value.tile) return style.join(' ')
 
 
-    switch(plotLocalCoordinates){
+    switch (plotLocalCoordinates) {
         case '0,0':
             style.push('rounded-tl')
             break;
@@ -171,9 +171,11 @@ const backgroundColourByHover = computed(() => {
     if (!tile) return
 
     const style: string[] = []
+
+
     switch (tile.hoverState) {
         case 'DEFAULT':
-            style.push('bg-misc-saturated/60','dark:bg-water-retain/80')
+            style.push('bg-misc-saturated/60', 'dark:bg-water-retain/80')
             break;
         case 'NONE':
         default:
@@ -187,11 +189,17 @@ const backgroundColourByHover = computed(() => {
 const bgColour = computed(() => {
     const tile = tileData.value.tile
     if (!tile) return
-    
-    if (selectedItem.hoverType === SelectedItemType.Crop && tile.crop){
+
+    if (gardenGrid.hoveredBonus
+        && tile.bonuses.includes(gardenGrid.hoveredBonus)) {
+        return 'bg-accent'
+    }
+
+
+    if (selectedItem.hoverType === SelectedItemType.Crop && tile.crop) {
         if ((selectedItem.hoverVal as Crop).type === tile.crop.type)
             return 'bg-accent'
-    } else if (selectedItem.hoverType === SelectedItemType.Fertiliser && tile.fertiliser){
+    } else if (selectedItem.hoverType === SelectedItemType.Fertiliser && tile.fertiliser) {
         if ((selectedItem.hoverVal as Fertiliser).type === tile.fertiliser.type)
             return 'bg-accent'
     }
@@ -413,8 +421,8 @@ v-if="tileData.tile"
             class="flex items-center justify-center border-0 w-full h-full relative isolate rounded-none"
             :class="[backgroundColourByHover, tileRadiusByPlot, (tileData.tile.hoverState === 'INVALID' ? 'cursor-not-allowed' : 'cursor-pointer')]"
             @mousedown.middle.prevent.stop @click.left="handleLeftClick" @click.right="handleRightClick"
-            @click.middle="handleMiddleClick"
-            @contextmenu.stop.prevent @mouseenter="handleHover" @mouseleave="handleUnhover">
+            @click.middle="handleMiddleClick" @contextmenu.stop.prevent @mouseenter="handleHover"
+            @mouseleave="handleUnhover">
             <!-- <p class="absolute top-0 right-1 text-xs font-bold text-misc">{{ tileData.tile.plotLocalCoordinates }}</p> -->
             <!-- <p class="absolute top-0 right-1 text-xs font-bold text-misc">v{{ tileData.version || 0 }}</p>
             <p class="absolute top-0 left-1 text-xs font-bold text-misc">{{ tileData.tile.coordinates }}</p> -->

@@ -28,7 +28,9 @@ onMounted(() => {
 
 function updateSettings() {
   processor.updateSettings(Object.assign({}, processor.settings))
-  processor.simulateProcessing(harvester.totalHarvest)
+  processor.simulateProcessing(harvester.totalHarvest, {
+    fertiliserCountsByType: garden.analyser.fertiliserCountByType
+  })
 }
 
 function saveDefaultSettings() {

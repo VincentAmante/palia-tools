@@ -5,14 +5,17 @@ import ItemDisplayAlt from './HarvestCalculator/ItemDisplayAlt.vue'
 import useHarvester from '~/stores/useHarvester'
 import type { ProcessorSetting, ProcessorSettings } from '~/assets/scripts/garden-planner/classes/processor'
 import { type ICropNameWithGrowthDiff, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
-import { CropType, getCropFromType } from '~/assets/scripts/garden-planner/imports'
+import { CropType, FertiliserType, getCropFromType } from '~/assets/scripts/garden-planner/imports'
 import useProcessor from '~/stores/useProcessor'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import SettingsCodeSettings from './OutputDisplay/SettingsCodeSettings.vue'
+import FertiliserCostSetting from './FertiliserCostSetting.vue'
 
+const garden = useGardenGrid()
 const harvester = useHarvester()
 const starBaseChance = computed(() => Math.trunc(Math.min(100, (0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)) * 100)))
 const processor = useProcessor()
+
 
 
 // Allows us to save settings of unselected crops
@@ -20,7 +23,9 @@ const activeProcessorSettings = computed(() => {
   const activeSettings = {
     cropSettings: new Map() as Map<ICropNameWithGrowthDiff, ProcessorSetting>,
     crafterSetting: 0,
-    goldAverageSetting: 'crafterTime' as 'crafterTime' | 'growthTick'
+    goldAverageSetting: 'crafterTime' as 'crafterTime' | 'growthTick',
+    useFertilserCostSettings: true,
+    fertiliserCostSettings: new Map()
   } satisfies ProcessorSettings
 
   for (const [cropId, setting] of processor.settings.cropSettings) {
@@ -61,7 +66,9 @@ const activeTab = ref('Harvest')
 
 function updateSettings() {
   processor.updateSettings(Object.assign({}, processor.settings))
-  processor.simulateProcessing(harvester.totalHarvest)
+  processor.simulateProcessing(harvester.totalHarvest, {
+    fertiliserCountsByType: garden.analyser.fertiliserCountByType
+  })
 }
 
 
@@ -106,186 +113,254 @@ role="tab" class="tab join-item" :class="(activeTab === 'Misc') ? 'tab-active' :
 v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
         class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-90 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary dark:to-palia-blue-secondary" />
       <ul
-        class="grid max-h-[480px] overflow-y-auto pr-2 rounded-md max-w-full scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
-        <OptionCard label="days" name="Days">
-          <template #input>
-            <div class="join">
-              <button class="join-item btn btn-sm " aria-label="Set Days to LCM" @click="harvester.settings.days = -1">
-                LCM
-              </button>
-              <button class="join-item btn btn-sm " aria-label="Set Days to Auto" @click="harvester.settings.days = 0">
-                Auto
-              </button>
-              <input
-v-model="harvester.settings.days" class="join-item input input-sm text-lg max-w-[6rem] text-accent"
-                type="number" min="0">
-              <button class="join-item btn btn-sm " aria-label="Set Days to 30" @click="harvester.settings.days = 30">
-                30
-              </button>
-              <button class="join-item btn btn-sm " aria-label="Set Days to 180" @click="harvester.settings.days = 180">
-                180
-              </button>
-            </div>
-          </template>
-          <template #labels>
-            <p>
-              Manual override for how many days of harvest
-            </p>
-            <p>
-              <span class="font-bold">Auto:</span> Uses crop w/ highest growth time
-            </p>
-            <p>
-              <span class="font-bold">LCM:</span> Finds a day where all crops are harvestable
-            </p>
-          </template>
-        </OptionCard>
-        <OptionCard label="level" name="Gardening Level">
-          <template #input>
-            <div class="join ">
-              <button
+        class="grid max-h-120 gap-1 bg-accent dark:bg-palia-blue-secondary p-2 pb-10 pt-0 overflow-y-auto pr-2 rounded-md max-w-full scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
+        <li>
+          <fieldset class="fieldset p-2 border-misc-dark dark:border-water-retain border rounded-md">
+            <OptionCard label="days" name="Days">
+              <template #input>
+                <div class="join">
+                  <button
+class="join-item btn btn-sm " aria-label="Set Days to LCM"
+                    @click="harvester.settings.days = -1">
+                    LCM
+                  </button>
+                  <button
+class="join-item btn btn-sm " aria-label="Set Days to Auto"
+                    @click="harvester.settings.days = 0">
+                    Auto
+                  </button>
+                  <input
+v-model="harvester.settings.days"
+                    class="join-item input input-sm text-lg max-w-[6rem] text-accent" type="number" min="0">
+                  <button
+class="join-item btn btn-sm " aria-label="Set Days to 30"
+                    @click="harvester.settings.days = 30">
+                    30
+                  </button>
+                  <button
+class="join-item btn btn-sm " aria-label="Set Days to 180"
+                    @click="harvester.settings.days = 180">
+                    180
+                  </button>
+                </div>
+              </template>
+              <template #labels>
+                <p>
+                  Manual override for how many days of harvest
+                </p>
+                <p>
+                  <span class="font-bold">Auto:</span> Uses crop w/ highest growth time
+                </p>
+                <p>
+                  <span class="font-bold">LCM:</span> Finds a day where all crops are harvestable
+                </p>
+              </template>
+            </OptionCard>z
+          </fieldset>
+        </li>
+        <li>
+          <fieldset class="fieldset p-2 border-misc-dark dark:border-water-retain border rounded-md">
+            <OptionCard label="level" name="Gardening Level">
+              <template #input>
+                <div class="join ">
+                  <button
 class="join-item btn btn-sm text-primary" aria-label="Set Level to 0"
-                @click="harvester.settings.level = 0">
-                0
-              </button>
-              <button
+                    @click="harvester.settings.level = 0">
+                    0
+                  </button>
+                  <button
 class="join-item btn btn-sm text-primary" aria-label="Set Level to 10"
-                @click="harvester.settings.level = 10">
-                10
-              </button>
-              <input
+                    @click="harvester.settings.level = 10">
+                    10
+                  </button>
+                  <input
 v-model="harvester.settings.level"
-                class="input input-sm text-lg max-w-[5rem] join-item text-accent" type="number" min="0"
-                aria-label="Gardening Level">
-              <button
+                    class="input input-sm text-lg max-w-20 join-item text-accent" type="number" min="0"
+                    aria-label="Gardening Level">
+                  <button
 class="join-item btn btn-sm text-primary" aria-label="Set Level to 25"
-                @click="harvester.settings.level = 25">
-                25
-              </button>
-              <button
+                    @click="harvester.settings.level = 25">
+                    25
+                  </button>
+                  <button
 class="join-item btn btn-sm text-primary " aria-label="Set Level to 50"
-                @click="harvester.settings.level = 50">
-                50
-              </button>
-            </div>
-          </template>
-          <template #labels>
-            <p>
-              Decides base star chance of crops
-            </p>
-            <p>
-              Base Star Chance: <code class="px-2 rounded-xs bg-misc text-accent">{{ starBaseChance }}%</code>
-            </p>
-            <p>Formula in info</p>
-          </template>
-        </OptionCard>
+                    @click="harvester.settings.level = 50">
+                    50
+                  </button>
+                </div>
+              </template>
+              <template #labels>
+                <p>
+                  Decides base star chance of crops
+                </p>
+                <p>
+                  Base Star Chance: <code class="px-2 rounded-xs bg-misc text-accent">{{ starBaseChance }}%</code>
+                </p>
+                <p>Formula in info</p>
+              </template>
+            </OptionCard>
+          </fieldset>
+        </li>
 
-        <OptionCard label="allStarSeeds" name="All Star Seeds">
-          <template #input>
-            <input v-model="harvester.settings.useStarSeeds" class="toggle" type="checkbox" aria-label="Use Star Seeds">
-          </template>
-          <template #labels>
-            <p>
-              The entire layout will use star seeds
-            </p>
-          </template>
-        </OptionCard>
+        <li>
+          <fieldset class="fieldset p-2 border-misc-dark dark:border-water-retain border rounded-md">
 
-        <OptionCard label="goldAverageSetting" name="Process Gold Average Method">
-          <template #input>
-            <div class="join">
-              <button
+            <OptionCard label="allStarSeeds" name="All Star Seeds">
+              <template #input>
+                <input
+v-model="harvester.settings.useStarSeeds" class="toggle" type="checkbox"
+                  aria-label="Use Star Seeds">
+              </template>
+              <template #labels>
+                <p>
+                  The entire layout will use star seeds
+                </p>
+              </template>
+            </OptionCard>
+          </fieldset>
+
+        </li>
+
+
+        <li>
+          <fieldset class="fieldset p-2 border-misc-dark dark:border-water-retain border rounded-md">
+
+            <OptionCard label="goldAverageSetting" name="Process Gold Average Method">
+              <template #input>
+                <div class="join">
+                  <button
 class="join-item btn text-accent"
-                :class="{ 'bg-palia-blue': (processor.settings.goldAverageSetting === 'crafterTime') }"
-                @click="processor.settings.goldAverageSetting = 'crafterTime'">
-                Crafter Time
-              </button>
-              <button
+                    :class="{ 'bg-palia-blue': (processor.settings.goldAverageSetting === 'crafterTime') }"
+                    @click="processor.settings.goldAverageSetting = 'crafterTime'">
+                    Crafter Time <font-awesome-icon class="text-xxs" :icon="['fas', 'check']" :class="{'invisible': processor.settings.goldAverageSetting !== 'crafterTime'}"/>
+                  </button>
+                  <button
 class="join-item btn text-accent"
-                :class="{ 'bg-palia-blue': (processor.settings.goldAverageSetting === 'growthTick') }"
-                @click="processor.settings.goldAverageSetting = 'growthTick'">
-                Growth Ticks
-              </button>
-            </div>
-          </template>
-          <template #labels>
-            <p>
-              When processing crops, the gold average will be calculated by:
-            </p>
-            <p>
-              <span class="font-bold">Crafting Time:</span> Gold / Overall Process Time
-            </p>
-            <p>
-              <span class="font-bold">Growth Ticks:</span> Gold / Growth Ticks (Day of Last Harvest)
-            </p>
-          </template>
-        </OptionCard>
+                    :class="{ 'bg-palia-blue': (processor.settings.goldAverageSetting === 'growthTick') }"
+                    @click="processor.settings.goldAverageSetting = 'growthTick'">
+                    Growth Ticks <font-awesome-icon class="text-xxs" :icon="['fas', 'check']" :class="{'invisible': processor.settings.goldAverageSetting !== 'growthTick'}"/>
+                  </button>
+                </div>
+              </template>
+              <template #labels>
+                <p>
+                  When processing crops, the gold average will be calculated by:
+                </p>
+                <p>
+                  <span class="font-bold">Crafting Time:</span> Gold / Overall Process Time
+                </p>
+                <p>
+                  <span class="font-bold">Growth Ticks:</span> Gold / Growth Ticks (Day of Last Harvest)
+                </p>
+              </template>
+            </OptionCard>
+          </fieldset>
 
+        </li>
 
-        <OptionCard label="includeReplant" name="Include Replant">
-          <template #input>
-            <input
+        <li>
+          <fieldset class="fieldset p-2 border-misc-dark dark:border-water-retain border rounded-md">
+            <legend class="fieldset-legend text-sm text-palia-blue dark:text-harvest-boost">Replant Options</legend>
+            <OptionCard label="includeReplant" name="Include Replant" use-label>
+              <template #input>
+                <input
 v-model="harvester.settings.includeReplant" class="toggle" type="checkbox"
-              aria-label="Include Replant">
-          </template>
-          <template #labels>
-            <p>
-              Replants the crops after harvest until the last day
-            </p>
-            <p v-show="!harvester.settings.includeReplant" class="font-bold">
-              Off: Bonuses will still be calculated but the
-              harvest days will be inaccurate
-            </p>
-          </template>
-        </OptionCard>
-
-        <OptionCard label="includeReplantCost" name="Include Replant Cost">
-          <template #input>
-            <input
+                  aria-label="Include Replant">
+              </template>
+              <template #labels>
+                <p>
+                  Replants the crops after harvest until the last day
+                </p>
+                <p v-if="!harvester.settings.includeReplant" class="font-bold">
+                  <span class="uppercase">Off</span>: Bonuses will still be calculated but the
+                  harvest days will be inaccurate
+                </p>
+              </template>
+            </OptionCard>
+            <OptionCard label="includeReplantCost" name="Include Replant Cost" use-label>
+              <template #input>
+                <input
 v-model="harvester.settings.includeReplantCost" class="toggle" type="checkbox"
-              :disabled="!harvester.settings.includeReplant" aria-label="Include Replant Cost">
-          </template>
-          <template #labels>
-            <p>
-              Accounts for the cost of re-planting
-            </p>
-          </template>
-        </OptionCard>
+                  :disabled="!harvester.settings.includeReplant" aria-label="Include Replant Cost">
+              </template>
+              <template #labels>
+                <p>
+                  Accounts for the cost of re-planting
+                </p>
+              </template>
+            </OptionCard>
 
-        <OptionCard label="useGrowthBoost" name="Use Growth Boost">
-          <template #input>
-            <input
-v-model="harvester.settings.useGrowthBoost" class="toggle" type="checkbox"
-              aria-label="Use Growth Boost">
-          </template>
-          <template #labels>
-            <p>
-              Factors in growth boost when simulating yields, does not account for any RNG and is theoretical
-            </p>
-            <p class="py-1 text-warning">
-              <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
-              Likely bugged as of 0.169
-              <NuxtLink
-class="pl-1 underline text-misc"
-                to="https://docs.google.com/document/d/1f4MQHjEC1RCNpDUz1I3eg2tioD_6yBmW0XWsVxUOJ1Y/edit"
-                target="_blank" :prefetch="false">
-                <font-awesome-icon class="text-sm" :icon="['fas', 'arrow-up-right-from-square']" />
-                (Source)
-              </NuxtLink>
-            </p>
-          </template>
-        </OptionCard>
+          </fieldset>
 
-        <OptionCard label="includeFertiliserCosts" name="Include Fertiliser Costs" disabled>
-          <template #input>
-            <input class="toggle" type="checkbox" disabled aria-label="Include Fertiliser Costs (Not yet supported)">
-          </template>
-          <template #labels>
-            <p>
+        </li>
+
+        <li>
+          <fieldset class="fieldset p-2 border-misc-dark dark:border-water-retain border rounded-md">
+
+            <OptionCard label="includeFertiliserCosts" name="Include Fertiliser Costs">
+              <template #input>
+                <input
+v-model="processor.settings.useFertilserCostSettings" class="toggle" type="checkbox"
+                  aria-label="Include Fertiliser Costs">
+              </template>
+              <template #labels>
+                <!-- <p>
               <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
               Not yet supported
-            </p>
-          </template>
-        </OptionCard>
+            </p> -->
+                <p>
+                  Factor in the costs of using fertilisers
+                </p>
+              </template>
+            </OptionCard>
+
+
+            <ul v-if="processor.settings.useFertilserCostSettings" class="flex flex-col gap-2">
+              <template v-for="type in Object.values(FertiliserType)" :key="type">
+                <li v-if="type !== FertiliserType.None">
+                  <FertiliserCostSetting :type="type" />
+                </li>
+              </template>
+              <li v-if="processor.settings.useFertilserCostSettings && processor.settingsForEncoding.fertiliserCostSettings.size <= 0" class="text-misc p-2 border border-misc rounded-md font-bold">
+                <font-awesome-icon :icon="['fas', 'info-circle']" />
+                Fertiliser cost settings will be shown once a fertiliser is placed
+              </li>
+            </ul>
+          </fieldset>
+
+        </li>
+
+        <li>
+          <fieldset class="fieldset p-2 border-misc-dark dark:border-water-retain border rounded-md">
+
+            <OptionCard label="useGrowthBoost" name="Use Growth Boost">
+              <template #input>
+                <input
+v-model="harvester.settings.useGrowthBoost" class="toggle" type="checkbox"
+                  aria-label="Use Growth Boost">
+              </template>
+              <template #labels>
+                <p>
+                  Factors in growth boost when simulating yields, does not account for any RNG and is theoretical
+                </p>
+                <p class="py-1 text-warning border border-warning px-2 rounded-md">
+                  <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
+                  Likely bugged as of 0.169
+                  <NuxtLink
+class="pl-1 underline text-misc"
+                    to="https://docs.google.com/document/d/1f4MQHjEC1RCNpDUz1I3eg2tioD_6yBmW0XWsVxUOJ1Y/edit"
+                    target="_blank" :prefetch="false">
+                    <font-awesome-icon class="text-sm" :icon="['fas', 'arrow-up-right-from-square']" />
+                    (Source)
+                  </NuxtLink>
+                </p>
+              </template>
+            </OptionCard>
+
+          </fieldset>
+
+        </li>
+
       </ul>
     </section>
     <section v-else-if="activeTab === 'Crops'" class="h-full rounded-md isolate bg-accent dark:bg-palia-blue-dark">
@@ -346,7 +421,8 @@ v-for="[cropId, setting] in activeProcessorSettings.cropSettings" :key="cropId"
               <div class="join">
                 <button
 class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-water-retain/60"
-                  :class="(setting.processAs === ItemType.Crop) ? 'btn-active dark:bg-palia-blue-dark/40' : ''" aria-label="Process as Crop" @click="async () => {
+                  :class="(setting.processAs === ItemType.Crop) ? 'btn-active dark:bg-palia-blue-dark/40' : ''"
+                  aria-label="Process as Crop" @click="async () => {
                     if (setting.processAs === ItemType.Crop)
                       return
 
@@ -361,7 +437,8 @@ class="w-full h-full" :src="getCropFromType(setting.cropType)?.cropImage"
                 </button>
                 <button
 class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-water-retain/60"
-                  :class="(setting.processAs === ItemType.Seed) ? 'btn-active dark:bg-palia-blue-dark/40' : ''" aria-label="Process as Seed" @click="() => {
+                  :class="(setting.processAs === ItemType.Seed) ? 'btn-active dark:bg-palia-blue-dark/40' : ''"
+                  aria-label="Process as Seed" @click="() => {
                     if (setting.processAs === ItemType.Seed)
                       return
 
@@ -440,8 +517,8 @@ class=""
                 <span
                   v-if="processor.processor.output[setting.processAs === ItemType.Seed ? 'seeds' : 'preserves'].get(cropId)?.minutesProcessedEffective === highestTime"
                   class="inline-grid *:[grid-area:1/1] pl-1">
-                  <span class="status status-info animate-ping"/>
-                  <span class="status status-info"/>
+                  <span class="status status-info animate-ping" />
+                  <span class="status status-info" />
                 </span>
               </p>
             </div>
@@ -449,6 +526,6 @@ class=""
         </ul>
       </section>
     </section>
-    <SettingsCodeSettings v-else-if="activeTab === 'Misc'"/>
+    <SettingsCodeSettings v-else-if="activeTab === 'Misc'" />
   </section>
 </template>

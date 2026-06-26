@@ -25,7 +25,7 @@ const BASE_PLOT = () => {
 const useGardenGrid = defineStore('gardenGrid', () => {
     const grid = shallowRef(new GardenGrid(BASE_PLOT()))
     const analyser = shallowRef(new GridTilesAnalyser())
-    const hoveredBonus = ref<Bonus | null>(null)
+    const hoveredBonusVal = ref<Bonus | null>(null)
 
     // Handles individual tile updates
     const tileVersions = ref(new Map<Coordinates, number>())
@@ -37,6 +37,8 @@ const useGardenGrid = defineStore('gardenGrid', () => {
     }
 
     const isGardenWide = computed(() => grid.value.width > 9)
+
+    const hoveredBonus = computed(() => hoveredBonusVal.value)
 
     function getTile(coordinates: Coordinates) {
         return grid.value.getTile(coordinates)
@@ -84,7 +86,7 @@ const useGardenGrid = defineStore('gardenGrid', () => {
     }
 
     function setHoveredBonus(bonus: Bonus | null){
-        hoveredBonus.value = bonus
+        hoveredBonusVal.value = bonus
     }
 
     function clearTiles(){
@@ -113,7 +115,8 @@ const useGardenGrid = defineStore('gardenGrid', () => {
         setHoveredBonus,
         clearTiles,
         saveGarden,
-        isGardenWide
+        isGardenWide,
+        hoveredBonus
     }
 })
 

@@ -82,12 +82,12 @@ v-if="parseCropId(cropId).isStar"
       :icon="['fas', 'star']" />
     <p
 v-if="count > 0"
-      class="absolute top-0 right-0 pt-0.25 pr-0.5 text-xs leading-none font-bold text-palia-blue dark:text-accent">
+      class="absolute top-0 right-0 pt-px pr-0.5 text-xs leading-none font-bold text-palia-blue dark:text-accent">
       {{ count }}
     </p>
     <img
 v-if="(crop && crop.image != null && crop.image !== '')" class="absolute -z-10 max-w-[26px] " draggable="false"
       :src="crop.cropImage" :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'" :alt="crop.type">
-    <font-awesome-icon v-else class="absolute -z-10 max-w-[45px] text-warning text-3xl " :icon="['fas', 'eraser']" />
+    <font-awesome-icon v-else class="absolute -z-10 max-w-11.25 text-warning text-3xl " :icon="['fas', 'eraser']" />
   </button>
 </template>

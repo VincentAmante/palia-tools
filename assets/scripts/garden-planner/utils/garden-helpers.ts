@@ -26,6 +26,12 @@ export type CoordinateObject = {
 
 export type Coordinates = string;
 
+export enum Currency {
+  GOLD = 'Gold',
+  MEDAL = 'Medal'
+}
+
+
 
 export const fromCoordinateObject = (coordinates: CoordinateObject): Coordinates => `${coordinates.x},${coordinates.y}`;
 export const toCoordinateObject = (key: Coordinates): CoordinateObject => {
@@ -250,6 +256,16 @@ export interface IInventoryItem {
   baseGoldValue: number
   itemType: ItemType
   cropType: CropType
+}
+
+export interface FertiliserItem extends IInventoryItem {
+  // Hard set irrelevant values
+  // ? Could probably just re-write the whole Inventory Item thing
+  itemType: ItemType.Fertiliser
+  cropType: CropType.None
+  isStar: false
+
+  currency: Currency
 }
 
 export type TInventory = Map<string, IInventoryItem>

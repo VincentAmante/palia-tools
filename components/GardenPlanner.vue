@@ -37,7 +37,9 @@ watchEffect(() => {
 })
 
 watchEffect(() => {
-  processor.simulateProcessing(harvester.totalHarvest)
+  processor.simulateProcessing(harvester.totalHarvest, {
+    fertiliserCountsByType: garden.analyser.fertiliserCountByType
+  })
 })
 
 const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
@@ -62,7 +64,7 @@ watchEffect(() => {
 
 
 function saveGarden() {
-  const saveString = saveSettings(harvester.settings, processor.settings)
+  const saveString = saveSettings(harvester.settings, processor.settingsForEncoding)
   settingsCode.set(saveString)
 }
 
@@ -70,7 +72,9 @@ function loadGarden(saveString: string) {
   const { harvesterOptions, processorSettings: loadedProcessorSettings } = loadSettings(saveString)
   harvester.updateSettings(Object.assign({}, harvesterOptions))
   processor.updateSettings(Object.assign({}, loadedProcessorSettings))
-  processor.simulateProcessing(harvester.totalHarvest)
+  processor.simulateProcessing(harvester.totalHarvest, {
+    fertiliserCountsByType: garden.analyser.fertiliserCountByType
+  })
 }
 
 
@@ -131,9 +135,7 @@ class="h-full" :class="[garden.isGardenWide ? 'flex flex-col items-center pb-2' 
         ]">
           <template v-if="(plannerDisplayConfig.get === 'garden+display')">
             <GridGardenDisplay />
-            <StatsDisplay
-class="pt-2 @sm:mx-auto w-fit "
-              :class="[garden.isGardenWide ? 'w-fit' : '@lg:w-full']" />
+            <StatsDisplay class="pt-2 @sm:mx-auto w-fit " :class="[garden.isGardenWide ? 'w-fit' : '@lg:w-full']" />
           </template>
           <template v-if="(plannerDisplayConfig.get === 'display+display')">
             <section class="w-full">

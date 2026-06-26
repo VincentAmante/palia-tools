@@ -6,6 +6,7 @@ import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
 import { formatMinutesToDaysHoursMinutesObject } from '~/utils/formatters'
+import FertiliserCostsDisplay from './FertiliserCostsDisplay.vue'
 
 const harvester = useHarvester()
 const processor = useProcessor()
@@ -155,7 +156,7 @@ class="pr-1" :class="harvester.settings.useStarSeeds ? '' : ' opacity-50'"
         <li class="text-xs badge badge-sm">
           <span class="font-black">{{ starBaseChance }}%</span>Star Crop Chance
         </li>
-        <li class="text-xs badge badge-sm ">
+        <li v-if="!processor.settings.useFertilserCostSettings" class="text-xs badge badge-sm">
           No Fertiliser Cost
         </li>
       </ul>
@@ -195,6 +196,9 @@ v-for="[name, item] in processor.preserveJars" :key="name" :img-src="item.img.sr
             tooltip="Preserve Jars to use" />
         </ul>
       </div>
+    </section>
+    <section class="">
+      <FertiliserCostsDisplay />
     </section>
   </section>
 </template>

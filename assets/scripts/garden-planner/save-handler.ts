@@ -7,7 +7,7 @@ import CropCode from './enums/cropCode'
 import type { IHarvesterOptions } from './classes/harvester'
 import type { ProcessorSetting, ProcessorSettings } from './classes/processor'
 import { parseCropId, encodeCropId, ItemType } from './utils/garden-helpers'
-import { Crop, getCropFromCode, getCropFromType, getFertiliserFromCode } from './imports'
+import { Crop, getCodeFromFertiliser, getCropFromCode, getCropFromType, getFertiliserFromCode, getFertiliserFromType } from './imports'
 import FertiliserCode from './enums/fertilisercode'
 import { LATEST_VERSION } from './types/version'
 import CropSize from './enums/crop-size'
@@ -490,6 +490,23 @@ function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: 
     settings += `Cr0.${cropSettings}`
   }
 
+  if (processorSettings.useFertilserCostSettings){
+    const fertSaveString = ['Fr0.']
+
+    for (const [type, source] of processorSettings.fertiliserCostSettings){
+      const fertiliser = getFertiliserFromType(type)
+
+      if (!fertiliser) continue
+
+      const code = getCodeFromFertiliser(fertiliser)
+
+      fertSaveString.push(`${code}${source.toLowerCase()}`)
+    }
+
+    if (fertSaveString.length > 1)
+      settings += fertSaveString.join('')
+  }
+
   // check for trailing underscore or trailing dash
   if (settings[settings.length - 1] === '_' || settings[settings.length - 1] === '-')
     return settings.slice(0, -1)
@@ -534,103 +551,6 @@ function parseSettings(input: string): ParsedSettings {
   return { general, cropProcess, fertiliserSource };
 }
 
-function decodeSettings_OLD(settingsInfo: string): { harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings } {
-  const harvesterOptions: IHarvesterOptions = {
-    days: -1,
-    includeReplant: true,
-    includeReplantCost: true,
-    level: 0,
-    useGrowthBoost: false,
-    useStarSeeds: true,
-  }
-
-  const processorSettings: ProcessorSettings = {
-    cropSettings: new Map(),
-    crafterSetting: 0,
-    goldAverageSetting: 'crafterTime'
-  }
-
-
-  const settings = settingsInfo.split('Cr0')
-
-  for (let setting of settings) {
-    if (setting.startsWith('.')) {
-      setting = setting.slice(1)
-
-      const cropSettings = setting.split('-')
-      for (const cropSetting of cropSettings) {
-        if (cropSetting.length === 0) continue
-
-        const codeMatch = cropSetting.match(/^([A-Z][a-z]?)(\.?)(~?)([PS]?)(\d*)/);
-
-        if (!codeMatch) {
-          throw new Error(`Invalid crop setting format: ${cropSetting}`)
-        }
-
-        const code = codeMatch[1] as CropCode
-        const isStar = codeMatch[2] !== '.'
-        const hasGrowthBoost = codeMatch[3] === '~'
-        const processAs = codeMatch[4] === 'P' ? ItemType.Preserve : codeMatch[4] === 'S' ? ItemType.Seed : ItemType.Crop
-        const crafters = codeMatch[5] ? parseInt(codeMatch[5], 10) : 1
-        const type = getCropFromCode(code)!.type
-
-        const cropId = encodeCropId({ type, isStar, hasGrowthBoost: hasGrowthBoost })
-
-        const setting: ProcessorSetting = {
-          count: 0,
-          cropType: type,
-          isStar,
-          processAs,
-          crafters,
-          targetTime: 0,
-          isActive: true,
-          hasPreserve: processAs === 'preserve',
-        }
-
-        processorSettings.cropSettings.set(cropId, setting)
-      }
-    } else {
-      const harvesterSettings = (setting.match(/[A-Z][a-z0-9]*/g) as string[]) || []
-
-      const exactHandlers: Record<string, () => void> = {
-        'Nr': () => { harvesterOptions.includeReplant = false; },
-        'Nrc': () => { harvesterOptions.includeReplantCost = false; },
-        'Nss': () => { harvesterOptions.useStarSeeds = false; },
-        'Gb': () => { harvesterOptions.useGrowthBoost = true; },
-
-        'Gt': () => { processorSettings.goldAverageSetting = 'growthTick' },
-      };
-
-      for (const harvesterSetting of harvesterSettings) {
-        if (exactHandlers[harvesterSetting]) {
-          exactHandlers[harvesterSetting]();
-          continue;
-        }
-
-        const match = harvesterSetting.match(/^([A-Z])(\d+)$/);
-        if (match) {
-          const [, prefix, value] = match
-
-          if (!value) console.warn(`Setting ${prefix} lacks value, using '0' instead`)
-
-          const number = parseInt(value || '0');
-
-          switch (prefix) {
-            case 'D':
-              harvesterOptions.days = number;
-              break;
-            case 'L':
-              harvesterOptions.level = number;
-              break;
-          }
-        }
-      }
-    }
-  }
-
-  return { harvesterOptions, processorSettings }
-}
-
 function decodeSettings(settingsInfo: string, version = LATEST_VERSION): { harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings } {
   const harvesterOptions: IHarvesterOptions = {
     days: -1,
@@ -645,7 +565,9 @@ function decodeSettings(settingsInfo: string, version = LATEST_VERSION): { harve
     cropSettings: new Map(),
     crafterSetting: 0,
     goldAverageSetting: 'crafterTime',
-    fertiliseCostSetting: new Map()
+    // if there's no fert cost settings, assume it was toggled off
+    useFertilserCostSettings: false,
+    fertiliserCostSettings: new Map()
   };
 
   const { general: generalSettings, cropProcess: cropSettings, fertiliserSource: fertiliserSettings } = parseSettings(settingsInfo);
@@ -726,6 +648,8 @@ function decodeSettings(settingsInfo: string, version = LATEST_VERSION): { harve
   }
 
   if (fertiliserSettings) {
+    processorSettings.useFertilserCostSettings = true
+
     const fertiliserCostSourceContent = fertiliserSettings.replace(/^Fr0\./, '');
     const fertiliserMatches = fertiliserCostSourceContent.match(/[A-Z][a-z]/g)
 
@@ -764,7 +688,7 @@ function decodeSettings(settingsInfo: string, version = LATEST_VERSION): { harve
           }
       }
 
-      processorSettings.fertiliseCostSetting?.set(fertiliser.type, costSource)
+      processorSettings.fertiliserCostSettings?.set(fertiliser.type, costSource)
     }
   }
 
