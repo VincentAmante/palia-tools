@@ -156,7 +156,7 @@ class="pr-1" :class="harvester.settings.useStarSeeds ? '' : ' opacity-50'"
         <li class="text-xs badge badge-sm">
           <span class="font-black">{{ starBaseChance }}%</span>Star Crop Chance
         </li>
-        <li v-if="!processor.settings.useFertilserCostSettings" class="text-xs badge badge-sm">
+        <li v-if="!processor.settings.useFertilserCostSettings" class="text-xs badge badge-sm bg-growth-boost-dark border-none">
           <p>
             <FontAwesomeIcon :icon="['fas', 'poop']" class="pr-1" />
             No Fertiliser Cost

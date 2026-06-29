@@ -254,6 +254,33 @@ export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
   return `${convertedSettings}${convertedCropSettings}`
 }
 
+export function convertV_0_4SettingsToV_0_5Settings(settings: string): string {
+  if (!settings)
+    return ''
+
+  let convertedCropSettings = ''
+  let convertedSettings = ''
+
+
+  const settingsSplit = settings.split('Cr0')
+
+
+  for (let setting of settingsSplit) {
+    if (setting.startsWith('.')) {
+      setting = setting.slice(1)
+      convertedCropSettings = setting
+    } else {
+      convertedSettings = `${setting}Nfc`
+    }
+  }
+
+  if (convertedCropSettings.length > 0) {
+    convertedCropSettings = `Cr0.${convertedCropSettings.substring(0, convertedCropSettings.length - 1)}`
+  }
+
+  return `${convertedSettings}${convertedCropSettings}`
+}
+
 function convertV_0_4CodeToV_0_5Code(dimensionInfo: string, cropInfo: string) {
   // Makes sure this inconsistency never occurs from here on
   if (dimensionInfo.indexOf('DIM-') !== -1) {
@@ -316,7 +343,7 @@ export function parseSave(save: string) {
         cropInfo = convertedV_0_5Save.cropInfo
         dimensionInfo = convertedV_0_5Save.dimensionInfo
         validateNewPlotFormat(dimensionInfo, cropInfo)
-        settingsInfo = settingsInfo
+        settingsInfo = convertV_0_4SettingsToV_0_5Settings(settingsInfo)
         strippedVersion = '0.5'
         break
       case '0.5':
