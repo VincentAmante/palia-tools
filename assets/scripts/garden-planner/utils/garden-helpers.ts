@@ -28,7 +28,8 @@ export type Coordinates = string;
 
 export enum Currency {
   GOLD = 'Gold',
-  MEDAL = 'Medal'
+  MEDAL = 'Medal',
+  NONE = 'None'
 }
 
 

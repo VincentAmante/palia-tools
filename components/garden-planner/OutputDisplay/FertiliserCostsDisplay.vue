@@ -3,11 +3,21 @@ import FertiliserCostDisplayItem from './FertiliserCostDisplayItem.vue';
 
 const processor = useProcessor()
 const harvester = useHarvester()
+
+const gardenHasFertilisers = computed(() => {
+	const hasFertilisers = false
+
+	for (const [type, item] of processor.processor.fertiliserCostsPerDay){
+		if (item.count > 0) return true
+	}
+
+	return false
+})
 </script>
 
 <template>
 	<section
-		v-if="processor.settings.useFertilserCostSettings && (processor.fertiliserCostsPerDay.gold > 0 || processor.fertiliserCostsPerDay.medals > 0)"
+		v-if="processor.settings.useFertilserCostSettings && (gardenHasFertilisers)"
 		class="flex flex-col w-full">
 		<div class="flex items-end">
 			<p class="text-sm font-semibold text-palia-blue-dark dark:text-accent">

@@ -56,7 +56,7 @@ const useProcessor = defineStore('processor', () => {
     for (const [type, item] of processor.value.fertiliserCostsPerDay){
       if (item.currency === Currency.GOLD) {
         gold += (item.baseGoldValue * item.count)
-      } else {
+      } else if (item.currency === Currency.MEDAL){
        medals += (item.baseGoldValue * item.count) 
       }
     }
@@ -86,8 +86,7 @@ const useProcessor = defineStore('processor', () => {
 
     if (settings.value.useFertilserCostSettings){
       for (const [type, item] of processorRef.value.fertiliserCostsPerDay){
-        // We just don't include this
-        if (item.currency === Currency.MEDAL) continue
+        if (item.currency !== Currency.GOLD) continue
 
         const goldToDeduct = ((item.count * item.baseGoldValue) * processorRef.value.lastDayOfHarvest)
 

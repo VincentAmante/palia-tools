@@ -36,7 +36,7 @@ const useGardenGrid = defineStore('gardenGrid', () => {
         })
     }
 
-    const isGardenWide = computed(() => grid.value.width > 9)
+    const isGardenWide = computed(() => grid.value.width > 10)
 
     const hoveredBonus = computed(() => hoveredBonusVal.value)
 

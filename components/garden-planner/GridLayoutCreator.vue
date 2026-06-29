@@ -162,7 +162,7 @@ const plotCount = computed(() => gardenCopy.grid.plotCount)
                             </span>
                             <span class="text-warning">
                                 <font-awesome-icon class="" :icon="['fas', 'triangle-exclamation']" />
-                                Will delete all crops if preset/custom is selected. Please save beforehand
+                                Will delete all crops if preset/custom is selected. Consider saving first
                             </span>
                         </p>
                     </fieldset>

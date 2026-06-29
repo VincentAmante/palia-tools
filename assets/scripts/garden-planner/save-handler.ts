@@ -255,6 +255,11 @@ export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
 }
 
 function convertV_0_4CodeToV_0_5Code(dimensionInfo: string, cropInfo: string) {
+  // Makes sure this inconsistency never occurs from here on
+  if (dimensionInfo.indexOf('DIM-') !== -1) {
+    dimensionInfo = dimensionInfo.replace('DIM-', 'D-')
+  }
+
   const convertedSave = new GardenGridBasic(dimensionInfo, cropInfo)
 
   return {
@@ -268,72 +273,6 @@ function convertV_0_4CodeToV_0_5Code(dimensionInfo: string, cropInfo: string) {
   * @param save a save code for the garden planner
  */
 export function parseSave(save: string) {
-  // * This format makes it permanent that the first part of the save is the version number
-  const [version, ...rest] = save.split('_')
-  let dimensionInfo = rest[0] || ''
-  let cropInfo = rest[1] || ''
-  let settingsInfo = rest[2] || ''
-  let strippedVersion = version?.replace('v', '');
-
-  let convertedV_0_5Save = {
-    cropInfo: '',
-    dimensionInfo: ''
-  }
-
-  if (typeof strippedVersion !== 'string')
-    throw new Error(`Provided save code does not appear to be in the right format`)
-
-  // Update the save version iteratively based on the version number
-  do {
-    if (strippedVersion === '') {
-      break
-    }
-
-    switch (strippedVersion) {
-      case '0.1':
-        validatePlotMatrix(dimensionInfo)
-        cropInfo = convertV0_1CodestoV0_2(cropInfo)
-        strippedVersion = '0.2'
-        break
-      case '0.2':
-        validatePlotMatrix(dimensionInfo)
-        cropInfo = convertV_0_2Codesto_V_0_3(cropInfo)
-        strippedVersion = '0.3'
-        break
-      case '0.3':
-        validatePlotMatrix(dimensionInfo)
-        cropInfo = convertV_0_3Codesto_V_0_4(cropInfo)
-        settingsInfo = convertV_0_3SettingsToV_0_4Settings(settingsInfo)
-        strippedVersion = '0.4'
-        break
-      case '0.4':
-        convertedV_0_5Save = convertV_0_4CodeToV_0_5Code(dimensionInfo, cropInfo)
-        cropInfo = convertedV_0_5Save.cropInfo
-        dimensionInfo = convertedV_0_5Save.dimensionInfo
-        validateNewPlotFormat(dimensionInfo, cropInfo)
-        settingsInfo = settingsInfo
-        strippedVersion = '0.5'
-        break
-      case '0.5':
-        cropInfo = cropInfo
-        dimensionInfo = dimensionInfo
-        settingsInfo = settingsInfo
-        validateNewPlotFormat(dimensionInfo, cropInfo)
-        break
-      default:
-        throw new Error(`Invalid save version ${strippedVersion}`)
-    }
-  } while (strippedVersion !== '0.5')
-
-  return { version: strippedVersion, dimensionInfo, cropInfo, settingsInfo }
-}
-
-/**
- * ! Just a test version of the parseSave function for the new plot system
- * @param save 
- * @returns 
- */
-export function parseSaveTEST(save: string) {
   // * This format makes it permanent that the first part of the save is the version number
   const [version, ...rest] = save.split('_')
   let dimensionInfo = rest[0] || ''
@@ -436,6 +375,9 @@ export function loadSettings(settingsInfo: string): { harvesterOptions: IHarvest
 function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: ProcessorSettings): string {
   let settings = ''
 
+  if (harvesterOptions.level !== 0)
+    settings += `L${harvesterOptions.level}`
+
   if (harvesterOptions.days !== -1)
     settings += `D${harvesterOptions.days}`
 
@@ -454,8 +396,9 @@ function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: 
   if (processorSettings.goldAverageSetting === 'growthTick')
     settings += 'Gt'
 
-  if (harvesterOptions.level !== 0)
-    settings += `L${harvesterOptions.level}`
+  if (!processorSettings.useFertilserCostSettings)
+    settings += 'Nfc'
+
 
   let cropSettings = ''
 
@@ -490,10 +433,10 @@ function encodeSettings(harvesterOptions: IHarvesterOptions, processorSettings: 
     settings += `Cr0.${cropSettings}`
   }
 
-  if (processorSettings.useFertilserCostSettings){
+  if (processorSettings.useFertilserCostSettings) {
     const fertSaveString = ['Fr0.']
 
-    for (const [type, source] of processorSettings.fertiliserCostSettings){
+    for (const [type, source] of processorSettings.fertiliserCostSettings) {
       const fertiliser = getFertiliserFromType(type)
 
       if (!fertiliser) continue
@@ -565,8 +508,7 @@ function decodeSettings(settingsInfo: string, version = LATEST_VERSION): { harve
     cropSettings: new Map(),
     crafterSetting: 0,
     goldAverageSetting: 'crafterTime',
-    // if there's no fert cost settings, assume it was toggled off
-    useFertilserCostSettings: false,
+    useFertilserCostSettings: true,
     fertiliserCostSettings: new Map()
   };
 
@@ -580,9 +522,9 @@ function decodeSettings(settingsInfo: string, version = LATEST_VERSION): { harve
       Nss: () => { harvesterOptions.useStarSeeds = false; },
       Gb: () => { harvesterOptions.useGrowthBoost = true; },
       Gt: () => { processorSettings.goldAverageSetting = 'growthTick'; },
-
+      Nfc: () => { processorSettings.useFertilserCostSettings = false },
       // For if we change the default settings back to growthTick
-      'Cft': () => { processorSettings.goldAverageSetting = 'crafterTime' }
+      Cft: () => { processorSettings.goldAverageSetting = 'crafterTime' }
     };
 
     for (const setting of harvesterSettings) {
@@ -648,8 +590,7 @@ function decodeSettings(settingsInfo: string, version = LATEST_VERSION): { harve
   }
 
   if (fertiliserSettings) {
-    processorSettings.useFertilserCostSettings = true
-
+    // TODO: Determine how best to set 'None'
     const fertiliserCostSourceContent = fertiliserSettings.replace(/^Fr0\./, '');
     const fertiliserMatches = fertiliserCostSourceContent.match(/[A-Z][a-z]/g)
 
@@ -668,24 +609,29 @@ function decodeSettings(settingsInfo: string, version = LATEST_VERSION): { harve
 
       switch (costSource) {
         case FertiliserCostSource.ZEKI_STORE:
-          console.log(`${fertiliser.type}: Zeki`)
+          // console.log(`${fertiliser.type}: Zeki`)
           if (fertiliser.costs.zekiBatchPrice <= 0) {
             console.warn(`COST SOURCE NOT FOUND: Planner lacks support for Zeki Store Prices for ${fertiliser.type}, skipping`)
             continue
           }
           break
         case FertiliserCostSource.GUILD_STORE:
-          console.log(`${fertiliser.type}: Guild Store`)
+          // console.log(`${fertiliser.type}: Guild Store`)
           if (fertiliser.costs.guildBatchPrice <= 0) {
             console.warn(`COST SOURCE NOT FOUND: Planner lacks support for Guild Store prices for ${fertiliser.type}, skipping`)
             continue
           }
           break
-        default:
-          console.log(`${fertiliser.type}: Sell Value`)
+        case FertiliserCostSource.SELL_VALUE:
+          // console.log(`${fertiliser.type}: Sell Value`)
           if (fertiliser.costs.goldSellValue <= 0) {
             console.warn(`COST SOURCE NOT FOUND: Planner lacks support for sell value prices for ${fertiliser.type}, skipping`)
+            continue
           }
+          break
+        case FertiliserCostSource.NONE:
+        default:
+          break
       }
 
       processorSettings.fertiliserCostSettings?.set(fertiliser.type, costSource)

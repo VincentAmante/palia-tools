@@ -32,8 +32,9 @@ const source = computed(() => {
             return 'Badruu'
         case FertiliserCostSource.ZEKI_STORE:
             return 'Zeki'
+        case FertiliserCostSource.NONE:
         default:
-            return ''
+            return 'Excluded'
     }
 })
 </script>
@@ -42,20 +43,20 @@ const source = computed(() => {
 
     <li class="flex w-fit gap-2 max-w-28">
         <ItemDisplay
-class="rounded-md max-h-14 aspect-square" :star="false" :img-src="item.img.src" :img-alt="item.img.alt"
-            :count="item.count" :base-gold-value="item.baseGoldValue" />
+class="rounded-md max-h-14 aspect-square" :star="false" :img-src="item.img.src"
+            :img-alt="item.img.alt" :count="item.count" :base-gold-value="item.baseGoldValue" />
         <div>
             <p class="text-palia-blue text-xs font-bold flex">
                 <img
-v-if="item.currency === Currency.GOLD" width="16" height="16"
-                    src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4 inline" :srcset="undefined" alt="Gold"
-                    format="webp">
+v-if="item.currency === Currency.MEDAL" width="16" height="16"
+                    src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-4 inline" :srcset="undefined"
+                    alt="Gold" format="webp">
                 <img
-v-else width="16" height="16" src="https://pgp-cdn.b-cdn.net/gardening-medal.webp"
-                    class="max-h-4 inline" :srcset="undefined" alt="Gold" format="webp">
+v-else width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4 inline"
+                    :srcset="undefined" alt="Gold" format="webp">
                 {{ (item.count * item.baseGoldValue).toLocaleString() }}
             </p>
-            <p class="text-xxs uppercase text-misc leading-tight">
+            <p class="text-xxs uppercase text-misc leading-tight" :class="{'font-bold text-weed-prevention-dark': source === 'Excluded'}">
                 {{ source }}
             </p>
         </div>

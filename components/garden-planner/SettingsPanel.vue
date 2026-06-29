@@ -194,7 +194,7 @@ class="join-item btn btn-sm text-primary " aria-label="Set Level to 50"
                   Decides base star chance of crops
                 </p>
                 <p>
-                  Base Star Chance: <code class="px-2 rounded-xs bg-misc text-accent">{{ starBaseChance }}%</code>
+                  Base Star Chance: <code class="px-2 rounded-xs bg-misc dark:bg-palia-blue-dark text-accent">{{ starBaseChance }}%</code>
                 </p>
                 <p>Formula in info</p>
               </template>
@@ -230,15 +230,15 @@ v-model="harvester.settings.useStarSeeds" class="toggle" type="checkbox"
                 <div class="join">
                   <button
 class="join-item btn text-accent"
-                    :class="{ 'bg-palia-blue': (processor.settings.goldAverageSetting === 'crafterTime') }"
+                    :class="{ 'bg-palia-blue underline underline-offset-4': (processor.settings.goldAverageSetting === 'crafterTime') }"
                     @click="processor.settings.goldAverageSetting = 'crafterTime'">
-                    Crafter Time <font-awesome-icon class="text-xxs" :icon="['fas', 'check']" :class="{'invisible': processor.settings.goldAverageSetting !== 'crafterTime'}"/>
+                    Crafter Time
                   </button>
                   <button
 class="join-item btn text-accent"
-                    :class="{ 'bg-palia-blue': (processor.settings.goldAverageSetting === 'growthTick') }"
+                    :class="{ 'bg-palia-blue underline underline-offset-4': (processor.settings.goldAverageSetting === 'growthTick') }"
                     @click="processor.settings.goldAverageSetting = 'growthTick'">
-                    Growth Ticks <font-awesome-icon class="text-xxs" :icon="['fas', 'check']" :class="{'invisible': processor.settings.goldAverageSetting !== 'growthTick'}"/>
+                    Growth Ticks
                   </button>
                 </div>
               </template>
@@ -313,18 +313,29 @@ v-model="processor.settings.useFertilserCostSettings" class="toggle" type="check
                 </p>
               </template>
             </OptionCard>
-
-
             <ul v-if="processor.settings.useFertilserCostSettings" class="flex flex-col gap-2">
               <template v-for="type in Object.values(FertiliserType)" :key="type">
                 <li v-if="type !== FertiliserType.None">
                   <FertiliserCostSetting :type="type" />
                 </li>
               </template>
-              <li v-if="processor.settings.useFertilserCostSettings && processor.settingsForEncoding.fertiliserCostSettings.size <= 0" class="text-misc p-2 border border-misc rounded-md font-bold">
+              <li
+                v-if="processor.settings.useFertilserCostSettings && processor.settingsForEncoding.fertiliserCostSettings.size <= 0"
+                class="text-misc p-2 border border-misc rounded-md font-bold">
                 <font-awesome-icon :icon="['fas', 'info-circle']" />
                 Fertiliser cost settings will be shown once a fertiliser is placed
               </li>
+            </ul>
+
+            <ul
+v-if="processor.settings.useFertilserCostSettings"
+              class="list list-inside list-disc text-palia-blue text-xs dark:text-water-retain">
+              <li><span class="font-bold">Exclude:</span> Cost is not factored in</li>
+              <li><span class="font-bold">Item Value:</span> Cost of selling 1 unit</li>
+              <li><span class="font-bold">Store:</span> Cost of 1 unit from a store like Zeki's (batch price / units)
+              </li>
+              <li><span class="font-bold">Guild:</span> Cost of 1 unit using guild medals (batch price / units) <span class="italic">- not
+                recommended</span></li>
             </ul>
           </fieldset>
 

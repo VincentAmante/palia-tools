@@ -101,7 +101,8 @@ export interface ProcessorSetting {
 export enum FertiliserCostSource {
   SELL_VALUE = 's', // Cost of selling
   ZEKI_STORE = 'z', // Cost from buying it from Zeki's store
-  GUILD_STORE = 'g' // Cost from buying it from the garden guild (medals)
+  GUILD_STORE = 'g', // Cost from buying it from the garden guild (medals)
+  NONE = 'n' // Fertiliser was not included as a cost
 }
 
 // Interface for all processor settings
@@ -270,11 +271,13 @@ export default class Processor {
         if (!fertiliser) continue
 
         let baseGoldValue = 0
-        const currency = source !== FertiliserCostSource.GUILD_STORE ? Currency.GOLD : Currency.MEDAL
+        // const currency = source !== FertiliserCostSource.GUILD_STORE ? Currency.GOLD : Currency.MEDAL
+        let currency = Currency.GOLD
 
         switch (source) {
           case FertiliserCostSource.GUILD_STORE:
             baseGoldValue = (fertiliser.costs.guildBatchPrice / fertiliser.costs.guildBatchCount)
+            currency = Currency.MEDAL
             break;
           case FertiliserCostSource.ZEKI_STORE:
             baseGoldValue = (fertiliser.costs.zekiBatchPrice / fertiliser.costs.zekiBatchCount)
@@ -282,8 +285,11 @@ export default class Processor {
           case FertiliserCostSource.SELL_VALUE:
             baseGoldValue = fertiliser.costs.goldSellValue
             break;
+          case FertiliserCostSource.NONE:
           default:
-            throw new Error(`Cost source is somehow invalid: ${source}`)
+            baseGoldValue = 0
+            currency = Currency.NONE
+            break
         }
 
         const fertiliserItem: FertiliserItem = {
