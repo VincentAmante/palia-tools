@@ -38,12 +38,12 @@ id="garden-display" class="flex flex-col items-start px-1 h-full pb-4 sm:pb-0 sm
                 <th />
                 <th
 v-for="x in gardenGrid.grid.width" :key="`column-${x}`" scope="col"
-                    class="text-xs text-misc dark:text-water-retain">{{ x - 1 }}</th>
+                    class="text-xs text-palia-blue dark:text-water-retain">{{ x - 1 }}</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="y in gardenGrid.grid.height" :key="`row-${y - 1}`" :aria-label="`row-${y - 1}`">
-                <th  v-if="useUiSettings().settings.showGridAxesLabels" scope="row" class="text-misc dark:text-water-retain pr-1 text-xs">{{ y - 1 }}</th>
+                <th  v-if="useUiSettings().settings.showGridAxesLabels" scope="row" class="text-palia-blue dark:text-water-retain pr-1 text-xs">{{ y - 1 }}</th>
                 <td v-for="x in gardenGrid.grid.width" :key="`cell-${x - 1},${y - 1}`">
                     <GridTile :coordinates="`${x - 1},${y - 1}`" @update="() => { handleUpdate() }" />
                 </td>

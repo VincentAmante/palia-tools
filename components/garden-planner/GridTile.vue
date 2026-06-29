@@ -73,10 +73,10 @@ const tileBorderWeightByPlot = computed(() => {
 
     const coordsObj = toCoordinateObject(plotLocalCoordinates)
 
-    if (coordsObj.y === 0) style.push('border-t-2')
-    if (coordsObj.y === 2) style.push('border-b-2')
-    if (coordsObj.x === 0) style.push('border-l-2')
-    if (coordsObj.x === 2) style.push('border-r-2')
+    if (coordsObj.y === 0) style.push('border-t-2 border-t-misc')
+    if (coordsObj.y === 2) style.push('border-b-2 border-b-misc')
+    if (coordsObj.x === 0) style.push('border-l-2 border-l-misc')
+    if (coordsObj.x === 2) style.push('border-r-2 border-r-misc')
 
     return style.join(' ')
 })
@@ -337,10 +337,10 @@ const displayImageByCropSize = computed(() => {
 
     switch (size) {
         case CropSize.Bush:
-            style.push('-translate-6', 'scale-150')
+            style.push('-translate-7', 'scale-150')
             break;
         case CropSize.Tree:
-            style.push('-translate-12', 'scale-175')
+            style.push('-translate-14', 'scale-175')
             break;
         case CropSize.Single:
         default:
@@ -366,10 +366,10 @@ const displayBonusesByCropSize = computed(() => {
 
     switch (size) {
         case CropSize.Bush:
-            style.push('-translate-y-12 -translate-x-6', 'scale-150')
+            style.push('-translate-y-12 xl:-translate-y-13 -translate-x-7', 'scale-150')
             break;
         case CropSize.Tree:
-            style.push('-translate-y-24 -translate-x-12', 'scale-175')
+            style.push('-translate-y-24 xl:-translate-y-26 -translate-x-14', 'scale-175')
             break;
         case CropSize.Single:
         default:
@@ -396,10 +396,10 @@ const displayFertiliserByCropSize = computed(() => {
 
     switch (size) {
         case CropSize.Bush:
-            style.push('-translate-0.5', 'scale-125')
+            style.push('-translate-1', 'scale-125')
             break;
         case CropSize.Tree:
-            style.push('-translate-1', 'scale-150')
+            style.push('-translate-2', 'scale-150')
             break;
         case CropSize.Single:
         default:
@@ -414,7 +414,7 @@ const displayFertiliserByCropSize = computed(() => {
 <template>
     <div
 :aria-label="`Tile at ${coordinates}`"
-        class="w-12 xl:w-13 aspect-square items-center  justify-center  border-misc-saturated/80 dark:border-water-retain/80 relative select-none"
+        class="w-12.5 xl:w-13.5 aspect-square items-center  justify-center  border-misc-saturated/80 dark:border-water-retain/80 relative select-none"
         :class="[tileBorderWeightByPlot, tileRadiusByPlot]">
         <button
 v-if="tileData.tile"
