@@ -141,7 +141,7 @@ class="pr-1" :class="harvester.settings.useStarSeeds ? '' : ' opacity-50'"
           <p>
             <span>
               <FontAwesomeIcon :icon="['fas', 'seedling']" class="pr-1" />
-              <abbr title="Include">Incl.</abbr>Replant
+              <abbr aria-label="Including" title="Including" class="no-underline">Incl.</abbr> Replant
             </span><span v-if="harvester.settings.includeReplantCost">& Cost
 
             </span>
@@ -157,7 +157,17 @@ class="pr-1" :class="harvester.settings.useStarSeeds ? '' : ' opacity-50'"
           <span class="font-black">{{ starBaseChance }}%</span>Star Crop Chance
         </li>
         <li v-if="!processor.settings.useFertilserCostSettings" class="text-xs badge badge-sm">
-          No Fertiliser Cost
+          <p>
+            <FontAwesomeIcon :icon="['fas', 'poop']" class="pr-1" />
+            No Fertiliser Cost
+          </p>
+        </li>
+        <li v-else class="text-xs badge badge-sm">
+          <p>
+            <FontAwesomeIcon :icon="['fas', 'poop']" class="pr-1" />
+            <abbr aria-label="Including" title="Including" class="no-underline">Incl.</abbr>
+            Fertiliser Cost
+          </p>
         </li>
       </ul>
     </section>
