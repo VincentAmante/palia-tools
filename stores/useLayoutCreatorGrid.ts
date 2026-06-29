@@ -60,6 +60,7 @@ const useLayoutCreatorGrid = defineStore('layoutCreatorGrid', () => {
     function placePlot(coordinates: Coordinates) {
         const modifiedTiles = grid.value.placePlot(coordinates)
         handleModifiedTiles(modifiedTiles)
+        unhoverTile()
         triggerRef(grid)
     }
 
