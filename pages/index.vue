@@ -48,20 +48,18 @@ const toastLocation = computed(() => {
 </script>
 
 <template>
-  <main 
-  id="main"
-  class="flex flex-col gap-4 py-2" 
-  :class="{ 'dark': false }"
-  >
-    <h1 class="sr-only">
-      Garden Planner
-    </h1>
-    <GuideCard />
-    <section class="lg:px-12">
-      <GardenPlanner />
-      <MenuBar />
-    </section>
-    <!-- <DevOnly>
+  <main id="main" class="flex flex-col gap-4 py-2" :class="{ 'dark': false }">
+    <ClientOnly>
+      <h1 class="sr-only">
+        Garden Planner
+      </h1>
+      <GuideCard />
+      <section class="lg:px-12">
+
+        <GardenPlanner />
+        <MenuBar />
+      </section>
+      <!-- <DevOnly>
       <div class="fixed bottom-0 left-0 flex flex-col gap-2 p-2 mx-12 my-2 rounded-md w-fit bg-accent bg-opacity-10">
         <p class="text-sm text-palia-blue-dark">
           Toggle Screenshot Mode
@@ -74,13 +72,15 @@ const toastLocation = computed(() => {
         </button>
       </div>
     </DevOnly> -->
-    <CropModalButton :position="uiSettings.settings.floatComponentLocation" />
-    <Teleport to="body">
-      <section id="toasts" class="toast z-1000" :class="toastLocation">
-        <AppToast
+      <CropModalButton :position="uiSettings.settings.floatComponentLocation" />
+      <Teleport to="body">
+        <section id="toasts" class="toast z-1000" :class="toastLocation">
+          <AppToast
 v-for="(toast) in toasts.toasts" :id="toast.id!" :key="toast.id" :message="toast.message"
-          :type="toast.type" :duration="toast.duration" @close="() => { toasts.removeToast(toast.id!) }" />
-      </section>
-    </Teleport>
+            :type="toast.type" :duration="toast.duration" @close="() => { toasts.removeToast(toast.id!) }" />
+        </section>
+      </Teleport>
+    </ClientOnly>
+
   </main>
 </template>
