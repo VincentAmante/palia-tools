@@ -715,6 +715,7 @@ export class GardenGrid {
 
         if (gardenHasChanged) changedTiles = changedTiles.union(this.trimGarden())
 
+   
         return changedTiles
     }
 
@@ -744,6 +745,8 @@ export class GardenGrid {
             const newCoords = translateCoordinates(oldCoords, translateBy)
             newPlots.set(newCoords, plot)
         }
+
+        this._plots = newPlots
 
         // run a second check to make sure every tile's crop is properly updated
         for (const [newCoords, tile] of this._tiles) {

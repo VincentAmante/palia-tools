@@ -24,7 +24,6 @@ const gardenHasFertilisers = computed(() => {
 				Fertiliser costs / Growth Tick
 			</p>
 		</div>
-		<div class="bg-accent rounded-md border border-misc-dark">
 		<div class="bg-accent dark:bg-palia-blue-light rounded-md border border-misc-dark dark:border-palia-blue-dark">
 			<ul class="flex gap-4 p-2">
 				<FertiliserCostDisplayItem

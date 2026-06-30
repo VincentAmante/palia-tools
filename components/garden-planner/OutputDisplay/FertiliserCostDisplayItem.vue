@@ -29,9 +29,9 @@ const source = computed(() => {
         case FertiliserCostSource.SELL_VALUE:
             return 'Item Value'
         case FertiliserCostSource.GUILD_STORE:
-            return 'Badruu'
+            return 'Guild'
         case FertiliserCostSource.ZEKI_STORE:
-            return 'Zeki'
+            return 'Store'
         case FertiliserCostSource.NONE:
         default:
             return 'Excluded'
