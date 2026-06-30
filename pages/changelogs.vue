@@ -15,11 +15,11 @@ useHead({
   ],
 })
 
-const changelog = useChangelogTracker()
+// const changelog = useChangelogTracker()
 
-onMounted(() => {
-  changelog.markAsVisited()
-})
+// onMounted(() => {
+//   changelog.markAsVisited()
+// })
 </script>
 
 <template>

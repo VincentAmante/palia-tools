@@ -57,6 +57,7 @@ const toastLocation = computed(() => {
 
       <GardenPlanner />
       <ClientOnly>
+
         <MenuBar />
       </ClientOnly>
     </section>
