@@ -100,19 +100,9 @@ function openNewLayoutModal() {
 const urlParams = useUrlSearchParams('history')
 onMounted(() => {
   const layout = urlParams.layout
-  // Load layout from URL parameter if available
-  console.log('>>> FULL BROWSER URL:', window.location.href)
-  console.log('>>> SEARCH STRING:', window.location.search)
-  console.log('>>> useRoute().query:', useRoute().query)
-
-  const params = new URLSearchParams(window.location.search)
-  console.log('>>> URLSearchParams result:', Object.fromEntries(params.entries()))
-
   if (layout) {
     loadLayoutFromCode(layout as string)
-    console.log('are we actually loading this?')
   } else {
-    console.log('no garden found')
     const defaultSettings = loadDefaultSettingsCode()
 
     if (defaultSettings) {
