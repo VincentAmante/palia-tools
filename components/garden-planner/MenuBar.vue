@@ -131,7 +131,7 @@ onMounted(() => {
     }
   }
 
-  // tryLoad()
+  tryLoad()
 
   const observer = new MutationObserver(() => {
     if (window.location.search.includes('layout')) {
