@@ -94,17 +94,15 @@ function previousDay() {
     <section class="h-full flex flex-col rounded-sm">
         <div class="flex justify-between items-center mb-0.5">
             <p class="dark:text-accent font-bold text-sm">Harvest Days</p>
-            <div class="dropdown dropdown-end p-0">
-                <div tabindex="0" role="button" class="btn btn-xs">Options<font-awesome-icon
-class="text-lg"
-                        icon="cog" /></div>
+            <details class="dropdown dropdown-end p-0">
+                <summary role="button" class="btn btn-xs p-3">Options<font-awesome-icon
+class="text-sm"
+                        icon="cog" /></summary>
                 <div
-tabindex="-1"
                     class="dropdown-content bg-palia-blue text-accent flex flex-col rounded-box z-1 p-2 shadow-sm min-w-xs w-fit mt-1 gap-2 max-w-xs sm:max-w-xl">
 
                     <fieldset class="fieldset bg-base-200 p-2 rounded-sm">
                         <legend class="legend text-accent">Preview as processed</legend>
-
                         <label class="label">
                             <input v-model="uiSettings.settings.showAsProcessedItems" type="checkbox" class="toggle">
                             <span class="label-text" />
@@ -152,14 +150,14 @@ v-model="uiSettings.settings.showAsProcessedTime" type="checkbox"
                         <p class="label font-light">Day View: Shows detailed info for a specific day</p>
                     </fieldset> -->
                 </div>
-            </div>
+            </details>
         </div>
         <div
             class="bg-accent border border-misc dark:bg-palia-blue-secondary dark:border-water-retain/60 p-1 rounded-sm">
             <div v-if="selectedTab === 'harvests'" class="" v-bind="containerProps" :style="{ height: `${size}px` }">
                 <div v-bind="wrapperProps" class="">
                     <InventoryRow
-                    v-for="item in list" :key="item.data.day" :day-harvest="item.data"
+v-for="item in list" :key="item.data.day" :day-harvest="item.data"
                         :crop-to-filter-for="cropToFilter" @day-clicked="(day: number) => {
                             selectedDay = day
                             selectedTab = 'details'
