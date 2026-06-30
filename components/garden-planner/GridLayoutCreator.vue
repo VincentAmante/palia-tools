@@ -113,6 +113,19 @@ const presetCodes = [
         code: '6x3_CR-0x0N9-3x0N9'
     },
     {
+        title: '2x2',
+        code: '6x6_CR-0x0N9-3x0N9-0x3N9-3x3N9'
+    },
+    {
+        title: '2x3',
+        code: '6x9_CR-0x0N9-3x0N9-0x3N9-3x3N9-0x6N9-3x6N9'
+    },
+    {
+        title: '3x2',
+        code: '9x6_CR-0x0N9-3x0N9-6x0N9-0x3N9-3x3N9-6x3N9'
+    },
+
+    {
         title: '3x3',
         code: '9x9_CR-0x0N9-3x0N9-6x0N9-0x3N9-3x3N9-6x3N9-0x6N9-3x6N9-6x6N9'
     },
@@ -229,7 +242,8 @@ v-if="plotCount > 9" class="text-warning"
                         </fieldset>
                     </div>
                 </div>
-                <div class="gap-1 bg-palia-blue-dark rounded-md p-2 pr-4 pb-4 max-h-90 overflow-y-auto overflow-x-auto  scrollbar-h-2">
+                <div
+                    class="gap-1 bg-palia-blue-dark rounded-md p-2 pr-4 pb-4 max-h-90 overflow-y-auto overflow-x-auto  scrollbar-h-2">
                     <table>
                         <tbody>
                             <tr v-for="row in heightInTiles" :key="`row-${row}`">
