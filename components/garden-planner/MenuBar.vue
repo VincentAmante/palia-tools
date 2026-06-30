@@ -92,11 +92,12 @@ function openNewLayoutModal() {
 }
 
 const urlParams = useUrlSearchParams('history')
+const route = useRoute()
 onMounted(() => {
-
+  const layout = route.query.layout as string | undefined
   // Load layout from URL parameter if available
-  if (urlParams.layout) {
-    loadLayoutFromCode(urlParams.layout as string)
+  if (layout) {
+    loadLayoutFromCode(layout as string)
     console.log('are we actually loading this?')
   } else {
     console.log('no garden found')
