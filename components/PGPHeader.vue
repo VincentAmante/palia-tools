@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useChangelogTracker } from '#imports';
 import AppDivider from './AppDivider.vue'
 
 const changelogTracker = useChangelogTracker()
