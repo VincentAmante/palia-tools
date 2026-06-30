@@ -78,11 +78,17 @@ const useProcessor = defineStore('processor', () => {
     return processorRef.value.inventory
   })
 
-  const finalGoldValue = computed(() => {
+  const totalProduceGold = computed(() => {
     let goldValue = 0
 
     for (const [, item] of processorRef.value.inventory)
       goldValue += (item.count * item.baseGoldValue)
+
+    return goldValue
+  })
+
+  const finalGoldValue = computed(() => {
+    let goldValue = totalProduceGold.value
 
     if (settings.value.useFertilserCostSettings){
       for (const [type, item] of processorRef.value.fertiliserCostsPerDay){
@@ -142,7 +148,8 @@ const useProcessor = defineStore('processor', () => {
     settingsRef,
     settingsForEncoding,
     setFertiliserCostSetting,
-    fertiliserCostsPerDay
+    fertiliserCostsPerDay,
+    totalProduceGold
   }
 })
 

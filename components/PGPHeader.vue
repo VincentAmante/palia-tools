@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import { useChangelogTracker } from '#imports';
 import AppDivider from './AppDivider.vue'
 
+const changelogTracker = useChangelogTracker()
 </script>
 <template>
   <div>
     <header class="z-50 drawer drawer-end">
-      <input id="menu" type="checkbox" class="drawer-toggle" aria-label="toggle menu" >
+      <input id="menu" type="checkbox" class="drawer-toggle" aria-label="toggle menu">
       <div class="flex flex-col drawer-content">
         <div class="w-full py-3 navbar sm:px-12">
           <div class="flex-1">
             <NuxtLink to="/" class="flex items-center gap-2" :prefetch="false">
               <img
-format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48px" alt="Palia Garden Planner Logo"
-                class="max-w-[3rem]">
+format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48px"
+                alt="Palia Garden Planner Logo" class="max-w-12">
               <div class="flex flex-col gap-0 leading-tight">
                 <h1 class="text-xl font-bold leading-tight text-left lg:text-2xl">
                   Palia Garden Planner
@@ -34,7 +36,10 @@ format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48p
                 </li>
                 <li>
                   <NuxtLink to="/changelogs" :prefetch=false>
-                    Changelogs
+                    <span class="indicator">
+                      <span v-if="changelogTracker.hasUnread" class="indicator-item status status-error" />
+                      <span>Changelogs</span>
+                    </span>
                   </NuxtLink>
                 </li>
                 <li>
@@ -46,7 +51,9 @@ format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48p
                   <NuxtLink
 class="" target="_blank" :prefetch="false" rel="noopener"
                     to="https://paliapedia.com/tools/garden">
-                    <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost" :aria-hidden="true" />
+                    <font-awesome-icon
+:icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost"
+                      :aria-hidden="true" />
                     Layout Generator
                   </NuxtLink>
                 </li>
@@ -122,7 +129,10 @@ src="https://pgp-cdn.b-cdn.net/palia-party.webp" width="18px" height="18px"
           </li>
           <li class="text-lg font-bold normal-case">
             <NuxtLink to="/changelogs" :prefetch="false">
-              Changelogs
+              <span class="indicator">
+                <span v-if="changelogTracker.hasUnread" class="indicator-item status status-error" />
+                <span>Changelogs</span>
+              </span>
             </NuxtLink>
           </li>
           <li class="text-lg font-bold normal-case">
@@ -134,7 +144,9 @@ src="https://pgp-cdn.b-cdn.net/palia-party.webp" width="18px" height="18px"
             <NuxtLink
 class="" target="_blank" rel="noopener" :prefetch="false"
               to="https://paliapedia.com/tools/garden">
-              <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost" :aria-hidden="true" />
+              <font-awesome-icon
+:icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost"
+                :aria-hidden="true" />
               Layout Generator
             </NuxtLink>
           </li>

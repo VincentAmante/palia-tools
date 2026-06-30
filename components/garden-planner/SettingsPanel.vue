@@ -113,7 +113,7 @@ role="tab" class="tab join-item" :class="(activeTab === 'Misc') ? 'tab-active' :
 v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
         class="absolute bottom-0 z-10 w-full rounded-md pointer-events-none opacity-90 h-1/4 max-h-12 bg-linear-to-b from-transparent to-primary dark:to-palia-blue-secondary" />
       <ul
-        class="grid max-h-120 gap-1 bg-accent dark:bg-palia-blue-secondary p-2 pb-10 pt-0 overflow-y-auto pr-2 rounded-md max-w-full scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
+        class="grid max-h-120 gap-2 lg:gap-1 bg-accent dark:bg-palia-blue-secondary p-2 pb-10 pt-0 overflow-y-auto pr-2 rounded-md max-w-full scrollbar scrollbar-w-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent">
         <li>
           <fieldset class="fieldset p-2 border-misc-dark dark:border-water-retain border rounded-md">
             <OptionCard label="days" name="Days">
@@ -131,7 +131,7 @@ class="join-item btn btn-sm " aria-label="Set Days to Auto"
                   </button>
                   <input
 v-model="harvester.settings.days"
-                    class="join-item input input-sm text-lg max-w-[6rem] text-accent" type="number" min="0">
+                    class="join-item input input-sm text-lg max-w-24 text-accent" type="number" min="0">
                   <button
 class="join-item btn btn-sm " aria-label="Set Days to 30"
                     @click="harvester.settings.days = 30">
@@ -155,7 +155,7 @@ class="join-item btn btn-sm " aria-label="Set Days to 180"
                   <span class="font-bold">LCM:</span> Finds a day where all crops are harvestable
                 </p>
               </template>
-            </OptionCard>z
+            </OptionCard>
           </fieldset>
         </li>
         <li>
@@ -243,7 +243,7 @@ class="join-item btn text-accent"
                 </div>
               </template>
               <template #labels>
-                <p>
+                <p class="">
                   When processing crops, the gold average will be calculated by:
                 </p>
                 <p>
@@ -321,7 +321,7 @@ v-model="processor.settings.useFertilserCostSettings" class="toggle" type="check
               </template>
               <li
                 v-if="processor.settings.useFertilserCostSettings && processor.settingsForEncoding.fertiliserCostSettings.size <= 0"
-                class="text-misc p-2 border border-misc rounded-md font-bold">
+                class="text-misc p-2 border border-misc rounded-md font-bold dark:text-water-retain dark:border-water-retain">
                 <font-awesome-icon :icon="['fas', 'info-circle']" />
                 Fertiliser cost settings will be shown once a fertiliser is placed
               </li>
@@ -329,7 +329,7 @@ v-model="processor.settings.useFertilserCostSettings" class="toggle" type="check
 
             <ul
 v-if="processor.settings.useFertilserCostSettings"
-              class="list list-inside list-disc text-palia-blue text-xs dark:text-water-retain">
+              class="list list-inside list-disc text-palia-blue text-xs dark:text-accent">
               <li><span class="font-bold">Exclude:</span> Cost is not factored in</li>
               <li><span class="font-bold">Item Value:</span> Cost of selling 1 unit</li>
               <li><span class="font-bold">Store:</span> Cost of 1 unit from a store like Zeki's (batch price / units)
@@ -358,7 +358,7 @@ v-model="harvester.settings.useGrowthBoost" class="toggle" type="checkbox"
                   <font-awesome-icon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
                   Likely bugged as of 0.169
                   <NuxtLink
-class="pl-1 underline text-misc"
+class="pl-1 underline text-misc dark:text-water-retain"
                     to="https://docs.google.com/document/d/1f4MQHjEC1RCNpDUz1I3eg2tioD_6yBmW0XWsVxUOJ1Y/edit"
                     target="_blank" :prefetch="false">
                     <font-awesome-icon class="text-sm" :icon="['fas', 'arrow-up-right-from-square']" />

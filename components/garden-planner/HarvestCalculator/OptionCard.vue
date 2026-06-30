@@ -17,11 +17,11 @@ defineProps({
   <legend v-if="!useLabel" class="fieldset-legend text-sm text-palia-blue dark:text-harvest-boost">
     {{ name }}
   </legend>
-  <label v-else class="text-palia-blue font-bold dark:text-water-retain" :for="name">{{ name }}</label>
+  <label v-else class="text-palia-blue font-bold dark:text-harvest-boost" :for="name">{{ name }}</label>
   <label :for="name" class="label">
     <slot name="input" />
   </label>
-  <label :for="name" class="label flex-col gap-px items-start opacity-100 text-palia-blue dark:text-water-retain">
+  <label :for="name" class="label flex-col gap-px items-start opacity-100 text-palia-blue dark:text-accent whitespace-break-spaces">
     <slot name="labels" />
   </label>
   <div class="last:hidden my-px divider divider-primary"/>

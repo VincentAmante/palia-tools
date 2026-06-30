@@ -46,7 +46,7 @@ const source = computed(() => {
 class="rounded-md max-h-14 aspect-square" :star="false" :img-src="item.img.src"
             :img-alt="item.img.alt" :count="item.count" :base-gold-value="item.baseGoldValue" />
         <div>
-            <p class="text-palia-blue text-xs font-bold flex">
+            <p class="text-palia-blue dark:text-accent text-xs font-bold flex">
                 <img
 v-if="item.currency === Currency.MEDAL" width="16" height="16"
                     src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-4 inline" :srcset="undefined"
@@ -56,7 +56,7 @@ v-else width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="m
                     :srcset="undefined" alt="Gold" format="webp">
                 {{ (item.count * item.baseGoldValue).toLocaleString() }}
             </p>
-            <p class="text-xxs uppercase text-misc leading-tight" :class="{'font-bold text-weed-prevention-dark': source === 'Excluded'}">
+            <p class="text-xxs uppercase text-misc dark:text-accent/80 leading-tight" :class="{'font-bold text-weed-prevention-dark': source === 'Excluded'}">
                 {{ source }}
             </p>
         </div>

@@ -26,13 +26,13 @@ const handleUpdate = useDebounceFn(() => {
 
 <template>
     <section
-id="garden-display" class="flex flex-col items-start px-1 h-full pb-4 sm:pb-0 sm:px-0 overflow-auto max-h-160 rounded-sm" :class="[
-        ((isTakingScreenshot.get && gardenGrid.isGardenWide) || isTakingScreenshot.get) ? 'max-w-420 border border-misc' : 'max-w-full',
-        (gardenGrid.isGardenWide) ? 'overflow-x-scroll max-w-full scrollbar scrollbar-h-2 pb-1 scrollbar-thumb-rounded-xl dark:scrollbar-thumb-accent scrollbar-thumb-palia-blue ' : '',
+id="garden-display" class="flex flex-col items-start px-1 h-full pb-4 sm:pb-0 sm:px-0 overflow-y-auto rounded-sm" :class="[
+        ((isTakingScreenshot.get && gardenGrid.isGardenWide) || isTakingScreenshot.get) ? 'max-w-none! w-full! border border-misc dark:border-water-retain' : '',
+        (gardenGrid.isGardenWide) ? 'overflow-x-scroll max-w-210 lg:max-w-235 xl:max-w-7xl bg-misc/10 xl:p-2 xl:px-2 dark:bg-palia-blue-secondary scrollbar scrollbar-h-2 pb-1 scrollbar-thumb-rounded-xl dark:scrollbar-thumb-accent scrollbar-thumb-palia-blue max-h-165' : 'max-w-full w-full max-h-300',
     ]"
     aria-label="Garden Display"
         >
-        <table id=" gardenGrid" class="table-auto" aria-label="Garden Grid">
+        <table id="garden-grid" class="table-auto" aria-label="Garden Grid">
         <thead v-if="useUiSettings().settings.showGridAxesLabels">
             <tr class="pb-0.5">
                 <th />

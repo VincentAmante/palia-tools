@@ -65,16 +65,19 @@ const displayWidth = ref(0)
 function setScreenshotLayout() {
   const gardenDisplay = document.getElementById('garden-display')
   const display = document.getElementById('garden-planner')
+  const table = document.getElementById('garden-grid')
 
-  if (!gardenDisplay || !display) {
+  if (!gardenDisplay || !display || !table) {
     return
   }
 
   displayWidth.value = (gardenDisplay.clientWidth)
+  if (!useGardenGrid().isGardenWide)
+    displayWidth.value = display.clientWidth
   if (useGardenGrid().isGardenWide)
-    displayWidth.value += gardenDisplay.clientWidth || 0
+    displayWidth.value = (table.clientWidth + 40)
 
-  displayWidth.value = Math.max(displayWidth.value, 1368)
+  // displayWidth.value = Math.max(displayWidth.value, 1368)
   display.style.width = `${displayWidth.value}px`
 }
 
@@ -119,7 +122,7 @@ watch(useTakingScreenshot(), () => {
           </div>
 
           <p>
-            Export your garden as a landscape PNG image.
+            Export your garden as a PNG image.
           </p>
           <p class="text-warning">
             <font-awesome-icon icon="exclamation-triangle" class="mr-1" />

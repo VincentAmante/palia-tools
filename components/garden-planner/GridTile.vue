@@ -337,10 +337,10 @@ const displayImageByCropSize = computed(() => {
 
     switch (size) {
         case CropSize.Bush:
-            style.push('-translate-7', 'scale-150')
+            style.push('-translate-6.25 xl:-translate-7', 'scale-150')
             break;
         case CropSize.Tree:
-            style.push('-translate-14', 'scale-175')
+            style.push('-translate-12.5 xl:-translate-14', 'scale-175')
             break;
         case CropSize.Single:
         default:
@@ -366,10 +366,10 @@ const displayBonusesByCropSize = computed(() => {
 
     switch (size) {
         case CropSize.Bush:
-            style.push('-translate-y-12 xl:-translate-y-13 -translate-x-7', 'scale-150')
+            style.push('-translate-y-11.5 xl:-translate-y-13 -translate-x-6.5 xl:-translate-x-7 ', 'scale-130 xl:scale-150')
             break;
         case CropSize.Tree:
-            style.push('-translate-y-24 xl:-translate-y-26 -translate-x-14', 'scale-175')
+            style.push('-translate-y-23 xl:-translate-y-26 -translate-x-12.5 xl:-translate-x-14', 'scale-170 xl:scale-175')
             break;
         case CropSize.Single:
         default:
@@ -396,10 +396,10 @@ const displayFertiliserByCropSize = computed(() => {
 
     switch (size) {
         case CropSize.Bush:
-            style.push('-translate-1', 'scale-125')
+            style.push('-translate-0.75 xl:-translate-1', 'scale-125')
             break;
         case CropSize.Tree:
-            style.push('-translate-2', 'scale-150')
+            style.push('-translate-1.5 xl:-translate-2', 'scale-150')
             break;
         case CropSize.Single:
         default:

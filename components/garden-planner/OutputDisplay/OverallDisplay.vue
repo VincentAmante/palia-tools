@@ -19,7 +19,7 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
       <p class="text-sm font-semibold text-palia-blue-dark dark:text-accent">
         Overview
       </p>
-      <div class="grid grid-cols-3 gap-1 @lg:grid-cols-5">
+      <div class="grid grid-cols-3 gap-1 @xl:grid-cols-5">
         <div
           class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
           <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
@@ -56,9 +56,9 @@ width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4"
                 || 0).toLocaleString() }}
             </span>
           </p>
-          <p class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue dark:text-accent">
+          <p class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue dark:text-accent flex-wrap">
             <span
-class="@sm:inline-block"
+class=" inline-block"
               :class="{ 'hidden': processor.settings.goldAverageSetting === 'growthTick' }">per</span>
             <span v-if="processor.settings.goldAverageSetting === 'growthTick'" class="@sm:hidden inline-block">/</span>
             <span
@@ -141,7 +141,7 @@ class="pr-1" :class="harvester.settings.useStarSeeds ? '' : ' opacity-50'"
           <p>
             <span>
               <FontAwesomeIcon :icon="['fas', 'seedling']" class="pr-1" />
-              <abbr aria-label="Including" title="Including" class="no-underline">Incl.</abbr> Replant
+              Includes Replant
             </span><span v-if="harvester.settings.includeReplantCost">& Cost
 
             </span>
@@ -165,7 +165,7 @@ class="pr-1" :class="harvester.settings.useStarSeeds ? '' : ' opacity-50'"
         <li v-else class="text-xs badge badge-sm">
           <p>
             <FontAwesomeIcon :icon="['fas', 'poop']" class="pr-1" />
-            <abbr aria-label="Including" title="Including" class="no-underline">Incl.</abbr>
+            Includes
             Fertiliser Cost
           </p>
         </li>

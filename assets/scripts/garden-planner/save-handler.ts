@@ -256,13 +256,14 @@ export function convertV_0_3SettingsToV_0_4Settings(settings: string): string {
 
 export function convertV_0_4SettingsToV_0_5Settings(settings: string): string {
   if (!settings)
-    return ''
+    return 'Nfc'
 
   let convertedCropSettings = ''
   let convertedSettings = ''
 
 
   const settingsSplit = settings.split('Cr0')
+  console.log('settingsSplit', settingsSplit)
 
 
   for (let setting of settingsSplit) {

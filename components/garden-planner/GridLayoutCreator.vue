@@ -140,7 +140,7 @@ const plotCount = computed(() => gardenCopy.grid.plotCount)
 <template>
     <PGPModal ref="modal" use-full-height>
         <template #header>
-            Edit Layout
+            Edit Plots
         </template>
         <template #body>
             <div class="flex flex-col gap-1 rounded-md">
@@ -216,9 +216,9 @@ v-model.number="rawWidth" :min="MIN_COLS" :max="MAX_COLS"
                     <div>
                         <fieldset class="fieldset">
                             <legend class="fieldset-legend" :class="plotCount > 9 ? 'text-warning' : ''">
-
-                                Plots <span>({{
-                                    plotCount }} / <span>{{
+                                <span><font-awesome-icon icon="leaf" />
+                                    Soil Plots</span><span>({{
+                                        plotCount }} of <span>{{
                                         gardenCopy.isPlotLimitsRaised ? '27' : '9' }}</span>)</span>
                                 <font-awesome-icon
 v-if="plotCount > 9" class="text-warning"
@@ -229,7 +229,7 @@ v-if="plotCount > 9" class="text-warning"
                         </fieldset>
                     </div>
                 </div>
-                <div class="gap-1 bg-palia-blue-dark rounded-md p-2 pr-4 pb-4 max-h-90 overflow-y-auto overflow-x-auto">
+                <div class="gap-1 bg-palia-blue-dark rounded-md p-2 pr-4 pb-4 max-h-90 overflow-y-auto overflow-x-auto  scrollbar-h-2">
                     <table>
                         <tbody>
                             <tr v-for="row in heightInTiles" :key="`row-${row}`">

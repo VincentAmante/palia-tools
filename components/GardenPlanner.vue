@@ -127,25 +127,33 @@ watch(updateIsRequested, () => {
       <ItemSelector />
       <AppDivider class="order-3 mx-4 my-1 @:col-span-7 " :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
       <section
-class="flex @sm:py-2 gap-y-2 justify-between"
-        :class="{ '@5xl:flex-row': !garden.isGardenWide && (!isTakingScreenshot.get), 'flex-col': !isTakingScreenshot.get || (!isTakingScreenshot.get && garden.isGardenWide) }">
+class="flex @sm:py-2 gap-y-2 justify-between" :class="{
+        'flex-col lg:flex-row': !garden.isGardenWide,
+        'flex-col': (garden.isGardenWide),
+        'items-center': (garden.isGardenWide && !isTakingScreenshot.get),
+      }">
         <section
-class="h-full" :class="[garden.isGardenWide ? 'flex flex-col items-center pb-2' : '',
-        (plannerDisplayConfig.get === 'display+display') ? 'w-full' : ''
-        ]">
+class="h-full" :class="{
+          'w-full': (plannerDisplayConfig.get === 'display+display'),
+          'flex flex-col pb-2': (garden.isGardenWide),
+          'items-center': (garden.isGardenWide && !isTakingScreenshot.get),
+          'items-start': (garden.isGardenWide && isTakingScreenshot.get)
+        }">
           <template v-if="(plannerDisplayConfig.get === 'garden+display')">
             <GridGardenDisplay />
-            <StatsDisplay class="pt-2 @sm:mx-auto w-fit " :class="[garden.isGardenWide ? 'w-fit' : '@lg:w-full']" />
+            <StatsDisplay
+class="pt-2 @sm:mx-auto"
+              :class="[garden.isGardenWide && !isTakingScreenshot.get ? 'w-fit' : '@lg:w-full']" />
           </template>
           <template v-if="(plannerDisplayConfig.get === 'display+display')">
-            <section class="w-full">
+            <section class="w-full max-w-7xl">
               <div class="h-full @sm:rounded-lg bg-primary dark:bg-palia-blue-secondary">
                 <OutputDisplay />
               </div>
             </section>
           </template>
         </section>
-        <section class="w-full sm:px-2">
+        <section class="w-full max-w-7xl" :class="{ 'sm:px-2': !garden.isGardenWide }">
           <div class="h-full sm:rounded-lg bg-primary dark:bg-palia-blue-secondary">
             <OutputDisplay is-main-output-display />
           </div>
@@ -154,8 +162,11 @@ class="h-full" :class="[garden.isGardenWide ? 'flex flex-col items-center pb-2' 
     </div>
     <div
 v-show="isTakingScreenshot.get" id="watermark" aria-label="hidden"
-      class="grid grid-cols-2 justify-between order-8 w-full px-4 lg:col-span-4 bg-palia-blue rounded-b-md" :class="[]">
-      <div class="flex items-center w-full gap-2 p-2 text-right rounded-md leading-1">
+      class="grid justify-between order-8 w-full px-4 lg:col-span-4 bg-palia-blue rounded-b-md"  :class="{
+        'grid-cols-2': (!garden.isGardenWide)
+      }">
+      <div
+class="flex items-center w-full gap-2 p-2 text-right rounded-md leading-1">
         <img
 format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48px" class="max-w-16"
           alt="Palia Garden Planner Logo">
@@ -168,8 +179,8 @@ format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48p
           </p>
         </div>
       </div>
-      <div class="flex items-end p-2 text-accent justify-end">
-        <p class="text-xs text-right opacity-70 max-w-160 font-mono">{{ saveCode.code }}</p>
+      <div class="flex p-2 text-accent" :class="{ 'items-end justify-end': !garden.isGardenWide }">
+        <p class="text-xs opacity-70 max-w-160 font-mono" :class="{'text-right': !garden.isGardenWide}">{{ saveCode.code }}</p>
       </div>
     </div>
     <DevOnly>

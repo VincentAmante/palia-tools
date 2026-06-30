@@ -412,8 +412,12 @@ v-if="tileData.tile.plotLocalCoordinates === '2,0'" aria-label="Delete" class="t
                 <button
 class="btn btn-ghost btn-square btn-xs btn-warning"
                     @click="layoutCreatorGrid.deletePlot(coordinates)">
-                    <font-awesome-icon class="text-xs" icon="trash" />
+                    <font-awesome-icon class="text-xs" icon="x" />
                 </button>
+            </span>
+
+            <span v-if="tileData.tile.plotLocalCoordinates === '2,2'" class=" -translate-8 uppercase font-mono">
+                <span class="text-xl text-success opacity-80"><font-awesome-icon icon="leaf"/></span>
             </span>
         </button>
         <button

@@ -18,20 +18,21 @@ const gardenHasFertilisers = computed(() => {
 <template>
 	<section
 		v-if="processor.settings.useFertilserCostSettings && (gardenHasFertilisers)"
-		class="flex flex-col w-full">
+		class="flex flex-col w-fit">
 		<div class="flex items-end">
 			<p class="text-sm font-semibold text-palia-blue-dark dark:text-accent">
-				Fertiliser costs
+				Fertiliser costs / Growth Tick
 			</p>
 		</div>
 		<div class="bg-accent rounded-md border border-misc-dark">
+		<div class="bg-accent dark:bg-palia-blue-light rounded-md border border-misc-dark dark:border-palia-blue-dark">
 			<ul class="flex gap-4 p-2">
 				<FertiliserCostDisplayItem
 v-for="[type, item] in processor.processor.fertiliserCostsPerDay" :key="type"
 					:item="item" :fertiliser-type="type" />
 			</ul>
 			<div class="text-palia-blue text-xs px-2 pb-2 flex gap-2">
-				<p v-if="processor.fertiliserCostsPerDay.gold > 0" class="flex items-center p-1 border border-misc rounded-sm"><span class="font-bold">Daily:</span>
+				<p v-if="processor.fertiliserCostsPerDay.gold > 0" class="flex items-center p-1 border border-misc dark:border-accent dark:text-accent rounded-sm"><span class="font-bold"/>
 					<img
 width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4 inline pr-1"
 						:srcset="undefined" alt="Gold" format="webp">
@@ -43,7 +44,7 @@ width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4 
 							* harvester.harvester.totalHarvest.lastHarvestDay).toLocaleString() }}
 				</p>
 
-				<p v-if="processor.fertiliserCostsPerDay.medals > 0" class="flex items-center p-1 border border-misc rounded-sm"><span class="font-bold">Daily:</span>
+				<p v-if="processor.fertiliserCostsPerDay.medals > 0" class="flex items-center p-1 border border-misc dark:border-accent dark:text-accent rounded-sm"><span class="font-bold"/>
 					<img
 width="16" height="16" src="https://pgp-cdn.b-cdn.net/gardening-medal.webp" class="max-h-4 inline pr-1"
 						:srcset="undefined" alt="Gold" format="webp">
