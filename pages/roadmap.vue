@@ -130,54 +130,6 @@ class="underline text-info" to="/house-planner"
           </RoadmapCard>
         </div>
       </section>
-      <DevOnly>
-
-        <!-- <section class="pb-2 flex flex-col gap-4">
-          <div class="grid gap-1">
-            <h2 class="text-2xl font-normal">
-              Other Goals
-            </h2>
-            <p class="max-w-3xl">
-              These are goals that are being considered but are not set in stone.
-              They may be scrapped or ignored depending on how the planner develops.
-            </p>
-          </div>
-
-          <div class="flex flex-row flex-wrap gap-4 w-full">
-            <RoadmapCard>
-              <template #title>
-                More Export Options
-              </template>
-              <template #description>
-                <p>
-                  More export options will be added, particularly to text.
-                  Converting the garden to a markdown layout for example,
-                  as well as exporting to other garden planners (such as those in google sheets) for users who prefer
-                  them when/if possible.
-                </p>
-                <p>
-                  This will likely be included after the plot system re-write.
-                </p>
-              </template>
-            </RoadmapCard>
-
-            <RoadmapCard>
-              <template #title>
-                Link Shorteners
-              </template>
-              <template #description>
-                <p>
-                  Instead of just the code, the planner could store layouts in a database.
-                  This allows for concise links to be generated, which can be shared with others.
-                </p>
-                <p>
-                  This is an uncertain goal, as databases may cost money to host.
-                </p>
-              </template>
-            </RoadmapCard>
-          </div>
-        </section> -->
-      </DevOnly>
     </div>
   </main>
 </template>
