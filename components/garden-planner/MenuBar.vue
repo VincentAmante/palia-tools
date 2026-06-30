@@ -27,14 +27,10 @@ function clearGarden() {
 
 const saveCode = useSaveCode()
 const settingsCode = useSettingsCode()
-const hasAlreadyLoadedFromUrl = ref(false)
+// const hasAlreadyLoadedFromUrl = ref(false)
 
 
 function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
-
-  if (hasAlreadyLoadedFromUrl.value) {
-    return
-  }
   
   const hasLoadedSuccessfully = gardenHandler.loadGardenByCode(code)
   settingsCode.set(gardenHandler.grid.loadSettingsCode)
@@ -61,8 +57,6 @@ function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
       harvester.updateSettings(harvesterOptions)
     }
   }
-
-  hasAlreadyLoadedFromUrl.value = true
 }
 
 function saveLayout() {
