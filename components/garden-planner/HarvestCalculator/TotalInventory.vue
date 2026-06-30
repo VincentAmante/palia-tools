@@ -21,11 +21,11 @@ v-for="[name, item] in processor.inventory" :key="name" :img-src="item.img.src"
         v-if="(processor.settings.useFertilserCostSettings && (processor.totalProduceGold !== processor.finalGoldValue))"
         class="text-palia-blue p-2 pt-0 text-xs">
         <p class="flex items-center w-fit p-1 border border-misc dark:border-accent dark:text-accent rounded-sm"><span
-            class="font-bold">Total:</span>
+            >Total:</span>
           <img
 width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4 inline pr-1"
             :srcset="undefined" alt="Gold" format="webp">
-          {{ (processor.totalProduceGold).toLocaleString() }}
+          <span class="font-bold">{{ (processor.totalProduceGold).toLocaleString() }}</span>
         </p>
 
       </div>
