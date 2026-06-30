@@ -82,6 +82,7 @@ const useLayoutCreatorGrid = defineStore('layoutCreatorGrid', () => {
     function deletePlot(coordinates: Coordinates) {
         const modifiedTiles = grid.value.deletePlot(coordinates)
         handleModifiedTiles(modifiedTiles)
+        unhoverTile()
         triggerRef(grid)
     }
 
