@@ -82,7 +82,7 @@ onMounted(() => {
               The layout changed a bit to support offset connections, so I needed a new way to indicate plot boundaries.
               This new system, though, allows me to combine bushes and trees visually instead of having each tile display them individually.]
               This should remove abiguity and clutter when it comes to crop placement.
-              I've also added axis labels, to aid in discussion and placement checking.
+              I've also added axis labels (toggleable in UI settings), to aid in discussion and placement checking.
             </p>
             <p class="indent-3">
               For those working with non-3x3 layouts, hope you like the new plot editing system!
