@@ -1,6 +1,6 @@
 import { Bonus, CropType, getCropFromType } from '../imports'
 
-import type { DayHarvests, ICropHarvestCycle, ICropName, ICropNameWithGrowthDiff, ICropYield, IHarvestCyclePhase, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
+import type { DayHarvests, ICropHarvestCycle, ICropNameWithGrowthDiff, ICropYield, IHarvestCyclePhase, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
 
 export interface IHarvesterOptions {
   days: number | 'L' | 'M'
@@ -195,13 +195,14 @@ export default class Harvester {
         cropCount: group.count
       } satisfies ICropHarvestCycle
 
+
       for (let phase = 0; phase < harvestableDays.length; phase++) {
-        const phaseLength = (phase > 0)
-          ? harvestableDays[phase] - harvestableDays[phase - 1]
-          : harvestableDays[0]
+        const phaseLength = ((phase > 0)
+          ? harvestableDays[phase]! - harvestableDays[phase - 1]!
+          : harvestableDays[0])!
 
         cropHarvestCycle.phases.push({
-          dayOfHarvest: harvestableDays[phase],
+          dayOfHarvest: harvestableDays[phase]!,
           phaseLength,
           yield: {
             base: { ...baseCrop, isAveraged: false },
@@ -238,9 +239,8 @@ export default class Harvester {
         const totalHarvestCycleData = this._totalHarvest.cycleData.get(seedsRequiredIdWithGrowth)
         if (totalHarvestCycleData) {
           for (let i = 0; i < totalHarvestCycleData!.phases.length; i++) {
-            totalHarvestCycleData!.phases[i].yield.base = { ...addCropYields(totalHarvestCycleData!.phases[i].yield.base, cropHarvestCycle.phases[i].yield.base), isAveraged: false }
-            totalHarvestCycleData!.phases[i].yield.star = { ...addCropYields(totalHarvestCycleData!.phases[i].yield.star, cropHarvestCycle.phases[i].yield.star), isAveraged: false }
-
+            totalHarvestCycleData!.phases[i]!.yield.base = { ...addCropYields(totalHarvestCycleData!.phases[i]!.yield.base, cropHarvestCycle.phases[i]!.yield.base), isAveraged: false }
+            totalHarvestCycleData!.phases[i]!.yield.star = { ...addCropYields(totalHarvestCycleData!.phases[i]!.yield.star, cropHarvestCycle.phases[i]!.yield.star), isAveraged: false }
           }
 
           totalHarvestCycleData.cropCount += cropHarvestCycle.cropCount
@@ -366,12 +366,12 @@ export default class Harvester {
       days: number
     }>
 
-    let cropsRequiredTracker = new Map() as Map<ICropNameWithGrowthDiff, {
+    const cropsRequiredTracker = new Map() as Map<ICropNameWithGrowthDiff, {
       totalCropsConsumed: number,
       deductionsDone: number
     }>
 
-    let harvestDayGaps: number[] = []
+    const harvestDayGaps: number[] = []
     let harvestDayGapsSum = 0
     let latestHarvestDayForGap = 0
     let harvestDayGapLowest = Number.POSITIVE_INFINITY
@@ -490,10 +490,8 @@ export default class Harvester {
     // Get the average yield on days where crops are harvested
     if (options.includeReplantCost) {
       if (cropTotalsForAveraging.size > 0) {
-        for (const [cropId, cropTotal] of cropTotalsForAveraging) {
+        for (const [cropId, _] of cropTotalsForAveraging) {
           const cropsTracker = cropsRequiredTracker.get(cropId)!
-
-          // console.log(`totalCropsConsumed: ${cropsRequiredTracker.totalCropsConsumed} | deductionsDone ${cropsRequiredTracker.deductionsDone}`)
           const averageCropsConsumed = cropsTracker.totalCropsConsumed / cropsTracker.deductionsDone
           const isStarModifier = cropId.includes('-Star') ? 'star' : 'base'
 
@@ -506,8 +504,6 @@ export default class Harvester {
 
           cropCycleData.phases.at(-1)!.yield[isStarModifier].totalWithDeductions -= Math.round(averageCropsConsumed)
           cropCycleData.phases.at(-1)!.yield[isStarModifier].isAveraged = true
-
-          // console.log(cropId, averageCropsConsumed)
         }
       }
     }
@@ -531,7 +527,6 @@ export default class Harvester {
     this._dayHarvests = dayHarvests
     this._totalHarvest.lastHarvestDay = dayOfLastHarvest
     this._harvestDayGaps = harvestDayGapStats
-    // console.log('cycleData', this._totalHarvest.cycleData)
   }
 }
 

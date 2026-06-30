@@ -30,7 +30,7 @@ useHead({
           Garden Planner Roadmap
         </h1>
         <p class="text-xs md:text-sm">
-          Last Updated: May 17, 2025
+          Last Updated: June 30, 2026
         </p>
       </div>
       <div class="flex flex-col gap-2 text-justify max-w-3xl md:text-base leading-7">
@@ -80,95 +80,104 @@ useHead({
 
           <RoadmapCard>
             <template #title>
-              <span class="line-through opacity-50">Crafter Support (Mostly Here)</span>
+              <span class="line-through opacity-50">Crafter Support</span>
+              <span class="text-sm font-normal">(Mostly Here)</span>
             </template>
             <template #description>
               <p>
-                As of May 12, 2025 the Palia Garden Planner finally got crafter timing support. Still pending improvements
+                As of May 12, 2025 the Palia Garden Planner finally got crafter timing support. Still pending
+                improvements
               </p>
             </template>
           </RoadmapCard>
 
           <RoadmapCard>
             <template #title>
-              Plot System Rewrite
+              <span class="line-through opacity-50">Plot System Rewrite</span>
+              
+              <span class="text-sm font-normal">Implemented</span>
             </template>
             <template #description>
               <p>
-                The re-write will allow plots to be partially connected to each other,
-                which would be in-line with the game's behaviour.
-              </p>
-              <p>
-                This will expand the planner's capabilities, and will open up the room for more types of gardens.
+                As of June 30, 2026, the Palia Garden Planner has since rewritten the plot system. Users may now better recreate nonconventional garden layouts.
               </p>
             </template>
           </RoadmapCard>
 
           <RoadmapCard>
             <template #title>
-              House Planner
+              <span class="line-through opacity-50">House Planner</span>
+              <span class="text-sm font-normal">(Abandoned)</span>
             </template>
             <template #description>
-              <p>
+              <!-- <p>
                 A separate planner for planning the interior of your house.
               </p>
               <p>
                 This will allow you to plan out the major buildings in Palia,
                 letting you experiment with different layouts before you build.
-              </p>
-              <p class="text-warning">
+              </p> -->
+              <p>
                 <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="mr-1" />
-                This is a long-term goal, and is unlikely to be implemented for a while.
+                This has once been implemented <NuxtLink
+class="underline text-info" to="/house-planner"
+                  :prefetch="false">here</NuxtLink>.
+                This project has been archived and abandoned, as I lack the capabilities to handle the sheer scope of
+                house planning.
+                If you have a working house planner project of your own, reach out to me so I may guide users to you.
               </p>
             </template>
           </RoadmapCard>
         </div>
       </section>
-      <section class="pb-2 flex flex-col gap-4">
-        <div class="grid gap-1">
-          <h2 class="text-2xl font-normal">
-            Other Goals
-          </h2>
-          <p class="max-w-3xl">
-            These are goals that are being considered but are not set in stone.
-            They may be scrapped or ignored depending on how the planner develops.
-          </p>
-        </div>
+      <DevOnly>
 
-        <div class="flex flex-row flex-wrap gap-4 w-full">
-          <RoadmapCard>
-            <template #title>
-              More Export Options
-            </template>
-            <template #description>
-              <p>
-                More export options will be added, particularly to text.
-                Converting the garden to a markdown layout for example,
-                as well as exporting to other garden planners (such as those in google sheets) for users who prefer
-                them when/if possible.
-              </p>
-              <p>
-                This will likely be included after the plot system re-write.
-              </p>
-            </template>
-          </RoadmapCard>
+        <!-- <section class="pb-2 flex flex-col gap-4">
+          <div class="grid gap-1">
+            <h2 class="text-2xl font-normal">
+              Other Goals
+            </h2>
+            <p class="max-w-3xl">
+              These are goals that are being considered but are not set in stone.
+              They may be scrapped or ignored depending on how the planner develops.
+            </p>
+          </div>
 
-          <RoadmapCard>
-            <template #title>
-              Link Shorteners
-            </template>
-            <template #description>
-              <p>
-                Instead of just the code, the planner could store layouts in a database.
-                This allows for concise links to be generated, which can be shared with others.
-              </p>
-              <p>
-                This is an uncertain goal, as databases may cost money to host.
-              </p>
-            </template>
-          </RoadmapCard>
-        </div>
-      </section>
+          <div class="flex flex-row flex-wrap gap-4 w-full">
+            <RoadmapCard>
+              <template #title>
+                More Export Options
+              </template>
+              <template #description>
+                <p>
+                  More export options will be added, particularly to text.
+                  Converting the garden to a markdown layout for example,
+                  as well as exporting to other garden planners (such as those in google sheets) for users who prefer
+                  them when/if possible.
+                </p>
+                <p>
+                  This will likely be included after the plot system re-write.
+                </p>
+              </template>
+            </RoadmapCard>
+
+            <RoadmapCard>
+              <template #title>
+                Link Shorteners
+              </template>
+              <template #description>
+                <p>
+                  Instead of just the code, the planner could store layouts in a database.
+                  This allows for concise links to be generated, which can be shared with others.
+                </p>
+                <p>
+                  This is an uncertain goal, as databases may cost money to host.
+                </p>
+              </template>
+            </RoadmapCard>
+          </div>
+        </section> -->
+      </DevOnly>
     </div>
   </main>
 </template>

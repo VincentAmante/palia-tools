@@ -55,6 +55,8 @@ import {
   faCog,
   faPoop,
   faEye,
+  faSortDown,
+  faLeaf
 } from '@fortawesome/free-solid-svg-icons'
 
 import { faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons'
@@ -94,6 +96,7 @@ library.add(
   faX,
   faChevronLeft,
   faChevronRight,
+  faSortDown,
   faDiscord,
   faHand,
   faScrewdriverWrench,
@@ -115,7 +118,8 @@ library.add(
   faCheck,
   faCog,
   faPoop,
-  faEye
+  faEye,
+  faLeaf
 )
 
 // This is important, we are going to let Nuxt worry about the CSS

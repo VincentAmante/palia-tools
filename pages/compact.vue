@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
+// import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import { useToasts } from '~/stores/useToasts'
 import CropModalButton from '~/components/garden-planner/ItemSelector/CropModalButton.vue'
 import MenuBar from '~/components/garden-planner/MenuBar.vue'
-import Toast from '~/components/Toast.vue'
+import AppToast from '~/components/AppToast.vue'
 
 useHead({
   title: 'Palia Garden Planner',
@@ -15,7 +15,7 @@ useHead({
   ],
 })
 
-const isTakingScreenshot = useTakingScreenshot()
+// const isTakingScreenshot = useTakingScreenshot()
 const toasts = useToasts()
 
 const uiSettings = useUiSettings()
@@ -62,8 +62,9 @@ definePageMeta({
     <CropModalButton :position="uiSettings.settings.floatComponentLocation" />
     <Teleport to="body">
       <section id="toasts" class="toast z-1000" :class="toastLocation">
-        <Toast v-for="(toast) in toasts.toasts" :key="toast.id" :message="toast.message" :type="toast.type"
-          :id="toast.id!" :duration="toast.duration" @close="() => { toasts.removeToast(toast.id!) }" />
+        <AppToast
+v-for="(toast) in toasts.toasts" :id="toast.id!" :key="toast.id" :message="toast.message"
+          :type="toast.type" :duration="toast.duration" @close="() => { toasts.removeToast(toast.id!) }" />
       </section>
     </Teleport>
   </main>

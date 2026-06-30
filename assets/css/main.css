@@ -57,7 +57,7 @@ html:not(.no-transition) * {
   --color-warning: oklch(74.23% 0.130 48.85);        /* #ED915E */
   --color-warning-content: oklch(91.97% 0.027 80.25); /* #EEE3D1 */
   
-  --color-error: oklch(63.35% 0.157 33.73)          /* #D86046 */
+  --color-error: oklch(63.35% 0.157 33.73);          /* #D86046 */
   --color-error-content: oklch(91.97% 0.027 80.25);  /* #EEE3D1 */
 
   /* Border radius */
@@ -118,7 +118,7 @@ html:not(.no-transition) * {
   /* Weed prevention */
   --color-weed-prevention: oklch(63.35% 0.157 33.73); /* #d86046 */
   --color-weed-prevention-dark: oklch(0.532 0.1811 33.73); /* #be3312 */
-  --color-error: var(--color-weed-prevention);          /* #D86046 */
+  --color-error: oklch(63.35% 0.157 33.73);          /* #D86046 */
 
   /* Harvest boost */
   --color-harvest-boost: oklch(71.54% 0.124 121.50);  /* #97af51 */

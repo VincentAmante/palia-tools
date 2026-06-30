@@ -30,7 +30,7 @@ defineProps({
       :src="imgSrc"
       class="max-w-[2rem] object-contain aspect-square"
       placeholder
-    />
+    >
     <p
       class="absolute top-0 right-0 text-xs p-[1px] px-[6px] text-center align-middle rounded-lg text-accent"
       :class="(amount < 0) ? 'bg-error bg-opacity-70' : 'bg-neutral bg-opacity-40'"

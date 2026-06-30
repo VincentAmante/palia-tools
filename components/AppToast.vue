@@ -73,7 +73,8 @@ const useSoft = computed(() => {
     <button class="btn btn-ghost btn-circle btn-sm" @click="close">
       <FontAwesomeIcon :icon="['fas', 'x']" />
     </button>
-    <progress class="progress absolute bottom-0 w-full left-0 rounded-none" :class="progressColor" :value="remaining"
-      :max="duration / INTERVAL"></progress>
+    <progress
+class="progress absolute bottom-0 w-full left-0 rounded-none" :class="progressColor" :value="remaining"
+      :max="duration / INTERVAL"/>
   </div>
 </template>

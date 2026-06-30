@@ -14,6 +14,12 @@ useHead({
     },
   ],
 })
+
+const changelog = useChangelogTracker()
+
+onMounted(() => {
+  changelog.markAsVisited()
+})
 </script>
 
 <template>
@@ -34,6 +40,105 @@ useHead({
       <div class="grid gap-2">
         <ChangelogItem checked>
           <template #title>
+            <span class="font-bold">June 30, 2026 — Plot System Rewrite & Fertiliser Costs (Major)</span>
+          </template>
+          <template #summary>
+            <li>
+              <span class="font-bold">Plot System (Tiles, Plots, Crop Placement, etc.) has been reworked</span>
+            </li>
+            <li>
+              <span class="font-bold">Fertiliser Costs have been added*</span>
+            </li>
+            
+            <li class="indent-5">
+              <span class="font-bold">*NOTE:</span> For those loading their garden saves (0.4 and before), make sure to enable the setting and resave, as it will be disabled by default for old saves.
+            </li>
+            <li>
+              <span class="font-bold">Save code updated to 0.5 to support new features</span>
+            </li>
+          </template>
+          <template #default>
+            <p>Hey guys! Coming this new update are two of the last features require
+              for the Garden Planner to finally feel like a finished app.</p>
+            <p>The re-work of the Plot system and fertiliser costs have been long-requested features.
+              Embarassingly, I've only been able to add them now as I've been overthinking their implementation for the
+              longest time.
+            </p>
+            <p>
+              Regardless, it's here now! These two features alone should improve your gardening experience from here on.
+              Allow me to detail on the major additions below.
+            </p>
+            <div class="divider" />
+            
+            <h4 class="font-bold text-xl">Plot System Rewrite</h4>
+            <p class="indent-3">
+              The Garden Planner Project started out as merely a tool to visualise crop placement and bonuses with shareable links.
+              Written during early days of closed beta, the old plot system was written based on faulty understanding of the in-game systems.
+              As other features were prioritised, the tech debt kept increasing, and the rewrite kept being pushed back.
+              Now though, enough changes have been added that I could finally change the system to match the in-game version more closely.
+            </p>
+            <p class="indent-3">
+              For those working with standard 3x3 plot layouts. The main change for you is the updated display.
+              The layout changed a bit to support offset connections, so I needed a new way to indicate plot boundaries.
+              This new system, though, allows me to combine bushes and trees visually instead of having each tile display them individually.]
+              This should remove abiguity and clutter when it comes to crop placement.
+              I've also added axis labels, to aid in discussion and placement checking.
+            </p>
+            <p class="indent-3">
+              For those working with non-3x3 layouts, hope you like the new plot editing system!
+              You now have a larger degree of freedom in placing plots and defining their boundaries,
+              without needing the old experimental feature as a workaround.
+              Just visit the changed 'Edit Plots' button to get started!
+            </p>
+            <p class="indent-3">
+              Overall though, the new system should make adding features or optimising functions related to the garden grid a significantly more smoother experiennce.
+              I've been able to add better feedback when it comes to previewing tiles, as well as improving how the tiles update eachother.
+              Other changes to this may come, but they should come easier now.
+            </p>
+
+            
+            <div class="divider" />
+            
+            <h4 class="font-bold text-xl">Fertiliser Costs</h4>
+            <p class="indent-3">
+              The fertiliser cost feature has now been implemented and toggleable in the settings. New gardens will have it enabled by default.
+              Admittedly I overthought this feature way more than I should. It was a lot simpler to implement and add options than I imagined.
+              Cost data for fertilisers were already added during December of 2025 in the data displays,
+              but it had yet to interact with your actual income till now. 
+            </p>
+            <p>
+              Simply place a fertiliser and it will begin tracking on new gardens. You may disable this feature or change things in the settings.
+              Fertilisers have 3-4 recognised cost sources as of this update:
+            </p>
+            <ul class="list-disc list-inside">
+              <li><span class="font-bold">[Default] Item Value:</span> Cost of selling the fertiliser</li>
+              <li><span class="font-bold">Store Value:</span> Cost of buying the fertiliser (like from Zeki's)</li>
+              <li><span class="font-bold">Gardening Guild Value:</span> Cost of buying the fertiliser using medals (from Badruu)</li>
+              <li class="indent-2">Medals are not conventionnally considered a viable source of fertilisers, but will be included anyway</li>
+              <li><span class="font-bold">Excluded:</span> To handle other potential sources (like specific worm farm ingredients), you may exclude a specific fertiliser from cost calculations</li>
+            </ul>
+            <p class="">
+              For past gardens loading into 0.5, this setting will load disabled for those layouts, so please enable it manually.
+              Reason: Your past gardens have been saved with the understanding that fertiliser costs are not factored in.
+              You may have shared or saved those gardens before with a different source plan than the default, so I find it better to disable it for old saves to keep things non-intrusive.
+              
+            </p>
+            
+            <div class="divider" />
+            <h4 class="font-bold text-xl">Next Update & Conclusion</h4>
+            <p class="indent-6">
+              The next major update will potentially go back to crafters, which may involves improving their configurability or perhaps worm farm additions.
+              Before that though, it's likely I'll do some minor updates and improvements, as the new features have definitely allowed
+              room for some QoL changes and issues to squash out first.
+            </p>
+            <p>
+              Once more, thank you guys for your continued use and support of the Garden Planner!
+              Have a good time plannning and see you guys next update :D
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
+          <template #title>
             <span class="font-bold">
               December 1, 2025 — Data Update & Key Bug Fixes</span>
           </template>
@@ -43,13 +148,15 @@ useHead({
             </li>
 
             <li class="indent-6">
-              <span class="italic">Fix: Replant Cost (Enabled by default) —</span> Gold output is slightly off when using replant cost & crafters at the same time.
+              <span class="italic">Fix: Replant Cost (Enabled by default) —</span> Gold output is slightly off when
+              using replant cost & crafters at the same time.
               (Estimated Impact: Minor deviation)
             </li>
 
             <li class="indent-6">
               <span class="italic">Fix: Growth Boost (Disabled by default) —</span> A croptype with both tiles
-              affected & unaffected by growth boost would have overestimated harvests. (Estimated Impact: Medium to Major
+              affected & unaffected by growth boost would have overestimated harvests. (Estimated Impact: Medium to
+              Major
               deviation)
             </li>
             <li class="pt-2">
@@ -85,7 +192,7 @@ useHead({
             <p>
               Before going into that, I'll first dive into some bug fixes that were made.
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">Bug Fixes</h4>
             <div class="p-1 pl-3">
 
@@ -98,7 +205,8 @@ useHead({
                 yield on replant days.
               </p>
               <p class="indent-3">
-                When a crop isn't processed, the output itself wouldn't be affected. When processed, however, the processor was
+                When a crop isn't processed, the output itself wouldn't be affected. When processed, however, the
+                processor was
                 using
                 the average yield to estimate the produce, which would then result in an inaccurate output.
                 The impact in gold output varied based on crop type but are believed to be minor, usually ranging
@@ -122,7 +230,7 @@ useHead({
               The accuracy of the planner should now be higher than before, but please do report
               any behaviour you find odd.
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">New Info Displays</h4>
             <p class="indent-6">
               Moving on, a few information panels have been added or improved to provide all sorts of details.
@@ -175,13 +283,14 @@ useHead({
             </div>
             <p class="indent-6">
               These new panels are still open to additions, but they're all information I could think of and easily add
-              without large modifications to the current calculations (just found out it had some instability, after all).
+              without large modifications to the current calculations (just found out it had some instability, after
+              all).
               The recent bug fixes were already causing instability for some time, so I'd like to add these as safely as
               possible first.
               Regardless, if you can think of anything you wish to see in these panels, please let me know so I can look
               into it!
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">Next Update & Conclusion</h4>
             <p class="indent-6">
               The upcoming update is still undecided, but it's a toss-up between adding worm farms, expanding crafter
@@ -275,7 +384,7 @@ useHead({
               costs. Also, you can now create a new layout in a new tab for convenience.
             </p>
 
-            <div class="divider"></div>
+            <div class="divider" />
             <p class="indent-6">
               As per usual, I may have missed some things with these changes and bugs could appear. Please
               report them or any other feedback on the Github or on my Discord.
@@ -337,10 +446,10 @@ useHead({
           <template #default>
             <h4 class="font-bold text-xl">Harvest Fix</h4>
             <p class="indent-6">
-              Highly embarassing bug.. A '<' to compare the timings of a process time and the process time was reversed.
-                The UI's check was also inversed, meaning it would correctly display that a harvest won't be processed
-                in time because the warning would be displayed if the processor would process in time. Another thanks to
-                Ren for pointing this out! </p>
+              Highly embarassing bug.. A comparison of the timings of a process time was reversed.
+              The UI's check was also inversed, meaning it would correctly display that a harvest won't be processed
+              in time because the warning would be displayed if the processor would process in time. Another thanks to
+              Ren for pointing this out! </p>
           </template>
         </ChangelogItem>
         <ChangelogItem>
@@ -381,7 +490,7 @@ useHead({
               alert to any more inaccuracies, but
               do keep in mind that the planner's output calcs may not reflect the player experience 1:1.
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">Other Changes</h4>
             <p class="indent-6">
               The harvest-by-day has been re-implemented, though lacking produce conversions. This helps at least with
@@ -502,7 +611,7 @@ useHead({
               I shan't yap too much about where I've been, so I'll just move on to the changes at hand. Apologies for
               the wait
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">New Crafter Timing Support & Saves</h4>
             <p class="indent-6">
               I've now added Crafter Time Support, and with it comes the ability to save and share setting
@@ -526,7 +635,7 @@ useHead({
               share.
               I've also added browser-saving! So now you can quickly fetch and share them from within the website
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">Harvester Improvements</h4>
             <p class="indent-6">
               While the processor was obviously going to be re-made, the harvester also got a massive change!
@@ -543,7 +652,7 @@ useHead({
               replant costs.
               I'll be working on this after bug fixes, re-implementations, and new crops.
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">QoL Changes</h4>
             <p class="indent-6">
               Outside of that, there should now be some new features to make things easier for your garden planning.
@@ -566,7 +675,7 @@ useHead({
               option to clone it!
               Feel free to leave the garden for a while while you mess with the configurations
             </p>
-            <div class="divider"></div>
+            <div class="divider" />
             <h4 class="font-bold text-xl">Closing Words</h4>
             <p class="indent-6">
               What a long post! Anyway, I'll be testing these changes as they come and will be polishing things up.

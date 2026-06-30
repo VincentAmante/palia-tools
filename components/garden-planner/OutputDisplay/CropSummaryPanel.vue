@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, ref, type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
 import { ItemType, parseCropId, type ICropName, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
-import { CropType } from '~/assets/scripts/garden-planner/imports'
-import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
+import { CropType, getCropFromType  } from '~/assets/scripts/garden-planner/imports'
+
 import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue'
 import { formatMinutesToDaysHoursMinutes } from '~/utils/formatters'
-import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue'
+// import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue'
 
 
 const harvester = useHarvester()
@@ -70,7 +70,7 @@ const selectedCropIsProcessedAs = computed(() => {
 
 const canFinishBeforeNextHarvest = computed(() => {
     if (!props.selectedCropDetail || !processor.output?.detailedProcessingInfo)
-        return null
+        return true
 
     const detailedProcessingInfoOutput = processor.output.detailedProcessingInfo.get(props.selectedCropDetail)?.cycleData
 
@@ -85,6 +85,9 @@ const canFinishBeforeNextHarvest = computed(() => {
         }
 
         return canFinishBeforeNextHarvest
+    } else {
+        console.error(`${props.selectedCropDetail} has no output, defaulting to TRUE`)
+        return true
     }
 })
 
@@ -151,18 +154,21 @@ const selectedCropAsCrop = computed(() => {
                 </p>
                 <p class="font-semibold badge badge-sm dark:bg-palia-blue">{{ selectedCropTotalFullCycles }}
                     {{ selectedCropTotalFullCycles !== 1 ? 'Cycles' : 'Cycle' }}</p>
-                <p v-if="selectedCropTotalFullCycles !== selectedCropCycleData.totalHarvestsCount"
+                <p
+v-if="selectedCropTotalFullCycles !== selectedCropCycleData.totalHarvestsCount"
                     class="font-semibold badge badge-sm dark:bg-palia-blue">
                     {{ selectedCropCycleData.totalHarvestsCount }} Total Harvests</p>
-                <p class="font-semibold badge badge-sm dark:bg-palia-blue"
-                    v-if="selectedCropSeedsRequiredPerHarvest && (cropInfo.isStar === parseCropId(cycleId).isStar)">
+                <p
+v-if="selectedCropSeedsRequiredPerHarvest && (cropInfo.isStar === parseCropId(cycleId).isStar)"
+                    class="font-semibold badge badge-sm dark:bg-palia-blue">
                     Seeds per Replant:&nbsp;{{
                         selectedCropSeedsRequiredPerHarvest.count }}
                 </p>
-                <p class="font-semibold badge badge-sm dark:bg-palia-blue" v-else>
+                <p v-else class="font-semibold badge badge-sm dark:bg-palia-blue">
                     Seeds per Replant:&nbsp;N/A
                 </p>
-                <p v-if="(selectedCropSeedsRequiredPerHarvest?.count || 0) !== selectedCropTotalSeedsRequired && (cropInfo.isStar === parseCropId(cycleId).isStar)"
+                <p
+v-if="(selectedCropSeedsRequiredPerHarvest?.count || 0) !== selectedCropTotalSeedsRequired && (cropInfo.isStar === parseCropId(cycleId).isStar)"
                     class="font-semibold badge badge-sm dark:bg-palia-blue">Total Seeds
                     Used:&nbsp;{{
                         selectedCropTotalSeedsRequired }}</p>
@@ -171,18 +177,20 @@ const selectedCropAsCrop = computed(() => {
                 <div class="bg-secondary dark:bg-palia-blue p-2 rounded-sm w-fit">
                     <p class="text-xs p-0.5 font-bold">Growth Ticks / Cycle</p>
                     <ul class="flex flex-wrap gap-2 pt-1">
-                        <template v-for="harvestYield in selectedCropCycleData.phases">
+                        <template v-for="harvestYield in selectedCropCycleData.phases" :key="`${selectedCropCycleData.cropType}-d${harvestYield.dayOfHarvest}`">
                             <li class="flex flex-col">
                                 <p class="text-xs">Day {{ harvestYield.dayOfHarvest }}</p>
-                                <ItemDisplay class="max-w-12 dark:border dark:border-water-retain"
-                                    :imgSrc="selectedCropAsCrop?.image" :imgAlt="selectedCropAsCrop?.type"
+                                <ItemDisplay
+                                class="max-w-12 dark:border dark:border-water-retain"
+                                    :img-src="selectedCropAsCrop?.image" :img-alt="selectedCropAsCrop?.type"
                                     :star="cropInfo.isStar"
                                     :count="(harvestYield.yield[(cropInfo.isStar ? 'star' : 'base')].totalWithDeductions)" />
                             </li>
                         </template>
                     </ul>
                 </div>
-                <div v-if="harvester.settings.includeReplantCost && (cropInfo.isStar === parseCropId(cycleId).isStar)"
+                <div
+v-if="harvester.settings.includeReplantCost && (cropInfo.isStar === parseCropId(cycleId).isStar)"
                     class="bg-secondary dark:bg-palia-blue rounded-sm p-2">
                     <div class="h-full flex flex-col gap-2 xs:justify-between">
                         <p class="text-xs font-bold">Average deduction
@@ -191,8 +199,9 @@ const selectedCropAsCrop = computed(() => {
                             <p class="text-xs">Day {{
                                 selectedCropCycleData.phases.at(-1)!.dayOfHarvest }}
                             </p>
-                            <ItemDisplay class="max-w-12 dark:border dark:border-water-retain"
-                                :imgSrc="selectedCropAsCrop?.image" :imgAlt="selectedCropAsCrop?.type"
+                            <ItemDisplay
+class="max-w-12 dark:border dark:border-water-retain"
+                                :img-src="selectedCropAsCrop?.image" :img-alt="selectedCropAsCrop?.type"
                                 :star="cropInfo.isStar"
                                 :count="(selectedCropCycleData.phases.at(-1)!.yield[(cropInfo.isStar ? 'star' : 'base')].totalWithDeductions - selectedCropCycleData.phases.at(-1)!.yield[(cropInfo.isStar ? 'star' : 'base')].totalRaw)" />
                         </div>
@@ -202,7 +211,8 @@ const selectedCropAsCrop = computed(() => {
         </section>
 
         <!-- Processing Info -->
-        <section v-if="selectedCropProcessingData && selectedCropProcessingData.cycleData.length > 0"
+        <section
+v-if="selectedCropProcessingData && selectedCropProcessingData.cycleData.length > 0"
             class="p-2 bg-accent dark:bg-palia-blue-dark rounded-md flex flex-col gap-1 border border-misc dark:border-water-retain">
             <h3 class="text-sm font-semibold text-palia-blue-dark dark:text-accent">Processing Info</h3>
             <div>
@@ -218,9 +228,10 @@ const selectedCropAsCrop = computed(() => {
                         Cycle
                     </p>
 
-                    <ItemDisplay class="max-w-10"
-                        :imgSrc="selectedCropAsCrop![`${selectedCropIsProcessedAs === ItemType.Preserve ? 'preserveImage' : 'seedImage'}`]"
-                        :imgAlt="`${selectedCropAsCrop!.type} ${selectedCropIsProcessedAs}`"
+                    <ItemDisplay 
+                        class="max-w-10"
+                        :img-src="selectedCropAsCrop![`${selectedCropIsProcessedAs === ItemType.Preserve ? 'preserveImage' : 'seedImage'}`]"
+                        :img-alt="`${selectedCropAsCrop!.type} ${selectedCropIsProcessedAs}`"
                         :count="selectedCropProcessingData.averageProduce" />
                 </div>
                 <div class="flex gap-1 p-2 bg-secondary dark:bg-palia-blue rounded-xs justify-between flex-col">
@@ -245,15 +256,17 @@ const selectedCropAsCrop = computed(() => {
                 </div>
                 <div class="flex gap-1 p-2 bg-secondary dark:bg-palia-blue rounded-xs justify-between flex-col">
                     <p class=" font-semibold text-xs">Total Gold Generated</p>
-                    <p class="font-bold text-base flex items-center gap-0.5"> <img width="16" height="16"
-                            src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                    <p class="font-bold text-base flex items-center gap-0.5"> <img
+                        width="16" height="16"
+                            src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                             alt="Gold" format="webp"> {{
                                 (selectedCropProcessingData.totalGoldGenerated).toLocaleString() }}</p>
                 </div>
                 <div class="flex gap-1 p-2 bg-secondary dark:bg-palia-blue rounded-xs justify-between flex-col">
                     <p class=" font-semibold text-xs">Average Gold Generated</p>
-                    <p class="font-bold text-base flex items-center gap-0.5"> <img width="16" height="16"
-                            src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-[1rem]" :srcset="undefined"
+                    <p class="font-bold text-base flex items-center gap-0.5"> <img
+                        width="16" height="16"
+                            src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                             alt="Gold" format="webp"> {{
                                 Math.round(selectedCropProcessingData.totalGoldGenerated
                                     / ((selectedCropProcessingData.totalProcessMinutes > 0 && processor.settings.goldAverageSetting
@@ -263,16 +276,17 @@ const selectedCropAsCrop = computed(() => {
                                         : (harvester.totalHarvest.lastHarvestDay))
                                 ).toLocaleString() }}
 
-                        <span class="text-xs"
-                            v-if="selectedCropProcessingData.totalProcessMinutes > 0 && processor.settings.goldAverageSetting === 'crafterTime'">/
+                        <span
+                        v-if="selectedCropProcessingData.totalProcessMinutes > 0 && processor.settings.goldAverageSetting === 'crafterTime'"
+                            class="text-xs">/
                             Hour</span>
-                        <span class="text-xs" v-else>/ Growth Tick</span>
+                        <span v-else class="text-xs">/ Growth Tick</span>
                     </p>
                 </div>
             </div>
         </section>
         <section
-            v-else-if="selectedCropProcessingData === null || selectedCropProcessingData.cycleData[0].cycleCrafterData === undefined"
+            v-else-if="selectedCropProcessingData === null || selectedCropProcessingData.cycleData[0]?.cycleCrafterData === undefined"
             class="p-2 border rounded-sm bg-accent dark:bg-palia-blue-secondary dark:border-water-retain">
             <p class="text-sm py-2 text-misc-dark dark:text-water-retain">
                 No Process Data

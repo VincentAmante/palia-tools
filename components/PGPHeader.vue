@@ -1,17 +1,20 @@
 <script setup lang="ts">
+import { useChangelogTracker } from '#imports';
 import AppDivider from './AppDivider.vue'
 
+const changelogTracker = useChangelogTracker()
 </script>
 <template>
   <div>
     <header class="z-50 drawer drawer-end">
-      <input id="menu" type="checkbox" class="drawer-toggle" aria-label="toggle menu" />
+      <input id="menu" type="checkbox" class="drawer-toggle" aria-label="toggle menu">
       <div class="flex flex-col drawer-content">
         <div class="w-full py-3 navbar sm:px-12">
           <div class="flex-1">
             <NuxtLink to="/" class="flex items-center gap-2" :prefetch="false">
-              <img format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48px" alt="Palia Garden Planner Logo"
-                class="max-w-[3rem]">
+              <img
+format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48px"
+                alt="Palia Garden Planner Logo" class="max-w-12">
               <div class="flex flex-col gap-0 leading-tight">
                 <h1 class="text-xl font-bold leading-tight text-left lg:text-2xl">
                   Palia Garden Planner
@@ -33,7 +36,10 @@ import AppDivider from './AppDivider.vue'
                 </li>
                 <li>
                   <NuxtLink to="/changelogs" :prefetch=false>
-                    Changelogs
+                    <span class="indicator">
+                      <span v-if="changelogTracker.hasUnread" class="indicator-item status status-error" />
+                      <span>Changelogs</span>
+                    </span>
                   </NuxtLink>
                 </li>
                 <li>
@@ -42,20 +48,24 @@ import AppDivider from './AppDivider.vue'
                   </NuxtLink>
                 </li>
                 <li>
-                  <NuxtLink class="" target="_blank" :prefetch="false" rel="noopener"
+                  <NuxtLink
+class="" target="_blank" :prefetch="false" rel="noopener"
                     to="https://paliapedia.com/tools/garden">
-                    <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost" :aria-hidden="true" />
+                    <font-awesome-icon
+:icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost"
+                      :aria-hidden="true" />
                     Layout Generator
                   </NuxtLink>
                 </li>
                 <li class="dropdown dropdown-hover dropdown-bottom dropdown-end">
-                  <label tabindex="0">
+                  <label tabindex="0" role="button">
                     <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xl" />
                     External Tools
                   </label>
-                  <ul tabindex="0" class="dropdown-content z-1 menu p-2 shadow-sm bg-base-100 rounded-box w-52">
+                  <ul tabindex="0" class="dropdown-content z-1 menu p-2 mt-0 shadow-sm bg-base-100 rounded-box w-52">
                     <li class="text-sm">
-                      <NuxtLink to="https://palia.anniebananie.io" class="flex flex-wrap items-center" rel="noopener"
+                      <NuxtLink
+to="https://palia.anniebananie.io" class="flex flex-wrap items-center" rel="noopener"
                         target="_blank" :prefetch="false">
                         <font-awesome-icon :icon="['fas', 'gift']" class="text-xl" />
                         Palia Tracker
@@ -63,7 +73,8 @@ import AppDivider from './AppDivider.vue'
                       </NuxtLink>
                     </li>
                     <li class="text-sm">
-                      <NuxtLink to="https://palia.th.gl/" class="flex flex-wrap items-center" rel="noopener"
+                      <NuxtLink
+to="https://palia.th.gl/" class="flex flex-wrap items-center" rel="noopener"
                         target="_blank" :prefetch="false">
                         <font-awesome-icon :icon="['fas', 'map']" class="text-xl" />
                         Interactive Map
@@ -71,17 +82,21 @@ import AppDivider from './AppDivider.vue'
                       </NuxtLink>
                     </li>
                     <li class="text-sm">
-                      <NuxtLink to="https://paliapedia.com/" class="flex" rel="noopener" target="_blank"
+                      <NuxtLink
+to="https://paliapedia.com/" class="flex" rel="noopener" target="_blank"
                         :prefetch="false">
-                        <img src="https://pgp-cdn.b-cdn.net/paliapedia.svg" width="18px" height="18px"
+                        <img
+src="https://pgp-cdn.b-cdn.net/paliapedia.svg" width="18px" height="18px"
                           class="max-w-[1.5rem] inline-block text-lg" alt="Paliapedia Logo">
                         Paliapedia
                       </NuxtLink>
                     </li>
                     <li class="text-sm">
-                      <NuxtLink to="https://paliaparty.app/" class="flex" rel="noopener" target="_blank"
+                      <NuxtLink
+to="https://paliaparty.app/" class="flex" rel="noopener" target="_blank"
                         :prefetch="false">
-                        <img src="https://pgp-cdn.b-cdn.net/palia-party.webp" width="18px" height="18px"
+                        <img
+src="https://pgp-cdn.b-cdn.net/palia-party.webp" width="18px" height="18px"
                           class="max-w-[1.5rem] inline-block text-lg" alt="Palia Party Logo">
                         Palia Party
                       </NuxtLink>
@@ -114,7 +129,10 @@ import AppDivider from './AppDivider.vue'
           </li>
           <li class="text-lg font-bold normal-case">
             <NuxtLink to="/changelogs" :prefetch="false">
-              Changelogs
+              <span class="indicator">
+                <span v-if="changelogTracker.hasUnread" class="indicator-item status status-error" />
+                <span>Changelogs</span>
+              </span>
             </NuxtLink>
           </li>
           <li class="text-lg font-bold normal-case">
@@ -123,9 +141,12 @@ import AppDivider from './AppDivider.vue'
             </NuxtLink>
           </li>
           <li class="text-lg font-bold normal-case">
-            <NuxtLink class="" target="_blank" rel="noopener" :prefetch="false"
+            <NuxtLink
+class="" target="_blank" rel="noopener" :prefetch="false"
               to="https://paliapedia.com/tools/garden">
-              <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost" :aria-hidden="true" />
+              <font-awesome-icon
+:icon="['fas', 'arrow-up-right-from-square']" class="text-harvest-boost"
+                :aria-hidden="true" />
               Layout Generator
             </NuxtLink>
           </li>
@@ -137,14 +158,16 @@ import AppDivider from './AppDivider.vue'
               </p>
               <ul>
                 <li class="text-sm">
-                  <NuxtLink to="https://palia.anniebananie.io" class="flex flex-wrap items-center" rel="noopener"
+                  <NuxtLink
+to="https://palia.anniebananie.io" class="flex flex-wrap items-center" rel="noopener"
                     target="_blank" :prefetch="false">
                     <font-awesome-icon :icon="['fas', 'gift']" class="text-xl" />
                     Palia Tracker
                   </NuxtLink>
                 </li>
                 <li class="text-sm">
-                  <NuxtLink to="https://palia.th.gl/" class="flex flex-wrap items-center" rel="noopener" target="_blank"
+                  <NuxtLink
+to="https://palia.th.gl/" class="flex flex-wrap items-center" rel="noopener" target="_blank"
                     :prefetch="false">
                     <font-awesome-icon :icon="['fas', 'map']" class="text-xl" />
                     Interactive Map
@@ -153,14 +176,16 @@ import AppDivider from './AppDivider.vue'
                 </li>
                 <li class="text-sm">
                   <NuxtLink to="https://paliapedia.com/" class="flex" rel="noopener" target="_blank" :prefetch="false">
-                    <img src="https://pgp-cdn.b-cdn.net/paliapedia.svg" width="18px" height="18px"
+                    <img
+src="https://pgp-cdn.b-cdn.net/paliapedia.svg" width="18px" height="18px"
                       class="max-w-[1.5rem] inline-block text-lg" alt="Paliapedia Logo">
                     Paliapedia
                   </NuxtLink>
                 </li>
                 <li class="text-sm">
                   <NuxtLink to="https://paliaparty.app/" class="flex" rel="noopener" target="_blank" :prefetch="false">
-                    <img src="https://pgp-cdn.b-cdn.net/palia-party.webp" width="18px" height="18px"
+                    <img
+src="https://pgp-cdn.b-cdn.net/palia-party.webp" width="18px" height="18px"
                       class="max-w-[1.5rem] inline-block text-lg" alt="Palia Party Logo">
                     Palia Party
                   </NuxtLink>

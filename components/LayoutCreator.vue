@@ -197,11 +197,12 @@ function   openInNewTab() {
       New Layout
     </template>
     <template #body>
-      <div class="flex flex-col gap-1 bg-palia-blue-dark rounded-md p-2 ">
+      <div class="flex flex-col gap-1 bg-palia-blue-dark rounded-md p-2">
         <h3 class="font-bold">
           Dimensions
         </h3>
-        <select v-model="selectedNewLayout" name="layout-select"
+        <select
+v-model="selectedNewLayout" name="layout-select"
           class="select select-bordered select-sm w-full max-w-xs" aria-label="Select Layout"
           @change="onLayoutSelect()">
           <option value="select" disabled selected>
@@ -242,7 +243,8 @@ function   openInNewTab() {
             </p>
             <div class=" flex flex-col gap-1 py-4 px-2 rounded-md w-fit">
               <div v-for="(plotRow, plotRowIndex) of plotLayout" :key="plotRowIndex" class="flex gap-1">
-                <div v-for="(plot, index) of plotRow" :key="index"
+                <div
+v-for="(plot, index) of plotRow" :key="index"
                   class="btn btn-square rounded-none btn-accent btn-xs cursor-pointer transition-all"
                   :class="plot === PlotStatus.active ? 'border-misc-saturated' : 'bg-misc bg-opacity-70'"
                   @click="togglePlot(plotRowIndex, index)" />
@@ -261,16 +263,19 @@ function   openInNewTab() {
             <label for="row-input" class="items-center justify-start grid grid-cols-2 gap-2 w-fit">
               <p class="select-none text-sm ">Rows</p>
               <div class="join col-span-1 rounded-md">
-                <button class="join-item btn btn-sm btn-square btn-primary" @click="() => {
+                <button
+class="join-item btn btn-sm btn-square btn-primary" @click="() => {
                   if (rowInput <= 1)
                     return
                   rowInput--
                   enforceLayoutLimits()
                 }">-</button>
-                <input v-model="rowInput" type="number" name="row-input"
+                <input
+v-model="rowInput" type="number" name="row-input"
                   class="join-item input input-sm max-w-16 text-center input-primary" min="1" max="9" step="1"
                   :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()">
-                <button class="join-item btn btn-sm btn-square btn-primary" @click="() => {
+                <button
+class="join-item btn btn-sm btn-square btn-primary" @click="() => {
                   if (rowInput >= MAX_ROWS)
                     return
                   rowInput++
@@ -280,16 +285,19 @@ function   openInNewTab() {
             <label for="col-input" class="items-center justify-start grid grid-cols-2 gap-2 w-fit">
               <p class="select-none text-sm">Columns</p>
               <div class="join col-span-1 rounded-md">
-                <button class="join-item btn btn-sm btn-square btn-primary" @click="() => {
+                <button
+class="join-item btn btn-sm btn-square btn-primary" @click="() => {
                   if (colInput <= 1)
                     return
                   colInput--
                   enforceLayoutLimits()
                 }">-</button>
-                <input v-model="colInput" type="number" name="col-input"
+                <input
+v-model="colInput" type="number" name="col-input"
                   class="join-item input input-sm input-primary max-w-16 text-center" min="1" max="9" step="1"
                   :disabled="selectedNewLayout !== 'custom'" @change="enforceLayoutLimits()">
-                <button class="join-item btn btn-sm btn-primary btn-square" @click="() => {
+                <button
+class="join-item btn btn-sm btn-primary btn-square" @click="() => {
                   if (colInput >= MAX_COLS)
                     return
                   colInput++
@@ -298,7 +306,8 @@ function   openInNewTab() {
               </div>
             </label>
           </div>
-          <div v-if="selectedNewLayout === 'custom'"
+          <div
+v-if="selectedNewLayout === 'custom'"
             class="w-full flex flex-col gap-1  bg-misc-secondary px-2 rounded-md  py-2">
             <label class="label flex items-start border-white w-fit gap-2">
               <span class="text-sm">Expand Plot Limits</span>
@@ -319,11 +328,13 @@ function   openInNewTab() {
       </div>
       <div class="flex flex-col gap-1">
         <div class="flex gap-1">
-          <button :disabled="selectedNewLayout === 'select' || activePlots <= 0" class="btn w-fit"
+          <button
+:disabled="selectedNewLayout === 'select' || activePlots <= 0" class="btn w-fit"
             @click="createNewLayout()">
             Create
           </button>
-          <button :disabled="selectedNewLayout === 'select' || activePlots <= 0" class="btn w-fit"
+          <button
+:disabled="selectedNewLayout === 'select' || activePlots <= 0" class="btn w-fit"
             @click="openInNewTab()">
             Create In New Tab
           </button>

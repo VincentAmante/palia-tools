@@ -68,7 +68,8 @@ useHead({
                             for security and performance monitoring.</li>
                         <li>Vercel is GDPR-compliant and acts as a data processor under EU law.</li>
                         <li>
-                            More: <a class="text-blue-600 underline" href="https://vercel.com/legal/privacy-policy"
+                            More: <a
+class="text-blue-600 underline" href="https://vercel.com/legal/privacy-policy"
                                 target="_blank" rel="noopener noreferrer">Vercel Privacy Policy</a>
                         </li>
                     </ul>
@@ -78,7 +79,8 @@ useHead({
                         <li>Bunny CDN may temporarily log IP addresses to prevent abuse and improve delivery speed.</li>
                         <li>They do not store personal data beyond what is required for operation.</li>
                         <li>
-                            More: <a class="text-blue-600 underline"
+                            More: <a
+class="text-blue-600 underline"
                                 href="https://bunny.net/privacy/" target="_blank"
                                 rel="noopener noreferrer">Bunny.net Data Protection Policy</a>
                         </li>

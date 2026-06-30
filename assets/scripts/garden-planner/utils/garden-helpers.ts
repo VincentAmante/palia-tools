@@ -3,9 +3,70 @@
  * @description Contains types and interfaces used in the garden planner.
  */
 
-import type Tile from '../classes/tile'
-import { Bonus, CropType, FertiliserType, getCropFromCode, getCropFromType, getFertiliserFromType } from '../imports'
-import { CropCode } from '../imports'
+import type { ITile } from '../classes/tile';
+import type { FertiliserType } from '../imports';
+import { Bonus, CropType, getCropFromCode, getCropFromType, getFertiliserFromType, CropCode } from '../imports'
+import CropSize from '../enums/crop-size';
+
+export function translateCoordinates(coordinates: Coordinates, translateBy: { x: number, y: number }): Coordinates {
+    const oldCoordsObj = toCoordinateObject(coordinates)
+
+    const newCoordsObj = {
+        x: oldCoordsObj.x + translateBy.x,
+        y: oldCoordsObj.y + translateBy.y
+    }
+
+    return fromCoordinateObject(newCoordsObj)
+}
+
+export type CoordinateObject = {
+    x: number,
+    y: number
+}
+
+export type Coordinates = string;
+
+export enum Currency {
+  GOLD = 'Gold',
+  MEDAL = 'Medal',
+  NONE = 'None'
+}
+
+
+
+export const fromCoordinateObject = (coordinates: CoordinateObject): Coordinates => `${coordinates.x},${coordinates.y}`;
+export const toCoordinateObject = (key: Coordinates): CoordinateObject => {
+    const [x, y] = key.split(',').map(Number);
+    if (typeof x !== 'number' || typeof y !== 'number') {
+        throw new Error('Attempted to parse a non-Coordinate string')
+    }
+    return { x, y };
+};
+
+
+export function getDimensions(size: CropSize) {
+    switch (size) {
+        case CropSize.Bush:
+            return {
+                width: 2,
+                height: 2
+            }
+
+        case CropSize.Tree:
+            return {
+                width: 3,
+                height: 3
+            }
+
+        case CropSize.Single:
+        default:
+            return {
+                width: 1,
+                height: 1
+            }
+    }
+};
+
 
 export interface ICalculateYieldOptions {
   days?: number
@@ -198,6 +259,16 @@ export interface IInventoryItem {
   cropType: CropType
 }
 
+export interface FertiliserItem extends IInventoryItem {
+  // Hard set irrelevant values
+  // ? Could probably just re-write the whole Inventory Item thing
+  itemType: ItemType.Fertiliser
+  cropType: CropType.None
+  isStar: false
+
+  currency: Currency
+}
+
 export type TInventory = Map<string, IInventoryItem>
 
 export function parseCropId(cropId: string): ICropId {
@@ -248,10 +319,10 @@ export function encodeCropIdWithCode(options: { code: CropCode; isStar: boolean;
 }
 
 
-export type TCropTiles = Map<string, Tile>
+export type TCropTiles = Map<string, ITile>
 
 export type TUniqueTiles = Map<string, {
-  tile: Tile
+  tile: ITile
   count: number
 }>
 
@@ -271,8 +342,6 @@ export enum ItemType {
 }
 
 export type CropItem = ItemType.Crop | ItemType.Seed | ItemType.Preserve
-
-
 
 export function getBonusDataByFertiliser(fertiliser: FertiliserType) {
   const bonus = getFertiliserFromType(fertiliser)?.effect || Bonus.None

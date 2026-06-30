@@ -16,13 +16,13 @@ const props = defineProps<{
 
 const isTakingScreenshot = useTakingScreenshot()
 const selectedItem = useSelectedItem()
-const gardenHandler = useGarden()
+const gardenHandler = useGardenGrid()
 
-const plotStat = computed(() => gardenHandler.plotStat)
+const gardenAnalyser = computed(() => gardenHandler.analyser)
 const totalFertilisers = computed(() => {
   let count = 0
-  for (const fertiliser in plotStat.value.fertiliserCount)
-    count += plotStat.value.fertiliserCount[fertiliser as FertiliserType]
+  for (const fertiliser in gardenAnalyser.value.fertiliserCountByType)
+    count += gardenAnalyser.value.fertiliserCountByType[fertiliser as FertiliserType]
   return count
 })
 
@@ -33,7 +33,7 @@ const bonusToSortBy = ref<Bonus | null>(null)
 const cropsList = computed(() => {
   const list: { crop: Crop; count: number }[] = []
   for (const crop of Object.values(crops))
-    list.push({ crop, count: plotStat.value.cropTypeCount[crop.type] })
+    list.push({ crop, count: gardenAnalyser.value.cropCountByType[crop.type] })
 
   let sortedList = list
   if (bonusToSortBy.value && !isTakingScreenshot.get)
@@ -76,19 +76,23 @@ function closeModal() {
 <template>
   <div
     :class="['fixed z-50 mx-4 my-4 sm:hidden', props.position === 'bottom-right' ? 'bottom-0 right-0' : '', props.position === 'bottom-left' ? 'bottom-0 left-0' : '', props.position === 'top-right' ? 'top-0 right-0' : '', props.position === 'top-left' ? 'top-0 left-0' : '']">
-    <CropButton class="shadow-xl bg-accent btn-lg" v-if="selectedItem.type === SelectedItemType.Crop"
-      :crop="selectedItem.val as Crop" @click="openModal"
-      :count="cropsList.find(({ crop }) => (crop.type === (selectedItem.val as Crop).type))?.count" />
-    <FertiliserButton class="shadow-xl bg-accent btn-lg" v-else-if="selectedItem.type === SelectedItemType.Fertiliser"
+    <CropButton
+v-if="selectedItem.type === SelectedItemType.Crop" class="shadow-xl bg-accent btn-lg"
+      :crop="selectedItem.val as Crop" :count="cropsList.find(({ crop }) => (crop.type === (selectedItem.val as Crop).type))?.count"
+      @click="openModal" />
+    <FertiliserButton
+v-else-if="selectedItem.type === SelectedItemType.Fertiliser" class="shadow-xl bg-accent btn-lg"
       :fertiliser="selectedItem.val as Fertiliser" @click="openModal" />
-    <button v-else-if="selectedItem.type === SelectedItemType.CropErase" id="crop-eraser"
+    <button
+v-else-if="selectedItem.type === SelectedItemType.CropErase" id="crop-eraser"
       class="relative border rounded-xs shadow-xl btn btn-square btn-lg btn-secondary isolate  border-misc bg-accent dark:bg-palia-blue-secondary dark:border-water-retain/60"
       aria-label="Crop Eraser"
       :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white dark:bg-palia-blue-secondary' : (isTakingScreenshot.get) ? 'hidden' : ''"
       :in-picture-mode="isTakingScreenshot.get" @click="openModal">
       <font-awesome-icon class="absolute -z-10 max-w-[45px] text-success text-2xl " :icon="['fas', 'eraser']" />
     </button>
-    <button v-else-if="selectedItem.type === SelectedItemType.FertiliserErase" id="fertiliser-eraser"
+    <button
+v-else-if="selectedItem.type === SelectedItemType.FertiliserErase" id="fertiliser-eraser"
       aria-label="Fertiliser Eraser"
       class="relative border rounded-xs shadow-xl bg-accent btn btn-square btn-lg btn-secondary isolate border-misc"
       :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''"
@@ -97,7 +101,7 @@ function closeModal() {
     </button>
   </div>
 
-  <dialog class="modal items-end p-2" ref="modalRef">
+  <dialog ref="modalRef" class="modal items-end p-2">
     <div class="modal-box h-fit">
       <form method="dialog">
         <button class="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost">
@@ -112,7 +116,8 @@ function closeModal() {
             Fertilisers per Day
           </h3>
           <div class="flex flex-wrap gap-1">
-            <button id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
+            <button
+id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
               class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue-secondary dark:border-water-retain/60" :class="{
                 'bg-white': selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get,
                 'hidden': isTakingScreenshot.get,
@@ -121,8 +126,9 @@ function closeModal() {
               }">
               <font-awesome-icon class="absolute -z-10 max-w-[42px] text-warning text-2xl " :icon="['fas', 'eraser']" />
             </button>
-            <template v-for="(count, index) in plotStat.fertiliserCount" :key="index">
-              <FertiliserButton v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
+            <template v-for="(count, index) in gardenAnalyser.fertiliserCountByType" :key="index">
+              <FertiliserButton
+v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
                 :is-selected="(selectedItem.type === SelectedItemType.Fertiliser)
                   && selectedItem.val !== null
                   && index === (selectedItem.val as Fertiliser).type" :count="count" @click="() => {
@@ -178,7 +184,8 @@ function closeModal() {
             </ul>
           </div>
           <div class="flex flex-wrap gap-1">
-            <button id="crop-eraser" aria-label="Select Crop Eraser"
+            <button
+id="crop-eraser" aria-label="Select Crop Eraser"
               class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc sm:hidden dark:bg-palia-blue-secondary dark:border-water-retain/60"
               :class="{
                 'bg-white': selectedItem.val === 'crop-erase' && !isTakingScreenshot.get,
@@ -190,7 +197,8 @@ function closeModal() {
               <font-awesome-icon class="absolute -z-10 max-w-[45px] text-success text-2xl " :icon="['fas', 'eraser']" />
             </button>
             <template v-for="(listedCrop) in cropsList" :key="listedCrop.crop.type">
-              <CropButton v-if="(listedCrop.crop.type !== CropType.None as CropType)" :crop="listedCrop.crop"
+              <CropButton
+v-if="(listedCrop.crop.type !== CropType.None as CropType)" :crop="listedCrop.crop"
                 :is-selected="(selectedItem.type === SelectedItemType.Crop)
                   && selectedItem.val !== null
                   && listedCrop.crop.type === (selectedItem.val as Crop).type" :count="listedCrop.count" @click="() => {

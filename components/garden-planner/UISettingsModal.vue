@@ -24,7 +24,7 @@ defineExpose({
 </script>
 
 <template>
-  <PGPModal ref="settingsModalRef" useFullHeight @close="closeModal">
+  <PGPModal ref="settingsModalRef" use-full-height @close="closeModal">
     <template #header>UI Settings</template>
     <template #body>
       <fieldset class="fieldset bg-base-200 p-2 rounded-sm">
@@ -67,15 +67,21 @@ defineExpose({
       <fieldset class="fieldset bg-base-200 p-2 rounded-sm gap-4">
         <legend class="fieldset-legend">Crop Tile settings</legend>
         <label class="flex gap-1 items-center cursor-pointer">
-          <input v-model="settings.cropTile.showBonusIcons" type="checkbox" class="toggle" />
+          <input v-model="settings.cropTile.showBonusIcons" type="checkbox" class="toggle">
           <span class="label select-none">Show Bonus Icons</span>
         </label>
 
         <label class="flex gap-1 items-center cursor-pointer">
-          <input v-model="settings.cropTile.showBonusBackground" type="checkbox" class="toggle" />
+          <input v-model="settings.cropTile.showBonusBackground" type="checkbox" class="toggle">
           <span class="label select-none">Show Bonus Background</span>
         </label>
+
+        <label class="flex gap-1 items-center cursor-pointer">
+          <input v-model="settings.showGridAxesLabels" type="checkbox" class="toggle">
+          <span class="label select-none">Show Axis Labels</span>
+        </label>
       </fieldset>
+
     </template>
   </PGPModal>
 </template>

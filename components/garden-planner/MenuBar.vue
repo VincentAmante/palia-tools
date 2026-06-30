@@ -4,26 +4,25 @@
  -->
 
 <script setup lang="ts">
-import useGarden from '~/stores/useGarden'
 import { useSaveCode } from '~/stores/useSaveCode'
 import { useSettingsCode } from '~/stores/useSettingsCode'
 import { loadDefaultSettingsCode } from '~/components/garden-planner/SaveLoadUtils'
 import SaveModal from '~/components/garden-planner/SaveModal.vue'
 import LoadModal from '~/components/garden-planner/LoadModal.vue'
-import LayoutCreator from '@/components/LayoutCreator.vue'
+import GridLayoutCreator from '~/components/garden-planner/GridLayoutCreator.vue';
 import ExportModal from '~/components/garden-planner/ExportModal.vue'
 import { useToasts } from '~/stores/useToasts'
 import UISettingsModal from './UISettingsModal.vue'
+import { loadSettings } from '~/assets/scripts/garden-planner/save-handler.js'
 
 const toasts = useToasts()
-const gardenHandler = useGarden()
+const gardenHandler = useGardenGrid()
 const harvester = useHarvester()
 const processor = useProcessor()
-const { garden } = gardenHandler
 
 function clearGarden() {
-  garden.clearAllPlots()
-  gardenHandler.update()
+  gardenHandler.clearTiles()
+  gardenHandler.updateStats()
 }
 
 
@@ -32,11 +31,11 @@ const settingsCode = useSettingsCode()
 
 function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
 
-  const hasLoadedSuccessfully = garden.loadLayout(code)
-  settingsCode.set(garden.loadSettingsCode)
+  const hasLoadedSuccessfully = gardenHandler.loadGardenByCode(code)
+  settingsCode.set(gardenHandler.grid.loadSettingsCode)
   settingsCode.requestUpdate()
-  gardenHandler.update()
-  gardenHandler.requestFullUpdate()
+  gardenHandler.updateStats()
+  // gardenHandler.requestFullUpdate()
 
   if (hasLoadedSuccessfully) {
     toasts.addToast({
@@ -53,7 +52,7 @@ function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
     if (defaultCode) {
 
       settingsCode.set(defaultCode)
-      const { harvesterOptions, processorSettings } = gardenHandler.garden.loadSettings(defaultCode)
+      const { harvesterOptions, processorSettings } = loadSettings(defaultCode)
       processor.updateSettings(processorSettings)
       harvester.updateSettings(harvesterOptions)
     }
@@ -61,7 +60,7 @@ function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
 }
 
 function saveLayout() {
-  saveCode.set(garden.saveLayout(settingsCode.code))
+  saveCode.set(gardenHandler.saveGarden(settingsCode.code))
 }
 
 const saveModal = ref<InstanceType<typeof SaveModal> | null>(null)
@@ -83,10 +82,11 @@ function openUISettingsModal() {
 
 const exportModal = ref<InstanceType<typeof ExportModal> | null>(null)
 function openExportModal() {
+  saveCode.set(gardenHandler.saveGarden(settingsCode.code))
   exportModal.value?.openModal()
 }
 
-const createLayoutDialog = ref<InstanceType<typeof LayoutCreator> | null>()
+const createLayoutDialog = ref<InstanceType<typeof GridLayoutCreator> | null>()
 function openNewLayoutModal() {
   createLayoutDialog.value?.openModal()
 }
@@ -101,10 +101,10 @@ onMounted(() => {
     const defaultSettings = loadDefaultSettingsCode()
 
     if (defaultSettings) {
-      const { harvesterOptions, processorSettings: loadedProcessorSettings } = gardenHandler.garden.loadSettings(defaultSettings.code)
-      harvester.updateSettings(Object.assign({}, harvesterOptions))
-      processor.updateSettings(Object.assign({}, loadedProcessorSettings))
-      settingsCode.set(defaultSettings.code)
+      // const { harvesterOptions, processorSettings: loadedProcessorSettings } = gardenHandler.garden.loadSettings(defaultSettings.code)
+      // harvester.updateSettings(Object.assign({}, harvesterOptions))
+      // processor.updateSettings(Object.assign({}, loadedProcessorSettings))
+      // settingsCode.set(defaultSettings.code)
     }
   }
 })
@@ -135,11 +135,11 @@ onMounted(() => {
       class="grid flex-wrap w-full grid-cols-2 sm:grid-cols-3 gap-2 py-1 xl:w-fit xl:flex xl:py-2 order-2 xl:order-3 ">
       <button class="xl:h-full btn btn-soft" @click="openNewLayoutModal">
         <font-awesome-icon class="text-lg" icon="pen-to-square" />
-        New Layout
+        Edit Plots
       </button>
       <button class="xl:h-full btn btn-warning text-neutral" @click="clearGarden">
         <font-awesome-icon class="text-lg" icon="trash" />
-        Clear Plot
+        Clear Garden
       </button>
 
       <!-- UI Modal -->
@@ -153,8 +153,11 @@ onMounted(() => {
       <SaveModal ref="saveModal" @save-layout="saveLayout()" />
       <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
       <UISettingsModal ref="uiSettingsModal" />
-      <LayoutCreator ref="createLayoutDialog" @create-new-layout="(code: string) => loadLayoutFromCode(code, true)" />
-      <ExportModal ref="exportModal" />
+      <!-- <LayoutCreator ref="createLayoutDialog" @create-new-layout="(code: string) => loadLayoutFromCode(code, true)" /> -->
+        <GridLayoutCreator ref="createLayoutDialog"/>
+      <ClientOnly>
+        <ExportModal ref="exportModal" />
+      </ClientOnly>
     </Teleport>
   </section>
 </template>

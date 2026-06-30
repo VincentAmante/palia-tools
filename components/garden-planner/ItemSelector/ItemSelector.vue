@@ -4,33 +4,38 @@ import useGarden from '~/stores/useGarden'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import type { SelectedItem } from '~/stores/useSelectedItem'
 import { SelectedItemType, useSelectedItem } from '~/stores/useSelectedItem'
-import { Crop, Fertiliser } from '~/assets/scripts/garden-planner/imports'
-import { Bonus, CropCode, CropType, FertiliserType, crops, fertilisers, getCropFromCode, getFertiliserFromCode } from '~/assets/scripts/garden-planner/imports'
+import type { Crop, Fertiliser} from '~/assets/scripts/garden-planner/imports';
+import { Bonus, CropCode, CropType, FertiliserType, crops, fertilisers, getCropFromCode, getFertiliserFromCode  } from '~/assets/scripts/garden-planner/imports'
+
 import FertiliserCode from '~/assets/scripts/garden-planner/enums/fertilisercode'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const selectedItem = useSelectedItem()
 const isTakingScreenshot = useTakingScreenshot()
-const gardenHandler = useGarden()
+const gardenHandler = useGardenGrid()
 
-const plotStat = computed(() => gardenHandler.plotStat)
+// const plotStat = computed(() => gardenHandler.analyser)
 const totalFertilisers = computed(() => {
   let count = 0
-  for (const fertiliser in plotStat.value.fertiliserCount)
-    count += plotStat.value.fertiliserCount[fertiliser as FertiliserType]
+  for (const fertiliser in gardenHandler.analyser.fertiliserCountByType)
+    count += gardenHandler.analyser.fertiliserCountByType[fertiliser as FertiliserType]
   return count
 })
 
 
-const hoveredItem = ref<SelectedItem | null>(null)
+// const hoveredItem = ref<SelectedItem | null>(null)
 
 
 const bonusToSortBy = ref<Bonus | null>(null)
 
 const cropsList = computed(() => {
+  const cropCountByType = gardenHandler.analyser.cropCountByType
+
   const list: { crop: Crop; count: number }[] = []
-  for (const crop of Object.values(crops))
-    list.push({ crop, count: plotStat.value.cropTypeCount[crop.type] })
+  for (const crop of Object.values(crops)){
+    
+    list.push({ crop, count: cropCountByType[crop.type] })
+  }
 
   let sortedList = list
   if (bonusToSortBy.value && !isTakingScreenshot.get)
@@ -81,7 +86,7 @@ const lastMagicKeyPressed = ref('')
 
 watchEffect(() => {
   // type in cropcode to select crop
-  if (keys.shift.value) {
+  if (keys.shift?.value) {
     const keysPressed = [...keys.current]
 
     // remove shift key
@@ -113,7 +118,7 @@ watchEffect(() => {
     }
   }
   // Fertiliser
-  else if (keys.alt.value) {
+  else if (keys.alt?.value) {
     const keysPressed = [...keys.current]
 
     keysPressed.shift()
@@ -156,7 +161,8 @@ watchEffect(() => {
     <h2 class="sr-only">Item Selector</h2>
     <div class="relative grid px-2 xl:grid-cols-7 ">
 
-      <section v-if="!(isTakingScreenshot.get && plotStat.cropCount <= 0)"
+      <section
+v-if="!(isTakingScreenshot.get && gardenHandler.analyser.cropCount <= 0)"
         class="flex flex-col order-1 w-full xl:col-span-4" :class="[isTakingScreenshot.get ? 'col-span-4' : '']">
         <div class="flex gap-2">
           <h3 class="font-semibold text-palia-blue dark:text-accent">
@@ -205,38 +211,44 @@ watchEffect(() => {
         </div>
         <div class="flex gap-1 py-1 rounded-md w-fit items-start">
           <div class="hidden pb-1 sm:flex lg:items-center">
-            <button id="crop-eraser" aria-label="Select Crop Eraser"
+            <button
+id="crop-eraser" aria-label="Select Crop Eraser"
               class="relative border rounded-xs btn btn-lg btn-square btn-secondary dark:bg-palia-blue-secondary isolate hover:bg-palia-blue-secondary/20 border-misc dark:border-water-retain/60"
               :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white dark:bg-water-retain/20' : (isTakingScreenshot.get) ? 'hidden' : ''"
               :in-picture-mode="isTakingScreenshot.get" @click="selectedItem.select('crop-erase')"
               @mouseover="selectedItem.hover('crop-erase')" @mouseleave="selectedItem.hover(null)">
-              <font-awesome-icon class="absolute -z-10 max-w-[45px] text-success text-2xl " :icon="['fas', 'eraser']" />
+              <font-awesome-icon class="absolute -z-10 max-w-11.25 text-success text-2xl " :icon="['fas', 'eraser']" />
             </button>
           </div>
           <div class="flex">
-            <button aria-label="Scroll Items to left"
+            <button
+aria-label="Scroll Items to left"
               class="hidden px-2 btn-lg rounded-r-none btn btn-primary w-fit sm:block disabled:text-transparent dark:bg-palia-blue dark:border-palia-blue dark:text-water-retain"
               :class="{ 'hidden!': isTakingScreenshot.get || (reachedLeft && reachedRight) }" @mousedown="resumeLeft"
               @mouseup="pauseLeft" @mouseleave="pauseLeft">
               <font-awesome-icon :icon="['fas', 'chevron-left']" />
             </button>
-            <div ref="cropsListRef"
+            <div
+ref="cropsListRef"
               class="flex flex-wrap items-center justify-start w-full gap-1 pb-1 transition-all sm:max-w-lg md:max-w-xl lg:max-w-2xl sm:flex-nowrap sm:overflow-x-auto"
               :class="[(reachedLeft && reachedRight) ? 'sm:scrollbar-none' : 'overflow-x-scroll max-w-full scrollbar scrollbar-h-1 pb-1 scrollbar-thumb-rounded-xl scrollbar-thumb-palia-blue dark:scrollbar-thumb-accent']">
               <!--
                 :class="(selectedItem.val === 'crop-erase' && !isTakingScreenshot.get) ? 'bg-white' : (isTakingScreenshot.get) ? 'hidden' : ''" -->
-              <button id="crop-eraser" aria-label="Select Crop Eraser"
+              <button
+id="crop-eraser" aria-label="Select Crop Eraser"
                 class="relative border rounded-xs btn btn-square btn-lg btn-secondary isolate border-misc sm:hidden dark:border-water-retain/60 dark:bg-palia-blue-secondary"
                 :class="{
                   'bg-white dark:bg-water-retain/20': selectedItem.val === 'crop-erase' && !isTakingScreenshot.get,
                   'hidden': isTakingScreenshot.get,
                 }" :in-picture-mode="isTakingScreenshot.get" @click="selectedItem.select('crop-erase')"
                 @mouseover="selectedItem.hover(SelectedItemType.CropErase)" @mouseleave="selectedItem.hover(null)">
-                <font-awesome-icon class="absolute -z-10 max-w-[45px] text-success text-2xl "
+                <font-awesome-icon
+class="absolute -z-10 max-w-11.25 text-success text-2xl "
                   :icon="['fas', 'eraser']" />
               </button>
               <template v-for="(listedCrop) in cropsList" :key="listedCrop.crop.type">
-                <CropButton v-if="(listedCrop.crop.type !== CropType.None as CropType)" :crop="listedCrop.crop"
+                <CropButton
+v-if="(listedCrop.crop.type !== CropType.None as CropType)" :crop="listedCrop.crop"
                   :is-selected="(selectedItem.type === SelectedItemType.Crop)
                     && selectedItem.val !== null
                     && listedCrop.crop.type === (selectedItem.val as Crop).type" :count="listedCrop.count"
@@ -244,7 +256,8 @@ watchEffect(() => {
                   @mouseover="selectedItem.hover(listedCrop.crop)" @mouseleave="selectedItem.hover(null)" />
               </template>
             </div>
-            <button aria-label="Scroll Right"
+            <button
+aria-label="Scroll Right"
               class="hidden px-2 rounded-l-none btn btn-primary btn-lg w-fit sm:block z-50 dark:bg-palia-blue dark:border-palia-blue dark:text-water-retain"
               :class="{ 'hidden!': isTakingScreenshot.get || (reachedLeft && reachedRight) }" @mousedown="resumeRight"
               @mouseup="pauseRight" @mouseleave="pauseRight">
@@ -254,23 +267,26 @@ watchEffect(() => {
         </div>
       </section>
 
-      <section class="flex flex-wrap order-2 xl:justify-end xl:col-span-3"
+      <section
+class="flex flex-wrap order-2 xl:justify-end xl:col-span-3"
         :class="[isTakingScreenshot.get ? 'col-span-3' : '']">
         <div v-if="!(isTakingScreenshot.get && totalFertilisers <= 0)">
           <h3 class="font-semibold text-palia-blue dark:text-accent">
             Fertilisers per Day
           </h3>
           <div class="flex flex-wrap gap-1 pt-2 items-start">
-            <button id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
+            <button
+id="fertiliser-eraser" aria-label="Select Fertiliser Eraser"
               class="relative border rounded-xs btn btn-lg btn-square btn-secondary dark:bg-palia-blue-secondary isolate hover:bg-palia-blue-secondary/20 border-misc dark:border-water-retain/60" :class="{
                 'bg-white dark:bg-water-retain/20': selectedItem.val === 'fertiliser-erase' && !isTakingScreenshot.get,
                 'hidden': isTakingScreenshot.get,
               }" @click="selectedItem.select('fertiliser-erase')"
               @mouseover="selectedItem.hover(SelectedItemType.FertiliserErase)" @mouseleave="selectedItem.hover(null)">
-              <font-awesome-icon class="absolute -z-10 max-w-[42px] text-warning text-2xl " :icon="['fas', 'eraser']" />
+              <font-awesome-icon class="absolute -z-10 max-w-10.5 text-warning text-2xl " :icon="['fas', 'eraser']" />
             </button>
-            <template v-for="(count, index) in plotStat.fertiliserCount" :key="index">
-              <FertiliserButton v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
+            <template v-for="(count, index) in gardenHandler.analyser.fertiliserCountByType" :key="index">
+              <FertiliserButton
+v-if="index !== FertiliserType.None" :fertiliser="fertilisers[index] as Fertiliser"
                 :is-selected="(selectedItem.type === SelectedItemType.Fertiliser)
                   && selectedItem.val !== null
                   && index === (selectedItem.val as Fertiliser).type" :count="count"

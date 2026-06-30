@@ -16,13 +16,15 @@
       <div class="flex flex-col w-full items-center lg:w-fit lg:items-end gap-1">
         <div class="flex items-center gap-1">
           Developed by
-          <NuxtLink to="https://discord.com/users/204462556012740608" target="_blank" :prefetch="false"
+          <NuxtLink
+to="https://discord.com/users/204462556012740608" target="_blank" :prefetch="false"
             class="btn btn-ghost normal-case btn-sm">
             <font-awesome-icon :icon="['fab', 'discord']" class="" />
             .aisen
           </NuxtLink>
         </div>
-        <NuxtLink to="https://github.com/VincentAmante/palia-tools" target="_blank" :prefetch="false"
+        <NuxtLink
+to="https://github.com/VincentAmante/palia-tools" target="_blank" :prefetch="false"
           class="btn w-full">
           <font-awesome-icon :icon="['fab', 'github']" class="text-lg" />
           Source Code

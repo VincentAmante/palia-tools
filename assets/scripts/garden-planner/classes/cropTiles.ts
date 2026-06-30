@@ -4,6 +4,7 @@ import Bonus from '../enums/bonus'
 import type { TCropTiles, TUniqueTiles } from '../utils/garden-helpers'
 import type Tile from './tile'
 import type Plot from './plot'
+import type { ITile } from './tile'
 
 
 type CropGroupBonusStats = Record<Bonus, number>
@@ -29,7 +30,7 @@ export default class CropTiles {
 
   updateTiles(layout: Plot[][]) {
     // Reset the values
-    this._individualCrops = new Map<string, Tile>()
+    this._individualCrops = new Map<string, ITile>()
     this._fertiliserCount = this.initialiseCounts(FertiliserType)
     this._bonusCoverage = this.initialiseCounts(Bonus)
     this._cropTypeCount = this.initialiseCounts(CropType)
@@ -92,7 +93,7 @@ export default class CropTiles {
     }
   }
 
-  get individualCrops(): Map<string, Tile> {
+  get individualCrops(): Map<string, ITile> {
     return this._individualCrops
   }
 

@@ -3,9 +3,9 @@ import { computed, ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
-import { parseCropId, type ICropName, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
-import { CropType } from '~/assets/scripts/garden-planner/imports'
-import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
+import { parseCropId, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { type CropType, getCropFromType  } from '~/assets/scripts/garden-planner/imports'
+
 
 import CropCrafterDataDisplay from './CropCrafterPanel.vue'
 import CropSummaryPanel from './CropSummaryPanel.vue'
@@ -21,16 +21,16 @@ const { get: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
 const selectedCropId = ref<ICropNameWithGrowthDiff | null>(null)
 
 // Gets cycle detail which relies on selected crop detail
-const cycleId = computed(() => {
-  if (!selectedCropId.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
-    return ''
+// const cycleId = computed(() => {
+//   if (!selectedCropId.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
+//     return ''
 
-  return `${parseCropId(selectedCropId.value).type}${harvester.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
-})
+//   return `${parseCropId(selectedCropId.value).type}${harvester.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
+// })
 
-const cropInfo = computed(() => {
-  return parseCropId(selectedCropId.value || '')
-})
+// const cropInfo = computed(() => {
+//   return parseCropId(selectedCropId.value || '')
+// })
 
 // Get unique crop types present in the harvest, maintaining the growth diff identifier
 const presentCrops = computed(() => {
@@ -112,14 +112,16 @@ watchEffect(() => {
       <p v-if="presentCrops.size === 0" class="text px-2 py-3 text-sm lg:text-base  text-misc-dark dark:text-accent">
         No crops in layout to display details for.
       </p>
-      <button v-if="presentCrops.size > 0" @click="selectCropForDetail(null)"
-        class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue dark:border-palia-blue-dark text-harvest-boost tooltip"
-        :class="(selectedCropId === null && !isTakingScreenshot) ? 'bg-white' : ''" data-tip="All harvests">
+      <button
+v-if="presentCrops.size > 0" class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue dark:border-palia-blue-dark text-harvest-boost tooltip"
+        :class="(selectedCropId === null && !isTakingScreenshot) ? 'bg-white' : ''"
+        data-tip="All harvests" @click="selectCropForDetail(null)">
         <FontAwesomeIcon :icon="['fas', 'wheat-awn']" />
       </button>
       <template v-for="([cropId, data]) in presentCrops" :key="cropId">
-        <CropDetailButton :crop="getCropFromType(parseCropId(cropId).type)!" :count="data.count"
-          @click="selectCropForDetail(cropId)" :isSelected="cropId === selectedCropId" :cropId="cropId" />
+        <CropDetailButton
+:crop="getCropFromType(parseCropId(cropId).type)!" :count="data.count"
+          :is-selected="cropId === selectedCropId" :crop-id="cropId" @click="selectCropForDetail(cropId)" />
       </template>
     </nav>
 
@@ -129,38 +131,45 @@ watchEffect(() => {
         <p
           class="text-sm w-fit font-semibold text-palia-blue-dark flex gap-1 items-center bg-accent dark:bg-palia-blue-light dark:text-accent px-3 rounded-sm">
           <span class="capitalize font-bold">{{ selectedCropCycleData.cropType }}</span>
-          <FontAwesomeIcon v-if="selectedCropId.includes('-Star')" :icon="['fas', 'star']"
+          <FontAwesomeIcon
+v-if="selectedCropId.includes('-Star')" :icon="['fas', 'star']"
             class="text-sm text-quality-increase-dark dark:text-quality-increase" aria-label="Star Seed" />
-          <FontAwesomeIcon v-if="selectedCropId.includes('-Growth')" :icon="['fas', 'forward-fast']"
+          <FontAwesomeIcon
+v-if="selectedCropId.includes('-Growth')" :icon="['fas', 'forward-fast']"
             class="ml-1 text-sm text-growth-boost" title="Growth Boost Applied" aria-label="Growth Boost Applied" />
         </p>
         <div role="tablist" class="tabs tabs-xs tabs-border bg-palia-blue-dark rounded-sm gap-1 w-fit">
-          <button role="tab" class="tab bg-transparent"
-            :class="{ 'tab-active text-accent': cropDetailsTab === 'overall' }" @click="cropDetailsTab = 'overall'"
-            :aria-selected="cropDetailsTab === 'overall'">Summary</button>
-          <button v-if="selectedCropProcessingData" role="tab" class="tab bg-transparent"
+          <button
+role="tab" class="tab bg-transparent"
+            :class="{ 'tab-active text-accent': cropDetailsTab === 'overall' }" :aria-selected="cropDetailsTab === 'overall'"
+            @click="cropDetailsTab = 'overall'">Summary</button>
+          <button
+v-if="selectedCropProcessingData" role="tab" class="tab bg-transparent"
             :class="{ 'tab-active text-accent': cropDetailsTab === 'crafter-data' }"
-            @click="cropDetailsTab = 'crafter-data'"
-            :aria-selected="cropDetailsTab === 'crafter-data'">Crafters</button>
-          <button role="tab" class="tab bg-transparent"
+            :aria-selected="cropDetailsTab === 'crafter-data'"
+            @click="cropDetailsTab = 'crafter-data'">Crafters</button>
+          <button
+role="tab" class="tab bg-transparent"
             :class="{ 'tab-active text-accent': cropDetailsTab === 'day-by-day' }"
-            @click="cropDetailsTab = 'day-by-day'" :aria-selected="cropDetailsTab === 'day-by-day'">Harvest
+            :aria-selected="cropDetailsTab === 'day-by-day'" @click="cropDetailsTab = 'day-by-day'">Harvest
             Days</button>
-          <button role="tab" class="tab bg-transparent" :class="{ 'tab-active text-accent': cropDetailsTab === 'misc' }"
-            @click="cropDetailsTab = 'misc'" :aria-selected="cropDetailsTab === 'misc'">Misc</button>
+          <button
+role="tab" class="tab bg-transparent" :class="{ 'tab-active text-accent': cropDetailsTab === 'misc' }"
+            :aria-selected="cropDetailsTab === 'misc'" @click="cropDetailsTab = 'misc'">Misc</button>
         </div>
       </div>
       <div v-if="cropDetailsTab === 'overall'">
         <CropSummaryPanel :selected-crop-detail="selectedCropId" />
       </div>
       <div v-else-if="selectedCropProcessingData && cropDetailsTab === 'crafter-data'">
-        <CropCrafterDataDisplay :selected-crop-processing-data="selectedCropProcessingData"
+        <CropCrafterDataDisplay
+:selected-crop-processing-data="selectedCropProcessingData"
           :selected-crop-detail="selectedCropId" />
       </div>
-      <div class="" v-else-if="cropDetailsTab === 'day-by-day'">
+      <div v-else-if="cropDetailsTab === 'day-by-day'" class="">
         <CropHarvestDaysPanel :crop-to-filter="selectedCropId" />
       </div>
-      <div class="" v-else-if="cropDetailsTab === 'misc'">
+      <div v-else-if="cropDetailsTab === 'misc'" class="">
         <CropMiscDetails :crop-type="selectedCropCycleData.cropType" :crop-id="selectedCropId" />
       </div>
     </div>

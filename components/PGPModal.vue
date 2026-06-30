@@ -9,12 +9,15 @@ defineProps({
   }
 })
 
+const emits = defineEmits(['onHideModal'])
+
 function showModal() {
   modal.value?.showModal()
 }
 function hideModal() {
   modal.value?.close()
 }
+
 defineExpose({
   showModal,
   hideModal,

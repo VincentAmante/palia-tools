@@ -1,12 +1,13 @@
 import { getCropFromType } from '../cropList'
-import type { Crop } from '../imports'
-import { CropType } from '../imports'
-import { ItemType } from '../utils/garden-helpers'
-import type { CropItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IDayHarvest, IHarvestCyclePhase, IInventoryItem, ISeedTracker, ITotalHarvest } from '../utils/garden-helpers'
+import { type FertiliserType, CropType, getFertiliserFromType, type Crop } from '../imports';
+
+
+
+
+
+import { Currency, ItemType, parseCropId } from '../utils/garden-helpers'
+import type { CropItem, FertiliserItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IDayHarvest, IHarvestCyclePhase, IInventoryItem, ISeedTracker, ITotalHarvest } from '../utils/garden-helpers'
 import type { ICropConversions } from './crop'
-import { parseCropId } from '../utils/garden-helpers'
-
-
 
 /**
  * Unified time trackers for my sanity, cause what did I write LMAO
@@ -97,10 +98,19 @@ export interface ProcessorSetting {
   count: number // Quantity to process
 }
 
+export enum FertiliserCostSource {
+  SELL_VALUE = 's', // Cost of selling
+  ZEKI_STORE = 'z', // Cost from buying it from Zeki's store
+  GUILD_STORE = 'g', // Cost from buying it from the garden guild (medals)
+  NONE = 'n' // Fertiliser was not included as a cost
+}
+
 // Interface for all processor settings
 export interface ProcessorSettings {
   cropSettings: Map<ICropNameWithGrowthDiff, ProcessorSetting>
   goldAverageSetting: 'crafterTime' | 'growthTick'
+  useFertilserCostSettings: boolean
+  fertiliserCostSettings: Map<FertiliserType, FertiliserCostSource>
   crafterSetting: number // Currently not used
 }
 
@@ -111,6 +121,10 @@ type TCropProcessData = Map<ICropNameWithGrowthDiff, {
   craftersToUse: number
   conversionsToMake: number
 }>
+
+export interface GardenData {
+  fertiliserCountsByType: Readonly<Record<FertiliserType, number>>
+}
 
 // Main Processor class handles crop processing calculations
 export default class Processor {
@@ -125,15 +139,25 @@ export default class Processor {
 
   // Inventory and equipment tracking
   private _inventory = new Map<string, IInventoryItem>()
+
   private _seedCollectors = new Map<string, IInventoryItem>()
   private _preserveJars = new Map<string, IInventoryItem>()
   private _highestCraftingTime = 0 // Tracks the longest processing time across all crops
+
+  private _fertiliserCostsPerDay = new Map<FertiliserType, FertiliserItem>()
+
+  private _activeFertiliserCostSettings = new Map<FertiliserType, FertiliserCostSource>()
+
+
+  private _lastDayOfHarvest = 0
 
   // Settings for processing
   private _settings: ProcessorSettings = {
     cropSettings: new Map() as Map<ICropNameWithGrowthDiff, ProcessorSetting>,
     crafterSetting: 0,
-    goldAverageSetting: 'crafterTime'
+    goldAverageSetting: 'crafterTime',
+    useFertilserCostSettings: false,
+    fertiliserCostSettings: new Map()
   }
 
   // Equipment counts
@@ -146,6 +170,10 @@ export default class Processor {
 
   get highestCraftingTime(): number {
     return this._highestCraftingTime
+  }
+
+  get lastDayOfHarvest() {
+    return this._lastDayOfHarvest
   }
 
   get inventory(): Map<string, IInventoryItem> {
@@ -168,6 +196,14 @@ export default class Processor {
     return this._preserveJarsCount
   }
 
+  get activeFertiliserCostSettings() {
+    return this._activeFertiliserCostSettings
+  }
+
+  get fertiliserCostsPerDay(){
+    return this._fertiliserCostsPerDay
+  }
+
   // Resets all processing data to initial state
   reset() {
     this._inventory = new Map<string, IInventoryItem>()
@@ -176,13 +212,18 @@ export default class Processor {
     this._settings = {
       cropSettings: new Map() as Map<ICropNameWithGrowthDiff, ProcessorSetting>,
       crafterSetting: 0,
-      goldAverageSetting: 'crafterTime'
+      goldAverageSetting: 'crafterTime',
+      useFertilserCostSettings: false,
+      fertiliserCostSettings: new Map()
     }
     this._seedCollectors = new Map<string, IInventoryItem>()
     this._preserveJars = new Map<string, IInventoryItem>()
     this._seedCollectorsCount = 0
     this._preserveJarsCount = 0
     this._output.detailedProcessingInfo = new Map() // Reset detailed info
+    this._fertiliserCostsPerDay = new Map()
+
+    this._lastDayOfHarvest = 0
   }
 
   /**
@@ -190,9 +231,10 @@ export default class Processor {
    * @param harvestData - Harvest data to process
    * @param processorSettings - User-defined processing settings
    */
-  process(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>): void {
+  process(harvestData: Readonly<ITotalHarvest>, processorSettings: Readonly<ProcessorSettings>, gardenData: GardenData): void {
     this.reset() // Reset all state before starting new processing
 
+    this._lastDayOfHarvest = harvestData.lastHarvestDay
     // Initialize output and inventory
     const output: ProcessorOutput = {
       crops: new Map(),
@@ -204,9 +246,70 @@ export default class Processor {
 
     const inventory = new Map<string, IInventoryItem>()
 
+    const fertiliserCostSettings = new Map<FertiliserType, FertiliserCostSource>()
+
+    if (processorSettings.useFertilserCostSettings) {
+      // Do not include fertiliser cost sources that aren't even in the garden
+      for (const [type, source] of processorSettings.fertiliserCostSettings) {
+        if (gardenData.fertiliserCountsByType[type])
+          fertiliserCostSettings.set(type, source)
+      }
+    }
+
+    this._activeFertiliserCostSettings = fertiliserCostSettings
+
     // Set current settings
     this._settings = Object.assign({}, processorSettings)
-    const settings = this._settings
+    const settings = { ...this._settings, fertiliserCostSettings: fertiliserCostSettings }
+
+    const fertiliserCostsPerDay = new Map<FertiliserType, FertiliserItem>()
+    if (processorSettings.useFertilserCostSettings) {
+      for (const [type, source] of fertiliserCostSettings) {
+        const fertiliser = getFertiliserFromType(type)
+        const count = gardenData.fertiliserCountsByType[type]
+
+        if (!fertiliser) continue
+
+        let baseGoldValue = 0
+        // const currency = source !== FertiliserCostSource.GUILD_STORE ? Currency.GOLD : Currency.MEDAL
+        let currency = Currency.GOLD
+
+        switch (source) {
+          case FertiliserCostSource.GUILD_STORE:
+            baseGoldValue = (fertiliser.costs.guildBatchPrice / fertiliser.costs.guildBatchCount)
+            currency = Currency.MEDAL
+            break;
+          case FertiliserCostSource.ZEKI_STORE:
+            baseGoldValue = (fertiliser.costs.zekiBatchPrice / fertiliser.costs.zekiBatchCount)
+            break;
+          case FertiliserCostSource.SELL_VALUE:
+            baseGoldValue = fertiliser.costs.goldSellValue
+            break;
+          case FertiliserCostSource.NONE:
+          default:
+            baseGoldValue = 0
+            currency = Currency.NONE
+            break
+        }
+
+        const fertiliserItem: FertiliserItem = {
+          count,
+          itemType: ItemType.Fertiliser,
+          cropType: CropType.None,
+          isStar: false,
+          baseGoldValue,
+          currency,
+          img: {
+            src: fertiliser.image,
+            alt: fertiliser.type
+          },
+        }
+
+        fertiliserCostsPerDay.set(type, fertiliserItem)
+      }
+    }
+    this._fertiliserCostsPerDay = fertiliserCostsPerDay
+
 
     // Calculate processing data for each crop based on settings and harvest data
     const cropData = this.calculateSettings(harvestData, settings)
@@ -455,7 +558,7 @@ export default class Processor {
 
     let overallLongestProcessMinutes = 0;
     let totalGoldGenerated = 0;
-    let craftersUsed = {
+    const craftersUsed = {
       seedCollectors: new Map<ICropNameWithGrowthDiff, number>(),
       seedCollectorsCount: 0,
       preserveJars: new Map<ICropNameWithGrowthDiff, number>(),
@@ -520,7 +623,6 @@ export default class Processor {
           if (dayInPhase !== 0) {
             for (const [index, phase] of cycleDataForCrop.phases.entries()) {
               if (dayInPhase === phase.phaseLength) {
-                console.log('found phase index', index)
                 phaseIndex = index
                 break
               }
@@ -537,7 +639,6 @@ export default class Processor {
           totalProcessMinutes,
           longestProcessMinutesNoIdle,
           goldGenerated,
-          averageExcessTimeMinutes,
           minutesBeforeNextHarvest,
         } = processHarvest({
           qualityId: isStar ? 'star' : 'base',
@@ -797,14 +898,14 @@ interface IProcessHarvestArgs {
 
 function getHoursToNextPhase(cycleData: ICropHarvestCycle, currentPhaseIndex: number) {
   if (cycleData.phases.length <= 1) {
-    return cycleData.phases[0].phaseLength;
+    return cycleData.phases[0]?.phaseLength || 0;
   }
 
   const nextPhaseIndex = currentPhaseIndex === cycleData.phases.length - 1
     ? 0
     : currentPhaseIndex + 1;
 
-  return cycleData.phases[nextPhaseIndex].phaseLength;
+  return cycleData.phases[nextPhaseIndex]!.phaseLength;
 }
 
 function aggregateHarvestResults(params: {
@@ -890,7 +991,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
 
   // Get data about the current phase
   const phaseData = cycleData.phases[currentPhaseIndex]
-  const cropCount = phaseData.yield[qualityId].totalWithDeductions
+  const cropCount = phaseData?.yield[qualityId].totalWithDeductions || 0
 
   if (cropCount === 0) {
     console.warn('Empty cropCount found, bug?')
@@ -934,6 +1035,7 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
 }
 
 // Interface for cycle processing arguments
+
 interface IProcessCycleArgs {
   goldValues: Crop['goldValues']
   cycleData: ICropHarvestCycle
@@ -1027,7 +1129,7 @@ function distributeCropsToCrafters(params: {
   minutesToNextHarvest: number;
 }): IProcessHarvestData['crafterData'] {
   const {
-    wholeConversions, conversionsRemainder, remainderCrops,
+    wholeConversions, conversionsRemainder,
     crafterCount, minutesPerConversion, cropsPerConversion, minutesToNextHarvest
   } = params;
 
@@ -1076,7 +1178,7 @@ function processCycle(processCycleArgs: IProcessCycleArgsV2, phasesOverride = 0)
   // Calculated here to save processing time
   const { minutesPerConversion, isStar, crop, cropsPerConversion, producePerConversion, produceGoldValue } = calculateCycleConversionData(processInto, cropId)
 
-  const firstHarvestDelayMinutes = (cycleData.phases[0].phaseLength * 60)
+  const firstHarvestDelayMinutes = ((cycleData.phases[0]?.phaseLength || 0) * 60)
 
   // Determine how many phases to process
   const phasesToCalculate = (phasesOverride > 0)

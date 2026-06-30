@@ -171,7 +171,8 @@ class Crop {
 
   // Assumes player harvests on the day it is harvestable
   isHarvestableOnDay(day: number, hasGrowthBoost: boolean = false) {
-    let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+    let { growthTime } = this._produceInfo
+    const { reharvestCooldown, reharvestLimit } = this._produceInfo
 
     let newReharvestCooldown = reharvestCooldown
 
@@ -189,12 +190,12 @@ class Crop {
 
     const harvestableDays = []
     harvestableDays.push(growthTime)
-    let lastHarvestDay = harvestableDays[harvestableDays.length - 1]
+    let lastHarvestDay = harvestableDays[harvestableDays.length - 1] || 0
 
     for (let i = 0; i < reharvestLimit; i++) {
       harvestableDays.push(Math.max(lastHarvestDay + newReharvestCooldown - leftover, 1))
-      lastHarvestDay = harvestableDays[harvestableDays.length - 1]
-      leftover = harvestableDays[harvestableDays.length - 1] - lastHarvestDay
+      lastHarvestDay = harvestableDays[harvestableDays.length - 1] || 0
+      leftover = (harvestableDays[harvestableDays.length - 1] || 0) - lastHarvestDay
     }
 
     if (onLastHarvest) {
@@ -210,7 +211,8 @@ class Crop {
   }
 
   getHarvestableDays(hasGrowthBoost: boolean = false): number[] {
-    let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+    let { growthTime } = this._produceInfo
+    const { reharvestCooldown, reharvestLimit } = this._produceInfo
 
     let newReharvestCooldown = reharvestCooldown
 
@@ -223,19 +225,20 @@ class Crop {
 
     const harvestableDays = []
     harvestableDays.push(growthTime)
-    let lastHarvestDay = harvestableDays[harvestableDays.length - 1]
+    let lastHarvestDay = harvestableDays[harvestableDays.length - 1] || 0
 
     for (let i = 0; i < reharvestLimit; i++) {
       harvestableDays.push(Math.max(lastHarvestDay + newReharvestCooldown - leftover, 1))
-      lastHarvestDay = harvestableDays[harvestableDays.length - 1]
-      leftover = harvestableDays[harvestableDays.length - 1] - lastHarvestDay
+      lastHarvestDay = harvestableDays[harvestableDays.length - 1] || 0
+      leftover = (harvestableDays[harvestableDays.length - 1] || 0) - lastHarvestDay
     }
 
     return harvestableDays
   }
 
   getTotalGrowTime(hasGrowthBoost: boolean = false): number {
-    let { growthTime, reharvestCooldown, reharvestLimit } = this._produceInfo
+    let { growthTime } = this._produceInfo
+    const { reharvestCooldown, reharvestLimit } = this._produceInfo
 
     let newReharvestCooldown = reharvestCooldown
 
@@ -248,12 +251,12 @@ class Crop {
 
     const harvestableDays = []
     harvestableDays.push(growthTime)
-    let lastHarvestDay = harvestableDays[harvestableDays.length - 1]
+    let lastHarvestDay = harvestableDays[harvestableDays.length - 1] || 0
 
     for (let i = 0; i < reharvestLimit; i++) {
       harvestableDays.push(Math.max(lastHarvestDay + newReharvestCooldown - leftover, 1))
-      lastHarvestDay = harvestableDays[harvestableDays.length - 1]
-      leftover = harvestableDays[harvestableDays.length - 1] - lastHarvestDay
+      lastHarvestDay = harvestableDays[harvestableDays.length - 1] || 0
+      leftover = (harvestableDays[harvestableDays.length - 1] || 0) - lastHarvestDay
     }
 
     return harvestableDays.reduce((acc, cur) => (acc) + (cur - acc), 0)

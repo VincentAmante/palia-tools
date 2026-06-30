@@ -24,37 +24,44 @@ defineProps({
 
 <template>
   <section class="p-2  min-h-115">
-    <section v-if="!isTakingScreenshot.get"
+    <section
+v-if="!isTakingScreenshot.get"
       class="flex flex-row-reverse justify-between border-b border-b-palia-blue-light pb-1">
       <section class="flex justify-end gap-1">
-        <button id="approximator-display-tab" aria-label="Display Tab"
+        <button
+id="approximator-display-tab" aria-label="Display Tab"
           class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip" data-tip="Output Display"
           :class="activeTab === 'display' ? 'btn-active' : ''" @click="setTab('display')">
           <FontAwesomeIcon :icon="['fas', 'table-list']" />
         </button>
-        <button id="approximator-crop-details-tab" aria-label="Crop Details Tab"
+        <button
+id="approximator-crop-details-tab" aria-label="Crop Details Tab"
           class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip" data-tip="Crop Details"
           :class="activeTab === 'crop-details' ? 'btn-active' : ''" @click="setTab('crop-details')">
           <FontAwesomeIcon :icon="['fas', 'magnifying-glass']" />
         </button>
-        <button id="approximator-options-tab" aria-label="Options Tab"
+        <button
+id="approximator-options-tab" aria-label="Options Tab"
           class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip" data-tip="Harvest & Process Settings"
           :class="activeTab === 'options' ? 'btn-active' : ''" @click="setTab('options')">
           <FontAwesomeIcon :icon="['fas', 'sliders']" />
         </button>
-        <button id="approximator-info-tab" aria-label="Info Tab" data-tip="Info"
+        <button
+id="approximator-info-tab" aria-label="Info Tab" data-tip="Info"
           class="text-lg border-none btn-circle btn-sm btn btn-misc sm:tooltip"
           :class="activeTab === 'info' ? 'btn-active' : ''" @click="setTab('info')">
           <FontAwesomeIcon :icon="['fas', 'info']" />
         </button>
       </section>
-      <section class="join" v-if="isMainOutputDisplay">
-        <button class="btn join-item btn-sm gap-1 tooltip" aria-label="Show Garden + Output Display (default)" data-tip="
+      <section v-if="isMainOutputDisplay" class="join">
+        <button
+class="btn join-item btn-sm gap-1 tooltip" aria-label="Show Garden + Output Display (default)" data-tip="
           Garden + Display (default)" @click="plannerDisplayConfig.set('garden+display')">
           <FontAwesomeIcon :icon="['fas', 'table-cells']" />
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
         </button>
-        <button class="btn join-item btn-sm gap-1 tooltip" aria-label="Show double Output Displays" data-tip=" Double Displays"
+        <button
+class="btn join-item btn-sm gap-1 tooltip" aria-label="Show double Output Displays" data-tip="Double Displays"
           @click="plannerDisplayConfig.set('display+display')">
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />
           <FontAwesomeIcon :icon="['fas', 'window-maximize']" />

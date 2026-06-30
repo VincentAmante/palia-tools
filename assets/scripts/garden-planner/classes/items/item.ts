@@ -1,7 +1,7 @@
 import type CropType from '../../enums/crops'
 import { getCropFromType } from '../../imports'
 import { ItemType, parseCropId } from '../../utils/garden-helpers'
-import type { ICropYield, ICropInfo, IInventoryItem, ICropName, ICropNameWithGrowthDiff } from '../../utils/garden-helpers'
+import type { ICropYield, ICropInfo, IInventoryItem, ICropNameWithGrowthDiff } from '../../utils/garden-helpers'
 
 export interface Item {
   readonly name: string

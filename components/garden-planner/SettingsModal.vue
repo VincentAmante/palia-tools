@@ -87,16 +87,18 @@ async function paste() {
 </script>
 
 <template>
-  <PGPModal ref="modal" useFullHeight>
+  <PGPModal ref="modal" use-full-height>
     <template #header>
       Settings Presets
     </template>
     <template #body>
       <div class="flex justify-between">
         <div class="tabs tabs-box w-fit">
-          <a class="tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
+          <a
+class="tab" :class="{ 'tab-active': activeTab === 'clipboard-tab' }"
             @click="activeTab = 'clipboard-tab'">Clipboard</a>
-          <a class="tab" :class="{ 'tab-active': activeTab === 'browser-tab' }"
+          <a
+class="tab" :class="{ 'tab-active': activeTab === 'browser-tab' }"
             @click="activeTab = 'browser-tab'">Browser</a>
         </div>
       </div>
@@ -107,12 +109,14 @@ async function paste() {
             <p class="card-title">
               Code
             </p>
-            <p class="w-full p-2 font-mono text-xs font-thin rounded-md cursor-pointer select-text text-secondary hover:text-white hover:bg-misc-secondary"
+            <p
+class="w-full p-2 font-mono text-xs font-thin rounded-md cursor-pointer select-text text-secondary hover:text-white hover:bg-misc-secondary"
               @click="copy(`${LATEST_VERSION}_${settingsCode.code}`)">
               {{ `${LATEST_VERSION}_${settingsCode.code}` }}
             </p>
             <div class="card-actions">
-              <button class="normal-case btn btn-sm btn-ghost"
+              <button
+class="normal-case btn btn-sm btn-ghost"
                 :class="(text === settingsCode.code) ? 'btn-disabled font-lights' : ''"
                 @click="copy(settingsCode.code)">
                 <font-awesome-icon :icon="['fas', 'copy']" />
@@ -148,7 +152,8 @@ async function paste() {
               <label class="sr-only label">
                 <span class="label-text">Title</span>
               </label>
-              <input v-model="title" max="64" type="text" placeholder="Enter title"
+              <input
+v-model="title" max="64" type="text" placeholder="Enter title"
                 class="w-full input input-bordered input-sm">
               <p class="pt-1 font-mono text-justify opacity-50 text-xxs wrap-anywhere">
                 {{ `${LATEST_VERSION}_${settingsCode.code}` }}
@@ -173,7 +178,8 @@ async function paste() {
                 <ul class="flex flex-col w-full gap-3 p-2 overflow-y-auto rounded-xs bg-base-100 max-h-50 md:max-h-72">
                   <li v-for="(code, index) in savedSettingsCodes" :key="index" class="flex items-start justify-between">
                     <div class="flex flex-col gap-1 w-full">
-                      <input v-model="code.title" class="w-full py-0 pl-0 input input-ghost input-xs"
+                      <input
+v-model="code.title" class="w-full py-0 pl-0 input input-ghost input-xs"
                         @change="editTitle(index, code.title)">
                       <p class="font-mono leading-none opacity-50 text-xxs text-justify line-clamp-3 md:line-clamp-4">
                         {{ `${code.code}` }}
@@ -183,7 +189,8 @@ async function paste() {
                       <button class="btn btn-xs btn-circle btn-ghost" @click="loadSavedCode(code.code)">
                         <font-awesome-icon class="text-sm" icon="download" />
                       </button>
-                      <button class="btn btn-xs btn-circle btn-ghost" :class="{ 'btn-disabled': code.code === text }"
+                      <button
+class="btn btn-xs btn-circle btn-ghost" :class="{ 'btn-disabled': code.code === text }"
                         @click="copy(code.code)">
                         <font-awesome-icon class="text-sm" icon="copy" />
                       </button>

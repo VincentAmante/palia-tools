@@ -5,6 +5,7 @@ import download from 'downloadjs'
 import uniqid from 'uniqid'
 
 
+
 const isTakingScreenshot = useTakingScreenshot()
 
 const emit = defineEmits<{
@@ -28,7 +29,8 @@ async function saveToImage() {
   const node = document.getElementById('garden-planner') as HTMLElement
 
   if (!node) {
-    console.error('No node')
+    console.error('No node found')
+    return
   }
 
   isTakingScreenshot.set(true)
@@ -50,7 +52,7 @@ async function saveToImage() {
         useTakingScreenshot().set(false)
       }
     },
-  ).finally((err: any) => {
+  ).finally((err: unknown) => {
     isTakingScreenshot.set(false)
   })
 
@@ -63,16 +65,19 @@ const displayWidth = ref(0)
 function setScreenshotLayout() {
   const gardenDisplay = document.getElementById('garden-display')
   const display = document.getElementById('garden-planner')
+  const table = document.getElementById('garden-grid')
 
-  if (!gardenDisplay || !display) {
+  if (!gardenDisplay || !display || !table) {
     return
   }
 
   displayWidth.value = (gardenDisplay.clientWidth)
-  if (useGarden().isGardenWide)
-    displayWidth.value += gardenDisplay.clientWidth || 0
+  if (!useGardenGrid().isGardenWide)
+    displayWidth.value = display.clientWidth
+  if (useGardenGrid().isGardenWide)
+    displayWidth.value = (table.clientWidth + 40)
 
-  displayWidth.value = Math.max(displayWidth.value, 1368)
+  // displayWidth.value = Math.max(displayWidth.value, 1368)
   display.style.width = `${displayWidth.value}px`
 }
 
@@ -111,13 +116,13 @@ watch(useTakingScreenshot(), () => {
           </p>
           <div class="card-actions">
             <button class="btn normal-case btn-outline" @click="async () => await saveToImage()">
-              <span v-if="isTakingScreenshot.get" class="loading loading-spinner loading-sm"></span>
+              <span v-if="isTakingScreenshot.get" class="loading loading-spinner loading-sm" />
               Export as Image
             </button>
           </div>
 
           <p>
-            Export your garden as a landscape PNG image.
+            Export your garden as a PNG image.
           </p>
           <p class="text-warning">
             <font-awesome-icon icon="exclamation-triangle" class="mr-1" />

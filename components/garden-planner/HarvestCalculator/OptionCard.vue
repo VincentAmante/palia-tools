@@ -1,32 +1,28 @@
 <script setup lang="ts">
 defineProps({
-  label: String,
-  name: String,
+  label: {
+    type: String,
+    default: ''
+  },
+  name: {
+    type: String,
+    default: ''
+  },
   disabled: Boolean,
+  useLabel: Boolean
 })
 </script>
 
 <template>
-  <li class="group not-last:border-b not-last:border-b-misc-saturated/20 dark:not-last:border-b-water-retain">
-    <label
-      :for="label"
-      class="flex flex-col justify-start p-2 px-3 group-first:rounded-t-md  bg-accent text-misc dark:bg-palia-blue dark:text-accent"
-      :class="(disabled) ? 'opacity-50' : ''"
-    >
-      <div class="grid items-center gap-1 md:grid-cols-2">
-        <div>
-          <p class="py-1 text-sm font-bold text-palia-blue dark:text-harvest-boost">
-            {{ name }}
-          </p>
-
-          <div class="text-xs">
-            <slot name="labels" />
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <slot name="input" />
-        </div>
-      </div>
-    </label>
-  </li>
+  <legend v-if="!useLabel" class="fieldset-legend text-sm text-palia-blue dark:text-harvest-boost">
+    {{ name }}
+  </legend>
+  <label v-else class="text-palia-blue font-bold dark:text-harvest-boost" :for="name">{{ name }}</label>
+  <label :for="name" class="label">
+    <slot name="input" />
+  </label>
+  <label :for="name" class="label flex-col gap-px items-start opacity-100 text-palia-blue dark:text-accent whitespace-break-spaces">
+    <slot name="labels" />
+  </label>
+  <div class="last:hidden my-px divider divider-primary"/>
 </template>
