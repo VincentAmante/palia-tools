@@ -98,35 +98,9 @@ function openNewLayoutModal() {
 }
 
 const urlParams = useUrlSearchParams('history')
-const route = useRoute()
-// onMounted(() => {
-//   const layout = urlParams.layout
-//   // Load layout from URL parameter if available
-//   console.log('>>> FULL BROWSER URL:', window.location.href)
-//   console.log('>>> SEARCH STRING:', window.location.search)
-//   console.log('>>> useRoute().query:', useRoute().query)
-
-//   const params = new URLSearchParams(window.location.search)
-//   console.log('>>> URLSearchParams result:', Object.fromEntries(params.entries()))
-
-//   if (layout) {
-//     loadLayoutFromCode(layout as string)
-//     console.log('are we actually loading this?')
-//   } else {
-//     console.log('no garden found')
-//     const defaultSettings = loadDefaultSettingsCode()
-
-//     if (defaultSettings) {
-//       // const { harvesterOptions, processorSettings: loadedProcessorSettings } = gardenHandler.garden.loadSettings(defaultSettings.code)
-//       // harvester.updateSettings(Object.assign({}, harvesterOptions))
-//       // processor.updateSettings(Object.assign({}, loadedProcessorSettings))
-//       // settingsCode.set(defaultSettings.code)
-//     }
-//   }
-// })
-
-watchEffect(() => {
-  const layout = route.query.layout
+onMounted(() => {
+  const layout = urlParams.layout
+  // Load layout from URL parameter if available
   console.log('>>> FULL BROWSER URL:', window.location.href)
   console.log('>>> SEARCH STRING:', window.location.search)
   console.log('>>> useRoute().query:', useRoute().query)
@@ -134,12 +108,37 @@ watchEffect(() => {
   const params = new URLSearchParams(window.location.search)
   console.log('>>> URLSearchParams result:', Object.fromEntries(params.entries()))
 
-  if (layout && typeof layout === 'string') {
+  if (layout) {
     loadLayoutFromCode(layout as string)
+    console.log('are we actually loading this?')
   } else {
+    console.log('no garden found')
     const defaultSettings = loadDefaultSettingsCode()
+
+    if (defaultSettings) {
+      // const { harvesterOptions, processorSettings: loadedProcessorSettings } = gardenHandler.garden.loadSettings(defaultSettings.code)
+      // harvester.updateSettings(Object.assign({}, harvesterOptions))
+      // processor.updateSettings(Object.assign({}, loadedProcessorSettings))
+      // settingsCode.set(defaultSettings.code)
+    }
   }
 })
+
+// watchEffect(() => {
+//   const layout = route.query.layout
+//   console.log('>>> FULL BROWSER URL:', window.location.href)
+//   console.log('>>> SEARCH STRING:', window.location.search)
+//   console.log('>>> useRoute().query:', useRoute().query)
+
+//   const params = new URLSearchParams(window.location.search)
+//   console.log('>>> URLSearchParams result:', Object.fromEntries(params.entries()))
+
+//   if (layout && typeof layout === 'string') {
+//     loadLayoutFromCode(layout as string)
+//   } else {
+//     const defaultSettings = loadDefaultSettingsCode()
+//   }
+// })
 </script>
 
 <template>
