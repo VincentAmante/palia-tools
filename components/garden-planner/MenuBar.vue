@@ -91,57 +91,57 @@ function openNewLayoutModal() {
   createLayoutDialog.value?.openModal()
 }
 
-// const urlParams = useUrlSearchParams('history')
+const urlParams = useUrlSearchParams('history')
 const route = useRoute()
-// onMounted(() => {
-//   const layout = route.query.layout as string | undefined
-//   // Load layout from URL parameter if available
-//   console.log('>>> FULL BROWSER URL:', window.location.href)
-//   console.log('>>> SEARCH STRING:', window.location.search)
-//   console.log('>>> useRoute().query:', useRoute().query)
-
-//   const params = new URLSearchParams(window.location.search)
-//   console.log('>>> URLSearchParams result:', Object.fromEntries(params.entries()))
-
-//   if (layout) {
-//     loadLayoutFromCode(layout as string)
-//     console.log('are we actually loading this?')
-//   } else {
-//     console.log('no garden found')
-//     const defaultSettings = loadDefaultSettingsCode()
-
-//     if (defaultSettings) {
-//       // const { harvesterOptions, processorSettings: loadedProcessorSettings } = gardenHandler.garden.loadSettings(defaultSettings.code)
-//       // harvester.updateSettings(Object.assign({}, harvesterOptions))
-//       // processor.updateSettings(Object.assign({}, loadedProcessorSettings))
-//       // settingsCode.set(defaultSettings.code)
-//     }
-//   }
-// })
-
-// TODO: Check this again in the future, there's something wrong going on here given the disparity in prod vs dev
 onMounted(() => {
-  const tryLoad = () => {
-    const layout = new URLSearchParams(window.location.search).get('layout')
-    console.log('Trying layout:', layout)
-    if (layout) {
-      loadLayoutFromCode(layout)
-    } else {
-      loadDefaultSettingsCode()
+  const layout = urlParams.layout
+  // Load layout from URL parameter if available
+  console.log('>>> FULL BROWSER URL:', window.location.href)
+  console.log('>>> SEARCH STRING:', window.location.search)
+  console.log('>>> useRoute().query:', useRoute().query)
+
+  const params = new URLSearchParams(window.location.search)
+  console.log('>>> URLSearchParams result:', Object.fromEntries(params.entries()))
+
+  if (layout) {
+    loadLayoutFromCode(layout as string)
+    console.log('are we actually loading this?')
+  } else {
+    console.log('no garden found')
+    const defaultSettings = loadDefaultSettingsCode()
+
+    if (defaultSettings) {
+      // const { harvesterOptions, processorSettings: loadedProcessorSettings } = gardenHandler.garden.loadSettings(defaultSettings.code)
+      // harvester.updateSettings(Object.assign({}, harvesterOptions))
+      // processor.updateSettings(Object.assign({}, loadedProcessorSettings))
+      // settingsCode.set(defaultSettings.code)
     }
   }
-
-  tryLoad()
-
-  const observer = new MutationObserver(() => {
-    if (window.location.search.includes('layout')) {
-      observer.disconnect()
-      tryLoad()
-    }
-  })
-  observer.observe(document, { childList: true, subtree: true })
-  setTimeout(() => observer.disconnect(), 200)
 })
+
+// TODO: Check this again in the future, there's something wrong going on here given the disparity in prod vs dev
+// onMounted(() => {
+//   const tryLoad = () => {
+//     const layout = new URLSearchParams(window.location.search).get('layout')
+//     console.log('Trying layout:', layout)
+//     if (layout) {
+//       loadLayoutFromCode(layout)
+//     } else {
+//       loadDefaultSettingsCode()
+//     }
+//   }
+
+//   tryLoad()
+
+//   const observer = new MutationObserver(() => {
+//     if (window.location.search.includes('layout')) {
+//       observer.disconnect()
+//       tryLoad()
+//     }
+//   })
+//   observer.observe(document, { childList: true, subtree: true })
+//   setTimeout(() => observer.disconnect(), 200)
+// })
 </script>
 
 <template>
