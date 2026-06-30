@@ -27,10 +27,31 @@ function clearGarden() {
 
 const saveCode = useSaveCode()
 const settingsCode = useSettingsCode()
-// const hasAlreadyLoadedFromUrl = ref(false)
-
+const hasAlreadyLoadedFromUrl = ref(false)
 
 function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
+  
+  const hasLoadedSuccessfully = gardenHandler.loadGardenByCode(code)
+  settingsCode.set(gardenHandler.grid.loadSettingsCode)
+  settingsCode.requestUpdate()
+  gardenHandler.updateStats()
+  // gardenHandler.requestFullUpdate()
+
+  if (hasLoadedSuccessfully) {
+    toasts.addToast({
+      message: 'Layout loaded successfully',
+      type: 'alert-success',
+      duration: 2000,
+    })
+  }
+}
+
+
+function loadLayoutFromUrl(code: string, useDefaultSettings: boolean = false) {
+
+  if (hasAlreadyLoadedFromUrl.value) {
+    return
+  }
   
   const hasLoadedSuccessfully = gardenHandler.loadGardenByCode(code)
   settingsCode.set(gardenHandler.grid.loadSettingsCode)
@@ -57,6 +78,8 @@ function loadLayoutFromCode(code: string, useDefaultSettings: boolean = false) {
       harvester.updateSettings(harvesterOptions)
     }
   }
+
+  hasAlreadyLoadedFromUrl.value = true
 }
 
 function saveLayout() {
@@ -95,7 +118,7 @@ const urlParams = useUrlSearchParams('history')
 onMounted(() => {
   const layout = urlParams.layout
   if (layout) {
-    loadLayoutFromCode(layout as string)
+    loadLayoutFromUrl(layout as string)
   } else {
     const defaultSettings = loadDefaultSettingsCode()
 
