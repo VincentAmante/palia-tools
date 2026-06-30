@@ -97,7 +97,9 @@ onMounted(() => {
   // Load layout from URL parameter if available
   if (urlParams.layout) {
     loadLayoutFromCode(urlParams.layout as string)
+    console.log('are we actually loading this?')
   } else {
+    console.log('no garden found')
     const defaultSettings = loadDefaultSettingsCode()
 
     if (defaultSettings) {
