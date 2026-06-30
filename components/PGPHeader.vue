@@ -58,11 +58,11 @@ class="" target="_blank" :prefetch="false" rel="noopener"
                   </NuxtLink>
                 </li>
                 <li class="dropdown dropdown-hover dropdown-bottom dropdown-end">
-                  <label tabindex="0">
+                  <label tabindex="0" role="button">
                     <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" class="text-xl" />
                     External Tools
                   </label>
-                  <ul tabindex="0" class="dropdown-content z-1 menu p-2 shadow-sm bg-base-100 rounded-box w-52">
+                  <ul tabindex="0" class="dropdown-content z-1 menu p-2 mt-0 shadow-sm bg-base-100 rounded-box w-52">
                     <li class="text-sm">
                       <NuxtLink
 to="https://palia.anniebananie.io" class="flex flex-wrap items-center" rel="noopener"
