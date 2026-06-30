@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { useChangelogTracker } from '#imports';
 import AppDivider from './AppDivider.vue'
 
-// const changelogTracker = useChangelogTracker()
+const changelogTracker = useChangelogTracker()
 </script>
 <template>
   <div>
@@ -37,9 +36,9 @@ format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48p
                 <li>
                   <NuxtLink to="/changelogs" :prefetch=false>
                     <span class="indicator">
-                      <!-- <ClientOnly>
+                      <ClientOnly>
                         <span v-if="changelogTracker.hasUnread" class="indicator-item status status-error" />
-                      </ClientOnly> -->
+                      </ClientOnly>
                       <span>Changelogs</span>
                     </span>
                   </NuxtLink>
@@ -132,10 +131,10 @@ src="https://pgp-cdn.b-cdn.net/palia-party.webp" width="18px" height="18px"
           <li class="text-lg font-bold normal-case">
             <NuxtLink to="/changelogs" :prefetch="false">
               <span class="indicator">
-                <!-- <ClientOnly>
+                <ClientOnly>
 
                   <span v-if="changelogTracker.hasUnread" class="indicator-item status status-error" />
-                </ClientOnly> -->
+                </ClientOnly>
                 <span>Changelogs</span>
               </span>
             </NuxtLink>
