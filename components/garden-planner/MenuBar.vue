@@ -91,7 +91,7 @@ function openNewLayoutModal() {
   createLayoutDialog.value?.openModal()
 }
 
-const urlParams = useUrlSearchParams('history')
+// const urlParams = useUrlSearchParams('history')
 const route = useRoute()
 // onMounted(() => {
 //   const layout = route.query.layout as string | undefined
