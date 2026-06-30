@@ -96,6 +96,13 @@ const route = useRoute()
 onMounted(() => {
   const layout = route.query.layout as string | undefined
   // Load layout from URL parameter if available
+  console.log('>>> FULL BROWSER URL:', window.location.href)
+  console.log('>>> SEARCH STRING:', window.location.search)
+  console.log('>>> useRoute().query:', useRoute().query)
+
+  const params = new URLSearchParams(window.location.search)
+  console.log('>>> URLSearchParams result:', Object.fromEntries(params.entries()))
+
   if (layout) {
     loadLayoutFromCode(layout as string)
     console.log('are we actually loading this?')
@@ -157,7 +164,7 @@ onMounted(() => {
       <LoadModal ref="loadModal" @load="(loadCode) => loadLayoutFromCode(loadCode)" />
       <UISettingsModal ref="uiSettingsModal" />
       <!-- <LayoutCreator ref="createLayoutDialog" @create-new-layout="(code: string) => loadLayoutFromCode(code, true)" /> -->
-        <GridLayoutCreator ref="createLayoutDialog"/>
+      <GridLayoutCreator ref="createLayoutDialog" />
       <ClientOnly>
         <ExportModal ref="exportModal" />
       </ClientOnly>
