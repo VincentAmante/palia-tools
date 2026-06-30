@@ -49,7 +49,6 @@ const toastLocation = computed(() => {
 
 <template>
   <main id="main" class="flex flex-col gap-4 py-2" :class="{ 'dark': false }">
-    <ClientOnly>
       <h1 class="sr-only">
         Garden Planner
       </h1>
@@ -80,7 +79,5 @@ v-for="(toast) in toasts.toasts" :id="toast.id!" :key="toast.id" :message="toast
             :type="toast.type" :duration="toast.duration" @close="() => { toasts.removeToast(toast.id!) }" />
         </section>
       </Teleport>
-    </ClientOnly>
-
   </main>
 </template>
