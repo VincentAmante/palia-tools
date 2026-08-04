@@ -1,35 +1,47 @@
 <template>
   <footer v-once class="px-4 lg:px-12 mt-2">
-    <div
-      class="flex flex-col lg:flex-row gap-2 items-start justify-between text-center sm:text-left w-full font-normal p-4 rounded-lg bg-palia-blue mb-4 bg-opacity-50">
-      <div class="grid text-sm">
-        <p class="max-w-md">
-          &copy; Palia's intellectual property and assets are reserved by Singularity 6.
-        </p>
-        <p>
-          This tool is fan-made and not affliated in any way with Singularity 6 or Palia.
-        </p>
-        <NuxtLink to="/privacy-policy" :prefetch="false" class="btn text-left justify-start normal-case btn-sm w-fit">
-          Privacy Policy
-        </NuxtLink>
-      </div>
-      <div class="flex flex-col w-full items-center lg:w-fit lg:items-end gap-1">
-        <div class="flex items-center gap-1">
-          Developed by
-          <NuxtLink
-to="https://discord.com/users/204462556012740608" target="_blank" :prefetch="false"
-            class="btn btn-ghost normal-case btn-sm">
-            <font-awesome-icon :icon="['fab', 'discord']" class="" />
-            .aisen
+    <div class=" rounded-lg bg-palia-blue mb-4 bg-opacity-50  p-4 flex flex-col gap-2">
+      <div
+        class="flex flex-col lg:flex-row gap-2 items-start justify-between text-center sm:text-left w-full font-normal">
+        <div class="grid text-sm">
+          <p class="max-w-md">
+            &copy; Palia's intellectual property and assets are reserved by Singularity 6.
+          </p>
+          <p>
+            This tool is fan-made and not affliated in any way with Singularity 6 or Palia.
+          </p>
+          <NuxtLink to="/privacy-policy" :prefetch="false" class="btn text-left justify-start normal-case btn-sm w-fit">
+            Privacy Policy
           </NuxtLink>
         </div>
-        <NuxtLink
+        <div class="flex flex-col w-full items-center lg:w-fit lg:items-end gap-1">
+          <div class="flex items-center gap-1">
+            Developed by
+            <NuxtLink
+to="https://discord.com/users/204462556012740608" target="_blank" :prefetch="false"
+              class="btn btn-ghost normal-case btn-sm">
+              <font-awesome-icon :icon="['fab', 'discord']" class="" />
+              .aisen
+            </NuxtLink>
+          </div>
+          <NuxtLink
 to="https://github.com/VincentAmante/palia-tools" target="_blank" :prefetch="false"
-          class="btn w-full">
-          <font-awesome-icon :icon="['fab', 'github']" class="text-lg" />
-          Source Code
-        </NuxtLink>
+            class="btn w-full">
+            <font-awesome-icon :icon="['fab', 'github']" class="text-lg" />
+            Source Code
+          </NuxtLink>
+        </div>
       </div>
+    </div>
+
+    <div class="text-sm flex items-center w-full justify-center pb-6">
+      <p class="text-center max-w-4xl inline-block"> <img
+src="https://pgp-cdn.b-cdn.net/favicon.ico"
+          class="w-6 inline mr-1">PGP Websites: <NuxtLink
+to="https://palia-garden-planner.vercel.app/" class="link"
+          target="_blank" :prefetch="false">palia-garden-planner.vercel.app<a />.
+        </NuxtLink>
+      </p>
     </div>
   </footer>
 </template>
