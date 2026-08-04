@@ -38,6 +38,97 @@ onMounted(() => {
       </div>
 
       <div class="grid gap-2">
+
+        <ChangelogItem checked>
+          <template #title>
+            August 04, 2026 — New Logo & Project License Change (Internal Change)
+          </template>
+          <template #summary>
+            <li>
+              Project licensing has been changed to MIT License for the entire project, to MIT License for the Garden
+              Planner itself, CC By-NC for the website's non-essential written content (these changelogs, roadmaps, notices, etc.),
+              and custom reservations for branding (custom logo, certain website components.)
+            </li>
+            <li>
+              Added new logo
+            </li>
+          </template>
+          <template #default>
+            <p class="indent-6">
+              Hello! A change has been made to how the website's licensing is structured. It's gone from a complete MIT
+              License to a split between the MIT License (Core App + Required UI), a CC By-NC License (Website-written
+              Content),
+              and reserved rights (new logo & other branding).
+              This change was made to ensure that any website re-hosting the Garden Planner makes itself distinct from
+              the original website, reducing confusion amongst users when using different versions of the website.
+              A new logo has also been added to further cement the identity of the original website
+              (palia-garden-planner.vercel.app).
+            </p>
+            <p class="indent-6">
+              Please read further to understand the full context of the changes.
+              This change applies starting from this very 'commit', and older commits remain under the old License.
+            </p>
+            <p>
+              See
+              <NuxtLink
+:prefetch="false" class="link"
+                to="https://github.com/VincentAmante/palia-tools/blob/main/TERMS.md">Project TERMS.md Page (Github)
+              </NuxtLink> directly for actual new terms.
+            </p>
+            <divider class="divider" />
+
+            <h4 class="font-bold text-xl">Intent of License Structure</h4>
+            <p class="indent-6">
+              The Palia Garden Planner remains to be a project where other developers can freely take the core
+              application (where the actual planning happens) and either improve on it,
+              re-host it as-is for their own Palia-related tool websites,
+              or freely take over its maintenance with their own re-host should this website
+              (palia-garden-planner.vercel.app) become inoperational someday or the primary maintainer
+              become unavailable without passing over control to anyone.
+              By having an MIT license for the core app, it's ensured that players would always have access to the
+              Garden Planner or an iteration of it.
+              In addition, any developer can still fork + rehost to make their own version freely provided the terms are respected.
+            </p>
+            <p class="indent-6">
+              The only concern would be potential cases of site mirrors that may confuse users into believing it is the
+              exact same website that I (.aisen) am currently hosting.
+              While there's personal benefits to avoiding misallocation of attribute and support, I also wish to avoid
+              misallocation of blame should these websites that I have no
+              control over fail to provide a proper planner experience to its users.
+              In other words, I don't want people believing those websites to be mine nor that I'm responsible for what
+              they do.
+            </p>
+            <p class="indent-6">
+              These changes alone, though, would make it more troublesome to rehost the full Garden Planner should I
+              become unavailable,
+              which goes against my wish for an accessible tool. So I added a extra term: Should I become unavailable
+              for an extended period of time or the planner falls behind the game on key updates,
+              the restrictions on the Planner is lifted and it practically becomes free to re-host in its entirety
+              again.
+              This means that there can always be a version of the Palia Garden Planner available to all.
+            </p>
+
+            <p class="indent-6">
+              Coming with this change, I've added a new logo which is reserved for this specific website.
+              It should help distiguish the primary host from forks/derivatives unless it's part of the continuity
+              fail-safe.
+              For more information on the actual License and the Terms, please visit <NuxtLink
+:prefetch="false"
+                class="link" to="https://github.com/VincentAmante/palia-tools/blob/main/TERMS.md">the Terms Page
+              </NuxtLink>
+              in the project for more info.
+            </p>
+
+            <divider class="divider" />
+
+
+            <p class="indent-6">
+              Thank you guys for your continued use of the planner.
+              I hope these changes allow the planner to remain as accessible as it already is,
+              while allowing me a bit of protection from impersonation attempts. Happy Planning!
+            </p>
+          </template>
+        </ChangelogItem>
         <ChangelogItem checked>
           <template #title>
             <span class="font-bold">June 30, 2026 — Plot System Rewrite & Fertiliser Costs (Major)</span>
@@ -49,9 +140,10 @@ onMounted(() => {
             <li>
               <span class="font-bold">Fertiliser Costs have been added*</span>
             </li>
-            
+
             <li class="indent-5">
-              <span class="font-bold">*NOTE:</span> For those loading their garden saves (0.4 and before), make sure to enable the setting and resave, as it will be disabled by default for old saves.
+              <span class="font-bold">*NOTE:</span> For those loading their garden saves (0.4 and before), make sure to
+              enable the setting and resave, as it will be disabled by default for old saves.
             </li>
             <li>
               <span class="font-bold">Save code updated to 0.5 to support new features</span>
@@ -69,18 +161,22 @@ onMounted(() => {
               Allow me to detail on the major additions below.
             </p>
             <div class="divider" />
-            
+
             <h4 class="font-bold text-xl">Plot System Rewrite</h4>
             <p class="indent-3">
-              The Garden Planner Project started out as merely a tool to visualise crop placement and bonuses with shareable links.
-              Written during early days of closed beta, the old plot system was written based on faulty understanding of the in-game systems.
+              The Garden Planner Project started out as merely a tool to visualise crop placement and bonuses with
+              shareable links.
+              Written during early days of closed beta, the old plot system was written based on faulty understanding of
+              the in-game systems.
               As other features were prioritised, the tech debt kept increasing, and the rewrite kept being pushed back.
-              Now though, enough changes have been added that I could finally change the system to match the in-game version more closely.
+              Now though, enough changes have been added that I could finally change the system to match the in-game
+              version more closely.
             </p>
             <p class="indent-3">
               For those working with standard 3x3 plot layouts. The main change for you is the updated display.
               The layout changed a bit to support offset connections, so I needed a new way to indicate plot boundaries.
-              This new system, though, allows me to combine bushes and trees visually instead of having each tile display them individually.]
+              This new system, though, allows me to combine bushes and trees visually instead of having each tile
+              display them individually.]
               This should remove abiguity and clutter when it comes to crop placement.
               I've also added axis labels (toggleable in UI settings), to aid in discussion and placement checking.
             </p>
@@ -91,44 +187,57 @@ onMounted(() => {
               Just visit the changed 'Edit Plots' button to get started!
             </p>
             <p class="indent-3">
-              Overall though, the new system should make adding features or optimising functions related to the garden grid a significantly more smoother experiennce.
-              I've been able to add better feedback when it comes to previewing tiles, as well as improving how the tiles update eachother.
+              Overall though, the new system should make adding features or optimising functions related to the garden
+              grid a significantly more smoother experiennce.
+              I've been able to add better feedback when it comes to previewing tiles, as well as improving how the
+              tiles update eachother.
               Other changes to this may come, but they should come easier now.
             </p>
 
-            
+
             <div class="divider" />
-            
+
             <h4 class="font-bold text-xl">Fertiliser Costs</h4>
             <p class="indent-3">
-              The fertiliser cost feature has now been implemented and toggleable in the settings. New gardens will have it enabled by default.
-              Admittedly I overthought this feature way more than I should. It was a lot simpler to implement and add options than I imagined.
+              The fertiliser cost feature has now been implemented and toggleable in the settings. New gardens will have
+              it enabled by default.
+              Admittedly I overthought this feature way more than I should. It was a lot simpler to implement and add
+              options than I imagined.
               Cost data for fertilisers were already added during December of 2025 in the data displays,
-              but it had yet to interact with your actual income till now. 
+              but it had yet to interact with your actual income till now.
             </p>
             <p>
-              Simply place a fertiliser and it will begin tracking on new gardens. You may disable this feature or change things in the settings.
+              Simply place a fertiliser and it will begin tracking on new gardens. You may disable this feature or
+              change things in the settings.
               Fertilisers have 3-4 recognised cost sources as of this update:
             </p>
             <ul class="list-disc list-inside">
               <li><span class="font-bold">[Default] Item Value:</span> Cost of selling the fertiliser</li>
               <li><span class="font-bold">Store Value:</span> Cost of buying the fertiliser (like from Zeki's)</li>
-              <li><span class="font-bold">Gardening Guild Value:</span> Cost of buying the fertiliser using medals (from Badruu)</li>
-              <li class="indent-2">Medals are not conventionnally considered a viable source of fertilisers, but will be included anyway</li>
-              <li><span class="font-bold">Excluded:</span> To handle other potential sources (like specific worm farm ingredients), you may exclude a specific fertiliser from cost calculations</li>
+              <li><span class="font-bold">Gardening Guild Value:</span> Cost of buying the fertiliser using medals (from
+                Badruu)</li>
+              <li class="indent-2">Medals are not conventionnally considered a viable source of fertilisers, but will be
+                included anyway</li>
+              <li><span class="font-bold">Excluded:</span> To handle other potential sources (like specific worm farm
+                ingredients), you may exclude a specific fertiliser from cost calculations</li>
             </ul>
             <p class="">
-              For past gardens loading into 0.5, this setting will load disabled for those layouts, so please enable it manually.
-              Reason: Your past gardens have been saved with the understanding that fertiliser costs are not factored in.
-              You may have shared or saved those gardens before with a different source plan than the default, so I find it better to disable it for old saves to keep things non-intrusive.
-              
+              For past gardens loading into 0.5, this setting will load disabled for those layouts, so please enable it
+              manually.
+              Reason: Your past gardens have been saved with the understanding that fertiliser costs are not factored
+              in.
+              You may have shared or saved those gardens before with a different source plan than the default, so I find
+              it better to disable it for old saves to keep things non-intrusive.
+
             </p>
-            
+
             <div class="divider" />
             <h4 class="font-bold text-xl">Next Update & Conclusion</h4>
             <p class="indent-6">
-              The next major update will potentially go back to crafters, which may involves improving their configurability or perhaps worm farm additions.
-              Before that though, it's likely I'll do some minor updates and improvements, as the new features have definitely allowed
+              The next major update will potentially go back to crafters, which may involves improving their
+              configurability or perhaps worm farm additions.
+              Before that though, it's likely I'll do some minor updates and improvements, as the new features have
+              definitely allowed
               room for some QoL changes and issues to squash out first.
             </p>
             <p>

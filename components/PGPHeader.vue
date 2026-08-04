@@ -20,7 +20,7 @@ format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48p
                 </h1>
                 <p class="text-xs leading-tight text-left">
                   <font-awesome-icon :icon="['fas', 'heart']" class="" />
-                  A player-made tool for planning your garden
+                  A fan-made tool for planning your garden
                 </p>
               </div>
             </NuxtLink>

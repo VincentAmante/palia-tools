@@ -11,7 +11,7 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: 'This is a new page',
+      content: 'An unofficial fan-made Garden Planner for the game Palia. Displays bonus coverage based on crops and fertilisers, and approximates the harvest value.',
     },
   ],
 })

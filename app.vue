@@ -1,20 +1,29 @@
 <script setup lang="ts">
 
-useServerSeoMeta({
-  ogTitle: 'Palia Garden Planner',
-  ogDescription: 'A fan-made tool for planning out your garden. Displays crop and fertiliser bonuses, approximates harvest yield, and provides shareable save codes!',
-  ogImage: 'https://palia-garden-planner.vercel.app/logo.webp',
-  ogUrl: 'https://palia-garden-planner.vercel.app/',
-  ogSiteName: 'Palia Garden Planner',
-  ogType: 'website',
-  ogLocale: 'en_UK',
+useSeoMeta({
+  // Base SEO
   title: 'Palia Garden Planner',
-  description: 'A fan-made tool for planning out your garden. Displays crop and fertiliser bonuses, approximates harvest yield, and provides shareable save codes!',
-  themeColor: '#97AF51',
-  twitterTitle: 'Palia Garden Planner',
+  description:
+    'A fan-made tool for planning out your garden. Displays crop and fertiliser bonuses, approximates harvest yield, and provides shareable save codes!',
+  keywords:
+    'Palia garden planner, Palia farming calculator, Palia crop layout, Palia gold yield calculator, Palia fertilizer guide, Palia layout planner, Palia garden creator,',
+  ogSiteName: 'Palia Garden Planner',
+  ogTitle: 'Palia Garden Planner',
+  ogDescription:
+    'A fan-made tool for planning out your garden. Displays crop and fertiliser bonuses, approximates harvest yield, and provides shareable save codes!',
+  ogType: 'website',
+  ogUrl: 'https://palia-garden-planner.vercel.app/',
+  ogLocale: 'en_GB',
+  ogImage: 'https://pgp-cdn.b-cdn.net/logo.webp',
+
+  // Discord
   twitterCard: 'summary',
-  twitterDescription: 'A fan-made tool for planning out your garden. Displays crop and fertiliser bonuses, approximates harvest yield, and provides shareable save codes!',
-  twitterImage: 'https://palia-garden-planner.vercel.app/logo.webp',
+  twitterTitle: 'Palia Garden Planner | Fan-made Layout Tool',
+  twitterDescription:
+    'A fan-made tool for designing your garden layouts; get harvest and potential gold yields, and create shareable layout codes.',
+  twitterImage: 'https://pgp-cdn.b-cdn.net/logo.webp',
+
+  themeColor: '#97AF51',
 })
 
 // For Google Search Console
