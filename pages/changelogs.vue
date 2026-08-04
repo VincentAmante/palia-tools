@@ -41,12 +41,13 @@ onMounted(() => {
 
         <ChangelogItem checked>
           <template #title>
-            August 03, 2026 — New Logo & Project License Change (Internal Change)
+            August 04, 2026 — New Logo & Project License Change (Internal Change)
           </template>
           <template #summary>
             <li>
               Project licensing has been changed to MIT License for the entire project, to MIT License for the Garden
-              Planner itself, CC By-NC for the website's written content (these changelogs, roadmaps, )
+              Planner itself, CC By-NC for the website's written content (these changelogs, roadmaps, notices, etc.),
+              and custom reservations for branding (custom logo, certain website components.)
             </li>
             <li>
               Added new logo
