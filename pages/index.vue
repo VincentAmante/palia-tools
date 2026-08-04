@@ -7,7 +7,7 @@ import AppToast from '~/components/AppToast.vue'
 
 
 useHead({
-  title: 'Palia Garden Planner',
+  title: 'Palia Garden Planner | Fan-made Crop Layout Tool',
   meta: [
     {
       name: 'description',
@@ -49,9 +49,9 @@ const toastLocation = computed(() => {
 
 <template>
   <main id="main" class="flex flex-col gap-4 py-2" :class="{ 'dark': false }">
-    <h1 class="sr-only">
+    <h2 class="sr-only">
       Garden Planner
-    </h1>
+    </h2>
     <GuideCard />
     <section class="lg:px-12">
 
