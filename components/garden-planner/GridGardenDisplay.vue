@@ -10,10 +10,6 @@ const harvester = useHarvester()
 const processor = useProcessor()
 const settingsCode = useSettingsCode()
 
-useHead({
-    title: 'Palia Garden Planner'
-})
-
 const saveCode = ref(gardenGrid.saveGarden(settingsCode.code))
 
 
