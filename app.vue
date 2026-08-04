@@ -14,14 +14,14 @@ useSeoMeta({
   ogType: 'website',
   ogUrl: 'https://palia-garden-planner.vercel.app/',
   ogLocale: 'en_GB',
-  ogImage: 'https://palia-garden-planner.vercel.app/logo.webp',
+  ogImage: 'https://pgp-cdn.b-cdn.net/logo.webp',
 
   // Discord
   twitterCard: 'summary',
   twitterTitle: 'Palia Garden Planner | Fan-made Layout Tool',
   twitterDescription:
     'A fan-made tool for designing your garden layouts; get harvest and potential gold yields, and create shareable layout codes.',
-  twitterImage: 'https://palia-garden-planner.vercel.app/logo.webp',
+  twitterImage: 'https://pgp-cdn.b-cdn.net/logo.webp',
 
   themeColor: '#97AF51',
 })
