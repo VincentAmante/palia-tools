@@ -14,10 +14,7 @@ useSeoMeta({
   ogType: 'website',
   ogUrl: 'https://palia-garden-planner.vercel.app/',
   ogLocale: 'en_GB',
-  ogImage: 'https://pgp-cdn.b-cdn.net/summary-large.webp',
-  ogImageAlt: 'Palia Garden Planner interface preview',
-  ogImageWidth: 1200,
-  ogImageHeight: 630,
+  ogImage: 'https://pgp-cdn.b-cdn.net/logo.webp',
 
   // Discord
   twitterCard: 'summary',
