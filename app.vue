@@ -4,13 +4,13 @@ useSeoMeta({
   // Base SEO
   title: 'Palia Garden Planner',
   description:
-    'Fan-made tool to plan out your Palia garden layout. View crop and fertilizer bonuses, get approxiomate harvest & gold yields, and share it with our shareable save codes!',
+    'A fan-made tool for planning out your garden. Displays crop and fertiliser bonuses, approximates harvest yield, and provides shareable save codes!',
   keywords:
     'Palia garden planner, Palia farming calculator, Palia crop layout, Palia gold yield calculator, Palia fertilizer guide, Palia layout planner, Palia garden creator,',
   ogSiteName: 'Palia Garden Planner',
   ogTitle: 'Palia Garden Planner',
   ogDescription:
-    'Fan-made tool to design crop layouts, maximize bonus coverage, calculate harvest yields, and generate shareable garden codes.',
+    'A fan-made tool for planning out your garden. Displays crop and fertiliser bonuses, approximates harvest yield, and provides shareable save codes!',
   ogType: 'website',
   ogUrl: 'https://palia-garden-planner.vercel.app/',
   ogLocale: 'en_GB',
