@@ -18,7 +18,7 @@ useSeoMeta({
 
   // Discord
   twitterCard: 'summary',
-  twitterTitle: 'Palia Garden Planner | Fan-made Layout Tool',
+  twitterTitle: 'Palia Garden Planner',
   twitterDescription:
     'A fan-made tool for designing your garden layouts; get harvest and potential gold yields, and create shareable layout codes.',
   twitterImage: 'https://pgp-cdn.b-cdn.net/logo.webp',
