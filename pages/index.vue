@@ -7,7 +7,7 @@ import AppToast from '~/components/AppToast.vue'
 
 
 useHead({
-  title: 'Palia Garden Planner | Fan-made Crop Layout Tool',
+  title: 'Palia Garden Planner | Crop Layout Tool',
   meta: [
     {
       name: 'description',
