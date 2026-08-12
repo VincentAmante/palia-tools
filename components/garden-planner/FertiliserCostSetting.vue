@@ -7,6 +7,7 @@ import ItemDisplay from './HarvestCalculator/ItemDisplay.vue';
 import ItemDisplayAlt from './HarvestCalculator/ItemDisplayAlt.vue';
 
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 const grid = useGardenGrid()
 
 const props = defineProps({
@@ -19,15 +20,15 @@ const props = defineProps({
 const fertiliser = computed(() => getFertiliserFromType(props.type))
 
 const setting = computed({
-    get: () => processor.settings.fertiliserCostSettings.get(props.type) || FertiliserCostSource.SELL_VALUE,
-    set: (source: FertiliserCostSource) => processor.setFertiliserCostSetting(props.type, source)
+    get: () => processorSettings.settings.fertiliserCostSettings.get(props.type) || FertiliserCostSource.SELL_VALUE,
+    set: (source: FertiliserCostSource) => processorSettings.setFertiliserCostSetting(props.type, source)
 })
 
 const isEnabled = computed(() => (grid.analyser.fertiliserCountByType[props.type] > 0))
 
 watchEffect(() => {
-    if (grid.analyser.fertiliserCountByType[props.type] > 0 && !processor.settings.fertiliserCostSettings.get(props.type)) {
-        processor.setFertiliserCostSetting(props.type, FertiliserCostSource.SELL_VALUE)
+    if (grid.analyser.fertiliserCountByType[props.type] > 0 && !processorSettings.settings.fertiliserCostSettings.get(props.type)) {
+        processorSettings.setFertiliserCostSetting(props.type, FertiliserCostSource.SELL_VALUE)
     }
 })
 </script>

@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import useGardenGrid from '~/stores/useGardenGrid';
 import GridTile from '~/components/garden-planner/GridTile.vue';
-import { saveSettings } from '~/assets/scripts/garden-planner/save-handler';
 
 
 const isTakingScreenshot = useTakingScreenshot()
 const gardenGrid = useGardenGrid()
-const harvester = useHarvester()
-const processor = useProcessor()
 const settingsCode = useSettingsCode()
 
 const saveCode = ref(gardenGrid.saveGarden(settingsCode.code))
-
 
 const handleUpdate = useDebounceFn(() => {
     saveCode.value = gardenGrid.saveGarden(settingsCode.code)

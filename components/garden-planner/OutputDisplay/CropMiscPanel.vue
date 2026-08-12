@@ -23,6 +23,7 @@ const props = defineProps({
 const gardenHandler = useGardenGrid()
 const harvester = useHarvester()
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 
 
 const analyser = gardenHandler.analyser
@@ -90,7 +91,7 @@ const lastDayCropWasHarvested = computed(() => {
 
 
 const outputInfo = computed(() => {
-    const processType = processor.settings.cropSettings.get(props.cropId)?.processAs
+    const processType = processorSettings.settings.cropSettings.get(props.cropId)?.processAs
 
     let type: 'crops' | 'preserves' | 'seeds' = 'crops'
     switch (processType) {
@@ -105,7 +106,7 @@ const outputInfo = computed(() => {
 })
 
 const cropSettings = computed(() => {
-    return processor.settings.cropSettings.get(props.cropId)!
+    return processorSettings.settings.cropSettings.get(props.cropId)!
 })
 
 const outputInfoWithProcessing = computed(() => {
@@ -321,7 +322,7 @@ const totalGoldGenerated = computed(() => {
                 </tbody>
             </template>
             <template
-                v-if="processor.settings.cropSettings.get(cropId)?.processAs !== ItemType.Crop && outputInfoWithProcessing && detailedProcessingInfo">
+                v-if="processorSettings.settings.cropSettings.get(cropId)?.processAs !== ItemType.Crop && outputInfoWithProcessing && detailedProcessingInfo">
                 <thead>
                     <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
                         <th colspan="2" class="capitalize">

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import useHarvester from '~/stores/useHarvester'
-import useGarden from '~/stores/useGarden'
 import { getFertiliserFromType } from '~/assets/scripts/garden-planner/fertiliserList'
 import { FertiliserType } from '~/assets/scripts/garden-planner/imports'
 import { getBonusDataByFertiliser } from '~/assets/scripts/garden-planner/utils/garden-helpers'

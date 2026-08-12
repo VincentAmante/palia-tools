@@ -12,7 +12,9 @@ import { formatMinutesToDaysHoursMinutes } from '~/utils/formatters'
 
 
 const harvester = useHarvester()
+const harvesterSettings = useHarvesterSettings()
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 const props = defineProps({
     selectedCropDetail: {
         type: String as PropType<ICropNameWithGrowthDiff>,
@@ -27,7 +29,7 @@ const selectedCropCycleData = computed(() => {
     }
 
     const { type, hasGrowthBoost } = parseCropId(props.selectedCropDetail)
-    const totalHarvestCycleId = `${type}${(harvester.settings.useStarSeeds ? '-Star' : '-Base')}${(harvester.settings.useGrowthBoost && hasGrowthBoost) ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
+    const totalHarvestCycleId = `${type}${(harvesterSettings.settings.useStarSeeds ? '-Star' : '-Base')}${(harvesterSettings.settings.useGrowthBoost && hasGrowthBoost) ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
 
     return harvester.harvester.totalHarvest.cycleData.get(totalHarvestCycleId)
 })
@@ -38,7 +40,7 @@ const cycleId = computed(() => {
     if (!props.selectedCropDetail || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
         return ''
 
-    return `${parseCropId(props.selectedCropDetail).type}${harvester.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
+    return `${parseCropId(props.selectedCropDetail).type}${harvesterSettings.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
 })
 
 const cropInfo = computed(() => {
@@ -65,7 +67,7 @@ const selectedCropIsProcessedAs = computed(() => {
         return null
     }
 
-    return processor.settings.cropSettings.get(props.selectedCropDetail satisfies ICropNameWithGrowthDiff)?.processAs
+    return processorSettings.settings.cropSettings.get(props.selectedCropDetail satisfies ICropNameWithGrowthDiff)?.processAs
 })
 
 const canFinishBeforeNextHarvest = computed(() => {
@@ -190,7 +192,7 @@ v-if="(selectedCropSeedsRequiredPerHarvest?.count || 0) !== selectedCropTotalSee
                     </ul>
                 </div>
                 <div
-v-if="harvester.settings.includeReplantCost && (cropInfo.isStar === parseCropId(cycleId).isStar)"
+v-if="harvesterSettings.settings.includeReplantCost && (cropInfo.isStar === parseCropId(cycleId).isStar)"
                     class="bg-secondary dark:bg-palia-blue rounded-sm p-2">
                     <div class="h-full flex flex-col gap-2 xs:justify-between">
                         <p class="text-xs font-bold">Average deduction
@@ -269,7 +271,7 @@ v-if="selectedCropProcessingData && selectedCropProcessingData.cycleData.length 
                             src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
                             alt="Gold" format="webp"> {{
                                 Math.round(selectedCropProcessingData.totalGoldGenerated
-                                    / ((selectedCropProcessingData.totalProcessMinutes > 0 && processor.settings.goldAverageSetting
+                                    / ((selectedCropProcessingData.totalProcessMinutes > 0 && processorSettings.settings.goldAverageSetting
                                         ===
                                         'crafterTime')
                                         ? (selectedCropProcessingData.totalProcessMinutes / 60)
@@ -277,7 +279,7 @@ v-if="selectedCropProcessingData && selectedCropProcessingData.cycleData.length 
                                 ).toLocaleString() }}
 
                         <span
-                        v-if="selectedCropProcessingData.totalProcessMinutes > 0 && processor.settings.goldAverageSetting === 'crafterTime'"
+                        v-if="selectedCropProcessingData.totalProcessMinutes > 0 && processorSettings.settings.goldAverageSetting === 'crafterTime'"
                             class="text-xs">/
                             Hour</span>
                         <span v-else class="text-xs">/ Growth Tick</span>

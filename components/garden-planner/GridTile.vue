@@ -10,6 +10,7 @@ import { Bonus } from '~/assets/scripts/garden-planner/imports';
 import { useUiSettings } from '@/stores/useUiSettings'
 import CropSize from '~/assets/scripts/garden-planner/enums/crop-size';
 import { useMouseTracker } from '~/stores/useMouseTracker';
+import { bonusBackgrounds } from '~/assets/scripts/garden-planner/cropList';
 
 
 const emit = defineEmits(['update'])
@@ -208,8 +209,9 @@ const bgColour = computed(() => {
         return 'bg-weed-prevention/60'
 
     if (!showBonusBackground.value) return 'bg-secondary dark:bg-palia-blue'
+    if (!tile.attachedCrop) return
 
-    return `${tileData.value.tile?.crop?.cropBackgroundColor}` || ''
+    return `${bonusBackgrounds[tile.attachedCrop.crop?.cropBonus]}` || ''
 })
 
 

@@ -7,7 +7,9 @@ import SettingsModal from '../SettingsModal.vue'
 import { loadSettings as saveHandlerLoadSettings } from '~/assets/scripts/garden-planner/save-handler.js'
 
 const harvester = useHarvester()
+const harvesterSettings = useHarvesterSettings()
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 const settingsCode = useSettingsCode()
 const defaultSettingsCode = ref<string>('')
 const garden = useGardenGrid()
@@ -27,7 +29,7 @@ onMounted(() => {
 })
 
 function updateSettings() {
-  processor.updateSettings(Object.assign({}, processor.settings))
+  processorSettings.updateSettings(Object.assign({}, processorSettings.settings))
   processor.simulateProcessing(harvester.totalHarvest, {
     fertiliserCountsByType: garden.analyser.fertiliserCountByType
   })
@@ -40,9 +42,9 @@ function saveDefaultSettings() {
 
 function loadSettings(code: string) {
   settingsCode.set(code)
-  const { harvesterOptions, processorSettings } = saveHandlerLoadSettings(code)
-  processor.updateSettings(processorSettings)
-  harvester.updateSettings(harvesterOptions)
+  const { harvesterOptions, processorSettings: processorSettingsLoaded } = saveHandlerLoadSettings(code)
+  processorSettings.updateSettings(processorSettingsLoaded)
+  harvesterSettings.updateSettings(harvesterOptions)
   updateSettings()
 }
 

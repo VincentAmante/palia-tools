@@ -13,7 +13,7 @@ interface IFertiliserCostSources {
   goldSellValue: number // sell value
 }
 
-interface IFertiliserConstructorParams {
+export interface IFertiliserConstructorParams {
   type: FertiliserType,
   effect: Bonus,
   image: string,

@@ -64,11 +64,10 @@ interface IProductImages {
 interface ICropMetadata {
   cropCode: CropCode
   cropTooltip: string
-  cropBackgroundColor: string
 }
 
 
-interface ICropConstructorParams {
+export interface ICropConstructorParams {
   readonly type: CropType
   readonly cropBonus: Bonus
   readonly size: CropSize
@@ -115,7 +114,7 @@ class Crop {
     this._metadata = params.metadata || {
       cropCode: CropCode.None,
       cropTooltip: 'Remove Crop',
-      cropBackgroundColor: '',
+      // cropBackgroundColor: '',
     }
 
     this._produceInfo = {
@@ -161,9 +160,9 @@ class Crop {
     return this._metadata.cropTooltip
   }
 
-  get cropBackgroundColor(): string {
-    return this._metadata.cropBackgroundColor
-  }
+  // get cropBackgroundColor(): string {
+  //   return this._metadata.cropBackgroundColor
+  // }
 
   get costs() {
     return this._costs

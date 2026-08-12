@@ -12,6 +12,7 @@ import CropSize from '~/assets/scripts/garden-planner/enums/crop-size';
 import { useMouseTracker } from '~/stores/useMouseTracker';
 import { coordsByDirection } from '~/assets/scripts/garden-planner/classes/gardenGrid';
 import { isPropertyAssignment } from 'typescript';
+import { bonusBackgrounds } from '~/assets/scripts/garden-planner/cropList';
 
 
 const emit = defineEmits(['update'])
@@ -229,8 +230,8 @@ const bgColour = computed(() => {
         return 'bg-weed-prevention/60'
 
     if (!showBonusBackground.value) return 'bg-palia-blue'
-
-    return `${tileData.value.tile?.crop?.cropBackgroundColor}` || ''
+    if (!tile.attachedCrop) return 'bg-palia-blue'
+    return `${bonusBackgrounds[tile?.attachedCrop?.crop.cropBonus]}` || ''
 })
 
 

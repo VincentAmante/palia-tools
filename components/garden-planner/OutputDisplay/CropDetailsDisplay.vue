@@ -14,6 +14,7 @@ import CropGardenMainDisplay from './CropGardenMainDisplay.vue'
 import CropMiscDetails from './CropMiscPanel.vue'
 
 const harvester = useHarvester()
+const harvesterSettings = useHarvesterSettings()
 const processor = useProcessor()
 const { get: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
 
@@ -25,7 +26,7 @@ const selectedCropId = ref<ICropNameWithGrowthDiff | null>(null)
 //   if (!selectedCropId.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
 //     return ''
 
-//   return `${parseCropId(selectedCropId.value).type}${harvester.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
+//   return `${parseCropId(selectedCropId.value).type}${harvesterSettings.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
 // })
 
 // const cropInfo = computed(() => {
@@ -61,7 +62,7 @@ const selectedCropCycleData = computed(() => {
     return null
 
   const { type, hasGrowthBoost } = parseCropId(selectedCropId.value)
-  const totalHarvestCycleId = `${type}${(harvester.settings.useStarSeeds ? '-Star' : '-Base')}${(harvester.settings.useGrowthBoost && hasGrowthBoost) ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
+  const totalHarvestCycleId = `${type}${(harvesterSettings.settings.useStarSeeds ? '-Star' : '-Base')}${(harvesterSettings.settings.useGrowthBoost && hasGrowthBoost) ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
 
   return harvester.harvester.totalHarvest.cycleData.get(totalHarvestCycleId)
 })

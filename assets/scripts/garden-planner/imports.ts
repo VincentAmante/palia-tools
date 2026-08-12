@@ -9,7 +9,6 @@ import Direction from './enums/direction'
 import Bonus from './enums/bonus'
 import CropCode from './enums/cropCode'
 import crops, { getCodeFromCrop, getCropFromCode, getCropFromType } from './cropList'
-import Garden from './classes/garden'
 import Fertiliser from './classes/fertiliser'
 import FertiliserType from './enums/fertiliser'
 import fertilisers, { getCodeFromFertiliser, getFertiliserFromCode, getFertiliserFromType } from './fertiliserList'
@@ -29,7 +28,6 @@ export {
   getCropFromCode,
   getCodeFromCrop,
   getCropFromType,
-  Garden,
   Fertiliser,
   FertiliserType,
   fertilisers,

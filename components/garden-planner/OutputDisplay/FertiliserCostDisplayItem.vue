@@ -7,7 +7,7 @@ import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue';
 import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue';
 import { FertiliserCostSource } from '~/assets/scripts/garden-planner/classes/processor';
 
-const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 const harvester = useHarvester()
 
 const props = defineProps({
@@ -22,7 +22,7 @@ const props = defineProps({
 })
 
 const source = computed(() => {
-    const costSource = processor.settings.fertiliserCostSettings.get(props.fertiliserType)
+    const costSource = processorSettings.settings.fertiliserCostSettings.get(props.fertiliserType)
 
     if (!costSource) return ''
 

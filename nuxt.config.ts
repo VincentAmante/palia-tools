@@ -11,9 +11,6 @@ export default defineNuxtConfig({
     payloadExtraction: false
   },
 
-  devTools: {
-    enabled: true
-  },
 
   routeRules: {
     '/**': {

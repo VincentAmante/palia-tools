@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import useGarden from '~/stores/useGarden'
 import { Bonus } from '~/assets/scripts/garden-planner/imports'
 
 const garden = useGardenGrid()

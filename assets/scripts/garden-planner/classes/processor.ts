@@ -994,7 +994,8 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
   const cropCount = phaseData?.yield[qualityId].totalWithDeductions || 0
 
   if (cropCount === 0) {
-    console.warn('Empty cropCount found, bug?')
+    console.warn(`Empty cropCount found, bug? ${qualityId}`)
+    console.warn(cycleData)
   }
 
   // Calculate how many conversions can be made

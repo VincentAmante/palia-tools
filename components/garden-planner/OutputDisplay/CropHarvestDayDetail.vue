@@ -8,6 +8,7 @@ import { getCropFromType } from '~/assets/scripts/garden-planner/imports';
 
 
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 const harvester = useHarvester()
 const uiSettings = useUiSettings()
 const plannerDisplayConfig = usePlannerDisplayConfig()
@@ -31,7 +32,7 @@ const props = defineProps({
 })
 
 const itemsProcessed = computed(() => {
-    return processor.processor.processSingleDay(props.dayHarvest!, processor.settings, harvester.harvester.totalHarvest.cycleData)
+    return processor.processor.processSingleDay(props.dayHarvest!, processorSettings.settings, harvester.harvester.totalHarvest.cycleData)
 })
 
 const items = computed(() => {

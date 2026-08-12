@@ -1,0 +1,68 @@
+{
+  "harvest-boost": {
+    "type": "harvest-boost",
+    "effect": "Harvest Increase",
+    "image": "https://pgp-cdn.b-cdn.net/harvest-boost.webp",
+    "id": "waloyhw8mspw5djf",
+    "costs": {
+      "zekiBatchPrice": 0,
+      "zekiBatchCount": 0,
+      "guildBatchPrice": 10,
+      "guildBatchCount": 50,
+      "goldSellValue": 5
+    }
+  },
+  "speedy-gro": {
+    "type": "speedy-gro",
+    "effect": "Speed Increase",
+    "image": "https://pgp-cdn.b-cdn.net/speedy-gro.webp",
+    "id": "waloyhw8mspw5djg",
+    "costs": {
+      "zekiBatchPrice": 0,
+      "zekiBatchCount": 0,
+      "guildBatchPrice": 10,
+      "guildBatchCount": 50,
+      "goldSellValue": 5
+    }
+  },
+  "quality-up": {
+    "type": "quality-up",
+    "effect": "Quality Increase",
+    "image": "https://pgp-cdn.b-cdn.net/quality-up.webp",
+    "id": "waloyhw8mspw5djh",
+    "costs": {
+      "zekiBatchPrice": 0,
+      "zekiBatchCount": 0,
+      "guildBatchPrice": 0,
+      "guildBatchCount": 0,
+      "goldSellValue": 2
+    }
+  },
+  "hydrate-pro": {
+    "type": "hydrate-pro",
+    "effect": "Water Retain",
+    "image": "https://pgp-cdn.b-cdn.net/hydrate-pro.webp",
+    "id": "waloyhw8mspw5dji",
+    "costs": {
+      "zekiBatchPrice": 40,
+      "zekiBatchCount": 20,
+      "guildBatchPrice": 0,
+      "guildBatchCount": 0,
+      "goldSellValue": 1
+    }
+  },
+  "weed-block": {
+    "type": "weed-block",
+    "effect": "Weed Prevention",
+    "image": "https://pgp-cdn.b-cdn.net/weed-block.webp",
+    "id": "waloyhw8mspw5djj",
+    "costs": {
+      "zekiBatchPrice": 40,
+      "zekiBatchCount": 20,
+      "guildBatchPrice": 0,
+      "guildBatchCount": 0,
+      "goldSellValue": 1
+    }
+  },
+  "none": null
+}

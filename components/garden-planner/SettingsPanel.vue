@@ -13,9 +13,32 @@ import FertiliserCostSetting from './FertiliserCostSetting.vue'
 
 const garden = useGardenGrid()
 const harvester = useHarvester()
-const starBaseChance = computed(() => Math.trunc(Math.min(100, (0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)) * 100)))
+const harvesterSettings = useHarvesterSettings()
+const starBaseChance = computed(() => Math.trunc(Math.min(100, (0.25 + (harvesterSettings.settings.useStarSeeds ? 0.25 : 0) + (harvesterSettings.settings.level * 0.02)) * 100)))
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 
+
+function validateLevel() {
+  if (harvesterSettings.settings.level < 0)
+    harvesterSettings.settings.level = 0
+  
+  harvesterSettings.updateSettings({ ...harvesterSettings.settings })
+}
+
+function validateDays() {
+  if (harvesterSettings.settings.level < 0)
+    harvesterSettings.settings.level = 0
+
+  if (harvesterSettings.settings.days === 'L')
+    harvesterSettings.settings.days = -1
+  else if (harvesterSettings.settings.days === 'M')
+    harvesterSettings.settings.days = 0
+  else if (harvesterSettings.settings.days < -1)
+    harvesterSettings.settings.days = -1
+
+  harvesterSettings.updateSettings({ ...harvesterSettings.settings })
+}
 
 
 // Allows us to save settings of unselected crops
@@ -28,12 +51,12 @@ const activeProcessorSettings = computed(() => {
     fertiliserCostSettings: new Map()
   } satisfies ProcessorSettings
 
-  for (const [cropId, setting] of processor.settings.cropSettings) {
+  for (const [cropId, setting] of processorSettings.settings.cropSettings) {
     if (setting.isActive && setting.count > 0)
       activeSettings.cropSettings.set(cropId, setting)
   }
 
-  activeSettings.goldAverageSetting = processor.settings.goldAverageSetting
+  activeSettings.goldAverageSetting = processorSettings.settings.goldAverageSetting
 
   return activeSettings
 })
@@ -64,22 +87,10 @@ function getCropImgSrc(cropType: CropType) {
 
 const activeTab = ref('Harvest')
 
-function updateSettings() {
-  processor.updateSettings(Object.assign({}, processor.settings))
-  processor.simulateProcessing(harvester.totalHarvest, {
-    fertiliserCountsByType: garden.analyser.fertiliserCountByType
-  })
-}
-
-
-function onChangeSettings() {
-  updateSettings()
-}
-
 const isOverCrafterLimit = computed(() => activeCrafterCount.value > 30)
 
-const isUnderleveledForSeeder = computed(() => harvester.settings.level < 5)
-const isUnderleveledForPreserveJar = computed(() => harvester.settings.level < 8)
+const isUnderleveledForSeeder = computed(() => harvesterSettings.settings.level < 5)
+const isUnderleveledForPreserveJar = computed(() => harvesterSettings.settings.level < 8)
 
 const highestTime = computed(() => {
   return processor.processor.highestCraftingTime
@@ -121,25 +132,25 @@ v-if="activeProcessorSettings.cropSettings.size > 0" aria-hidden
                 <div class="join">
                   <button
 class="join-item btn btn-sm " aria-label="Set Days to LCM"
-                    @click="harvester.settings.days = -1">
+                    @click="harvesterSettings.settings.days = -1">
                     LCM
                   </button>
                   <button
 class="join-item btn btn-sm " aria-label="Set Days to Auto"
-                    @click="harvester.settings.days = 0">
+                    @click="harvesterSettings.settings.days = 0">
                     Auto
                   </button>
                   <input
-v-model="harvester.settings.days"
-                    class="join-item input input-sm text-lg max-w-24 text-accent" type="number" min="0">
+v-model="harvesterSettings.settings.days" class="join-item input input-sm text-lg max-w-24 text-accent"
+                    type="number" min="0" @change="validateDays">
                   <button
 class="join-item btn btn-sm " aria-label="Set Days to 30"
-                    @click="harvester.settings.days = 30">
+                    @click="harvesterSettings.settings.days = 30">
                     30
                   </button>
                   <button
 class="join-item btn btn-sm " aria-label="Set Days to 180"
-                    @click="harvester.settings.days = 180">
+                    @click="harvesterSettings.settings.days = 180">
                     180
                   </button>
                 </div>
@@ -165,26 +176,26 @@ class="join-item btn btn-sm " aria-label="Set Days to 180"
                 <div class="join ">
                   <button
 class="join-item btn btn-sm text-primary" aria-label="Set Level to 0"
-                    @click="harvester.settings.level = 0">
+                    @click="harvesterSettings.settings.level = 0">
                     0
                   </button>
                   <button
 class="join-item btn btn-sm text-primary" aria-label="Set Level to 10"
-                    @click="harvester.settings.level = 10">
+                    @click="harvesterSettings.settings.level = 10">
                     10
                   </button>
                   <input
-v-model="harvester.settings.level"
+v-model="harvesterSettings.settings.level"
                     class="input input-sm text-lg max-w-20 join-item text-accent" type="number" min="0"
-                    aria-label="Gardening Level">
+                    aria-label="Gardening Level" @change="validateLevel">
                   <button
 class="join-item btn btn-sm text-primary" aria-label="Set Level to 25"
-                    @click="harvester.settings.level = 25">
+                    @click="harvesterSettings.settings.level = 25">
                     25
                   </button>
                   <button
 class="join-item btn btn-sm text-primary " aria-label="Set Level to 50"
-                    @click="harvester.settings.level = 50">
+                    @click="harvesterSettings.settings.level = 50">
                     50
                   </button>
                 </div>
@@ -194,7 +205,8 @@ class="join-item btn btn-sm text-primary " aria-label="Set Level to 50"
                   Decides base star chance of crops
                 </p>
                 <p>
-                  Base Star Chance: <code class="px-2 rounded-xs bg-misc dark:bg-palia-blue-dark text-accent">{{ starBaseChance }}%</code>
+                  Base Star Chance: <code
+                    class="px-2 rounded-xs bg-misc dark:bg-palia-blue-dark text-accent">{{ starBaseChance }}%</code>
                 </p>
                 <p>Formula in info</p>
               </template>
@@ -208,7 +220,7 @@ class="join-item btn btn-sm text-primary " aria-label="Set Level to 50"
             <OptionCard label="allStarSeeds" name="All Star Seeds">
               <template #input>
                 <input
-v-model="harvester.settings.useStarSeeds" class="toggle" type="checkbox"
+v-model="harvesterSettings.settings.useStarSeeds" class="toggle" type="checkbox"
                   aria-label="Use Star Seeds">
               </template>
               <template #labels>
@@ -230,14 +242,18 @@ v-model="harvester.settings.useStarSeeds" class="toggle" type="checkbox"
                 <div class="join">
                   <button
 class="join-item btn text-accent"
-                    :class="{ 'bg-palia-blue underline underline-offset-4': (processor.settings.goldAverageSetting === 'crafterTime') }"
-                    @click="processor.settings.goldAverageSetting = 'crafterTime'">
+                    :class="{ 'bg-palia-blue underline underline-offset-4': (processorSettings.settings.goldAverageSetting === 'crafterTime') }"
+                    @click="() => {
+                      processorSettings.setGoldAverageSetting('crafterTime');
+                    }">
                     Crafter Time
                   </button>
                   <button
 class="join-item btn text-accent"
-                    :class="{ 'bg-palia-blue underline underline-offset-4': (processor.settings.goldAverageSetting === 'growthTick') }"
-                    @click="processor.settings.goldAverageSetting = 'growthTick'">
+                    :class="{ 'bg-palia-blue underline underline-offset-4': (processorSettings.settings.goldAverageSetting === 'growthTick') }"
+                    @click="() => {
+                      processorSettings.setGoldAverageSetting('growthTick')
+                    }">
                     Growth Ticks
                   </button>
                 </div>
@@ -264,14 +280,14 @@ class="join-item btn text-accent"
             <OptionCard label="includeReplant" name="Include Replant" use-label>
               <template #input>
                 <input
-v-model="harvester.settings.includeReplant" class="toggle" type="checkbox"
+v-model="harvesterSettings.settings.includeReplant" class="toggle" type="checkbox"
                   aria-label="Include Replant">
               </template>
               <template #labels>
                 <p>
                   Replants the crops after harvest until the last day
                 </p>
-                <p v-if="!harvester.settings.includeReplant" class="font-bold">
+                <p v-if="!harvesterSettings.settings.includeReplant" class="font-bold">
                   <span class="uppercase">Off</span>: Bonuses will still be calculated but the
                   harvest days will be inaccurate
                 </p>
@@ -280,8 +296,8 @@ v-model="harvester.settings.includeReplant" class="toggle" type="checkbox"
             <OptionCard label="includeReplantCost" name="Include Replant Cost" use-label>
               <template #input>
                 <input
-v-model="harvester.settings.includeReplantCost" class="toggle" type="checkbox"
-                  :disabled="!harvester.settings.includeReplant" aria-label="Include Replant Cost">
+v-model="harvesterSettings.settings.includeReplantCost" class="toggle" type="checkbox"
+                  :disabled="!harvesterSettings.settings.includeReplant" aria-label="Include Replant Cost">
               </template>
               <template #labels>
                 <p>
@@ -300,7 +316,7 @@ v-model="harvester.settings.includeReplantCost" class="toggle" type="checkbox"
             <OptionCard label="includeFertiliserCosts" name="Include Fertiliser Costs">
               <template #input>
                 <input
-v-model="processor.settings.useFertilserCostSettings" class="toggle" type="checkbox"
+v-model="processorSettings.settings.useFertilserCostSettings" class="toggle" type="checkbox"
                   aria-label="Include Fertiliser Costs">
               </template>
               <template #labels>
@@ -313,14 +329,14 @@ v-model="processor.settings.useFertilserCostSettings" class="toggle" type="check
                 </p>
               </template>
             </OptionCard>
-            <ul v-if="processor.settings.useFertilserCostSettings" class="flex flex-col gap-2">
+            <ul v-if="processorSettings.settings.useFertilserCostSettings" class="flex flex-col gap-2">
               <template v-for="type in Object.values(FertiliserType)" :key="type">
                 <li v-if="type !== FertiliserType.None">
                   <FertiliserCostSetting :type="type" />
                 </li>
               </template>
               <li
-                v-if="processor.settings.useFertilserCostSettings && processor.settingsForEncoding.fertiliserCostSettings.size <= 0"
+                v-if="processorSettings.settings.useFertilserCostSettings && processor.settingsForEncoding.fertiliserCostSettings.size <= 0"
                 class="text-misc p-2 border border-misc rounded-md font-bold dark:text-water-retain dark:border-water-retain">
                 <font-awesome-icon :icon="['fas', 'info-circle']" />
                 Fertiliser cost settings will be shown once a fertiliser is placed
@@ -328,14 +344,15 @@ v-model="processor.settings.useFertilserCostSettings" class="toggle" type="check
             </ul>
 
             <ul
-v-if="processor.settings.useFertilserCostSettings"
+v-if="processorSettings.settings.useFertilserCostSettings"
               class="list list-inside list-disc text-palia-blue text-xs dark:text-accent">
               <li><span class="font-bold">Exclude:</span> Cost is not factored in</li>
               <li><span class="font-bold">Item Value:</span> Cost of selling 1 unit</li>
               <li><span class="font-bold">Store:</span> Cost of 1 unit from a store like Zeki's (batch price / units)
               </li>
-              <li><span class="font-bold">Guild:</span> Cost of 1 unit using guild medals (batch price / units) <span class="italic">- not
-                recommended</span></li>
+              <li><span class="font-bold">Guild:</span> Cost of 1 unit using guild medals (batch price / units) <span
+                  class="italic">- not
+                  recommended</span></li>
             </ul>
           </fieldset>
 
@@ -347,7 +364,7 @@ v-if="processor.settings.useFertilserCostSettings"
             <OptionCard label="useGrowthBoost" name="Use Growth Boost">
               <template #input>
                 <input
-v-model="harvester.settings.useGrowthBoost" class="toggle" type="checkbox"
+v-model="harvesterSettings.settings.useGrowthBoost" class="toggle" type="checkbox"
                   aria-label="Use Growth Boost">
               </template>
               <template #labels>
@@ -438,9 +455,6 @@ class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-w
                       return
 
                     setting.processAs = ItemType.Crop
-
-                    await nextTick()
-                    onChangeSettings()
                   }">
                   <img
 class="w-full h-full" :src="getCropFromType(setting.cropType)?.cropImage"
@@ -454,8 +468,6 @@ class="p-2 btn join-item btn-primary btn-square dark:bg-palia-blue dark:border-w
                       return
 
                     setting.processAs = ItemType.Seed
-
-                    onChangeSettings()
                   }">
                   <img
 class="w-full h-full" :src="getCropFromType(setting.cropType)?.seedImage"
@@ -469,7 +481,6 @@ v-if="getCropFromType(setting.cropType)?.goldValues.hasPreserve"
                     if (setting.processAs === ItemType.Preserve)
                       return
                     setting.processAs = ItemType.Preserve
-                    onChangeSettings()
                   }">
                   <img
 class="h-full" :src="getCropFromType(setting.cropType)?.preserveImage"
@@ -498,8 +509,6 @@ v-if="setting.processAs !== ItemType.Crop"
                       return
 
                     setting.crafters--
-
-                    onChangeSettings()
                   }">
                   <font-awesome-icon :icon="['fas', 'chevron-left']" />
                 </button>
@@ -508,15 +517,11 @@ v-model="setting.crafters" class="input input-sm text-center w-12 text-white! jo
                   type="number" min="1" @change="() => {
                     if (setting.crafters < 1)
                       setting.crafters = 1
-
-                    onChangeSettings()
                   }">
                 <button
                   class="btn-square btn btn-sm join-item disabled:bg-palia-blue-dark! dark:bg-water-retain dark:text-palia-blue dark:disabled:bg-palia-blue-light!"
                   aria-label="Add 1 Crafter" @click="() => {
                     setting.crafters++
-
-                    onChangeSettings()
                   }">
                   <font-awesome-icon :icon="['fas', 'chevron-right']" />
                 </button>

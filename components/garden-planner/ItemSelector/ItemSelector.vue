@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import HoveredItemTooltip from './HoveredItemTooltip.vue'
-import useGarden from '~/stores/useGarden'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import type { SelectedItem } from '~/stores/useSelectedItem'
 import { SelectedItemType, useSelectedItem } from '~/stores/useSelectedItem'

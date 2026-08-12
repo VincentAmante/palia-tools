@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const harvester = useHarvester()
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 const uiSettings = useUiSettings()
 
 const props = defineProps({
@@ -42,7 +43,7 @@ const itemsFromHarvest = computed(() => {
   const willProcessItems = (uiSettings.settings.showAsProcessedItems && processor.processor.highestCraftingTime > 0)
 
   if (willProcessItems) {
-    const itemsProcessed = processor.processor.processSingleDay(props.dayHarvest!, processor.settings, harvester.harvester.totalHarvest.cycleData)
+    const itemsProcessed = processor.processor.processSingleDay(props.dayHarvest!, processorSettings.settings, harvester.harvester.totalHarvest.cycleData)
 
     for (const [, item] of itemsProcessed.inventory) {
       const inventoryRowItem = CropItem.fromInventoryItem(item)

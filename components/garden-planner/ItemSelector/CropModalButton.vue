@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import HoveredItemTooltip from './HoveredItemTooltip.vue'
-import useGarden from '~/stores/useGarden'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import type { SelectedItem } from '~/stores/useSelectedItem'
 import { SelectedItemType, useSelectedItem } from '~/stores/useSelectedItem'
 import type { Crop, Fertiliser } from '~/assets/scripts/garden-planner/imports'
-import { Bonus, CropCode, CropType, FertiliserType, crops, fertilisers, getCropFromCode, getFertiliserFromCode } from '~/assets/scripts/garden-planner/imports'
-import FertiliserCode from '~/assets/scripts/garden-planner/enums/fertilisercode'
-
+import { Bonus, CropType, FertiliserType, crops, fertilisers } from '~/assets/scripts/garden-planner/imports'
 
 const props = defineProps<{
   position: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
