@@ -2,8 +2,14 @@
 import CropType from '../enums/crops';
 import { getCropFromCode, getCropFromType  } from '../cropList';
 import CropCode from '../enums/cropCode';
-import type { ICropId, ICropNameWithGrowthDiff } from './gardenHelpers';
+import type { ICropNameWithGrowthDiff } from './gardenHelpers';
 
+export interface ICropId {
+  type: CropType
+  code: CropCode
+  isStar: boolean
+  hasGrowthBoost: boolean
+}
 
 export function parseCropId(cropId: string): ICropId {
   const [type, star, growth] = cropId.split('-')

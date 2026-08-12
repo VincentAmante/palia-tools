@@ -3,7 +3,7 @@ import type { CoordinateObject, Coordinates } from '../utils/coordinates';
 import type Bonus from "../enums/bonus";
 import type Crop from "./crop";
 import uniqid from 'uniqid'
-import { getDimensions  } from "../utils/gardenHelpers";
+import { getDimensions  } from "../utils/gardenGridHelpers";
 import { fromCoordinateObject, toCoordinateObject, translateCoordinates  } from '../utils/coordinates';
 
 import type { IGridCrop, IGridTile } from "../utils/gardenGridTypes";

@@ -1,155 +1,17 @@
 /**
- * @file garden-helpers.ts
+ * @file gardenHelpers.ts
  * @description Contains types and interfaces used in the garden planner.
  */
-
 import type { ITile } from '../classes/tile';
-import type FertiliserType from '../enums/fertiliser';
-import Bonus from '../enums/bonus';
-import CropType from '../enums/crops';
-import { getFertiliserFromType } from '../fertiliserList';
-import type CropCode from '../enums/cropCode';
+import type CropType from '../enums/crops';
 
-import CropSize from '../enums/cropSize';
 import type { Currency } from '../enums/currency';
 import type { ItemType } from '../enums/itemType';
 
-export function getDimensions(size: CropSize) {
-    switch (size) {
-        case CropSize.Bush:
-            return {
-                width: 2,
-                height: 2
-            }
-
-        case CropSize.Tree:
-            return {
-                width: 3,
-                height: 3
-            }
-
-        case CropSize.Single:
-        default:
-            return {
-                width: 1,
-                height: 1
-            }
-    }
-};  
-
-
-export interface ICalculateYieldOptions {
-  days?: number
-  includeReplant?: boolean
-  postLevel25: boolean
-  allStarSeeds?: boolean
-  starChanceOverride?: number
-  baseChanceOverride?: number
-  includeReplantCost?: boolean
-  useGrowthBoost?: boolean
-  level: number
-}
-
-export type CalculateValueOptions = {
-  [key in CropType]: {
-    baseType: 'crop' | 'seed' | 'preserve'
-    starType: 'crop' | 'seed' | 'preserve'
-  }
-}
-
-export interface IHarvestInfo {
-  day: number
-  crops: {
-    [key in CropType]: {
-      base: number
-      star: number
-    }
-  }
-  seedsRemainder: {
-    [key in CropType]: {
-      base: number
-      star: number
-    }
-  }
-}
-
-export interface ICropValue {
-  produce: number
-  type: 'crop' | 'seed' | 'preserve'
-  gold: number
-  cropRemainder: number
-}
-
-export function getCropValueMap(options: CalculateValueOptions) {
-  const cropValueMap: Record<CropType, { base: ICropValue; star: ICropValue }> = {} as Record<
-    CropType,
-    { base: ICropValue; star: ICropValue }
-  >
-
-  for (const cropType of Object.values(CropType)) {
-    cropValueMap[cropType] = {
-      base: {
-        produce: 0,
-        type: options[cropType].baseType,
-        gold: 0,
-        cropRemainder: 0,
-      },
-      star: {
-        produce: 0,
-        type: options[cropType].starType,
-        gold: 0,
-        cropRemainder: 0,
-      },
-    }
-  }
-
-  return cropValueMap
-}
-
-interface CropYield {
-  base: number
-  star: number
-}
-
-export function getCropMap() {
-  const cropValue: Record<CropType, CropYield> = {} as Record<CropType, CropYield>
-
-  for (const cropType of Object.values(CropType)) {
-    cropValue[cropType] = {
-      base: 0,
-      star: 0,
-    }
-  }
-
-  return cropValue
-}
-
-export interface IDayResult {
-  day: number
-  crops: Record<CropType, { base: ICropValue; star: ICropValue }>
-  totalGold: number
-}
-
-export interface ICalculateValueResult {
-  result: IDayResult[]
-  totalResult: IDayResult
-}
-
-export interface ISimulateYieldResult {
-  harvests: IHarvestInfo[]
-  harvestTotal: IHarvestInfo
-}
-
 // CropType-Base or CropType-Star
 export type ICropName = `${CropType}-Base` | `${CropType}-Star`
-export type ICropNameWithGrowthDiff = `${CropType}-Base` | `${CropType}-Star` | `${CropType}-Base-Growth` | `${CropType}-Star-Growth`
 
-export interface ICropId {
-  type: CropType
-  code: CropCode
-  isStar: boolean
-  hasGrowthBoost: boolean
-}
+export type ICropNameWithGrowthDiff = `${CropType}-Base` | `${CropType}-Star` | `${CropType}-Base-Growth` | `${CropType}-Star-Growth`
 
 export interface ICropYield {
   base: number
@@ -241,8 +103,6 @@ export interface FertiliserItem extends IInventoryItem {
 
 export type TInventory = Map<string, IInventoryItem>
 
-
-
 export type TCropTiles = Map<string, ITile>
 
 export type TUniqueTiles = Map<string, {
@@ -251,97 +111,3 @@ export type TUniqueTiles = Map<string, {
 }>
 
 export type CropItem = ItemType.Crop | ItemType.Seed | ItemType.Preserve
-
-export function getBonusDataByFertiliser(fertiliser: FertiliserType) {
-  const bonus = getFertiliserFromType(fertiliser)?.effect || Bonus.None
-
-  switch (bonus) {
-    case Bonus.WaterRetain:
-      return {
-        icon: 'droplet',
-        colour: 'text-water-retain',
-        type: 'Water Retain',
-        extraDetail: 'Helps keeps other nearby crop types hydrated',
-      }
-    case Bonus.QualityIncrease:
-      return {
-        icon: 'star',
-        colour: 'text-quality-increase',
-        type: 'Quality Increase',
-        extraDetail: 'Boosts quality of other nearby crop types',
-      }
-    case Bonus.HarvestIncrease:
-      return {
-        icon: 'wheat-awn',
-        colour: 'text-harvest-boost',
-        type: 'Harvest Increase',
-        extraDetail: 'Boosts amount harvested from other nearby crop types',
-      }
-    case Bonus.WeedPrevention:
-      return {
-        icon: 'shield',
-        colour: 'text-weed-prevention',
-        type: 'Weed Prevention',
-        extraDetail: 'Prevents weeds from growing on other nearby crop types',
-      }
-    case Bonus.SpeedIncrease:
-      return {
-        icon: 'forward-fast',
-        colour: 'text-growth-boost',
-        type: 'Growth Boost',
-        extraDetail: 'Boosts growth speed of other nearby crop types',
-      }
-    default:
-      return {
-        icon: '',
-        colour: 'text-misc',
-        type: '',
-      }
-  }
-}
-
-export function getBonusData(bonus: Bonus) {
-  switch (bonus) {
-    case Bonus.WaterRetain:
-      return {
-        icon: 'droplet',
-        colour: 'text-water-retain',
-        type: 'Water Retain',
-        extraDetail: 'Helps keeps other nearby crop types hydrated',
-      }
-    case Bonus.QualityIncrease:
-      return {
-        icon: 'star',
-        colour: 'text-quality-increase',
-        type: 'Quality Increase',
-        extraDetail: 'Boosts quality of other nearby crop types',
-      }
-    case Bonus.HarvestIncrease:
-      return {
-        icon: 'wheat-awn',
-        colour: 'text-harvest-boost',
-        type: 'Harvest Increase',
-        extraDetail: 'Boosts amount harvested from other nearby crop types',
-      }
-    case Bonus.WeedPrevention:
-      return {
-        icon: 'shield',
-        colour: 'text-weed-prevention',
-        type: 'Weed Prevention',
-        extraDetail: 'Prevents weeds from growing on other nearby crop types',
-      }
-    case Bonus.SpeedIncrease:
-      return {
-        icon: 'forward-fast',
-        colour: 'text-growth-boost',
-        type: 'Growth Boost',
-        extraDetail: 'Boosts growth speed of other nearby crop types',
-      }
-    default:
-      return {
-        icon: '',
-        colour: 'text-misc',
-        type: '',
-      }
-  }
-}

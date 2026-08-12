@@ -9,7 +9,7 @@ import type Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser'
 
 import CropSize from '~/assets/scripts/garden-planner/enums/cropSize'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
-import { getBonusData } from '~/assets/scripts/garden-planner/utils/gardenHelpers'
+import { getBonusData } from '~/assets/scripts/garden-planner/utils/uiTooltips'
 
 const props = defineProps<{
   hoveredItem: SelectedItem | null
