@@ -2,7 +2,7 @@
 import useHarvester from '~/stores/useHarvester'
 import { getFertiliserFromType } from '~/assets/scripts/garden-planner/fertiliserList'
 import FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser'
-import { getBonusDataByFertiliser } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { getBonusDataByFertiliser } from '~/assets/scripts/garden-planner/utils/gardenHelpers'
 import { formatToOneDecimal } from '~/utils/formatters'
 
 

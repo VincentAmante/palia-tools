@@ -7,47 +7,12 @@ import type { ITile } from '../classes/tile';
 import type FertiliserType from '../enums/fertiliser';
 import Bonus from '../enums/bonus';
 import CropType from '../enums/crops';
-import { getCropFromCode, getCropFromType  } from '../cropList';
 import { getFertiliserFromType } from '../fertiliserList';
-import CropCode from '../enums/cropCode';
+import type CropCode from '../enums/cropCode';
 
-import CropSize from '../enums/crop-size';
-
-export function translateCoordinates(coordinates: Coordinates, translateBy: { x: number, y: number }): Coordinates {
-    const oldCoordsObj = toCoordinateObject(coordinates)
-
-    const newCoordsObj = {
-        x: oldCoordsObj.x + translateBy.x,
-        y: oldCoordsObj.y + translateBy.y
-    }
-
-    return fromCoordinateObject(newCoordsObj)
-}
-
-export type CoordinateObject = {
-    x: number,
-    y: number
-}
-
-export type Coordinates = string;
-
-export enum Currency {
-  GOLD = 'Gold',
-  MEDAL = 'Medal',
-  NONE = 'None'
-}
-
-
-
-export const fromCoordinateObject = (coordinates: CoordinateObject): Coordinates => `${coordinates.x},${coordinates.y}`;
-export const toCoordinateObject = (key: Coordinates): CoordinateObject => {
-    const [x, y] = key.split(',').map(Number);
-    if (typeof x !== 'number' || typeof y !== 'number') {
-        throw new Error('Attempted to parse a non-Coordinate string')
-    }
-    return { x, y };
-};
-
+import CropSize from '../enums/cropSize';
+import type { Currency } from '../enums/currency';
+import type { ItemType } from '../enums/itemType';
 
 export function getDimensions(size: CropSize) {
     switch (size) {
@@ -70,7 +35,7 @@ export function getDimensions(size: CropSize) {
                 height: 1
             }
     }
-};
+};  
 
 
 export interface ICalculateYieldOptions {
@@ -276,52 +241,6 @@ export interface FertiliserItem extends IInventoryItem {
 
 export type TInventory = Map<string, IInventoryItem>
 
-export function parseCropId(cropId: string): ICropId {
-  const [type, star, growth] = cropId.split('-')
-
-  if (!type || !star) {
-    throw new Error(`Invalid cropId format: ${cropId}`)
-  }
-
-  const isStar = star === 'Star'
-  const hasGrowthBoost = growth === 'Growth'
-  const code = getCropFromType(type as CropType)?.cropCode
-  if (!code) {
-    throw new Error(`Invalid crop type: ${type}`)
-  }
-
-  if (type === 'none') {
-    throw new Error('Cannot parse "none" cropId')
-  }
-  if (Object.values(CropType).includes(type as CropType) === false) {
-    throw new Error(`Invalid crop type: ${type}`)
-  }
-
-  return {
-    type: type as CropType,
-    code: code as CropCode,
-    isStar,
-    hasGrowthBoost,
-  }
-}
-
-export function encodeCropId(options: { type: CropType; isStar: boolean; hasGrowthBoost?: boolean }): ICropNameWithGrowthDiff {
-  if (!Object.values(CropType).includes(options.type)) {
-    throw new Error(`Invalid crop type: ${options.type}`)
-  }
-  const starPart = options.isStar ? 'Star' : 'Base'
-  const growthPart = options.hasGrowthBoost ? '-Growth' : ''
-  return `${options.type}-${starPart}${growthPart}`
-}
-
-export function encodeCropIdWithCode(options: { code: CropCode; isStar: boolean; hasGrowthBoost?: boolean }): ICropNameWithGrowthDiff {
-  if (!Object.values(CropCode).includes(options.code)) {
-    throw new Error(`Invalid crop code: ${options.code}`)
-  }
-  const starPart = options.isStar ? 'Star' : 'Base'
-  const growthPart = options.hasGrowthBoost ? '-Growth' : ''
-  return `${getCropFromCode(options.code).type}-${starPart}${growthPart}`
-}
 
 
 export type TCropTiles = Map<string, ITile>
@@ -330,21 +249,6 @@ export type TUniqueTiles = Map<string, {
   tile: ITile
   count: number
 }>
-
-export enum ItemType {
-  Crop = 'crop',
-  Seed = 'seed',
-  Preserve = 'preserve',
-  Fertiliser = 'fertiliser',
-
-  // Optional types
-  Worm = 'worm',
-  Fabric = 'fabric',
-  Weed = 'weed',
-
-  // For unimplemented items
-  Misc = 'misc',
-}
 
 export type CropItem = ItemType.Crop | ItemType.Seed | ItemType.Preserve
 

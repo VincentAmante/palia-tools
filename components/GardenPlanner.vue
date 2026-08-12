@@ -5,13 +5,13 @@ import ItemSelector from '~/components/garden-planner/ItemSelector/ItemSelector.
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import { storeToRefs } from 'pinia'
 import useHarvester from '~/stores/useHarvester'
-import type { ITotalHarvest, TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { ITotalHarvest, TUniqueTiles } from '~/assets/scripts/garden-planner/utils/gardenHelpers.js'
 import { useSettingsCode } from '~/stores/useSettingsCode'
-import { ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { ItemType } from '~/assets/scripts/garden-planner/enums/itemType.js'
 import { getCropFromType } from '~/assets/scripts/garden-planner/cropList.js'
 import AppDivider from './AppDivider.vue'
 import GridGardenDisplay from './garden-planner/GridGardenDisplay.vue'
-import { loadSettings, saveSettings } from '~/assets/scripts/garden-planner/save-handler.js'
+import { loadSettings, saveSettings } from '~/assets/scripts/garden-planner/saveHandler.js'
 
 import { usePlannerDisplayConfig } from '~/stores/usePlannerDisplayConfig'
 

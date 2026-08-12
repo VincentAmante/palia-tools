@@ -7,9 +7,9 @@ import { getCodeFromCrop } from '~/assets/scripts/garden-planner/cropList'
 import { getCodeFromFertiliser } from '~/assets/scripts/garden-planner/fertiliserList'
 import type Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser'
 
-import CropSize from '~/assets/scripts/garden-planner/enums/crop-size'
+import CropSize from '~/assets/scripts/garden-planner/enums/cropSize'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
-import { getBonusData } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { getBonusData } from '~/assets/scripts/garden-planner/utils/gardenHelpers'
 
 const props = defineProps<{
   hoveredItem: SelectedItem | null

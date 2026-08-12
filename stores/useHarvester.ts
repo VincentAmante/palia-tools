@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { IHarvesterOptions } from '~/assets/scripts/garden-planner/classes/harvester'
 import Harvester from '~/assets/scripts/garden-planner/classes/harvester'
-import type { DayHarvests, ITotalHarvest, TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { DayHarvests, ITotalHarvest, TUniqueTiles } from '~/assets/scripts/garden-planner/utils/gardenHelpers'
 
 const useHarvester = defineStore('harvester', () => {
   const harvesterRef = ref(new Harvester())

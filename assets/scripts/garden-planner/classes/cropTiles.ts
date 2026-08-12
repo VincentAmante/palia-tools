@@ -1,7 +1,7 @@
 import CropType from '../enums/crops'
 import FertiliserType from '../enums/fertiliser'
 import Bonus from '../enums/bonus'
-import type { TCropTiles, TUniqueTiles } from '../utils/garden-helpers'
+import type { TCropTiles, TUniqueTiles } from '../utils/gardenHelpers'
 import type Tile from './tile'
 import type Plot from './plot'
 import type { ITile } from './tile'

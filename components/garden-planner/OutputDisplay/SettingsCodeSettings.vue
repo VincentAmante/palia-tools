@@ -4,7 +4,7 @@ import { saveDefaultSettingsCode, loadDefaultSettingsCode } from '~/components/g
 import useProcessor from '~/stores/useProcessor'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import SettingsModal from '../SettingsModal.vue'
-import { loadSettings as saveHandlerLoadSettings } from '~/assets/scripts/garden-planner/save-handler.js'
+import { loadSettings as saveHandlerLoadSettings } from '~/assets/scripts/garden-planner/saveHandler.js'
 
 const harvester = useHarvester()
 const harvesterSettings = useHarvesterSettings()

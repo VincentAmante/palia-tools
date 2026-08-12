@@ -14,7 +14,7 @@ import fertilisers, { getFertiliserFromCode } from '~/assets/scripts/garden-plan
 
 
 
-import FertiliserCode from '~/assets/scripts/garden-planner/enums/fertilisercode'
+import FertiliserCode from '~/assets/scripts/garden-planner/enums/fertiliser-code.js'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const selectedItem = useSelectedItem()

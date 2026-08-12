@@ -6,7 +6,7 @@ import { useDragAndDrop } from '@/stores/useDragAndDrop'
 import Bonus from '~/assets/scripts/garden-planner/enums/bonus'
 import Crop from '~/assets/scripts/garden-planner/classes/crop'
 import CropType from '~/assets/scripts/garden-planner/enums/crops'
-import { parseCropId } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { parseCropId } from '~/assets/scripts/garden-planner/utils/cropIds'
 
 const props = defineProps({
   crop: {

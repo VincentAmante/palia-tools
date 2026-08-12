@@ -4,7 +4,7 @@ import { GardenGrid, } from '~/assets/scripts/garden-planner/classes/gardenGrid'
 import type Crop from '~/assets/scripts/garden-planner/classes/crop';
 import type Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser';
 import type Bonus from '~/assets/scripts/garden-planner/enums/bonus';
-import type { Coordinates } from '~/assets/scripts/garden-planner/utils/garden-helpers';
+import type { Coordinates } from '~/assets/scripts/garden-planner/utils/coordinates';
 import { GridTilesAnalyser } from '~/assets/scripts/garden-planner/classes/gridTileAnalyser';
 
 

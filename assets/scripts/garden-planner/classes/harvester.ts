@@ -2,7 +2,7 @@ import Bonus from '../enums/bonus'
 import CropType from '../enums/crops'
 import { getCropFromType } from '../cropList'
 
-import type { DayHarvests, ICropHarvestCycle, ICropNameWithGrowthDiff, ICropYield, IHarvestCyclePhase, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
+import type { DayHarvests, ICropHarvestCycle, ICropNameWithGrowthDiff, ICropYield, IHarvestCyclePhase, ITotalHarvest, TUniqueTiles } from '../utils/gardenHelpers'
 
 export interface IHarvesterOptions {
   days: number | 'L' | 'M'

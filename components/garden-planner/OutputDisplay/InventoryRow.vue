@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useProcessor from '~/stores/useProcessor'
-import type { IDayHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { IDayHarvest } from '~/assets/scripts/garden-planner/utils/gardenHelpers.js'
 import type { PropType } from 'vue'
 import { CropItem, type Item } from '~/assets/scripts/garden-planner/classes/items/item'
 import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue'

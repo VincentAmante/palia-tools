@@ -1,9 +1,11 @@
-import CropSize from "../enums/crop-size"
-import type { CoordinateObject, Coordinates  } from "../utils/garden-helpers"
+import CropSize from "../enums/cropSize"
+import type { CoordinateObject, Coordinates } from '../utils/coordinates';
 import type Bonus from "../enums/bonus";
 import type Crop from "./crop";
 import uniqid from 'uniqid'
-import { fromCoordinateObject, toCoordinateObject, translateCoordinates, getDimensions  } from "../utils/garden-helpers";
+import { getDimensions  } from "../utils/gardenHelpers";
+import { fromCoordinateObject, toCoordinateObject, translateCoordinates  } from '../utils/coordinates';
+
 import type { IGridCrop, IGridTile } from "../utils/gardenGridTypes";
 
 export class GridCrop implements IGridCrop {

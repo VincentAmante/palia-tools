@@ -13,7 +13,7 @@ import GridLayoutCreator from '~/components/garden-planner/GridLayoutCreator.vue
 import ExportModal from '~/components/garden-planner/ExportModal.vue'
 import { useToasts } from '~/stores/useToasts'
 import UISettingsModal from './UISettingsModal.vue'
-import { loadSettings } from '~/assets/scripts/garden-planner/save-handler.js'
+import { loadSettings } from '~/assets/scripts/garden-planner/saveHandler.js'
 
 const toasts = useToasts()
 const gardenHandler = useGardenGrid()

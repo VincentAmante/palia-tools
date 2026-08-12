@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useHarvester from '~/stores/useHarvester'
-import { parseCropId } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { parseCropId } from '~/assets/scripts/garden-planner/utils/cropIds'
 import type CropType from '~/assets/scripts/garden-planner/enums/crops'
 import { getCropFromType } from '~/assets/scripts/garden-planner/cropList'
 import { formatToOneDecimal } from '~/utils/formatters'

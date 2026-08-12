@@ -1,6 +1,6 @@
 import { defineStore, skipHydrate } from 'pinia'
 import { GardenGrid, } from '~/assets/scripts/garden-planner/classes/gardenGrid'
-import type { Coordinates } from '~/assets/scripts/garden-planner/utils/garden-helpers';
+import type { Coordinates } from '~/assets/scripts/garden-planner/utils/coordinates';
 
 const BASIC_9X9_GRID = () => {
     return {

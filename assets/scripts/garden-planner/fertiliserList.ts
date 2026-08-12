@@ -1,6 +1,6 @@
 import Fertiliser, { type IFertiliserConstructorParams } from './classes/fertiliser';
 import FertiliserType from './enums/fertiliser';
-import FertiliserCode from './enums/fertilisercode';
+import FertiliserCode from './enums/fertiliser-code';
 
 import fertilisersData from './fertilisersData.json';
 

@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { type ICropNameWithGrowthDiff, ItemType, parseCropId, type IDayHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers';
+import type { ICropNameWithGrowthDiff, IDayHarvest } from '~/assets/scripts/garden-planner/utils/gardenHelpers.js';
+import { ItemType } from '~/assets/scripts/garden-planner/enums/itemType.js';
+import { parseCropId } from '~/assets/scripts/garden-planner/utils/cropIds'
 
 import { CropItem, type Item } from '~/assets/scripts/garden-planner/classes/items/item'
 import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue'

@@ -1,4 +1,5 @@
-import type { TUniqueTiles, Coordinates } from "../utils/garden-helpers"
+import type { TUniqueTiles } from "../utils/gardenHelpers"
+import type { Coordinates } from '../utils/coordinates';
 import Bonus from "../enums/bonus";
 import FertiliserType from "../enums/fertiliser";
 import CropType from "../enums/crops";

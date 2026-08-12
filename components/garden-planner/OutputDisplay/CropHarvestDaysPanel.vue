@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/gardenHelpers.js'
 import type { PropType } from 'vue'
 import InventoryRow from './InventoryRow.vue'
 import CropHarvestDayDetail from './CropHarvestDayDetail.vue'

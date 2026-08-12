@@ -1,5 +1,5 @@
-import CropSize from "../enums/crop-size"
-import type { CoordinateObject, Coordinates } from "../utils/garden-helpers"
+import CropSize from "../enums/cropSize"
+import type { CoordinateObject, Coordinates } from '../utils/coordinates';
 import Crop from "./crop";
 import CropCode from "../enums/cropCode";
 import CropType from "../enums/crops";
@@ -7,10 +7,12 @@ import Fertiliser from "./fertiliser";
 import { getCodeFromCrop, getCropFromCode } from "../cropList";
 import { getFertiliserFromCode, getCodeFromFertiliser } from "../fertiliserList";
 
-import { parseSave } from "../save-handler";
+import { parseSave } from "../saveHandler";
 import { PLOT_DIMENSION_REGEX, CROP_FERTILISER_REGEX, expandPlotCode } from "../saveHandlerGardenBasic";
-import FertiliserCode from "../enums/fertilisercode";
-import { fromCoordinateObject, toCoordinateObject, translateCoordinates, getDimensions } from "../utils/garden-helpers";
+import FertiliserCode from "../enums/fertiliser-code";
+import { getDimensions } from "../utils/gardenHelpers";
+import { fromCoordinateObject, toCoordinateObject, translateCoordinates  } from '../utils/coordinates';
+
 import { GridPlot } from "./gridPlot";
 import { GridTile } from "./gridTile";
 import { GridCrop } from "./gridCrop";
