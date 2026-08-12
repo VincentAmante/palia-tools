@@ -10,7 +10,7 @@ import { getFertiliserFromCode, getCodeFromFertiliser } from "../fertiliserList"
 import { parseSave } from "../saveHandler";
 import { PLOT_DIMENSION_REGEX, CROP_FERTILISER_REGEX, expandPlotCode } from "../saveHandlerGardenBasic";
 import FertiliserCode from "../enums/fertiliserCode";
-import { getDimensions } from "../utils/gardenGridHelpers";
+import { getDimensions } from "../utils/gridHelpers";
 import { fromCoordinateObject, toCoordinateObject, translateCoordinates  } from '../utils/coordinates';
 
 import { GridPlot } from "./gridPlot";

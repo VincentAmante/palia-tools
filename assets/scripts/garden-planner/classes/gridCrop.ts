@@ -3,10 +3,10 @@ import type { CoordinateObject, Coordinates } from '../utils/coordinates';
 import type Bonus from "../enums/bonus";
 import type Crop from "./crop";
 import uniqid from 'uniqid'
-import { getDimensions  } from "../utils/gardenGridHelpers";
+import { getDimensions  } from "../utils/gridHelpers";
 import { fromCoordinateObject, toCoordinateObject, translateCoordinates  } from '../utils/coordinates';
 
-import type { IGridCrop, IGridTile } from "../utils/gardenGridTypes";
+import type { IGridCrop, IGridTile } from "../types/gardenGridTypes";
 
 export class GridCrop implements IGridCrop {
     private _id = uniqid()

@@ -7,7 +7,7 @@ import type Crop from './crop'
 import { ItemType } from '../enums/itemType'
 import { Currency } from '../enums/currency'
 import { parseCropId } from '../utils/cropIds'
-import type { CropItem, FertiliserItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IDayHarvest, IInventoryItem, ISeedTracker, ITotalHarvest } from '../utils/gardenHelpers'
+import type { CropItem, FertiliserItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IDayHarvest, IInventoryItem, ISeedTracker, ITotalHarvest } from '../types/gardenSimulatorTypes'
 import type { ICropConversions } from './crop'
 
 /**

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
 import type FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser.js';
-import type { FertiliserItem } from '~/assets/scripts/garden-planner/utils/gardenHelpers.js';
+import type { FertiliserItem } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes.js';
 import { Currency } from '~/assets/scripts/garden-planner/enums/currency.js';
 import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue';
 import { FertiliserCostSource } from '~/assets/scripts/garden-planner/classes/processor';

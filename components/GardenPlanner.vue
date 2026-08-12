@@ -5,7 +5,7 @@ import ItemSelector from '~/components/garden-planner/ItemSelector/ItemSelector.
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import { storeToRefs } from 'pinia'
 import useHarvester from '~/stores/useHarvester'
-import type { ITotalHarvest, TUniqueTiles } from '~/assets/scripts/garden-planner/utils/gardenHelpers.js'
+import type { ITotalHarvest, TUniqueTiles } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes.js'
 import { useSettingsCode } from '~/stores/useSettingsCode'
 import { ItemType } from '~/assets/scripts/garden-planner/enums/itemType.js'
 import { getCropFromType } from '~/assets/scripts/garden-planner/cropList.js'

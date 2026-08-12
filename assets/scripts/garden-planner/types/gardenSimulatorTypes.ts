@@ -1,7 +1,7 @@
 /**
- * @file gardenHelpers.ts
- * @description Contains types and interfaces used in the garden planner.
- */
+ * @file gardenSimulatorTypes.ts
+ * @description Contains types and interfaces used in the garden planner, specifically for one used by the harvester and the processor
+*/
 import type { ITile } from '../classes/tile';
 import type CropType from '../enums/crops';
 

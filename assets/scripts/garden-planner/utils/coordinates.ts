@@ -1,5 +1,3 @@
-
-
 export function translateCoordinates(coordinates: Coordinates, translateBy: { x: number; y: number; }): Coordinates {
   const oldCoordsObj = toCoordinateObject(coordinates);
 

@@ -1,21 +1,15 @@
 import { defineStore } from 'pinia'
-import type Plot from '~/assets/scripts/garden-planner/classes/plot'
 import CropType from '~/assets/scripts/garden-planner/enums/crops'
 import FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser'
 import { getCropFromType } from '~/assets/scripts/garden-planner/cropList'
 import { getFertiliserFromType } from '~/assets/scripts/garden-planner/fertiliserList'
+import type { Coordinates } from '~/assets/scripts/garden-planner/utils/coordinates'
 type DragItem = CropType | FertiliserType | 'crop-erase' | 'fertiliser-erase' | null
-
-interface ITileCoords {
-  x: number
-  y: number
-  plot: Plot
-}
 
 export const useDragAndDrop = defineStore('dragAndDrop', () => {
   const draggedItem = ref<DragItem>(null)
   const isDragging = ref(false)
-  const tileCoords = ref<ITileCoords | null>(null)
+  const tileCoords = ref<Coordinates | null>(null)
   const garden = useGardenGrid()
 
   function startDrag(item: DragItem) {
@@ -30,14 +24,12 @@ export const useDragAndDrop = defineStore('dragAndDrop', () => {
       return
     }
 
-    const { x, y, plot } = tileCoords.value
-
     // Remove crop or fertiliser from tile
     if (draggedItem.value === 'crop-erase')
-      garden.placeCrop(`${x},${y}`, null)
+      garden.placeCrop(tileCoords.value, null)
       // plot.setTile(x, y, null)
     else if (draggedItem.value === 'fertiliser-erase')
-      plot.removeFertiliserFromTile(x, y)
+      garden.placeFertiliser(tileCoords.value, null)
 
     if (draggedItem.value === null) {
       isDragging.value = false
@@ -46,21 +38,18 @@ export const useDragAndDrop = defineStore('dragAndDrop', () => {
 
     // Add crop or fertiliser to tile
     if (Object.values(CropType).includes(draggedItem.value as CropType)) {
-      plot.setTile(x, y, getCropFromType(draggedItem.value as CropType))
+      garden.placeCrop(tileCoords.value, getCropFromType(draggedItem.value as CropType))
     }
     else if (Object.values(FertiliserType).includes(draggedItem.value as FertiliserType)) {
-      plot.addFertiliserToTile(x, y, getFertiliserFromType(draggedItem.value as FertiliserType), {
-        removeSameId: true,
-      })
+      garden.placeFertiliser(tileCoords.value, getFertiliserFromType(draggedItem.value as FertiliserType))
     }
-
 
     draggedItem.value = null
     isDragging.value = false
   }
 
-  function onTileEnter(x: number, y: number, plot: Plot) {
-    tileCoords.value = { x, y, plot }
+  function onTileEnter(coords: Coordinates) {
+    tileCoords.value = coords
   }
 
   function clearTileCoords() {

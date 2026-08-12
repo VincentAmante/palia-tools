@@ -1,8 +1,6 @@
 
-import type { ITile } from '../classes/tile';
 import type FertiliserType from '../enums/fertiliser';
 import Bonus from '../enums/bonus';
-import CropType from '../enums/crops';
 import { getFertiliserFromType } from '../fertiliserList';
 
 

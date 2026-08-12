@@ -1,7 +1,6 @@
 import { getCropFromType } from '../cropList'
-import CropType from '../enums/crops'
 import { ItemType } from '../enums/itemType'
-import type { IInventoryItem } from '../utils/gardenHelpers'
+import type { IInventoryItem } from '../types/gardenSimulatorTypes'
 import { CropItem, type Item } from './items/item'
 
 // Interface for a single inventory change entry

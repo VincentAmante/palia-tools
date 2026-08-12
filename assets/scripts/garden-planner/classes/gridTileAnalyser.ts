@@ -1,9 +1,9 @@
-import type { TUniqueTiles } from "../utils/gardenHelpers"
+import type { TUniqueTiles } from "../types/gardenSimulatorTypes"
 import type { Coordinates } from '../utils/coordinates';
 import Bonus from "../enums/bonus";
 import FertiliserType from "../enums/fertiliser";
 import CropType from "../enums/crops";
-import type { IGridTile } from "../utils/gardenGridTypes";
+import type { IGridTile } from "../types/gardenGridTypes";
 export interface GridPlotStat {
     cropCount: Readonly<number>;
     cropCountByType: Readonly<Record<CropType, number>>

@@ -2,7 +2,7 @@
 import CropType from '../enums/crops';
 import { getCropFromCode, getCropFromType  } from '../cropList';
 import CropCode from '../enums/cropCode';
-import type { ICropNameWithGrowthDiff } from './gardenHelpers';
+import type { ICropNameWithGrowthDiff } from '../types/gardenSimulatorTypes';
 
 export interface ICropId {
   type: CropType

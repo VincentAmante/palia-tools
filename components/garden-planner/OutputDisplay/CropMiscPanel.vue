@@ -2,7 +2,7 @@
 import type CropType from '~/assets/scripts/garden-planner/enums/crops.js';
 import Bonus from '~/assets/scripts/garden-planner/enums/bonus.js';
 import { getCropFromType } from '~/assets/scripts/garden-planner/cropList.js';
-import type { ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/gardenHelpers.js';
+import type { ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes.js';
 import { ItemType } from '~/assets/scripts/garden-planner/enums/itemType.js';
 import { parseCropId } from '~/assets/scripts/garden-planner/utils/cropIds'
 import SettingsMinutesDisplay from '../SettingsMinutesDisplay.vue';

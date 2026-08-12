@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ICropNameWithGrowthDiff, IDayHarvest } from '~/assets/scripts/garden-planner/utils/gardenHelpers.js';
+import type { ICropNameWithGrowthDiff, IDayHarvest } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes.js';
 import { ItemType } from '~/assets/scripts/garden-planner/enums/itemType.js';
 import { parseCropId } from '~/assets/scripts/garden-planner/utils/cropIds'
 

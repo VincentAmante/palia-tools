@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import Processor, { type GardenData } from '~/assets/scripts/garden-planner/classes/processor';
 
-import type { ITotalHarvest } from '~/assets/scripts/garden-planner/utils/gardenHelpers'
+import type { ITotalHarvest } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes'
 import { Currency } from '~/assets/scripts/garden-planner/enums/currency';
 import { useProcessorSettings } from './useProcessorSettings';
 
