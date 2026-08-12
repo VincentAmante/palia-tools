@@ -2,7 +2,7 @@
 import uniqid from 'uniqid'
 import CropCode from './enums/cropCode'
 import { getCropFromCode } from './cropList'
-import FertiliserCode from './enums/fertiliser-code'
+import FertiliserCode from './enums/fertiliserCode'
 import CropSize from './enums/cropSize'
 
 interface GridTileBasic {
