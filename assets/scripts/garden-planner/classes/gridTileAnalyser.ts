@@ -1,6 +1,7 @@
 import type { TUniqueTiles, Coordinates } from "../utils/garden-helpers"
-import { Bonus, FertiliserType } from "../imports";
-import { CropType } from '@/assets/scripts/garden-planner/imports'
+import Bonus from "../enums/bonus";
+import FertiliserType from "../enums/fertiliser";
+import CropType from "../enums/crops";
 import type { IGridTile } from "../utils/gardenGridTypes";
 export interface GridPlotStat {
     cropCount: Readonly<number>;

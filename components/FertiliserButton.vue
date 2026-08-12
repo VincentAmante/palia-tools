@@ -2,7 +2,10 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
-import { Bonus, Fertiliser, FertiliserType } from '@/assets/scripts/garden-planner/imports'
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus'
+import Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser'
+import FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser'
+
 import { useDragAndDrop } from '@/stores/useDragAndDrop'
 
 const props = defineProps({

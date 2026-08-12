@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
 import type { ProcessorSetting, ProcessorSettings, FertiliserCostSource } from '~/assets/scripts/garden-planner/classes/processor'
-import type { FertiliserType } from '~/assets/scripts/garden-planner/imports'
+import type FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser'
 import type { ICropName, ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 
 export const useProcessorSettings = defineStore('processorSettings', () => {

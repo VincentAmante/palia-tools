@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { Crop, Fertiliser } from '@/assets/scripts/garden-planner/imports'
+import Crop from '~/assets/scripts/garden-planner/classes/crop'
+import Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser'
 
 export type SelectedItem = Crop | Fertiliser | 'crop-erase' | 'fertiliser-erase' | null
 

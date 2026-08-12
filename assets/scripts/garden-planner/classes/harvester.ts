@@ -1,4 +1,6 @@
-import { Bonus, CropType, getCropFromType } from '../imports'
+import Bonus from '../enums/bonus'
+import CropType from '../enums/crops'
+import { getCropFromType } from '../cropList'
 
 import type { DayHarvests, ICropHarvestCycle, ICropNameWithGrowthDiff, ICropYield, IHarvestCyclePhase, ITotalHarvest, TUniqueTiles } from '../utils/garden-helpers'
 

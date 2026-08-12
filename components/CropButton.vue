@@ -3,7 +3,9 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import { useDragAndDrop } from '@/stores/useDragAndDrop'
-import { Bonus, Crop, CropType } from '@/assets/scripts/garden-planner/imports'
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus'
+import Crop from '~/assets/scripts/garden-planner/classes/crop'
+import CropType from '~/assets/scripts/garden-planner/enums/crops'
 
 const props = defineProps({
   crop: {

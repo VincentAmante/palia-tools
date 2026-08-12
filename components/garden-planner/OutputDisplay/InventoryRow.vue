@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import ItemDisplay from '~/components/garden-planner/HarvestCalculator/ItemDisplay.vue'
 import useProcessor from '~/stores/useProcessor'
-import type { ICropNameWithGrowthDiff, IDayHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { IDayHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import type { PropType } from 'vue'
 import { CropItem, type Item } from '~/assets/scripts/garden-planner/classes/items/item'
 import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue'
 import { usePlannerDisplayConfig } from '~/stores/usePlannerDisplayConfig'
-import { Crop } from '~/assets/scripts/garden-planner/imports'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const harvester = useHarvester()

@@ -5,7 +5,10 @@ import ItemDisplayAlt from './HarvestCalculator/ItemDisplayAlt.vue'
 import useHarvester from '~/stores/useHarvester'
 import type { ProcessorSetting, ProcessorSettings } from '~/assets/scripts/garden-planner/classes/processor'
 import { type ICropNameWithGrowthDiff, ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
-import { CropType, FertiliserType, getCropFromType } from '~/assets/scripts/garden-planner/imports'
+import CropType from '~/assets/scripts/garden-planner/enums/crops.js'
+import FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser.js'
+import { getCropFromType } from '~/assets/scripts/garden-planner/cropList.js'
+
 import useProcessor from '~/stores/useProcessor'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import SettingsCodeSettings from './OutputDisplay/SettingsCodeSettings.vue'
@@ -22,7 +25,7 @@ const processorSettings = useProcessorSettings()
 function validateLevel() {
   if (harvesterSettings.settings.level < 0)
     harvesterSettings.settings.level = 0
-  
+
   harvesterSettings.updateSettings({ ...harvesterSettings.settings })
 }
 

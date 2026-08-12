@@ -4,8 +4,13 @@
  */
 
 import type { ITile } from '../classes/tile';
-import type { FertiliserType } from '../imports';
-import { Bonus, CropType, getCropFromCode, getCropFromType, getFertiliserFromType, CropCode } from '../imports'
+import type FertiliserType from '../enums/fertiliser';
+import Bonus from '../enums/bonus';
+import CropType from '../enums/crops';
+import { getCropFromCode, getCropFromType  } from '../cropList';
+import { getFertiliserFromType } from '../fertiliserList';
+import CropCode from '../enums/cropCode';
+
 import CropSize from '../enums/crop-size';
 
 export function translateCoordinates(coordinates: Coordinates, translateBy: { x: number, y: number }): Coordinates {

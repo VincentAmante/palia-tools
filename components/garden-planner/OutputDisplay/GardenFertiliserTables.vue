@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useHarvester from '~/stores/useHarvester'
 import { getFertiliserFromType } from '~/assets/scripts/garden-planner/fertiliserList'
-import { FertiliserType } from '~/assets/scripts/garden-planner/imports'
+import FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser'
 import { getBonusDataByFertiliser } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import { formatToOneDecimal } from '~/utils/formatters'
 

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
 import { FertiliserCostSource } from '~/assets/scripts/garden-planner/classes/processor';
-import type { FertiliserType } from '~/assets/scripts/garden-planner/imports';
-import { getFertiliserFromType } from '~/assets/scripts/garden-planner/imports';
-import ItemDisplay from './HarvestCalculator/ItemDisplay.vue';
+import type FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser.js';
+import { getFertiliserFromType } from '~/assets/scripts/garden-planner/fertiliserList.js';
 import ItemDisplayAlt from './HarvestCalculator/ItemDisplayAlt.vue';
 
 const processor = useProcessor()

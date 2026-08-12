@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { CropType} from '~/assets/scripts/garden-planner/imports';
-import { Bonus, getCropFromType } from '~/assets/scripts/garden-planner/imports';
+import type CropType from '~/assets/scripts/garden-planner/enums/crops.js';
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus.js';
+import { getCropFromType } from '~/assets/scripts/garden-planner/cropList.js';
 import { ItemType, parseCropId, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers';
 import SettingsMinutesDisplay from '../SettingsMinutesDisplay.vue';
 import CropSize from '~/assets/scripts/garden-planner/enums/crop-size';

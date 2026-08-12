@@ -1,5 +1,5 @@
 import type CropType from '../../enums/crops'
-import { getCropFromType } from '../../imports'
+import { getCropFromType } from '../../cropList'
 import { ItemType, parseCropId } from '../../utils/garden-helpers'
 import type { ICropYield, ICropInfo, IInventoryItem, ICropNameWithGrowthDiff } from '../../utils/garden-helpers'
 

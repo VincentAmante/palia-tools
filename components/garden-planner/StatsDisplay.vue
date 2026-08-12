@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { Bonus } from '~/assets/scripts/garden-planner/imports'
-
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus';
 const garden = useGardenGrid()
 </script>
 

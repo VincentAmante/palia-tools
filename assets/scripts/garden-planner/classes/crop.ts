@@ -1,7 +1,7 @@
 import type Bonus from '../enums/bonus'
 import type CropType from '../enums/crops'
 import type CropSize from '../enums/crop-size'
-import { CropCode } from '../imports'
+import CropCode from '../enums/cropCode'
 
 /**
  * Used only for constructor

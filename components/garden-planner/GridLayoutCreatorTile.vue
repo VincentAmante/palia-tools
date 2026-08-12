@@ -4,8 +4,9 @@ import { SelectedItemType, useSelectedItem } from '@/stores/useSelectedItem';
 import useGardenGrid from '@/stores/useGardenGrid';
 import { toCoordinateObject, type Coordinates } from '~/assets/scripts/garden-planner/utils/garden-helpers'
 import type { PropType } from 'vue';
-import type { Fertiliser, Crop } from '~/assets/scripts/garden-planner/imports';
-import { Bonus } from '~/assets/scripts/garden-planner/imports';
+import type Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser';
+import type Crop from '~/assets/scripts/garden-planner/classes/crop';
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus';
 
 import { useUiSettings } from '@/stores/useUiSettings'
 import CropSize from '~/assets/scripts/garden-planner/enums/crop-size';

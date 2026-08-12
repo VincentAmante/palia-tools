@@ -4,7 +4,7 @@ import { type ICropNameWithGrowthDiff, ItemType, parseCropId, type IDayHarvest }
 import { CropItem, type Item } from '~/assets/scripts/garden-planner/classes/items/item'
 import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue'
 import { formatMinutesToDaysHoursMinutes } from '~/utils/formatters'
-import { getCropFromType } from '~/assets/scripts/garden-planner/imports';
+import { getCropFromType } from '~/assets/scripts/garden-planner/cropList.js';
 
 
 const processor = useProcessor()

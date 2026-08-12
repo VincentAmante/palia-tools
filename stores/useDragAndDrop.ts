@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
-import type { Garden, Plot } from '@/assets/scripts/garden-planner/imports'
-import { CropType, FertiliserType, getCropFromType, getFertiliserFromType } from '@/assets/scripts/garden-planner/imports'
-
+import type Plot from '~/assets/scripts/garden-planner/classes/plot'
+import CropType from '~/assets/scripts/garden-planner/enums/crops'
+import FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser'
+import { getCropFromType } from '~/assets/scripts/garden-planner/cropList'
+import { getFertiliserFromType } from '~/assets/scripts/garden-planner/fertiliserList'
 type DragItem = CropType | FertiliserType | 'crop-erase' | 'fertiliser-erase' | null
 
 interface ITileCoords {
@@ -14,11 +16,7 @@ export const useDragAndDrop = defineStore('dragAndDrop', () => {
   const draggedItem = ref<DragItem>(null)
   const isDragging = ref(false)
   const tileCoords = ref<ITileCoords | null>(null)
-  const garden = ref<Garden | null>(null)
-
-  function setGarden(g: Garden) {
-    garden.value = g
-  }
+  const garden = useGardenGrid()
 
   function startDrag(item: DragItem) {
     draggedItem.value = item
@@ -36,7 +34,8 @@ export const useDragAndDrop = defineStore('dragAndDrop', () => {
 
     // Remove crop or fertiliser from tile
     if (draggedItem.value === 'crop-erase')
-      plot.setTile(x, y, null)
+      garden.placeCrop(`${x},${y}`, null)
+      // plot.setTile(x, y, null)
     else if (draggedItem.value === 'fertiliser-erase')
       plot.removeFertiliserFromTile(x, y)
 
@@ -55,7 +54,6 @@ export const useDragAndDrop = defineStore('dragAndDrop', () => {
       })
     }
 
-    garden.value?.calculateBonuses()
 
     draggedItem.value = null
     isDragging.value = false
@@ -69,5 +67,5 @@ export const useDragAndDrop = defineStore('dragAndDrop', () => {
     tileCoords.value = null
   }
 
-  return { draggedItem, isDragging, startDrag, stopDrag, onTileEnter, setGarden, clearTileCoords }
+  return { draggedItem, isDragging, startDrag, stopDrag, onTileEnter, clearTileCoords }
 })

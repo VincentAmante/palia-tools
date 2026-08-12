@@ -1,7 +1,12 @@
 import CropSize from "../enums/crop-size"
-import type { ITile } from "./tile"
-import type { TUniqueTiles as UniqueCropTiles, CoordinateObject, Coordinates } from "../utils/garden-helpers"
-import { Crop, CropCode, CropType, Fertiliser, getCodeFromCrop, getCodeFromFertiliser, getCropFromCode, getFertiliserFromCode } from '@/assets/scripts/garden-planner/imports'
+import type { CoordinateObject, Coordinates } from "../utils/garden-helpers"
+import Crop from "./crop";
+import CropCode from "../enums/cropCode";
+import CropType from "../enums/crops";
+import Fertiliser from "./fertiliser";
+import { getCodeFromCrop, getCropFromCode } from "../cropList";
+import { getFertiliserFromCode, getCodeFromFertiliser } from "../fertiliserList";
+
 import { parseSave } from "../save-handler";
 import { PLOT_DIMENSION_REGEX, CROP_FERTILISER_REGEX, expandPlotCode } from "../saveHandlerGardenBasic";
 import FertiliserCode from "../enums/fertilisercode";

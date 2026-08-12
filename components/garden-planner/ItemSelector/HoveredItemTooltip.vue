@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import type { SelectedItem } from '~/stores/useSelectedItem'
 import { SelectedItemType, getSelectedItemType } from '~/stores/useSelectedItem'
-import { Bonus, Crop, getCodeFromCrop, getCodeFromFertiliser } from '~/assets/scripts/garden-planner/imports'
-import type { Fertiliser } from '~/assets/scripts/garden-planner/imports'
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus'
+import Crop from '~/assets/scripts/garden-planner/classes/crop'
+import { getCodeFromCrop } from '~/assets/scripts/garden-planner/cropList'
+import { getCodeFromFertiliser } from '~/assets/scripts/garden-planner/fertiliserList'
+import type Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser'
+
 import CropSize from '~/assets/scripts/garden-planner/enums/crop-size'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import { getBonusData } from '~/assets/scripts/garden-planner/utils/garden-helpers'

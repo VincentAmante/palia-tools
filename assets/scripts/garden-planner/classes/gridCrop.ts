@@ -1,7 +1,7 @@
 import CropSize from "../enums/crop-size"
 import type { CoordinateObject, Coordinates  } from "../utils/garden-helpers"
-import type { Bonus } from "../imports";
-import type { Crop} from '@/assets/scripts/garden-planner/imports';
+import type Bonus from "../enums/bonus";
+import type Crop from "./crop";
 import uniqid from 'uniqid'
 import { fromCoordinateObject, toCoordinateObject, translateCoordinates, getDimensions  } from "../utils/garden-helpers";
 import type { IGridCrop, IGridTile } from "../utils/gardenGridTypes";

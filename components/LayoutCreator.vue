@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CropCode } from '@/assets/scripts/garden-planner/imports'
+import CropCode from '~/assets/scripts/garden-planner/enums/cropCode'
 import PGPModal from '@/components/PGPModal.vue'
 import { loadDefaultSettingsCode } from './garden-planner/SaveLoadUtils'
 
