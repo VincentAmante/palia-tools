@@ -70,24 +70,24 @@ const dragHandler = useDragAndDrop()
     v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)"
     draggable="true" class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue-secondary dark:hover:bg-palia-blue-secondary/20 dark:border-water-retain/60"
     :class="(isSelected && !isTakingScreenshot) ? 'bg-white dark:bg-water-retain/20' : ''" :name="`select ${crop.type}`"
-    @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)"
+    @dragstart="(e: DragEvent) => dragHandler.startDrag(crop)"
     @dragend="(e: DragEvent) => dragHandler.stopDrag()"
   >
     <font-awesome-icon
-      v-if="bonus.icon !== ''" class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black"
+      v-if="bonus.icon !== ''" class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black pointer-events-auto"
       :icon="['fas', bonus.icon]" :class="bonus.colour"
     />
-    <p v-if="count > 0" class="absolute bottom-0 right-0 py-[0.2rem] pr-[0.2rem] text-xs leading-none font-bold text-palia-blue dark:text-accent">
+    <p v-if="count > 0" class="absolute bottom-0 right-0 py-[0.2rem] pr-[0.2rem] text-xs leading-none font-bold text-palia-blue dark:text-accent  pointer-events-auto">
       {{ count }}
     </p>
     <img
       v-if="(crop && crop.image != null && crop.image !== '')"
-      class="absolute -z-10 max-w-[28px] "
+      class="absolute -z-10 max-w-7  pointer-events-auto"
       draggable="false"
       :src="crop.cropImage"
       :class="(crop.type === crop.type) ? 'opacity-100' : 'opacity-90'"
       :alt="crop.type"
     >
-    <font-awesome-icon v-else class="absolute -z-10 max-w-[45px] text-warning text-3xl " :icon="['fas', 'eraser']" />
+    <font-awesome-icon v-else class="absolute -z-10 max-w-11.25 text-warning text-3xl  pointer-events-auto" :icon="['fas', 'eraser']" />
   </button>
 </template>

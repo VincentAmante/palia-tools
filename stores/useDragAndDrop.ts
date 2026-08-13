@@ -4,20 +4,28 @@ import FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser'
 import { getCropFromType } from '~/assets/scripts/garden-planner/cropList'
 import { getFertiliserFromType } from '~/assets/scripts/garden-planner/fertiliserList'
 import type { Coordinates } from '~/assets/scripts/garden-planner/utils/coordinates'
-type DragItem = CropType | FertiliserType | 'crop-erase' | 'fertiliser-erase' | null
+import { SelectedItemType, type SelectedItem } from '#imports'
+import type Crop from '~/assets/scripts/garden-planner/classes/crop'
+import type Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser'
 
 export const useDragAndDrop = defineStore('dragAndDrop', () => {
-  const draggedItem = ref<DragItem>(null)
+  const draggedItem = ref<SelectedItem>(SelectedItemType.CropErase)
   const isDragging = ref(false)
   const tileCoords = ref<Coordinates | null>(null)
   const garden = useGardenGrid()
 
-  function startDrag(item: DragItem) {
+  const itemtype = computed(() => {
+    return getSelectedItemType(draggedItem.value as SelectedItem)
+  })
+
+
+  function startDrag(item: SelectedItem) {
     draggedItem.value = item
     isDragging.value = true
   }
 
   function stopDrag() {
+
     if (tileCoords.value === null) {
       draggedItem.value = null
       isDragging.value = false
@@ -27,7 +35,6 @@ export const useDragAndDrop = defineStore('dragAndDrop', () => {
     // Remove crop or fertiliser from tile
     if (draggedItem.value === 'crop-erase')
       garden.placeCrop(tileCoords.value, null)
-      // plot.setTile(x, y, null)
     else if (draggedItem.value === 'fertiliser-erase')
       garden.placeFertiliser(tileCoords.value, null)
 
@@ -37,24 +44,27 @@ export const useDragAndDrop = defineStore('dragAndDrop', () => {
     }
 
     // Add crop or fertiliser to tile
-    if (Object.values(CropType).includes(draggedItem.value as CropType)) {
-      garden.placeCrop(tileCoords.value, getCropFromType(draggedItem.value as CropType))
+    if (itemtype.value === SelectedItemType.Crop) {
+      garden.placeCrop(tileCoords.value, draggedItem.value as Crop)
     }
-    else if (Object.values(FertiliserType).includes(draggedItem.value as FertiliserType)) {
-      garden.placeFertiliser(tileCoords.value, getFertiliserFromType(draggedItem.value as FertiliserType))
+    else if (itemtype.value === SelectedItemType.Fertiliser) {
+      garden.placeFertiliser(tileCoords.value, draggedItem.value as Fertiliser)
     }
 
     draggedItem.value = null
     isDragging.value = false
+    clearTileCoords()
+    garden.updateStats()
   }
 
   function onTileEnter(coords: Coordinates) {
     tileCoords.value = coords
+    console.log(`tileCoords: ${coords}`)
   }
 
   function clearTileCoords() {
     tileCoords.value = null
   }
 
-  return { draggedItem, isDragging, startDrag, stopDrag, onTileEnter, clearTileCoords }
+  return { draggedItem, tileCoords, itemtype, isDragging, startDrag, stopDrag, onTileEnter, clearTileCoords }
 })

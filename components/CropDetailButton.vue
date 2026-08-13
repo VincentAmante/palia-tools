@@ -72,7 +72,7 @@ const dragHandler = useDragAndDrop()
 v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)" draggable="true"
     class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue dark:border-palia-blue-dark"
     :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''" :name="`select ${crop.type}`"
-    :aria-label="`Crop ${crop.type} ${count > 0 ? `, ${count}` : ''}`" @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)"
+    :aria-label="`Crop ${crop.type} ${count > 0 ? `, ${count}` : ''}`" @dragstart="(e: DragEvent) => dragHandler.startDrag(crop)"
     @dragend="(e: DragEvent) => dragHandler.stopDrag()">
     <font-awesome-icon
 v-if="parseCropId(cropId).hasGrowthBoost"

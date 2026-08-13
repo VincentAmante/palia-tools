@@ -13,6 +13,7 @@ import { useUiSettings } from '@/stores/useUiSettings'
 import CropSize from '~/assets/scripts/garden-planner/enums/cropSize';
 import { useMouseTracker } from '~/stores/useMouseTracker';
 import { bonusBackgrounds } from '~/assets/scripts/garden-planner/cropList';
+import CropType from '~/assets/scripts/garden-planner/enums/crops';
 
 
 const emit = defineEmits(['update'])
@@ -21,6 +22,7 @@ const gardenGrid = useGardenGrid()
 const selectedItem = useSelectedItem()
 const uiSettings = useUiSettings()
 const mouseTracker = useMouseTracker()
+const dragHandler = useDragAndDrop()
 
 const TILE_HIGHLIGHT_STYLE = 'opacity-100 bg-white dark:bg-white/80'
 const TILE_NO_HIGHLIGHT_STYLE = ''
@@ -218,6 +220,8 @@ const bgColour = computed(() => {
 
 
 function handleLeftClick() {
+    if (dragHandler.draggedItem !== null) return
+
     switch (selectedItem.type) {
         case SelectedItemType.Crop:
             gardenGrid.placeCrop(props.coordinates, selectedItem.val as Crop)
@@ -257,6 +261,7 @@ function handleDrag() {
     }
 
     if (mouseTracker.left && !mouseTracker.right) {
+
         switch (selectedItem.type) {
             case SelectedItemType.Crop:
                 gardenGrid.placeCrop(props.coordinates, selectedItem.val as Crop, {
@@ -305,11 +310,55 @@ function handleHover() {
     handleDrag()
 }
 
+function handleDragEnter() {
+    if (!tileData.value.tile) {
+        return
+    }
+    dragHandler.onTileEnter(tileData.value.tile.coordinates)
+
+    switch (getSelectedItemType(dragHandler.draggedItem as SelectedItem)) {
+        case SelectedItemType.Crop:
+            gardenGrid.hoverTile(tileData.value.tile.coordinates, dragHandler.draggedItem as Crop)
+            break
+        case SelectedItemType.Fertiliser:
+            gardenGrid.hoverTile(tileData.value.tile.coordinates, dragHandler.draggedItem as Fertiliser)
+            break
+        default:
+            gardenGrid.hoverTile(tileData.value.tile.coordinates)
+    }
+}
+
+
+/**
+ * In the event that handleDragLeave triggers AFTER handleDragEnter,
+ * we'll re-hover centered on the active tile
+ */
+function handleDragLeaveAnchor() {
+    if (dragHandler.tileCoords && dragHandler.tileCoords !== tileData.value.tile?.coordinates) {
+        switch (getSelectedItemType(dragHandler.draggedItem as SelectedItem)) {
+            case SelectedItemType.Crop:
+                gardenGrid.hoverTile(dragHandler.tileCoords, dragHandler.draggedItem as Crop)
+                break
+            case SelectedItemType.Fertiliser:
+                gardenGrid.hoverTile(dragHandler.tileCoords, dragHandler.draggedItem as Fertiliser)
+                break
+            default:
+                gardenGrid.hoverTile(dragHandler.tileCoords)
+        }
+    }
+
+}
+
+function handleDragLeave() {
+    gardenGrid.unhoverTile()
+    handleDragLeaveAnchor()
+}
+
 
 function handleUnhover() {
     gardenGrid.unhoverTile()
 
-    handleDrag()
+    // handleDrag()
 }
 
 function handleMiddleClick() {
@@ -426,14 +475,21 @@ v-if="tileData.tile"
             :class="[backgroundColourByHover, tileRadiusByPlot, (tileData.tile.hoverState === 'INVALID' ? 'cursor-not-allowed' : 'cursor-pointer')]"
             @mousedown.middle.prevent.stop @click.left="handleLeftClick" @click.right="handleRightClick"
             @click.middle="handleMiddleClick" @contextmenu.stop.prevent @mouseenter="handleHover"
-            @mouseleave="handleUnhover">
+            @mouseleave="handleUnhover" @dragleave="handleDragLeave" @dragenter="handleDragEnter" @dragover.prevent>
             <!-- <p class="absolute top-0 right-1 text-xs font-bold text-misc">{{ tileData.tile.plotLocalCoordinates }}</p> -->
             <!-- <p class="absolute top-0 right-1 text-xs font-bold text-misc">v{{ tileData.version || 0 }}</p>
             <p class="absolute top-0 left-1 text-xs font-bold text-misc">{{ tileData.tile.coordinates }}</p> -->
             <!-- <p>{{ tileData.type }}</p> -->
             <!-- <p>{{ tileData.tile.hoverState }}</p> -->
+
             <img
-v-if="(selectedItem.val && selectedItem.type === SelectedItemType.Crop && (tileData.tile?.hoverState === 'DEFAULT' || tileData.tile?.hoverState === 'INVALID'))"
+v-if="(dragHandler.isDragging && dragHandler.itemtype === SelectedItemType.Crop && (tileData.tile?.hoverState === 'DEFAULT' || tileData.tile?.hoverState === 'INVALID'))"
+                format="webp" draggable="false"
+                class="absolute select-none p-1 max-w-9.5 md:max-w-9 2xl:max-w-9.5 opacity-80 pointer-events-none dark:opacity-60"
+                :src="(dragHandler.draggedItem as Crop).image" :srcset="undefined"
+                :alt="(dragHandler.draggedItem as Crop).type">
+            <img
+v-else-if="(!dragHandler.isDragging && selectedItem.val && selectedItem.type === SelectedItemType.Crop && (tileData.tile?.hoverState === 'DEFAULT' || tileData.tile?.hoverState === 'INVALID'))"
                 format="webp" draggable="false"
                 class="absolute select-none p-1 max-w-9.5 md:max-w-9 2xl:max-w-9.5 opacity-80 pointer-events-none dark:opacity-60"
                 :src="(selectedItem.val as Crop).image" :srcset="undefined" :alt="(selectedItem.val as Crop).type">
@@ -488,7 +544,13 @@ v-show="tileData.tile.attachedCrop?.bonuses.has(Bonus.WeedPrevention)"
             </ul>
             <div class="absolute bottom-0 right-0 p-0.5" :class="displayFertiliserByCropSize">
                 <img
-v-if="(selectedItem.val && selectedItem.type === SelectedItemType.Fertiliser && tileData.tile?.isHovered)"
+v-if="(dragHandler.isDragging && dragHandler.itemtype === SelectedItemType.Fertiliser && tileData.tile?.isHovered)"
+                    :src="(dragHandler.draggedItem as Fertiliser).image" draggable="false"
+                    class="select-none max-w-4 opacity-50 dark:opacity-80" :srcset="undefined"
+                    :alt="(dragHandler.draggedItem as Fertiliser).effect">
+
+                <img
+v-else-if="(!dragHandler.isDragging && selectedItem.val && selectedItem.type === SelectedItemType.Fertiliser && tileData.tile?.isHovered)"
                     :src="(selectedItem.val as Fertiliser).image" draggable="false"
                     class="select-none max-w-4 opacity-50 dark:opacity-80" :srcset="undefined"
                     :alt="(selectedItem.val as Fertiliser).effect">
