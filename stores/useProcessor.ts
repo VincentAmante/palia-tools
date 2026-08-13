@@ -16,7 +16,6 @@ const useProcessor = defineStore('processor', () => {
     totalHarvestData: Readonly<ITotalHarvest> | ITotalHarvest,
     gardenData: GardenData
   ){
-    console.log('simulating')
     const newProcessor = new Processor()
     newProcessor.process(totalHarvestData, settingsStore.settings, gardenData)
 

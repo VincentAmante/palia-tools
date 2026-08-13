@@ -59,7 +59,6 @@ export const useDragAndDrop = defineStore('dragAndDrop', () => {
 
   function onTileEnter(coords: Coordinates) {
     tileCoords.value = coords
-    console.log(`tileCoords: ${coords}`)
   }
 
   function clearTileCoords() {

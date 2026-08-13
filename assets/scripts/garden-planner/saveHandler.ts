@@ -261,9 +261,7 @@ export function convertV_0_4SettingsToV_0_5Settings(settings: string): string {
   let convertedCropSettings = ''
   let convertedSettings = ''
 
-
   const settingsSplit = settings.split('Cr0')
-  console.log('settingsSplit', settingsSplit)
 
 
   for (let setting of settingsSplit) {
