@@ -358,7 +358,7 @@ function handleDragLeave() {
 function handleUnhover() {
     gardenGrid.unhoverTile()
 
-    // handleDrag()
+    handleDrag()
 }
 
 function handleMiddleClick() {
@@ -473,9 +473,16 @@ const displayFertiliserByCropSize = computed(() => {
 v-if="tileData.tile"
             class="flex items-center justify-center border-0 w-full h-full relative isolate rounded-none"
             :class="[backgroundColourByHover, tileRadiusByPlot, (tileData.tile.hoverState === 'INVALID' ? 'cursor-not-allowed' : 'cursor-pointer')]"
-            @mousedown.middle.prevent.stop @click.left="handleLeftClick" @click.right="handleRightClick"
-            @click.middle="handleMiddleClick" @contextmenu.stop.prevent @mouseenter="handleHover"
-            @mouseleave="handleUnhover" @dragleave="handleDragLeave" @dragenter="handleDragEnter" @dragover.prevent>
+            @mousedown.middle.prevent.stop
+            @click.left="handleLeftClick"
+            @click.right="handleRightClick"
+            @click.middle="handleMiddleClick"
+            @contextmenu.stop.prevent
+            @mouseenter="handleHover"
+            @mouseleave="handleUnhover" 
+            @dragleave="handleDragLeave"
+            @dragenter="handleDragEnter"
+            @dragover.prevent>
             <!-- <p class="absolute top-0 right-1 text-xs font-bold text-misc">{{ tileData.tile.plotLocalCoordinates }}</p> -->
             <!-- <p class="absolute top-0 right-1 text-xs font-bold text-misc">v{{ tileData.version || 0 }}</p>
             <p class="absolute top-0 left-1 text-xs font-bold text-misc">{{ tileData.tile.coordinates }}</p> -->
