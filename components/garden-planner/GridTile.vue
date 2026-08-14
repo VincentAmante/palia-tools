@@ -13,7 +13,6 @@ import { useUiSettings } from '@/stores/useUiSettings'
 import CropSize from '~/assets/scripts/garden-planner/enums/cropSize';
 import { useMouseTracker } from '~/stores/useMouseTracker';
 import { bonusBackgrounds } from '~/assets/scripts/garden-planner/cropList';
-import CropType from '~/assets/scripts/garden-planner/enums/crops';
 
 
 const emit = defineEmits(['update'])
@@ -23,9 +22,6 @@ const selectedItem = useSelectedItem()
 const uiSettings = useUiSettings()
 const mouseTracker = useMouseTracker()
 const dragHandler = useDragAndDrop()
-
-const TILE_HIGHLIGHT_STYLE = 'opacity-100 bg-white dark:bg-white/80'
-const TILE_NO_HIGHLIGHT_STYLE = ''
 
 const props = defineProps({
     coordinates: {
@@ -220,8 +216,6 @@ const bgColour = computed(() => {
 
 
 function handleLeftClick() {
-    if (dragHandler.draggedItem !== null) return
-
     switch (selectedItem.type) {
         case SelectedItemType.Crop:
             gardenGrid.placeCrop(props.coordinates, selectedItem.val as Crop)
