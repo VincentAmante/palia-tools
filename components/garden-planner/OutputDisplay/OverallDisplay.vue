@@ -38,11 +38,11 @@ width="12" height="12" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4"
         <div
           class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
           <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
-            <span
+            <!-- <span
 v-if="craftingTime.actualValue <= 0" class="text-xs font-normal tooltip"
               data-tip="Processing time excluded">
               <FontAwesomeIcon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
-            </span>
+            </span> -->
             Average
           </p>
           <p
