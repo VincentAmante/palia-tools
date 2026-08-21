@@ -3,9 +3,10 @@ import { computed, ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import useHarvester from '~/stores/useHarvester'
 import useProcessor from '~/stores/useProcessor'
-import { parseCropId, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers'
-import { type CropType, getCropFromType  } from '~/assets/scripts/garden-planner/imports'
-
+import { parseCropId } from '~/assets/scripts/garden-planner/utils/cropIds'
+import type { ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes.js'
+import type CropType from '~/assets/scripts/garden-planner/enums/crops.js'
+import { getCropFromType } from '~/assets/scripts/garden-planner/cropList.js'
 
 import CropCrafterDataDisplay from './CropCrafterPanel.vue'
 import CropSummaryPanel from './CropSummaryPanel.vue'
@@ -14,6 +15,7 @@ import CropGardenMainDisplay from './CropGardenMainDisplay.vue'
 import CropMiscDetails from './CropMiscPanel.vue'
 
 const harvester = useHarvester()
+const harvesterSettings = useHarvesterSettings()
 const processor = useProcessor()
 const { get: isTakingScreenshot } = storeToRefs(useTakingScreenshot())
 
@@ -25,7 +27,7 @@ const selectedCropId = ref<ICropNameWithGrowthDiff | null>(null)
 //   if (!selectedCropId.value || !harvester.dayHarvests || harvester.dayHarvests.size === 0)
 //     return ''
 
-//   return `${parseCropId(selectedCropId.value).type}${harvester.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
+//   return `${parseCropId(selectedCropId.value).type}${harvesterSettings.settings.useStarSeeds ? '-Star' : '-Base'}` satisfies ICropName
 // })
 
 // const cropInfo = computed(() => {
@@ -61,7 +63,7 @@ const selectedCropCycleData = computed(() => {
     return null
 
   const { type, hasGrowthBoost } = parseCropId(selectedCropId.value)
-  const totalHarvestCycleId = `${type}${(harvester.settings.useStarSeeds ? '-Star' : '-Base')}${(harvester.settings.useGrowthBoost && hasGrowthBoost) ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
+  const totalHarvestCycleId = `${type}${(harvesterSettings.settings.useStarSeeds ? '-Star' : '-Base')}${(harvesterSettings.settings.useGrowthBoost && hasGrowthBoost) ? '-Growth' : ''}` satisfies ICropNameWithGrowthDiff
 
   return harvester.harvester.totalHarvest.cycleData.get(totalHarvestCycleId)
 })

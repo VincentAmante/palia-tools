@@ -295,6 +295,7 @@ to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRd
             <p>
               <span class="font-bold">Earth Time</span> — Time in the real world / outside the game. Earth time means
               that the associated time is capable of passing even if the player is logged off.
+              This particularly means that it advances independently of growth ticks.
             </p>
           </li>
 
@@ -309,7 +310,8 @@ to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRd
             <p>
               <span class="font-bold">Cycle</span> — Some crops take multiple harvests before needing a re-plant (Such
               as Blueberries).
-              A cycle factors in the harvests in-between and refers to the growth ticks between each replant of a crop.
+              A cycle factors in the harvests in-between and refers to the growth ticks between each replant of a crop
+              (regardless of whether it takes 1 harvest or 4).
             </p>
           </li>
           <li class="list-row">
@@ -323,22 +325,22 @@ to="https://docs.google.com/spreadsheets/d/1YV_LiHp48shNifWakdZtOI9j6_IqQI0A7dRd
 
           <li class="list-row">
             <p>
-              <span class="font-bold">Idle Time</span> — Time a crafter has spent idling and waiting for the next
-              harvest, as there is - at present - nothing to process.
+              <span class="font-bold">Idle Time</span> — Time a crafter has spent processing nothing and waiting for the next
+              harvest of the crops it's assigned to.
             </p>
           </li>
 
           <li class="list-row">
             <p>
-              <span class="font-bold">Excess Time</span> — A crafter is still processing crops by the time the next
+              <span class="font-bold">Excess Time</span> — Time a crafter has spent still processing a previous batch of crops by the time the next
               batch of the same crops arrive.
             </p>
           </li>
 
           <li class="list-row">
             <p>
-              <span class="font-bold">Absolute Time</span> — Undivided time. Absolute time, when used in procesing,
-              refers to how many crafter hours are needed to process the provided harvest.
+              <span class="font-bold">Absolute Time</span> — Undivided time. Absolute time, when used in processing,
+              refers to how many hours it would take for a single crafter to process the harvest.
             </p>
           </li>
 

@@ -2,16 +2,19 @@
 import { computed } from 'vue'
 import { SelectedItemType, useSelectedItem } from '@/stores/useSelectedItem';
 import useGardenGrid from '@/stores/useGardenGrid';
-import { toCoordinateObject, type Coordinates } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { toCoordinateObject } from '~/assets/scripts/garden-planner/utils/coordinates';
+import type { Coordinates } from '~/assets/scripts/garden-planner/utils/coordinates';
 import type { PropType } from 'vue';
-import type { Fertiliser, Crop } from '~/assets/scripts/garden-planner/imports';
-import { Bonus } from '~/assets/scripts/garden-planner/imports';
+import type Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser';
+import type Crop from '~/assets/scripts/garden-planner/classes/crop';
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus';
 
 import { useUiSettings } from '@/stores/useUiSettings'
-import CropSize from '~/assets/scripts/garden-planner/enums/crop-size';
+import CropSize from '~/assets/scripts/garden-planner/enums/cropSize';
 import { useMouseTracker } from '~/stores/useMouseTracker';
 import { coordsByDirection } from '~/assets/scripts/garden-planner/classes/gardenGrid';
 import { isPropertyAssignment } from 'typescript';
+import { bonusBackgrounds } from '~/assets/scripts/garden-planner/cropList';
 
 
 const emit = defineEmits(['update'])
@@ -229,8 +232,8 @@ const bgColour = computed(() => {
         return 'bg-weed-prevention/60'
 
     if (!showBonusBackground.value) return 'bg-palia-blue'
-
-    return `${tileData.value.tile?.crop?.cropBackgroundColor}` || ''
+    if (!tile.attachedCrop) return 'bg-palia-blue'
+    return `${bonusBackgrounds[tile?.attachedCrop?.crop.cropBonus]}` || ''
 })
 
 

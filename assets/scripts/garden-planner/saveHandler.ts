@@ -2,15 +2,15 @@
 /**
  * File contains methods for converting saves to the latest version
  */
-import uniqid from 'uniqid'
 import CropCode from './enums/cropCode'
 import type { IHarvesterOptions } from './classes/harvester'
 import type { ProcessorSetting, ProcessorSettings } from './classes/processor'
-import { parseCropId, encodeCropId, ItemType } from './utils/garden-helpers'
-import { Crop, getCodeFromFertiliser, getCropFromCode, getCropFromType, getFertiliserFromCode, getFertiliserFromType } from './imports'
-import FertiliserCode from './enums/fertilisercode'
+import { ItemType } from './enums/itemType'
+import { parseCropId, encodeCropId } from './utils/cropIds'
+import { getCropFromCode, } from './cropList'
+import { getCodeFromFertiliser, getFertiliserFromCode, getFertiliserFromType } from './fertiliserList'
+import FertiliserCode from './enums/fertiliserCode'
 import { LATEST_VERSION } from './types/version'
-import CropSize from './enums/crop-size'
 import { GardenGridBasic, expandPlotCode, PLOT_DIMENSION_REGEX as V05_PLOT_DIMENSION_REGEX } from './saveHandlerGardenBasic'
 import { FertiliserCostSource } from './classes/processor'
 
@@ -261,9 +261,7 @@ export function convertV_0_4SettingsToV_0_5Settings(settings: string): string {
   let convertedCropSettings = ''
   let convertedSettings = ''
 
-
   const settingsSplit = settings.split('Cr0')
-  console.log('settingsSplit', settingsSplit)
 
 
   for (let setting of settingsSplit) {

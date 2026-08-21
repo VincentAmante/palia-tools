@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import ItemDisplay from '~/components/garden-planner/HarvestCalculator/ItemDisplay.vue'
 import useProcessor from '~/stores/useProcessor'
-import type { ICropNameWithGrowthDiff, IDayHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { IDayHarvest } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes.js'
 import type { PropType } from 'vue'
 import { CropItem, type Item } from '~/assets/scripts/garden-planner/classes/items/item'
 import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue'
 import { usePlannerDisplayConfig } from '~/stores/usePlannerDisplayConfig'
-import { Crop } from '~/assets/scripts/garden-planner/imports'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const harvester = useHarvester()
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 const uiSettings = useUiSettings()
 
 const props = defineProps({
@@ -42,7 +41,7 @@ const itemsFromHarvest = computed(() => {
   const willProcessItems = (uiSettings.settings.showAsProcessedItems && processor.processor.highestCraftingTime > 0)
 
   if (willProcessItems) {
-    const itemsProcessed = processor.processor.processSingleDay(props.dayHarvest!, processor.settings, harvester.harvester.totalHarvest.cycleData)
+    const itemsProcessed = processor.processor.processSingleDay(props.dayHarvest!, processorSettings.settings, harvester.harvester.totalHarvest.cycleData)
 
     for (const [, item] of itemsProcessed.inventory) {
       const inventoryRowItem = CropItem.fromInventoryItem(item)

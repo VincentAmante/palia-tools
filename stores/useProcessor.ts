@@ -1,49 +1,27 @@
 import { defineStore } from 'pinia'
-import Processor, {type  FertiliserCostSource, type GardenData, type ProcessorSetting, type ProcessorSettings } from '~/assets/scripts/garden-planner/classes/processor';
+import Processor, { type GardenData } from '~/assets/scripts/garden-planner/classes/processor';
 
-import type { FertiliserType } from '~/assets/scripts/garden-planner/imports'
-import { Currency, type ICropName, type ICropNameWithGrowthDiff, type ITotalHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { ITotalHarvest } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes'
+import { Currency } from '~/assets/scripts/garden-planner/enums/currency';
+import { useProcessorSettings } from './useProcessorSettings';
+
 
 const useProcessor = defineStore('processor', () => {
-  const processorRef = ref(new Processor())
-  const settingsRef = ref<ProcessorSettings>({
-    cropSettings: new Map<ICropName, ProcessorSetting>(),
-    crafterSetting: 0,
-    goldAverageSetting: 'crafterTime',
-    useFertilserCostSettings: true,
-    fertiliserCostSettings: new Map()
-  })
+  const processorRef = shallowRef(new Processor())
+
+  const settingsStore = useProcessorSettings()
+
 
   function simulateProcessing(
-    totalHarvestData: ITotalHarvest,
+    totalHarvestData: Readonly<ITotalHarvest> | ITotalHarvest,
     gardenData: GardenData
-  ) {
-    processorRef.value = new Processor()
-    processorRef.value.process(totalHarvestData, settingsRef.value, gardenData)
+  ){
+    const newProcessor = new Processor()
+    newProcessor.process(totalHarvestData, settingsStore.settings, gardenData)
+
+    processorRef.value = newProcessor
   }
 
-  function updateSettings(newSettings: ProcessorSettings) {
-    settingsRef.value.cropSettings = newSettings.cropSettings
-    settingsRef.value.goldAverageSetting = newSettings.goldAverageSetting
-
-    settingsRef.value.useFertilserCostSettings = newSettings.useFertilserCostSettings
-    settingsRef.value.fertiliserCostSettings = newSettings.fertiliserCostSettings
-  }
-
-  function setCropSetting(id: ICropNameWithGrowthDiff, setting: ProcessorSetting){
-    settingsRef.value.cropSettings.set(id, setting)
-  }
-
-  function setFertiliserCostSetting(type: FertiliserType, costSource: FertiliserCostSource){
-    settingsRef.value.fertiliserCostSettings.set(type, costSource)
-  }
-
-  function resetCropSettingsActive(){
-    settingsRef.value.cropSettings.forEach((setting, id) => {
-      setting.isActive = false
-      settings.value.cropSettings.set(id, setting)
-    })
-  }
 
   const processor = computed(() => processorRef.value)
 
@@ -67,11 +45,9 @@ const useProcessor = defineStore('processor', () => {
     }
   })
 
-  const settings = computed(() => settingsRef.value)
-
   // ! Kinda just a placeholder whilst I figure out how to better handle the mutation going on here
   const settingsForEncoding = computed(() => {
-    return {...settingsRef.value, fertiliserCostSettings: processor.value.activeFertiliserCostSettings}
+    return {...settingsStore.settings, fertiliserCostSettings: processor.value.activeFertiliserCostSettings}
   })
 
   const inventory = computed(() => {
@@ -90,7 +66,7 @@ const useProcessor = defineStore('processor', () => {
   const finalGoldValue = computed(() => {
     let goldValue = totalProduceGold.value
 
-    if (settings.value.useFertilserCostSettings){
+    if (settingsStore.settings.useFertilserCostSettings){
       for (const [type, item] of processorRef.value.fertiliserCostsPerDay){
         if (item.currency !== Currency.GOLD) continue
 
@@ -133,8 +109,6 @@ const useProcessor = defineStore('processor', () => {
     processor,
     simulateProcessing,
     output,
-    settings,
-    updateSettings,
     seedCollectorsCount,
     preserveJarsCount,
     highestCraftingTime,
@@ -143,11 +117,7 @@ const useProcessor = defineStore('processor', () => {
     averageGoldValue,
     seedCollectors,
     preserveJars,
-    setCropSetting,
-    resetCropSettingsActive,
-    settingsRef,
     settingsForEncoding,
-    setFertiliserCostSetting,
     fertiliserCostsPerDay,
     totalProduceGold
   }

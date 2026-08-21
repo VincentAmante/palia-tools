@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import type PGPModal from '@/components/PGPModal.vue'
-
-import { GardenGrid } from '~/assets/scripts/garden-planner/classes/gardenGrid';
-import { getCodeFromCrop } from '~/assets/scripts/garden-planner/cropList';
-import { CropType } from '~/assets/scripts/garden-planner/imports';
 import GridLayoutCreatorTile from './GridLayoutCreatorTile.vue';
 
 

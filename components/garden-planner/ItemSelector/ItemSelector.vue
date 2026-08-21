@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import HoveredItemTooltip from './HoveredItemTooltip.vue'
-import useGarden from '~/stores/useGarden'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import type { SelectedItem } from '~/stores/useSelectedItem'
 import { SelectedItemType, useSelectedItem } from '~/stores/useSelectedItem'
-import type { Crop, Fertiliser} from '~/assets/scripts/garden-planner/imports';
-import { Bonus, CropCode, CropType, FertiliserType, crops, fertilisers, getCropFromCode, getFertiliserFromCode  } from '~/assets/scripts/garden-planner/imports'
+import type Crop from '~/assets/scripts/garden-planner/classes/crop.js'
+import type Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser.js'
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus.js'
+import CropCode from '~/assets/scripts/garden-planner/enums/cropCode.js'
+import CropType from '~/assets/scripts/garden-planner/enums/crops.js'
+import FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser.js'
+import crops, { getCropFromCode } from '~/assets/scripts/garden-planner/cropList.js'
+import fertilisers, { getFertiliserFromCode } from '~/assets/scripts/garden-planner/fertiliserList.js'
 
-import FertiliserCode from '~/assets/scripts/garden-planner/enums/fertilisercode'
+
+
+import FertiliserCode from '~/assets/scripts/garden-planner/enums/fertiliserCode'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const selectedItem = useSelectedItem()

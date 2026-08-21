@@ -2,14 +2,17 @@
 import { computed } from 'vue'
 import { SelectedItemType, useSelectedItem } from '@/stores/useSelectedItem';
 import useGardenGrid from '@/stores/useGardenGrid';
-import { toCoordinateObject, type Coordinates } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import { toCoordinateObject } from '~/assets/scripts/garden-planner/utils/coordinates';
+import type { Coordinates } from '~/assets/scripts/garden-planner/utils/coordinates';
 import type { PropType } from 'vue';
-import type { Fertiliser, Crop } from '~/assets/scripts/garden-planner/imports';
-import { Bonus } from '~/assets/scripts/garden-planner/imports';
+import type Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser';
+import type Crop from '~/assets/scripts/garden-planner/classes/crop';
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus';
 
 import { useUiSettings } from '@/stores/useUiSettings'
-import CropSize from '~/assets/scripts/garden-planner/enums/crop-size';
+import CropSize from '~/assets/scripts/garden-planner/enums/cropSize';
 import { useMouseTracker } from '~/stores/useMouseTracker';
+import { bonusBackgrounds } from '~/assets/scripts/garden-planner/cropList';
 
 
 const emit = defineEmits(['update'])
@@ -18,9 +21,7 @@ const gardenGrid = useGardenGrid()
 const selectedItem = useSelectedItem()
 const uiSettings = useUiSettings()
 const mouseTracker = useMouseTracker()
-
-const TILE_HIGHLIGHT_STYLE = 'opacity-100 bg-white dark:bg-white/80'
-const TILE_NO_HIGHLIGHT_STYLE = ''
+const dragHandler = useDragAndDrop()
 
 const props = defineProps({
     coordinates: {
@@ -208,8 +209,9 @@ const bgColour = computed(() => {
         return 'bg-weed-prevention/60'
 
     if (!showBonusBackground.value) return 'bg-secondary dark:bg-palia-blue'
+    if (!tile.attachedCrop) return
 
-    return `${tileData.value.tile?.crop?.cropBackgroundColor}` || ''
+    return `${bonusBackgrounds[tile.attachedCrop.crop?.cropBonus]}` || ''
 })
 
 
@@ -253,6 +255,7 @@ function handleDrag() {
     }
 
     if (mouseTracker.left && !mouseTracker.right) {
+
         switch (selectedItem.type) {
             case SelectedItemType.Crop:
                 gardenGrid.placeCrop(props.coordinates, selectedItem.val as Crop, {
@@ -299,6 +302,50 @@ function handleHover() {
     }
 
     handleDrag()
+}
+
+function handleDragEnter() {
+    if (!tileData.value.tile) {
+        return
+    }
+    dragHandler.onTileEnter(tileData.value.tile.coordinates)
+
+    switch (getSelectedItemType(dragHandler.draggedItem as SelectedItem)) {
+        case SelectedItemType.Crop:
+            gardenGrid.hoverTile(tileData.value.tile.coordinates, dragHandler.draggedItem as Crop)
+            break
+        case SelectedItemType.Fertiliser:
+            gardenGrid.hoverTile(tileData.value.tile.coordinates, dragHandler.draggedItem as Fertiliser)
+            break
+        default:
+            gardenGrid.hoverTile(tileData.value.tile.coordinates)
+    }
+}
+
+
+/**
+ * In the event that handleDragLeave triggers AFTER handleDragEnter,
+ * we'll re-hover centered on the active tile
+ */
+function handleDragLeaveAnchor() {
+    if (dragHandler.tileCoords && dragHandler.tileCoords !== tileData.value.tile?.coordinates) {
+        switch (getSelectedItemType(dragHandler.draggedItem as SelectedItem)) {
+            case SelectedItemType.Crop:
+                gardenGrid.hoverTile(dragHandler.tileCoords, dragHandler.draggedItem as Crop)
+                break
+            case SelectedItemType.Fertiliser:
+                gardenGrid.hoverTile(dragHandler.tileCoords, dragHandler.draggedItem as Fertiliser)
+                break
+            default:
+                gardenGrid.hoverTile(dragHandler.tileCoords)
+        }
+    }
+
+}
+
+function handleDragLeave() {
+    gardenGrid.unhoverTile()
+    handleDragLeaveAnchor()
 }
 
 
@@ -420,16 +467,30 @@ const displayFertiliserByCropSize = computed(() => {
 v-if="tileData.tile"
             class="flex items-center justify-center border-0 w-full h-full relative isolate rounded-none"
             :class="[backgroundColourByHover, tileRadiusByPlot, (tileData.tile.hoverState === 'INVALID' ? 'cursor-not-allowed' : 'cursor-pointer')]"
-            @mousedown.middle.prevent.stop @click.left="handleLeftClick" @click.right="handleRightClick"
-            @click.middle="handleMiddleClick" @contextmenu.stop.prevent @mouseenter="handleHover"
-            @mouseleave="handleUnhover">
+            @mousedown.middle.prevent.stop
+            @click.left="handleLeftClick"
+            @click.right="handleRightClick"
+            @click.middle="handleMiddleClick"
+            @contextmenu.stop.prevent
+            @mouseenter="handleHover"
+            @mouseleave="handleUnhover" 
+            @dragleave="handleDragLeave"
+            @dragenter="handleDragEnter"
+            @dragover.prevent>
             <!-- <p class="absolute top-0 right-1 text-xs font-bold text-misc">{{ tileData.tile.plotLocalCoordinates }}</p> -->
             <!-- <p class="absolute top-0 right-1 text-xs font-bold text-misc">v{{ tileData.version || 0 }}</p>
             <p class="absolute top-0 left-1 text-xs font-bold text-misc">{{ tileData.tile.coordinates }}</p> -->
             <!-- <p>{{ tileData.type }}</p> -->
             <!-- <p>{{ tileData.tile.hoverState }}</p> -->
+
             <img
-v-if="(selectedItem.val && selectedItem.type === SelectedItemType.Crop && (tileData.tile?.hoverState === 'DEFAULT' || tileData.tile?.hoverState === 'INVALID'))"
+v-if="(dragHandler.isDragging && dragHandler.itemtype === SelectedItemType.Crop && (tileData.tile?.hoverState === 'DEFAULT' || tileData.tile?.hoverState === 'INVALID'))"
+                format="webp" draggable="false"
+                class="absolute select-none p-1 max-w-9.5 md:max-w-9 2xl:max-w-9.5 opacity-80 pointer-events-none dark:opacity-60"
+                :src="(dragHandler.draggedItem as Crop).image" :srcset="undefined"
+                :alt="(dragHandler.draggedItem as Crop).type">
+            <img
+v-else-if="(!dragHandler.isDragging && selectedItem.val && selectedItem.type === SelectedItemType.Crop && (tileData.tile?.hoverState === 'DEFAULT' || tileData.tile?.hoverState === 'INVALID'))"
                 format="webp" draggable="false"
                 class="absolute select-none p-1 max-w-9.5 md:max-w-9 2xl:max-w-9.5 opacity-80 pointer-events-none dark:opacity-60"
                 :src="(selectedItem.val as Crop).image" :srcset="undefined" :alt="(selectedItem.val as Crop).type">
@@ -484,7 +545,13 @@ v-show="tileData.tile.attachedCrop?.bonuses.has(Bonus.WeedPrevention)"
             </ul>
             <div class="absolute bottom-0 right-0 p-0.5" :class="displayFertiliserByCropSize">
                 <img
-v-if="(selectedItem.val && selectedItem.type === SelectedItemType.Fertiliser && tileData.tile?.isHovered)"
+v-if="(dragHandler.isDragging && dragHandler.itemtype === SelectedItemType.Fertiliser && tileData.tile?.isHovered)"
+                    :src="(dragHandler.draggedItem as Fertiliser).image" draggable="false"
+                    class="select-none max-w-4 opacity-50 dark:opacity-80" :srcset="undefined"
+                    :alt="(dragHandler.draggedItem as Fertiliser).effect">
+
+                <img
+v-else-if="(!dragHandler.isDragging && selectedItem.val && selectedItem.type === SelectedItemType.Fertiliser && tileData.tile?.isHovered)"
                     :src="(selectedItem.val as Fertiliser).image" draggable="false"
                     class="select-none max-w-4 opacity-50 dark:opacity-80" :srcset="undefined"
                     :alt="(selectedItem.val as Fertiliser).effect">

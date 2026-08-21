@@ -13,12 +13,12 @@ import GridLayoutCreator from '~/components/garden-planner/GridLayoutCreator.vue
 import ExportModal from '~/components/garden-planner/ExportModal.vue'
 import { useToasts } from '~/stores/useToasts'
 import UISettingsModal from './UISettingsModal.vue'
-import { loadSettings } from '~/assets/scripts/garden-planner/save-handler.js'
+import { loadSettings } from '~/assets/scripts/garden-planner/saveHandler.js'
 
 const toasts = useToasts()
 const gardenHandler = useGardenGrid()
-const harvester = useHarvester()
-const processor = useProcessor()
+const harvesterSettings = useHarvesterSettings()
+const processorSettings = useProcessorSettings()
 
 function clearGarden() {
   gardenHandler.clearTiles()
@@ -73,9 +73,9 @@ function loadLayoutFromUrl(code: string, useDefaultSettings: boolean = false) {
     if (defaultCode) {
 
       settingsCode.set(defaultCode)
-      const { harvesterOptions, processorSettings } = loadSettings(defaultCode)
-      processor.updateSettings(processorSettings)
-      harvester.updateSettings(harvesterOptions)
+      const { harvesterOptions, processorSettings: processorSettingsLoaded } = loadSettings(defaultCode)
+      processorSettings.updateSettings(processorSettingsLoaded)
+      harvesterSettings.updateSettings(harvesterOptions)
     }
   }
 

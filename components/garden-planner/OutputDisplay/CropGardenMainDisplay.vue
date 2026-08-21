@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import useHarvester from '~/stores/useHarvester'
-// import useGarden from '~/stores/useGarden'
 import CropDetailsHarvestDisplay from './CropHarvestDaysPanel.vue'
 import GardenFertiliserTables from './GardenFertiliserTables.vue'
 import GardenSeedTables from './GardenSeedTables.vue'

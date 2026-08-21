@@ -1,13 +1,16 @@
 <script lang="ts" setup>
-import { type ICropNameWithGrowthDiff, ItemType, parseCropId, type IDayHarvest } from '~/assets/scripts/garden-planner/utils/garden-helpers';
+import type { ICropNameWithGrowthDiff, IDayHarvest } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes.js';
+import { ItemType } from '~/assets/scripts/garden-planner/enums/itemType.js';
+import { parseCropId } from '~/assets/scripts/garden-planner/utils/cropIds'
 
 import { CropItem, type Item } from '~/assets/scripts/garden-planner/classes/items/item'
 import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue'
 import { formatMinutesToDaysHoursMinutes } from '~/utils/formatters'
-import { getCropFromType } from '~/assets/scripts/garden-planner/imports';
+import { getCropFromType } from '~/assets/scripts/garden-planner/cropList.js';
 
 
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 const harvester = useHarvester()
 const uiSettings = useUiSettings()
 const plannerDisplayConfig = usePlannerDisplayConfig()
@@ -31,7 +34,7 @@ const props = defineProps({
 })
 
 const itemsProcessed = computed(() => {
-    return processor.processor.processSingleDay(props.dayHarvest!, processor.settings, harvester.harvester.totalHarvest.cycleData)
+    return processor.processor.processSingleDay(props.dayHarvest!, processorSettings.settings, harvester.harvester.totalHarvest.cycleData)
 })
 
 const items = computed(() => {

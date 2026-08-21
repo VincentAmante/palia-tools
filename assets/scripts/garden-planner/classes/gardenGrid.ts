@@ -1,11 +1,18 @@
-import CropSize from "../enums/crop-size"
-import type { ITile } from "./tile"
-import type { TUniqueTiles as UniqueCropTiles, CoordinateObject, Coordinates } from "../utils/garden-helpers"
-import { Crop, CropCode, CropType, Fertiliser, getCodeFromCrop, getCodeFromFertiliser, getCropFromCode, getFertiliserFromCode } from '@/assets/scripts/garden-planner/imports'
-import { parseSave } from "../save-handler";
+import CropSize from "../enums/cropSize"
+import type { CoordinateObject, Coordinates } from '../utils/coordinates';
+import Crop from "./crop";
+import CropCode from "../enums/cropCode";
+import CropType from "../enums/crops";
+import Fertiliser from "./fertiliser";
+import { getCodeFromCrop, getCropFromCode } from "../cropList";
+import { getFertiliserFromCode, getCodeFromFertiliser } from "../fertiliserList";
+
+import { parseSave } from "../saveHandler";
 import { PLOT_DIMENSION_REGEX, CROP_FERTILISER_REGEX, expandPlotCode } from "../saveHandlerGardenBasic";
-import FertiliserCode from "../enums/fertilisercode";
-import { fromCoordinateObject, toCoordinateObject, translateCoordinates, getDimensions } from "../utils/garden-helpers";
+import FertiliserCode from "../enums/fertiliserCode";
+import { getDimensions } from "../utils/gridHelpers";
+import { fromCoordinateObject, toCoordinateObject, translateCoordinates  } from '../utils/coordinates';
+
 import { GridPlot } from "./gridPlot";
 import { GridTile } from "./gridTile";
 import { GridCrop } from "./gridCrop";

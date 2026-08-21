@@ -3,6 +3,7 @@ import ItemDisplay from './ItemDisplay.vue'
 import useProcessor from '~/stores/useProcessor'
 
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 </script>
 
 <template>
@@ -18,7 +19,7 @@ v-for="[name, item] in processor.inventory" :key="name" :img-src="item.img.src"
           :img-alt="item.img.alt" :star="item.isStar" :count="item.count" :base-gold-value="item.baseGoldValue" />
       </ul>
       <div
-        v-if="(processor.settings.useFertilserCostSettings && (processor.totalProduceGold !== processor.finalGoldValue))"
+        v-if="(processorSettings.settings.useFertilserCostSettings && (processor.totalProduceGold !== processor.finalGoldValue))"
         class="text-palia-blue p-2 pt-0 text-xs">
         <p class="flex items-center w-fit p-1 border border-misc dark:border-accent dark:text-accent rounded-sm"><span
             >Total:</span>

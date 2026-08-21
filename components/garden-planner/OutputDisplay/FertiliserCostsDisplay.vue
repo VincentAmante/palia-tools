@@ -2,6 +2,7 @@
 import FertiliserCostDisplayItem from './FertiliserCostDisplayItem.vue';
 
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 const harvester = useHarvester()
 
 const gardenHasFertilisers = computed(() => {
@@ -16,7 +17,7 @@ const gardenHasFertilisers = computed(() => {
 </script>
 
 <template>
-	<section v-if="processor.settings.useFertilserCostSettings && (gardenHasFertilisers)" class="flex flex-col w-fit">
+	<section v-if="processorSettings.settings.useFertilserCostSettings && (gardenHasFertilisers)" class="flex flex-col w-fit">
 		<div class="flex items-end">
 			<p class="text-sm font-semibold text-palia-blue-dark dark:text-accent">
 				Fertiliser costs

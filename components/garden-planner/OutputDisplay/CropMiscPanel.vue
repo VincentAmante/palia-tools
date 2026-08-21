@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import type { CropType} from '~/assets/scripts/garden-planner/imports';
-import { Bonus, getCropFromType } from '~/assets/scripts/garden-planner/imports';
-import { ItemType, parseCropId, type ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/utils/garden-helpers';
+import type CropType from '~/assets/scripts/garden-planner/enums/crops.js';
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus.js';
+import { getCropFromType } from '~/assets/scripts/garden-planner/cropList.js';
+import type { ICropNameWithGrowthDiff } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes.js';
+import { ItemType } from '~/assets/scripts/garden-planner/enums/itemType.js';
+import { parseCropId } from '~/assets/scripts/garden-planner/utils/cropIds'
 import SettingsMinutesDisplay from '../SettingsMinutesDisplay.vue';
-import CropSize from '~/assets/scripts/garden-planner/enums/crop-size';
+import CropSize from '~/assets/scripts/garden-planner/enums/cropSize.js';
 import { formatToOneDecimal } from '~/utils/formatters'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -23,6 +26,7 @@ const props = defineProps({
 const gardenHandler = useGardenGrid()
 const harvester = useHarvester()
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 
 
 const analyser = gardenHandler.analyser
@@ -90,7 +94,7 @@ const lastDayCropWasHarvested = computed(() => {
 
 
 const outputInfo = computed(() => {
-    const processType = processor.settings.cropSettings.get(props.cropId)?.processAs
+    const processType = processorSettings.settings.cropSettings.get(props.cropId)?.processAs
 
     let type: 'crops' | 'preserves' | 'seeds' = 'crops'
     switch (processType) {
@@ -105,7 +109,7 @@ const outputInfo = computed(() => {
 })
 
 const cropSettings = computed(() => {
-    return processor.settings.cropSettings.get(props.cropId)!
+    return processorSettings.settings.cropSettings.get(props.cropId)!
 })
 
 const outputInfoWithProcessing = computed(() => {
@@ -321,7 +325,7 @@ const totalGoldGenerated = computed(() => {
                 </tbody>
             </template>
             <template
-                v-if="processor.settings.cropSettings.get(cropId)?.processAs !== ItemType.Crop && outputInfoWithProcessing && detailedProcessingInfo">
+                v-if="processorSettings.settings.cropSettings.get(cropId)?.processAs !== ItemType.Crop && outputInfoWithProcessing && detailedProcessingInfo">
                 <thead>
                     <tr class="bg-misc dark:bg-palia-blue-dark text-accent">
                         <th colspan="2" class="capitalize">

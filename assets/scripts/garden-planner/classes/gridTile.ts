@@ -1,9 +1,11 @@
-import type { TUniqueTiles, CoordinateObject, Coordinates } from "../utils/garden-helpers"
-import type { Bonus } from "../imports";
-import type { Crop, Fertiliser } from '@/assets/scripts/garden-planner/imports'
+import type { TUniqueTiles } from "../types/gardenSimulatorTypes"
+import type { CoordinateObject, Coordinates } from '../utils/coordinates';
+import type Bonus from "../enums/bonus";
+import type Crop from "./crop";
+import type Fertiliser from "./fertiliser";
 import uniqid from 'uniqid'
-import { translateCoordinates } from "../utils/garden-helpers";
-import type { IGridCrop, IGridTile } from "../utils/gardenGridTypes";
+import { translateCoordinates } from '../utils/coordinates';
+import type { IGridCrop, IGridTile } from "../types/gardenGridTypes";
 
 interface GridTileConstructorParams {
     coordinates: Coordinates,

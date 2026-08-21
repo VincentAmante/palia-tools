@@ -1,108 +1,111 @@
 <script setup lang="ts">
-import GardenDisplay from './garden-planner/GardenDisplay.vue'
 import StatsDisplay from './garden-planner/StatsDisplay.vue'
 import OutputDisplay from './garden-planner/OutputDisplay.vue'
 import ItemSelector from '~/components/garden-planner/ItemSelector/ItemSelector.vue'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
-import useGarden from '~/stores/useGarden'
 import { storeToRefs } from 'pinia'
 import useHarvester from '~/stores/useHarvester'
-import type { TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { ITotalHarvest, TUniqueTiles } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes.js'
 import { useSettingsCode } from '~/stores/useSettingsCode'
-import { ItemType } from '~/assets/scripts/garden-planner/utils/garden-helpers'
-import { getCropFromType } from '~/assets/scripts/garden-planner/imports'
+import { ItemType } from '~/assets/scripts/garden-planner/enums/itemType.js'
+import { getCropFromType } from '~/assets/scripts/garden-planner/cropList.js'
 import AppDivider from './AppDivider.vue'
 import GridGardenDisplay from './garden-planner/GridGardenDisplay.vue'
-import { loadSettings, saveSettings } from '~/assets/scripts/garden-planner/save-handler.js'
+import { loadSettings, saveSettings } from '~/assets/scripts/garden-planner/saveHandler.js'
 
 import { usePlannerDisplayConfig } from '~/stores/usePlannerDisplayConfig'
 
+import { watch } from 'vue'
+
 const isTakingScreenshot = useTakingScreenshot()
 const harvester = useHarvester()
+const harvesterSettings = useHarvesterSettings()
 const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 const plannerDisplayConfig = usePlannerDisplayConfig()
 
 const garden = useGardenGrid()
 const settingsCode = useSettingsCode()
 const saveCode = useSaveCode()
 
-watchEffect(() => {
-  saveCode.set(garden.saveGarden(settingsCode.code))
-  garden.updateStats()
-})
+watch(
+  () => settingsCode.code,
+  (newSettingsCode) => {
+    saveCode.set(garden.saveGarden(newSettingsCode))
+  }
+)
 
-watchEffect(() => {
-  harvester.harvester.simulateYield(garden.analyser.uniqueTiles as TUniqueTiles, harvester.settings)
-})
+let harvesterDebounceTimer: ReturnType<typeof setTimeout>
 
-watchEffect(() => {
-  processor.simulateProcessing(harvester.totalHarvest, {
-    fertiliserCountsByType: garden.analyser.fertiliserCountByType
-  })
-})
-
-const starBaseChance = ref(0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02))
-
-watchEffect(() => {
-  if (harvester.settings.level < 0)
-    harvester.settings.level = 0
-
-  starBaseChance.value = 0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)
-
-  starBaseChance.value = Math.min(1, starBaseChance.value)
-
-  if (harvester.settings.days === 'L')
-    harvester.settings.days = -1
-  else if (harvester.settings.days === 'M')
-    harvester.settings.days = 0
-  else if (harvester.settings.days < -1)
-    harvester.settings.days = -1
-
-  harvester.updateSettings({ ...harvester.settings })
-})
-
-
-function saveGarden() {
-  const saveString = saveSettings(harvester.settings, processor.settingsForEncoding)
-  settingsCode.set(saveString)
-}
+watch(
+  [() => harvesterSettings.settings, () => garden.analyser.uniqueTiles],
+  () => {
+    clearTimeout(harvesterDebounceTimer)
+    harvesterDebounceTimer = setTimeout(() => {
+      harvester.simulateYield(garden.analyser.uniqueTiles, harvesterSettings.settings)
+    }, 20)
+  },
+  { deep: true }
+)
 
 function loadGarden(saveString: string) {
   const { harvesterOptions, processorSettings: loadedProcessorSettings } = loadSettings(saveString)
-  harvester.updateSettings(Object.assign({}, harvesterOptions))
-  processor.updateSettings(Object.assign({}, loadedProcessorSettings))
-  processor.simulateProcessing(harvester.totalHarvest, {
-    fertiliserCountsByType: garden.analyser.fertiliserCountByType
-  })
+  harvesterSettings.updateSettings(Object.assign({}, harvesterOptions))
+  processorSettings.updateSettings(Object.assign({}, loadedProcessorSettings))
 }
-
-
-watchEffect(() => {
-  // set all isActive to false
-  for (const setting of processor.settings.cropSettings.values())
-    setting.isActive = false
-
-  for (const [cropId, data] of harvester.totalHarvest.crops) {
-    const cropSetting = processor.settings.cropSettings.get(cropId) ?? {
-      count: data.totalWithDeductions,
-      cropType: data.cropType,
-      isStar: data.isStar,
-      processAs: ItemType.Crop,
-      crafters: 1,
-      targetTime: 0,
-      isActive: true,
-      hasPreserve: (getCropFromType(data.cropType)?.conversionInfo.preserveProcessMinutes || 0) > 0,
+watch(
+  () => harvester.totalHarvest.crops,
+  (cropHarvests) => {
+    for (const setting of processorSettings.settings.cropSettings.values()) {
+      setting.isActive = false
     }
 
-    cropSetting.count = data.totalWithDeductions
+    for (const [cropId, data] of cropHarvests) {
+      let cropSetting = processorSettings.settings.cropSettings.get(cropId)
 
-    processor.settings.cropSettings.set(cropId, cropSetting)
+      if (!cropSetting) {
+        cropSetting = {
+          count: data.totalWithDeductions,
+          cropType: data.cropType,
+          isStar: data.isStar,
+          processAs: ItemType.Crop,
+          crafters: 1,
+          targetTime: 0,
+          isActive: true,
+          hasPreserve: (getCropFromType(data.cropType)?.conversionInfo.preserveProcessMinutes || 0) > 0,
+        }
+      } else {
+        cropSetting.count = data.totalWithDeductions
+        cropSetting.isActive = true
+      }
 
-    processor.settings.cropSettings.get(cropId)!.isActive = true
-  }
+      processorSettings.settings.cropSettings.set(cropId, cropSetting)
+    }
+  },
+  { deep: true, immediate: true }
+)
 
-  saveGarden()
-})
+let processorDebounceTimer: ReturnType<typeof setTimeout>
+watch(
+  [
+    () => processorSettings.settings,
+    () => garden.analyser.fertiliserCountByType,
+    () => harvester.totalHarvest
+  ],
+  () => {
+    clearTimeout(processorDebounceTimer)
+
+    processorDebounceTimer = setTimeout(() => {
+      processor.simulateProcessing(harvester.totalHarvest as Readonly<ITotalHarvest>, {
+        fertiliserCountsByType: garden.analyser.fertiliserCountByType
+      })
+
+      const saveString = saveSettings(harvesterSettings.settings, processor.settingsForEncoding)
+      settingsCode.set(saveString)
+    }, 30) // set it to run "after" harvester yield sim
+  },
+  { deep: true }
+)
 
 const { updateIsRequested } = storeToRefs(settingsCode)
 
@@ -117,10 +120,6 @@ watch(updateIsRequested, () => {
 <template>
   <section id="garden-planner" ref="display" class="@container">
     <div class="sm:py-1 rounded-t-md sm:px-2 bg-accent dark:bg-palia-blue-dark">
-      <!-- <p class="bg-warning rounded-sm p-2 mt-1 text-palia-blue-dark text-sm font-semibold">
-        <font-awesome-icon class="text-sm" :icon="['fas', 'triangle-exclamation']" />
-        Some time & gold values not updated to 0.193 values. Changes will come shortly
-      </p> -->
       <ItemSelector />
       <AppDivider class="order-3 mx-4 my-1 @:col-span-7 " :class="[isTakingScreenshot.get ? 'col-span-7' : '']" />
       <section
@@ -159,11 +158,10 @@ class="pt-2 @sm:mx-auto"
     </div>
     <div
 v-show="isTakingScreenshot.get" id="watermark" aria-label="hidden"
-      class="grid justify-between order-8 w-full px-4 lg:col-span-4 bg-palia-blue rounded-b-md"  :class="{
+      class="grid justify-between order-8 w-full px-4 lg:col-span-4 bg-palia-blue rounded-b-md" :class="{
         'grid-cols-2': (!garden.isGardenWide)
       }">
-      <div
-class="flex items-center w-full gap-2 p-2 text-right rounded-md leading-1">
+      <div class="flex items-center w-full gap-2 p-2 text-right rounded-md leading-1">
         <img
 format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48px" class="max-w-16"
           alt="Palia Garden Planner Logo">
@@ -177,7 +175,10 @@ format="webp" src="https://pgp-cdn.b-cdn.net/logo.webp" width="48px" height="48p
         </div>
       </div>
       <div class="flex p-2 text-accent" :class="{ 'items-end justify-end': !garden.isGardenWide }">
-        <p class="text-xs opacity-70 max-w-160 font-mono" :class="{'text-right': !garden.isGardenWide}">{{ saveCode.code }}</p>
+        <p class="text-xs opacity-70 max-w-160 font-mono" :class="{ 'text-right': !garden.isGardenWide }">{{
+          saveCode.code
+        }}
+        </p>
       </div>
     </div>
   </section>

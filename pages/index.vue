@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import { useToasts } from '~/stores/useToasts'
 import CropModalButton from '~/components/garden-planner/ItemSelector/CropModalButton.vue'
 import MenuBar from '~/components/garden-planner/MenuBar.vue'
@@ -16,7 +15,6 @@ useHead({
   ],
 })
 
-// const isTakingScreenshot = useTakingScreenshot()
 const toasts = useToasts()
 
 const uiSettings = useUiSettings()
@@ -38,13 +36,6 @@ const toastLocation = computed(() => {
       return 'toast-top toast-start'
   }
 })
-
-// const doesUserPreferDark = usePreferredDark()
-
-// const useDarkMode = computed(() => {
-//     return (uiSettings.settings.colorScheme === 'dark' || (uiSettings.settings.colorScheme === 'system' && doesUserPreferDark))
-// })
-
 </script>
 
 <template>
@@ -54,26 +45,12 @@ const toastLocation = computed(() => {
     </h2>
     <GuideCard />
     <section class="lg:px-12">
-
       <GardenPlanner />
       <ClientOnly>
 
         <MenuBar />
       </ClientOnly>
     </section>
-    <!-- <DevOnly>
-      <div class="fixed bottom-0 left-0 flex flex-col gap-2 p-2 mx-12 my-2 rounded-md w-fit bg-accent bg-opacity-10">
-        <p class="text-sm text-palia-blue-dark">
-          Toggle Screenshot Mode
-        </p>
-        <button class="btn btn-accent" @click="isTakingScreenshot.set(!isTakingScreenshot.get)">
-          {{ isTakingScreenshot.get }}
-        </button>
-        <button class="btn" @click="getImage">
-          Snapshot
-        </button>
-      </div>
-    </DevOnly> -->
     <CropModalButton :position="uiSettings.settings.floatComponentLocation" />
     <Teleport to="body">
       <section id="toasts" class="toast z-1000" :class="toastLocation">

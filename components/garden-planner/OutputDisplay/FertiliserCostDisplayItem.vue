@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
-import type { FertiliserType } from '~/assets/scripts/garden-planner/imports';
-import type { FertiliserItem } from '~/assets/scripts/garden-planner/utils/garden-helpers';
-import { Currency } from '~/assets/scripts/garden-planner/utils/garden-helpers';
-import ItemDisplayAlt from '../HarvestCalculator/ItemDisplayAlt.vue';
+import type FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser.js';
+import type { FertiliserItem } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes.js';
+import { Currency } from '~/assets/scripts/garden-planner/enums/currency.js';
 import ItemDisplay from '../HarvestCalculator/ItemDisplay.vue';
 import { FertiliserCostSource } from '~/assets/scripts/garden-planner/classes/processor';
 
-const processor = useProcessor()
+const processorSettings = useProcessorSettings()
 const harvester = useHarvester()
 
 const props = defineProps({
@@ -22,7 +21,7 @@ const props = defineProps({
 })
 
 const source = computed(() => {
-    const costSource = processor.settings.fertiliserCostSettings.get(props.fertiliserType)
+    const costSource = processorSettings.settings.fertiliserCostSettings.get(props.fertiliserType)
 
     if (!costSource) return ''
 

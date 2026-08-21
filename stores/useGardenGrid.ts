@@ -1,8 +1,10 @@
 import { defineStore, skipHydrate } from 'pinia'
 import type { GardenGridPlaceCropOptions } from '~/assets/scripts/garden-planner/classes/gardenGrid';
 import { GardenGrid, } from '~/assets/scripts/garden-planner/classes/gardenGrid'
-import type { Crop, Fertiliser, Bonus } from '~/assets/scripts/garden-planner/imports';
-import type { Coordinates } from '~/assets/scripts/garden-planner/utils/garden-helpers';
+import type Crop from '~/assets/scripts/garden-planner/classes/crop';
+import type Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser';
+import type Bonus from '~/assets/scripts/garden-planner/enums/bonus';
+import type { Coordinates } from '~/assets/scripts/garden-planner/utils/coordinates';
 import { GridTilesAnalyser } from '~/assets/scripts/garden-planner/classes/gridTileAnalyser';
 
 

@@ -1,12 +1,13 @@
 import { getCropFromType } from '../cropList'
-import { type FertiliserType, CropType, getFertiliserFromType, type Crop } from '../imports';
+import type FertiliserType from '../enums/fertiliser'
+import CropType from '../enums/crops'
+import { getFertiliserFromType } from '../fertiliserList'
+import type Crop from './crop'
 
-
-
-
-
-import { Currency, ItemType, parseCropId } from '../utils/garden-helpers'
-import type { CropItem, FertiliserItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IDayHarvest, IHarvestCyclePhase, IInventoryItem, ISeedTracker, ITotalHarvest } from '../utils/garden-helpers'
+import { ItemType } from '../enums/itemType'
+import { Currency } from '../enums/currency'
+import { parseCropId } from '../utils/cropIds'
+import type { CropItem, FertiliserItem, ICropHarvestCycle, ICropNameWithGrowthDiff, IDayHarvest, IInventoryItem, ISeedTracker, ITotalHarvest } from '../types/gardenSimulatorTypes'
 import type { ICropConversions } from './crop'
 
 /**
@@ -994,7 +995,8 @@ function processHarvest(processHarvestArgs: IProcessHarvestArgs): IProcessHarves
   const cropCount = phaseData?.yield[qualityId].totalWithDeductions || 0
 
   if (cropCount === 0) {
-    console.warn('Empty cropCount found, bug?')
+    console.warn(`Empty cropCount found, bug? ${qualityId}`)
+    console.warn(cycleData)
   }
 
   // Calculate how many conversions can be made

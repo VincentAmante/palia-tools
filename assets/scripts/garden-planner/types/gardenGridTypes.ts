@@ -1,8 +1,7 @@
 import type { ITile } from '@/assets/scripts/garden-planner/classes/tile'
-import type { CoordinateObject, Coordinates } from "../utils/garden-helpers"
-import type { Bonus  } from "../imports";
-import type { Crop } from '@/assets/scripts/garden-planner/imports'
-
+import type { CoordinateObject, Coordinates } from '../utils/coordinates'
+import type Bonus from '../enums/bonus'
+import type Crop from '../classes/crop'
 export interface IGridTile extends ITile {
     attachedCrop: IGridCrop | null
     coordinates: Coordinates

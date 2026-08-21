@@ -1,7 +1,7 @@
-import type { CoordinateObject, Coordinates  } from "../utils/garden-helpers"
+import type { CoordinateObject, Coordinates } from '../utils/coordinates';
 import uniqid from 'uniqid'
-import { translateCoordinates } from "../utils/garden-helpers";
-import type { IGridPlot, IGridTile, IGridCrop } from "../utils/gardenGridTypes";
+import { translateCoordinates } from '../utils/coordinates';
+import type { IGridPlot, IGridTile, IGridCrop } from "../types/gardenGridTypes";
 
 export class GridPlot implements IGridPlot {
     private _startCoordinates: Coordinates;

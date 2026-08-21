@@ -1,9 +1,8 @@
 import { defineStore, skipHydrate } from 'pinia'
 import { GardenGrid, } from '~/assets/scripts/garden-planner/classes/gardenGrid'
-import type { Crop, Fertiliser, Bonus } from '~/assets/scripts/garden-planner/imports';
-import type { Coordinates } from '~/assets/scripts/garden-planner/utils/garden-helpers';
+import type { Coordinates } from '~/assets/scripts/garden-planner/utils/coordinates';
 
-const DEV_PLOT_GRID_A = () => {
+const BASIC_9X9_GRID = () => {
     return {
         widthInTiles: 9,
         heightInTiles: 11,
@@ -19,7 +18,7 @@ const DEV_PLOT_GRID_A = () => {
 }
 
 const useLayoutCreatorGrid = defineStore('layoutCreatorGrid', () => {
-    const grid = shallowRef(new GardenGrid(DEV_PLOT_GRID_A()))
+    const grid = shallowRef(new GardenGrid(BASIC_9X9_GRID()))
 
     const isPlotLimitsRaisedVal = ref(false)
 

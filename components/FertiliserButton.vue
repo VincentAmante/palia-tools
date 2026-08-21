@@ -2,7 +2,10 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
-import { Bonus, Fertiliser, FertiliserType } from '@/assets/scripts/garden-planner/imports'
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus'
+import Fertiliser from '~/assets/scripts/garden-planner/classes/fertiliser'
+import FertiliserType from '~/assets/scripts/garden-planner/enums/fertiliser'
+
 import { useDragAndDrop } from '@/stores/useDragAndDrop'
 
 const props = defineProps({
@@ -65,19 +68,19 @@ const dragHandler = useDragAndDrop()
 v-if="!(fertiliser.type === FertiliserType.None) && !(isTakingScreenshot && count === 0)" draggable="true"
     class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue-secondary dark:border-water-retain/60"
     :class="(isSelected && !isTakingScreenshot) ? 'bg-white dark:bg-water-retain/20' : ''"
-    @dragstart="(e: DragEvent) => dragHandler.startDrag(fertiliser.type)"
+    @dragstart="(e: DragEvent) => dragHandler.startDrag(fertiliser)"
     @dragend="(e: DragEvent) => dragHandler.stopDrag()">
     <font-awesome-icon
-v-if="bonus.icon !== ''" class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black"
+v-if="bonus.icon !== ''" class="absolute top-0 left-0 p-1 text-xs leading-0 stroke-black pointer-events-auto"
       :icon="['fas', bonus.icon]" :class="bonus.colour" />
-    <p v-if="count > 0" class="absolute bottom-0 right-0 py-[0.1rem] pr-[0.2rem] text-xs leading-none font-bold text-palia-blue-dark dark:text-accent">
+    <p v-if="count > 0" class="absolute bottom-0 right-0 py-[0.1rem] pr-[0.2rem] text-xs leading-none font-bold text-palia-blue-dark dark:text-accent  pointer-events-auto">
       {{ count }}
     </p>
     <img
 v-if="(fertiliser && fertiliser.image != null && fertiliser.image !== '')" v-once width="30" height="30"
-      class="absolute -z-10 max-w-[30px] pointer-events-none" :src="fertiliser.image"
+      class="absolute -z-10 max-w-[30px] pointer-events-auto" :src="fertiliser.image"
       :class="(fertiliser.type === fertiliser.type) ? 'opacity-100' : 'opacity-90'" :alt="fertiliser.type"
       :srcset="undefined" draggable="false" >
-    <font-awesome-icon v-else class="absolute -z-10 max-w-[34px] text-warning text-3xl " :icon="['fas', 'eraser']" />
+    <font-awesome-icon v-else class="absolute -z-10 max-w-[34px] text-warning text-3xl pointer-events-auto" :icon="['fas', 'eraser']" />
   </button>
 </template>

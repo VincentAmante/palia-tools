@@ -3,8 +3,10 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTakingScreenshot } from '~/stores/useIsTakingScreenshot'
 import { useDragAndDrop } from '@/stores/useDragAndDrop'
-import { Bonus, Crop, CropType } from '@/assets/scripts/garden-planner/imports'
-import { parseCropId } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus'
+import Crop from '~/assets/scripts/garden-planner/classes/crop'
+import CropType from '~/assets/scripts/garden-planner/enums/crops'
+import { parseCropId } from '~/assets/scripts/garden-planner/utils/cropIds'
 
 const props = defineProps({
   crop: {
@@ -70,7 +72,7 @@ const dragHandler = useDragAndDrop()
 v-if="!(crop.type === CropType.None) && !(isTakingScreenshot && count === 0)" draggable="true"
     class="relative border rounded-xs btn btn-lg btn-square btn-secondary isolate border-misc dark:bg-palia-blue dark:border-palia-blue-dark"
     :class="(isSelected && !isTakingScreenshot) ? 'bg-white' : ''" :name="`select ${crop.type}`"
-    :aria-label="`Crop ${crop.type} ${count > 0 ? `, ${count}` : ''}`" @dragstart="(e: DragEvent) => dragHandler.startDrag(crop.type)"
+    :aria-label="`Crop ${crop.type} ${count > 0 ? `, ${count}` : ''}`" @dragstart="(e: DragEvent) => dragHandler.startDrag(crop)"
     @dragend="(e: DragEvent) => dragHandler.stopDrag()">
     <font-awesome-icon
 v-if="parseCropId(cropId).hasGrowthBoost"

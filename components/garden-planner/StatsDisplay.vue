@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import useGarden from '~/stores/useGarden'
-import { Bonus } from '~/assets/scripts/garden-planner/imports'
-
+import Bonus from '~/assets/scripts/garden-planner/enums/bonus';
 const garden = useGardenGrid()
 </script>
 

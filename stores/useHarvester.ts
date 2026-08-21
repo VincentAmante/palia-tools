@@ -1,49 +1,42 @@
 import { defineStore } from 'pinia'
 import type { IHarvesterOptions } from '~/assets/scripts/garden-planner/classes/harvester'
 import Harvester from '~/assets/scripts/garden-planner/classes/harvester'
-import type { TUniqueTiles } from '~/assets/scripts/garden-planner/utils/garden-helpers'
+import type { DayHarvests, ITotalHarvest, TUniqueTiles } from '~/assets/scripts/garden-planner/types/gardenSimulatorTypes'
 
 const useHarvester = defineStore('harvester', () => {
   const harvesterRef = ref(new Harvester())
-  
-  const harvestSettingsRef = ref<IHarvesterOptions>({
-    days: -1,
-    includeReplant: true,
-    includeReplantCost: true,
-    useStarSeeds: true,
-    useGrowthBoost: false,
-    level: 0,
-  })
+
+  const _dayHarvests = ref<DayHarvests>(new Map())
+  const _totalHarvest = ref<ITotalHarvest>({
+    lastHarvestDay: 0,
+    crops: new Map(),
+    seedsRemainder: new Map(),
+    cycleData: new Map(),
+  } satisfies ITotalHarvest)
+
 
   function simulateYield(
     tiles: TUniqueTiles,
-    options: IHarvesterOptions = harvestSettingsRef.value,
+    options: IHarvesterOptions,
   ) {
-    harvesterRef.value = new Harvester()
-    harvesterRef.value.simulateYield(tiles, options)
-  }
+    const newHarvester = new Harvester()
+    newHarvester.simulateYield(tiles, options)
 
-  function updateSettings(newSettings: IHarvesterOptions) {
-    harvestSettingsRef.value = { ...newSettings }
-  }
+    _dayHarvests.value = newHarvester.dayHarvests
+    _totalHarvest.value = newHarvester.totalHarvest
 
-  function updateSetting(newSettings: { [property in keyof IHarvesterOptions]?: IHarvesterOptions[property] }) {
-    harvestSettingsRef.value = { ...harvestSettingsRef.value, ...newSettings }
+    harvesterRef.value = newHarvester
   }
 
   const harvester = computed(() => harvesterRef.value)
-  const dayHarvests = computed(() => harvesterRef.value.dayHarvests)
-  const totalHarvest = computed(() => harvesterRef.value.totalHarvest)
-  const settings = computed(() => harvestSettingsRef.value)
+  const dayHarvests = readonly(_dayHarvests)
+  const totalHarvest = readonly(_totalHarvest)
 
   return {
     harvester,
     simulateYield,
     dayHarvests,
     totalHarvest,
-    settings,
-    updateSettings,
-    updateSetting
   }
 })
 

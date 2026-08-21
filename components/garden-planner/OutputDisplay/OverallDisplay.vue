@@ -9,8 +9,10 @@ import { formatMinutesToDaysHoursMinutesObject } from '~/utils/formatters'
 import FertiliserCostsDisplay from './FertiliserCostsDisplay.vue'
 
 const harvester = useHarvester()
+const harvesterSettings = useHarvesterSettings()
 const processor = useProcessor()
-const starBaseChance = computed(() => Math.trunc(Math.min(100, (0.25 + (harvester.settings.useStarSeeds ? 0.25 : 0) + (harvester.settings.level * 0.02)) * 100)))
+const processorSettings = useProcessorSettings()
+const starBaseChance = computed(() => Math.trunc(Math.min(100, (0.25 + (harvesterSettings.settings.useStarSeeds ? 0.25 : 0) + (harvesterSettings.settings.level * 0.02)) * 100)))
 const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(processor.highestCraftingTime))
 </script>
 <template>
@@ -20,6 +22,17 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
         Overview
       </p>
       <div class="grid grid-cols-3 gap-1 @xl:grid-cols-5">
+        
+        <div
+          class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
+          <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
+            Growth Ticks
+          </p>
+          <p
+            class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
+            {{ harvester.totalHarvest.lastHarvestDay }}
+          </p>
+        </div>
         <div
           class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
           <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
@@ -36,11 +49,11 @@ width="12" height="12" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4"
         <div
           class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
           <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
-            <span
+            <!-- <span
 v-if="craftingTime.actualValue <= 0" class="text-xs font-normal tooltip"
               data-tip="Processing time excluded">
               <FontAwesomeIcon class="text-sm text-warning" :icon="['fas', 'triangle-exclamation']" />
-            </span>
+            </span> -->
             Average
           </p>
           <p
@@ -48,7 +61,7 @@ v-if="craftingTime.actualValue <= 0" class="text-xs font-normal tooltip"
             <img
 width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4" :srcset="undefined"
               alt="Gold" format="webp">
-            <span v-if="processor.highestCraftingTime > 0 && processor.settings.goldAverageSetting === 'crafterTime'">
+            <span v-if="processor.highestCraftingTime > 0 && processorSettings.settings.goldAverageSetting === 'crafterTime'">
               &#8776;{{ (processor.averageGoldValue || 0).toLocaleString() }}
             </span>
             <span v-else>
@@ -59,10 +72,10 @@ width="16" height="16" src="https://pgp-cdn.b-cdn.net/gold.webp" class="max-h-4"
           <p class="flex items-center justify-end gap-1 text-xs italic text-center text-palia-blue dark:text-accent flex-wrap">
             <span
 class=" inline-block"
-              :class="{ 'hidden': processor.settings.goldAverageSetting === 'growthTick' }">per</span>
-            <span v-if="processor.settings.goldAverageSetting === 'growthTick'" class="@sm:hidden inline-block">/</span>
+              :class="{ 'hidden': processorSettings.settings.goldAverageSetting === 'growthTick' }">per</span>
+            <span v-if="processorSettings.settings.goldAverageSetting === 'growthTick'" class="@sm:hidden inline-block">/</span>
             <span
-v-if="processor.highestCraftingTime > 0 && processor.settings.goldAverageSetting === 'crafterTime'"
+v-if="processor.highestCraftingTime > 0 && processorSettings.settings.goldAverageSetting === 'crafterTime'"
               class="font-bold text-growth-boost-dark dark:text-growth-boost">Hour
               <FontAwesomeIcon :icon="['fas', 'stopwatch']" />
             </span>
@@ -112,17 +125,7 @@ v-if="(craftingTime.actualValue > 0)"
           </p>
           <p
             class="flex items-center justify-end gap-1 text-lg font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
-            {{ harvester.settings.level }}
-          </p>
-        </div>
-        <div
-          class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
-          <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
-            Growth Ticks
-          </p>
-          <p
-            class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
-            {{ harvester.totalHarvest.lastHarvestDay }}
+            {{ harvesterSettings.settings.level }}
           </p>
         </div>
       </div>
@@ -132,22 +135,22 @@ v-if="(craftingTime.actualValue > 0)"
         <li class="text-xs border-none badge badge-sm bg-quality-increase-dark">
           <p>
             <FontAwesomeIcon
-class="pr-1" :class="harvester.settings.useStarSeeds ? '' : ' opacity-50'"
+class="pr-1" :class="harvesterSettings.settings.useStarSeeds ? '' : ' opacity-50'"
               :icon="['fas', 'star']" />
-            {{ harvester.settings.useStarSeeds ? 'Star Seed' : 'Normal Seed' }}
+            {{ harvesterSettings.settings.useStarSeeds ? 'Star Seed' : 'Normal Seed' }}
           </p>
         </li>
-        <li v-if="harvester.settings.includeReplant" class="text-xs border-none badge badge-sm bg-harvest-boost-dark">
+        <li v-if="harvesterSettings.settings.includeReplant" class="text-xs border-none badge badge-sm bg-harvest-boost-dark">
           <p>
             <span>
               <FontAwesomeIcon :icon="['fas', 'seedling']" class="pr-1" />
               Includes Replant
-            </span><span v-if="harvester.settings.includeReplantCost">& Cost
+            </span><span v-if="harvesterSettings.settings.includeReplantCost">& Cost
 
             </span>
           </p>
         </li>
-        <li v-if="harvester.settings.useGrowthBoost" class="text-xs border border-none badge badge-sm">
+        <li v-if="harvesterSettings.settings.useGrowthBoost" class="text-xs border border-none badge badge-sm">
           <p>
             <FontAwesomeIcon :icon="['fas', 'forward-fast']" class="pr-1" />
             Growth Boost
@@ -156,7 +159,7 @@ class="pr-1" :class="harvester.settings.useStarSeeds ? '' : ' opacity-50'"
         <li class="text-xs badge badge-sm">
           <span class="font-black">{{ starBaseChance }}%</span>Star Crop Chance
         </li>
-        <li v-if="!processor.settings.useFertilserCostSettings" class="text-xs badge badge-sm bg-growth-boost-dark border-none">
+        <li v-if="!processorSettings.settings.useFertilserCostSettings" class="text-xs badge badge-sm bg-growth-boost-dark border-none">
           <p>
             <FontAwesomeIcon :icon="['fas', 'poop']" class="pr-1" />
             No Fertiliser Cost

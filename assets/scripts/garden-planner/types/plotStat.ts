@@ -1,5 +1,5 @@
 import type CropType from '../enums/crops'
-import type { FertiliserType } from '../imports'
+import type FertiliserType from '../enums/fertiliser'
 import type Bonus from '../enums/bonus'
 
 interface PlotStat {

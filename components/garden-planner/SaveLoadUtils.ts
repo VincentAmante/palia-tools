@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { convertV_0_3SettingsToV_0_4Settings } from '~/assets/scripts/garden-planner/save-handler'
+import { convertV_0_3SettingsToV_0_4Settings } from '~/assets/scripts/garden-planner/saveHandler'
 import { LATEST_VERSION } from '~/assets/scripts/garden-planner/types/version'
 
 export interface SavedGardenCode {
