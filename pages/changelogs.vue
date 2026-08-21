@@ -53,9 +53,6 @@ onMounted(() => {
               <span class="font-bold">Removed irrelevant warning on non-processed crops</span>
             </li>
             <li>
-              <span class="font-bold">Removed irrelevant warning on non-processed crops</span>
-            </li>
-            <li>
               <span class="font-bold">Minor UI bug fixes & performance optimisations</span>
             </li>
           </template>
