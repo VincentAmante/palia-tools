@@ -5,8 +5,6 @@ useSeoMeta({
   title: 'Palia Garden Planner',
   description:
     'A fan-made tool for planning out your garden. Displays crop and fertiliser bonuses, approximates harvest yield, and provides shareable save codes!',
-  keywords:
-    'Palia garden planner, Palia farming calculator, Palia crop layout, Palia gold yield calculator, Palia fertilizer guide, Palia layout planner, Palia garden creator,',
   ogSiteName: 'Palia Garden Planner',
   ogTitle: 'Palia Garden Planner',
   ogDescription:
