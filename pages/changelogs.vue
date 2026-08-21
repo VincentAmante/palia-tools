@@ -38,15 +38,38 @@ onMounted(() => {
       </div>
 
       <div class="grid gap-2">
-
         <ChangelogItem checked>
+          <template #title>
+            <span class="font-bold">August 21, 2026 — Bug Fixes & Feature Re-implementation (Minor)</span>
+          </template>
+          <template #summary>
+            <li>
+              <span class="font-bold">You can now once again drag crops/fertilisers straight from the item selector</span>
+            </li>
+            <li>
+              <span class="font-bold">Removed irrelevant warning on non-processed crops</span>
+            </li>
+            <li>
+              <span class="font-bold">Minor UI bug fixes & performance optimisations</span>
+            </li>
+          </template>
+          <template #default>
+            <p>Just bug fixes, most relevant one is fixing an old feature where you could drag crops straight from the selector (mouse-only).
+              Also removed this warning the planner gave when a crop is unprocessed.
+              This was used back when crops could be processed without any indication of processing time.
+              As processing time will always be included if relevant, I no longer see fit to include it.
+            </p>
+          </template>
+        </ChangelogItem>
+        <ChangelogItem>
           <template #title>
             August 04, 2026 — New Logo & Project License Change (Internal Change)
           </template>
           <template #summary>
             <li>
               Project licensing has been changed to MIT License for the entire project, to MIT License for the Garden
-              Planner itself, CC By-NC for the website's non-essential written content (these changelogs, roadmaps, notices, etc.),
+              Planner itself, CC By-NC for the website's non-essential written content (these changelogs, roadmaps,
+              notices, etc.),
               and custom reservations for branding (custom logo, certain website components.)
             </li>
             <li>
@@ -87,7 +110,8 @@ onMounted(() => {
               become unavailable without passing over control to anyone.
               By having an MIT license for the core app, it's ensured that players would always have access to the
               Garden Planner or an iteration of it.
-              In addition, any developer can still fork + rehost to make their own version freely provided the terms are respected.
+              In addition, any developer can still fork + rehost to make their own version freely provided the terms are
+              respected.
             </p>
             <p class="indent-6">
               The only concern would be potential cases of site mirrors that may confuse users into believing it is the
@@ -129,7 +153,7 @@ onMounted(() => {
             </p>
           </template>
         </ChangelogItem>
-        <ChangelogItem checked>
+        <ChangelogItem>
           <template #title>
             <span class="font-bold">June 30, 2026 — Plot System Rewrite & Fertiliser Costs (Major)</span>
           </template>
