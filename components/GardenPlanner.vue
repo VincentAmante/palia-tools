@@ -41,7 +41,6 @@ watch(
   [() => harvesterSettings.settings, () => garden.analyser.uniqueTiles],
   () => {
     clearTimeout(harvesterDebounceTimer)
-      console.log('updating harvest', new Date().toLocaleTimeString())
     harvesterDebounceTimer = setTimeout(() => {
       harvester.simulateYield(garden.analyser.uniqueTiles, harvesterSettings.settings)
     }, 20)
