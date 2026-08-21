@@ -161,7 +161,7 @@ class="join-item btn btn-sm " aria-label="Set Days to 180"
               </template>
               <template #labels>
                 <p>
-                  Manual override for how many days of harvest
+                  Manual override for how many days of harvest/growth ticks the planner will calculate for.
                 </p>
                 <p>
                   <span class="font-bold">Auto:</span> Uses crop w/ highest growth time

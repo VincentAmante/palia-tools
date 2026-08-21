@@ -40,11 +40,17 @@ onMounted(() => {
       <div class="grid gap-2">
         <ChangelogItem checked>
           <template #title>
-            <span class="font-bold">August 21, 2026 — Bug Fixes & Feature Re-implementation (Minor)</span>
+            <span class="font-bold">August 21, 2026 — Bug Fixes, Clarity Improvements (Minor)</span>
           </template>
           <template #summary>
             <li>
               <span class="font-bold">You can now once again drag crops/fertilisers straight from the item selector</span>
+            </li>
+            <li>
+              <span class="font-bold">Moved Growth Ticks location and improved wording in settings to reduce confusion when growth ticks suddenly rise up</span>
+            </li>
+            <li>
+              <span class="font-bold">Removed irrelevant warning on non-processed crops</span>
             </li>
             <li>
               <span class="font-bold">Removed irrelevant warning on non-processed crops</span>
@@ -54,10 +60,17 @@ onMounted(() => {
             </li>
           </template>
           <template #default>
-            <p>Just bug fixes, most relevant one is fixing an old feature where you could drag crops straight from the selector (mouse-only).
+            <p>
+              Just bug fixes, most relevant one is fixing an old feature where you could drag crops straight from the selector (mouse-only).
               Also removed this warning the planner gave when a crop is unprocessed.
               This was used back when crops could be processed without any indication of processing time.
               As processing time will always be included if relevant, I no longer see fit to include it.
+            </p>
+            <p>
+              In addition, I've moved around the growth ticks display closet to the total gold.
+              I've seen some confusion stemming from not noticing a spike in growth ticks/harvest days when certain crop combinations are made,
+              leading some to believe the planner is bugged.
+              While it's not an issue, I've decided it's no harm either to make it clearer. 
             </p>
           </template>
         </ChangelogItem>

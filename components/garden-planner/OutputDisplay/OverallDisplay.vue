@@ -22,6 +22,17 @@ const craftingTime = computed(() => formatMinutesToDaysHoursMinutesObject(proces
         Overview
       </p>
       <div class="grid grid-cols-3 gap-1 @xl:grid-cols-5">
+        
+        <div
+          class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
+          <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
+            Growth Ticks
+          </p>
+          <p
+            class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
+            {{ harvester.totalHarvest.lastHarvestDay }}
+          </p>
+        </div>
         <div
           class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
           <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
@@ -115,16 +126,6 @@ v-if="(craftingTime.actualValue > 0)"
           <p
             class="flex items-center justify-end gap-1 text-lg font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
             {{ harvesterSettings.settings.level }}
-          </p>
-        </div>
-        <div
-          class="p-1 border rounded-md bg-accent dark:bg-palia-blue-light border-misc-dark dark:border-palia-blue-dark">
-          <p class="w-full px-1 text-xs text-right text-misc-dark dark:text-primary">
-            Growth Ticks
-          </p>
-          <p
-            class="flex items-center justify-end gap-1 text-xl font-semibold text-center @2xl:text-xl text-palia-blue dark:text-accent">
-            {{ harvester.totalHarvest.lastHarvestDay }}
           </p>
         </div>
       </div>
